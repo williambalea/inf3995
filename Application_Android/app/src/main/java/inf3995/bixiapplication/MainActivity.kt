@@ -15,10 +15,11 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 class MainActivity : AppCompatActivity() {
 
     val TAG = "MainActivity"
-
+    var URL_BASE = "http://70.52.15.59:2000"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         // STRING
         val retrofit = Retrofit.Builder()
             .baseUrl("http://httpbin.org")
@@ -63,6 +64,25 @@ class MainActivity : AppCompatActivity() {
             }
 
 
+        })
+
+
+
+        // Test
+        val retrofit3 = Retrofit.Builder()
+            .baseUrl(URL_BASE +"/")
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+
+        val service1:WebBixiService = retrofit3.create(WebBixiService::class.java)
+        val call3:Call<String> = service1.getTest()
+
+        call3.enqueue(object: Callback<String> {
+            override fun onResponse(call: Call<String>?, response: Response<String>?) {
+                Log.i(TAG,"Test du Serveur: ${response?.body()}")
+            }
+            override fun onFailure(call: Call<String>?, t: Throwable) {
+            }
         })
     }
 
