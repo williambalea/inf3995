@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BixiApplication</string>
+    <string name="enter_your_ip_address">Enter your ip address</string>
+    <string name="cancel">CANCEL</string>
+    <string name="ok">OK</string>
+    <string name="ip_address">ip address</string>
 </resources>

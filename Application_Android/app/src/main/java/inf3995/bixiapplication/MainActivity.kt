@@ -18,10 +18,12 @@ class MainActivity : AppCompatActivity() {
     //var URL_BASE = "http://70.52.15.59:2001"
     var URL_BASE = "http://70.80.27.156:2000"
     var IP_SERVER = "70.80.27.156"
+    val dialog = IpAddressDialog()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        dialog.show(supportFragmentManager,null)
         // STRING
         val retrofit = Retrofit.Builder()
             .baseUrl("http://httpbin.org")
