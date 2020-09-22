@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     var URL_BASE = "http://70.80.27.156:2000"
     var IP_SERVER = "70.80.27.156"
     val dialog = IpAddressDialog()
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -88,27 +90,23 @@ class MainActivity : AppCompatActivity() {
 
         // Post Server Ip adress
 
-<<<<<<< HEAD
         val retrofit5 = Retrofit.Builder()
             .baseUrl(URL_BASE +"/")
-=======
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        confirmButton.setOnClickListener{
+            dialog.show(supportFragmentManager,null)
+        }
         // Test
 
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-    }
-    override fun onResume() {
-        super.onResume()
-        communicationServer(urlBase)
     }
 
     private fun communicationServer (ipAddress:String){
         val retrofit3 = Retrofit.Builder()
             .baseUrl("http://$ipAddress/")
->>>>>>> 07a8017... [Robin] send data from diaglod to activity(not completed)
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
 
@@ -124,5 +122,4 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
-
 }
