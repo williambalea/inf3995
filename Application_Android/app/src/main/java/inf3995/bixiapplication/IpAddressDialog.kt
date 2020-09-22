@@ -16,6 +16,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 
 
 private const val TAG = "SettingsDialog"
+var IP_SERVER = "70.80.27.156"
 
 class IpAddressDialog: AppCompatDialogFragment() {
 
@@ -50,18 +51,38 @@ class IpAddressDialog: AppCompatDialogFragment() {
     }
 
     private fun communicationServer (ipAddress:String){
-        val retrofit3 = Retrofit.Builder()
+
+        // Post Server Ip adress
+        val retrofit5 = Retrofit.Builder()
             .baseUrl("http://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
 
-        val service1:WebBixiService = retrofit3.create(WebBixiService::class.java)
-        val call3: Call<String> = service1.getTest()
+        val service5: WebBixiService = retrofit5.create(WebBixiService::class.java)
+        val call5:Call<String> = service5.sendServerIP(ipAddress)
 
-        call3.enqueue(object: Callback<String> {
+        call5.enqueue(object: Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG,"Test du Serveur: ${response?.body()}")
+                Log.i(TAG,"Réponse 2 du Serveur: ${response?.body()}")
             }
+            override fun onFailure(call: Call<String>?, t: Throwable) {
+            }
+        })
+
+        // Get Hello World
+        val retrofit4 = Retrofit.Builder()
+            .baseUrl("http://$ipAddress/")
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+
+        val service4: WebBixiService = retrofit4.create(WebBixiService::class.java)
+        val call4: Call<String> = service4.getHelloWorld()
+
+        call4.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>?, response: Response<String>?) {
+                Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
+            }
+
             override fun onFailure(call: Call<String>?, t: Throwable) {
             }
         })
