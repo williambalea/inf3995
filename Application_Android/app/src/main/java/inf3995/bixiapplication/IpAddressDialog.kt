@@ -46,7 +46,6 @@ class IpAddressDialog: AppCompatDialogFragment() {
             dismiss()
         }
 
-
         cancelButton.setOnClickListener{dismiss()}
     }
 

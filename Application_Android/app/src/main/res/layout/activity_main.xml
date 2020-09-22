@@ -10,7 +10,8 @@
         android:id="@+id/welcomeToApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="@string/welcome_to_bixi"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -24,14 +25,16 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="169dp"
         android:layout_marginLeft="169dp"
-        android:layout_marginTop="46dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="154dp"
         android:layout_marginRight="154dp"
         android:layout_marginBottom="577dp"
-        android:text="Confirm server address"
+        android:text="@string/confirm_server_address"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/welcomeToApp" />
+        app:layout_constraintTop_toBottomOf="@+id/welcomeToApp"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

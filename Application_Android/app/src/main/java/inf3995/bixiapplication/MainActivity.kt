@@ -1,17 +1,8 @@
 package inf3995.bixiapplication
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,7 +11,7 @@ class MainActivity : AppCompatActivity() {
     var URL_BASE = "http://70.80.27.156:2000"
     var IP_SERVER = "70.80.27.156"
     val dialog = IpAddressDialog()
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

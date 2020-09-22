@@ -3,5 +3,7 @@
     <string name="enter_your_ip_address">Enter the server ip address</string>
     <string name="cancel">CANCEL</string>
     <string name="ok">OK</string>
-    <string name="ip_address">ip address::port</string>
+    <string name="ip_address">ip address:port</string>
+    <string name="welcome_to_bixi">Welcome to Bixi!</string>
+    <string name="confirm_server_address">Confirm server address</string>
 </resources>
