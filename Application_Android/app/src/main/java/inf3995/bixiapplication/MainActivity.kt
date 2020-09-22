@@ -15,7 +15,9 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 class MainActivity : AppCompatActivity() {
 
     val TAG = "MainActivity"
-    var URL_BASE = "http://70.52.15.59:2000"
+    //var URL_BASE = "http://70.52.15.59:2001"
+    var URL_BASE = "http://70.80.27.156:2000"
+    var IP_SERVER = "70.80.27.156"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -66,24 +68,41 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-
-
-        // Test
-        val retrofit3 = Retrofit.Builder()
+        // Get Hello World
+        val retrofit4 = Retrofit.Builder()
             .baseUrl(URL_BASE +"/")
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
 
-        val service1:WebBixiService = retrofit3.create(WebBixiService::class.java)
-        val call3:Call<String> = service1.getTest()
+        val service4:WebBixiService = retrofit4.create(WebBixiService::class.java)
+        val call4:Call<String> = service4.getHelloWorld()
 
-        call3.enqueue(object: Callback<String> {
+        call4.enqueue(object: Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG,"Test du Serveur: ${response?.body()}")
+                Log.i(TAG,"Réponse 1 du Serveur: ${response?.body()}")
             }
             override fun onFailure(call: Call<String>?, t: Throwable) {
             }
         })
+
+        // Post Server Ip adress
+
+        val retrofit5 = Retrofit.Builder()
+            .baseUrl(URL_BASE +"/")
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+
+        val service5:WebBixiService = retrofit5.create(WebBixiService::class.java)
+        val call5:Call<String> = service5.sendServerIP(IP_SERVER)
+
+        call5.enqueue(object: Callback<String> {
+            override fun onResponse(call: Call<String>?, response: Response<String>?) {
+                Log.i(TAG,"Réponse 2 du Serveur: ${response?.body()}")
+            }
+            override fun onFailure(call: Call<String>?, t: Throwable) {
+            }
+        })
+
     }
 
 }

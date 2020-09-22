@@ -2,6 +2,7 @@ package inf3995.bixiapplication
 
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.POST
 
 
 interface HttpWebServicesString {
@@ -10,4 +11,6 @@ interface HttpWebServicesString {
 
     @GET("ip")
     fun getUserIP():Call<String>
+
+
 }
