@@ -2,6 +2,9 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import export_graphviz
+import pydot
+import matplotlib.pyplot as plt
 
 
 #ACQUIRE DATA
@@ -41,3 +44,20 @@ print('Mean Absolute Error:', round(np.mean(errors), 2), 'degrees.')
 mape = 100 * (errors / test_labels)
 accuracy = 100 - np.mean(mape)
 print('accuracy:', round(accuracy, 2), '%.')
+
+##INTERPRET MODEL AND REPORT RESULTS
+#Visualizing single decision tree
+#tree = rf.estimators_[5]
+#export_graphviz(tree, out_file= 'tree.dot', feature_names = feature_list, rounded = True, precision = 1)
+#(graph, ) = pydot.graph_from_dot_file('tree.dot')
+#graph.write_png('tree.png')
+#---
+# Get numerical feature importances
+importances = list(rf.feature_importances_)
+# List of tuples with variable and importance
+feature_importances = [(feature, round(importance, 2)) for feature, importance in zip(feature_list, importances)]
+# Sort the feature importances by most important first
+feature_importances = sorted(feature_importances, key = lambda x: x[1], reverse = True)
+# Print out the feature and importances 
+[print('Variable: {:20} Importance: {}'.format(*pair)) for pair in feature_importances];
+#---
