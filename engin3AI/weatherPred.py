@@ -5,6 +5,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import export_graphviz
 import pydot
 import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt3
 import matplotlib.pyplot as plt2
 import datetime
 
@@ -76,13 +77,14 @@ feature_importances = sorted(feature_importances, key = lambda x: x[1], reverse 
 
 ##Setting visualizing chart
 #First chart
-plt.style.use('fivethirtyeight')
+plt3.style.use('fivethirtyeight')
 x_values = list(range(len(importances)))
-plt.bar(x_values, importances, orientation = 'vertical')
-plt.xticks(x_values, feature_list, rotation='vectical')
-plt.ylabel('Importance')
-plt.xlabel('Varialbe')
-plt.title('Variable Importances')
+plt3.bar(x_values, importances, orientation = 'vertical')
+plt3.xticks(x_values, feature_list, rotation= 'vertical')
+plt3.ylabel('Importance')
+plt3.xlabel('Variable')
+plt3.title('Variable Importances')
+plt3.show()
 
 ##Plot dataset
 #Dates of training values
@@ -116,8 +118,8 @@ predictions_data = pd.DataFrame(data = {'date': test_dates, 'prediction': predic
 #Plot the predicted values
 plt.plot(true_data['date'], true_data['actual'], 'b-', label = 'actual')
 plt.plot(predictions_data['date'], predictions_data['prediction'], 'ro', label='prediction')
-plt.xticks(rotation='60')
 plt.legend()
+plt.xticks(rotation='60')
 
 #Graph labels
 plt.xlabel('Date')
