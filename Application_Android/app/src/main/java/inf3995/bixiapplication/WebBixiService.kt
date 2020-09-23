@@ -8,10 +8,13 @@ import retrofit2.http.POST
 
 interface WebBixiService {
 
-    @GET("Hello-World")
+    @GET("/")
     fun getHelloWorld():Call<String>
+
+    @GET("/messages")
+    fun getPostedMessages():Call<String>
 
     @FormUrlEncoded
     @POST("ip_server")
-    fun sendServerIP(@Field("body") ipadress:String):Call<String>
+    fun sendServerIP(@Field("body") ipAddress:String):Call<String>
 }
