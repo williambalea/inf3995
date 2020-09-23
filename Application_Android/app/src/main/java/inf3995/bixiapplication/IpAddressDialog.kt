@@ -35,13 +35,14 @@ class IpAddressDialog: AppCompatDialogFragment() {
         okButton.setOnClickListener{
             //saveValues
 
-            val input: String = editTextIpAddress.text.toString()
+            val ipAddressInput: String = editTextIpAddress.text.toString()
+            val portInput: String = editTextPort.text.toString()
 
-            if (input != "") {
+            if (ipAddressInput != "" && portInput != "") {
 
-                communicationServer(input)
+                communicationServer(ipAddressInput, portInput)
             } else {
-                Toast.makeText(activity, "Please a ip address!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Please enter an ip address and a port!", Toast.LENGTH_SHORT).show()
             }
 
             dismiss()
@@ -50,11 +51,11 @@ class IpAddressDialog: AppCompatDialogFragment() {
         cancelButton.setOnClickListener{dismiss()}
     }
 
-    private fun communicationServer (ipAddress:String){
+    private fun communicationServer (ipAddress:String, port:String){
 
         // Post Server Ip adress
         val retrofit5 = Retrofit.Builder()
-            .baseUrl("http://$ipAddress/")
+            .baseUrl("http://$ipAddress:$port/")
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
 
@@ -71,7 +72,7 @@ class IpAddressDialog: AppCompatDialogFragment() {
 
         // Get Hello World
         val retrofit4 = Retrofit.Builder()
-            .baseUrl("http://$ipAddress/")
+            .baseUrl("http://$ipAddress:$port/")
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
 
