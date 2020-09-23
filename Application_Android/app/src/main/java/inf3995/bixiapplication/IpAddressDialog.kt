@@ -83,9 +83,26 @@ class IpAddressDialog: AppCompatDialogFragment() {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
                 Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
             }
-
             override fun onFailure(call: Call<String>?, t: Throwable) {
             }
         })
+
+        // Get Hello World
+        val retrofit2 = Retrofit.Builder()
+            .baseUrl("http://$ipAddress:$port/")
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+
+        val service2: WebBixiService = retrofit2.create(WebBixiService::class.java)
+        val call2: Call<String> = service2.getPostedMessages()
+
+        call2.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>?, response: Response<String>?) {
+                Log.i(TAG, "Réponse 3 du Serveur: ${response?.body()}")
+            }
+            override fun onFailure(call: Call<String>?, t: Throwable) {
+            }
+        })
+
     }
 }
