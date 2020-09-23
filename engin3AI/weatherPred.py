@@ -45,13 +45,23 @@ mape = 100 * (errors / test_labels)
 accuracy = 100 - np.mean(mape)
 print('accuracy:', round(accuracy, 2), '%.')
 
-##INTERPRET MODEL AND REPORT RESULTS
+##INTERPRET MODEL AND REPORT RESULTS 
 #Visualizing single decision tree
 #tree = rf.estimators_[5]
 #export_graphviz(tree, out_file= 'tree.dot', feature_names = feature_list, rounded = True, precision = 1)
 #(graph, ) = pydot.graph_from_dot_file('tree.dot')
 #graph.write_png('tree.png')
 #---
+
+#Visualizing single decision small tree
+rf_small = RandomForestRegressor(n_estimators = 10, max_depth = 3)
+rf_small.fit(train_features, train_labels)
+tree_small = rf_small.estimators_[5]
+export_graphviz(tree_small, out_file= 'small_tree.dot', feature_names = feature_list, rounded = True, precision = 1)
+(graph, ) = pydot.graph_from_dot_file('small_tree.dot')
+graph.write_png('small_tree.png')
+#---
+
 # Get numerical feature importances
 importances = list(rf.feature_importances_)
 # List of tuples with variable and importance
