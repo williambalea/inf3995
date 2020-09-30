@@ -1,5 +1,6 @@
 package inf3995.bixiapplication
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,9 +17,14 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 
 
 private const val TAG = "SettingsDialog"
-var IP_SERVER = "70.80.27.156"
+var connectivity: Boolean = false;
 
 class IpAddressDialog: AppCompatDialogFragment() {
+
+    companion object {
+        lateinit var ipAddressInput :String
+        lateinit var portInput: String
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,17 +41,23 @@ class IpAddressDialog: AppCompatDialogFragment() {
         okButton.setOnClickListener{
             //saveValues
 
-            val ipAddressInput: String = editTextIpAddress.text.toString()
-            val portInput: String = editTextPort.text.toString()
+            ipAddressInput = editTextIpAddress.text.toString()
+            portInput = editTextPort.text.toString()
 
             if (ipAddressInput != "" && portInput != "") {
 
                 communicationServer(ipAddressInput, portInput)
+                if(connectivity){
+                    dismiss()
+                    startActivity(Intent(activity, SurveyActivity::class.java))
+                }
+                else
+                    Toast.makeText(activity, "Can't connect to server!", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(activity, "Please enter an ip address and a port!", Toast.LENGTH_SHORT).show()
             }
 
-            dismiss()
+
         }
 
         cancelButton.setOnClickListener{dismiss()}
@@ -64,7 +76,9 @@ class IpAddressDialog: AppCompatDialogFragment() {
 
         call5.enqueue(object: Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG,"Réponse 2 du Serveur: ${response?.body()}")
+                var answer = response
+                if(answer.toString() == "Server received IP : _____ from Android")
+                    connectivity = true
             }
             override fun onFailure(call: Call<String>?, t: Throwable) {
             }

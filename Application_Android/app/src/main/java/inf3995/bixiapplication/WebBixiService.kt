@@ -17,4 +17,8 @@ interface WebBixiService {
     @FormUrlEncoded
     @POST("ip_server")
     fun sendServerIP(@Field("body") ipAddress:String):Call<String>
+
+    @FormUrlEncoded
+    @POST("survey_data ")
+    fun sendServerSurveyData(@Field("body") survey:SurveyData):Call<SurveyData>
 }

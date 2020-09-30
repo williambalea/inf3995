@@ -7,4 +7,14 @@
     <string name="welcome_to_bixi">Welcome to Bixi!</string>
     <string name="confirm_server_address">Confirm server address</string>
     <string name="port">port</string>
+    <string name="survey">Survey</string>
+    <string name="e_mail">E-mail</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="age">Age</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="are_you_interedted_by_bixi">Are you interedted by Bixi?</string>
+    <string name="send">Send</string>
+    <string name="skip">Skip</string>
 </resources>
