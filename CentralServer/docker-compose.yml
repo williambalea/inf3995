@@ -1,5 +1,6 @@
 version: "3.3"
 
+## Traefik set up ##
 services:
   traefik:
     image: traefik:v2.0
@@ -18,21 +19,54 @@ services:
       - --providers.docker.exposedbydefault=false # <== Don't expose every container to traefik
       - --providers.file.filename=/dynamic.yaml # <== Referring to a dynamic configuration file
       - --providers.docker.network=web # <== Operate on the docker network named web
+      - --providers.docker.network=backend # <== Operate on the docker network named web
+      #- --providers.docker.endpoint=ssh://traefik@192.168.2.5:2=9000
       - --entrypoints.web.address=:80 # <== Defining an entrypoint for port :80 named web   
-      - --entrypoints.web-secured.address=:443 # <== Defining an entrypoint for https on port :443 (not really needed)
+      - --entrypoints.web-secured.address=:443 # <== Defining an entrypoint for https on port :443 
+      #- --entrypoints.dashboard.auth.basic.users=admin:$$apr1$$W89uqqq1$$nlwh8YWt7vmWCwsKpIxGf0"
+      - --certificatesresolvers.mytlschallenge.acme.tlschallenge=true 
       - --certificatesresolvers.mytlschallenge.acme.email=dalyna.pak@hotmail.fr #<== Set your email (not really needed)
       - --certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json # <== SSL stuff we don't need.
     volumes:
-      #- ./letsencrypt:/letsencrypt # <== Volume for certs (TLS) (not really needed)
+      - ./letsencrypt:/letsencrypt # <== Volume for certs (TLS) (not really needed)
       - /var/run/docker.sock:/var/run/docker.sock # <== Volume for docker admin
       - ./dynamic.yaml:/dynamic.yaml # <== Volume for dynamic conf file, **ref: line 27
+
     networks:
       - web # <== Placing traefik on the network named web, to access containers on this network
     labels:
+      - "traefik.frontend.rule=Host:traefik.example.com"
+      - "traefik.port=8080"
       - "traefik.enable=true" # <== Enable traefik on itself to view dashboard and assign subdomain to$
-      - "traefik.http.routers.api.rule=Host(`monitor.yourdomain.com`)" # <== Setting the domain for the d$
+      - "traefik.frontend.auth.basic.users=admin:$$apr1$$W89uqqq1$$nlwh8YWt7vmWCwsKpIxGf0"
+      - "traefik.http.routers.api.rule=Host(`traefikApi`)" # <== Setting the domain for the d$
       - "traefik.http.routers.api.service=api@internal" # <== Enabling the api to be a service to acce$
+      - "traefik.http.routers.dashboard.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$W89uqqq1$$nlwh8YWt7vmWCwsKpIxGf0"
+
+# mySQL Container not on Traefik #
+#mysql_db:
+#  image: mysql:5.7
+#  restart: always
+#  container_name: mysqlDB
+#  environment: 
+#    - MYSQL_DATABASE=bixidb
+#    - MYSQL_USER=root
+#    - MYSQL_ROOT_PASSWORD=projet3
+#    - MYSQL_PASSWORD=projet3
+#  labels:
+#    - "traefik.enable=false"
+#  volumes:
+#    - ./var/lib/sql:/var/lib/mysql
+#  networks: 
+#    - backend
 
 networks:
   web:
     external: true
+  backend:
+    external: false
+
+  #volumes:
+  #  mysql_db:
+  #    external: true
