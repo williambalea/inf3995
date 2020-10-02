@@ -43,7 +43,13 @@ services:
       - "traefik.http.routers.api.service=api@internal" # <== Enabling the api to be a service to acce$
       - "traefik.http.routers.dashboard.middlewares=auth"
       - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$W89uqqq1$$nlwh8YWt7vmWCwsKpIxGf0"
-
+  
+  server:
+    container_name: serverwebcentral
+    build: ./
+    ports: 
+      - "2000:2000"
+  
 networks:
   web:
     external: true
