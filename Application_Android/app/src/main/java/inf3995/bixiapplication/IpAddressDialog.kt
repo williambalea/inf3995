@@ -2,13 +2,17 @@ package inf3995.bixiapplication
 
 import android.content.Intent
 import android.os.Bundle
+import android.service.autofill.RegexValidator
 import android.util.Log
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialogFragment
+import com.afollestad.vvalidator.form
 import kotlinx.android.synthetic.main.setting_ip_address_dialog.*
+import kotlinx.android.synthetic.main.survey.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,28 +42,33 @@ class IpAddressDialog: AppCompatDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG,"onViewCreated: called")
         super.onViewCreated(view, savedInstanceState)
-        okButton.setOnClickListener{
-            //saveValues
 
-            ipAddressInput = editTextIpAddress.text.toString()
-            portInput = editTextPort.text.toString()
-
-            if (ipAddressInput != "" && portInput != "") {
-
-                communicationServer(ipAddressInput, portInput)
-                if(connectivity){
-                    dismiss()
-                    startActivity(Intent(activity, SurveyActivity::class.java))
-                }
-                else
-                    Toast.makeText(activity, "Can't connect to server!", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(activity, "Please enter an ip address and a port!", Toast.LENGTH_SHORT).show()
+        form{
+            input(editTextIpAddress){
+                matches("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}↵\n" +
+                        "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$").description("Enter a valid IP Address!")
             }
-
-
+            input(editTextPort){
+                isNumber().atLeast(1)
+                isNumber().lessThan(65535)
+            }
+            submitWith(okButton) { result ->
+                ipAddressInput = editTextIpAddress.text.toString()
+                portInput = editTextPort.text.toString()
+                if (ipAddressInput != "" && portInput != "") {
+                    communicationServer(ipAddressInput, portInput)
+                    startActivity(Intent(activity, SurveyActivity::class.java))
+                    if(connectivity){
+                        dismiss()
+                        startActivity(Intent(activity, SurveyActivity::class.java))
+                    }
+                    else
+                        Toast.makeText(activity, "Can't connect to server!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(activity, "Please enter an ip address and a port!", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
-
         cancelButton.setOnClickListener{dismiss()}
     }
 
@@ -77,7 +86,7 @@ class IpAddressDialog: AppCompatDialogFragment() {
         call5.enqueue(object: Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
                 var answer = response
-                if(answer.toString() == "Server received IP : _____ from Android")
+                if(answer.toString() == "Server received IP : _____ from Android")                // Verification de la connexion avec le serveur
                     connectivity = true
             }
             override fun onFailure(call: Call<String>?, t: Throwable) {

@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "inf3995.bixiapplication"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -39,6 +39,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.9.0'
     implementation 'com.google.android.material:material:1.2.1'
+    implementation 'com.afollestad:vvalidator:0.2.2'
+
 
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
