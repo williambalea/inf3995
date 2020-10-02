@@ -44,29 +44,8 @@ services:
       - "traefik.http.routers.dashboard.middlewares=auth"
       - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$W89uqqq1$$nlwh8YWt7vmWCwsKpIxGf0"
 
-# mySQL Container not on Traefik #
-#mysql_db:
-#  image: mysql:5.7
-#  restart: always
-#  container_name: mysqlDB
-#  environment: 
-#    - MYSQL_DATABASE=bixidb
-#    - MYSQL_USER=root
-#    - MYSQL_ROOT_PASSWORD=projet3
-#    - MYSQL_PASSWORD=projet3
-#  labels:
-#    - "traefik.enable=false"
-#  volumes:
-#    - ./var/lib/sql:/var/lib/mysql
-#  networks: 
-#    - backend
-
 networks:
   web:
     external: true
   backend:
     external: false
-
-  #volumes:
-  #  mysql_db:
-  #    external: true
