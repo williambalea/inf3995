@@ -1,4 +1,4 @@
-package inf3995.bixiapplication.station
+package inf3995.bixiapplication.stationList
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import inf3995.bixiapplication.R
 class StationFragment: Fragment() {
     private lateinit var stations:MutableList<Station>
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: StationAdapter
+    private lateinit var adapter: StationListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_station,container, false)
@@ -23,12 +23,10 @@ class StationFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = StationAdapter(stations, this)
-        recyclerView.adapter = adapter
+       // adapter = StationAdapter(stations, this)
+     //   recyclerView.adapter = adapter
     }
 
-    fun onStationSelected(station:Station) {
-
-    }
 
 }
+

@@ -1,9 +1,9 @@
 package inf3995.bixiapplication
 
-import inf3995.bixiapplication.station.PredData
-import inf3995.bixiapplication.station.ReqData
-import inf3995.bixiapplication.station.StatOfStation
-import inf3995.bixiapplication.station.Station
+import inf3995.bixiapplication.stationList.PredData
+import inf3995.bixiapplication.stationList.ReqData
+import inf3995.bixiapplication.stationList.StatOfStation
+import inf3995.bixiapplication.stationList.Station
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -29,7 +29,7 @@ interface WebBixiService {
     @GET("/station/code")
     fun getStationCode(@Field("body") code: Int):Call<Station>
 
-       @GET("/donnees/usage/annee/temps/station")
+    @GET("/donnees/usage/annee/temps/station")
     fun getStationDonnees(@Field("body") reqData: ReqData):Call<StatOfStation>
 
     @GET("/prediction/usage/station")
@@ -37,6 +37,5 @@ interface WebBixiService {
 
     @GET("/prediction/erreur")
     fun getStationErrorPrediction(@Field("body") predData: PredData):Call<StatOfStation>
-
 
 }
