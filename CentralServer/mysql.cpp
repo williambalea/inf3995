@@ -12,12 +12,13 @@ int main() {
     Statement *stmt;
 
     driver = get_mysql_driver_instance();
-    con = driver->connect("tcp://127.0.0.1:3306", "root", "1234");
+    con = driver->connect("tcp://34.70.117.28:3306", "root", "jerome");
+    // std::cout << con->isValid() << std::endl;
     stmt = con->createStatement();
-    stmt->execute("USE testdb");
+    stmt->execute("USE william");
     stmt->execute("DROP TABLE IF EXISTS testTable");
     stmt->execute("CREATE TABLE testTable(id INT, label CHAR(1))");
-    stmt->execute("INSERT INTO testTable(id, label) VALUES (1, 'b')");
+    stmt->execute("INSERT INTO testTable(id, label) VALUES (1, 'a')");
 
     delete stmt;
     delete con; // -lmysqlcppconn
