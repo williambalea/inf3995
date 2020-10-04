@@ -4,15 +4,16 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "mysql.h"
 
 using namespace Pistache;
 using namespace std;
 
 class Server {
 public :
-    explicit Server (Address addr) : httpEndpoint(make_shared<Http::Endpoint>(addr)) {
-        _addr = addr;
-    }
+    explicit Server (Address addr) : 
+        httpEndpoint(make_shared<Http::Endpoint>(addr)), 
+        _addr(addr) {}
 
     void init() {
         auto opts = Http::Endpoint::options().threads(1);
@@ -68,5 +69,12 @@ int main() {
     Server server(addr);
     server.init();
     server.run();
+
+    // This is an example, should be in REST api
+    // MySQL db;
+    // db.sendPoll("wb@polymt.ca", "will", "balea", 23, false);
+    //TODO: make a makefile to compile g++ server.cpp -o server -lpistache -lpthread -lmysqlcppconn
+    //TODO: make .gitigore
+    
     return 0;
 }
