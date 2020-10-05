@@ -80,6 +80,7 @@ private:
             j["interet"].get<bool>()
         );
         res.send(Http::Code::Ok, "Server got poll");
+        // TODO: Http::Code::Bad_Request
     }
 };
 
