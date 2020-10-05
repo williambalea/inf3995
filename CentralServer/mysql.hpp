@@ -1,5 +1,5 @@
-#ifndef MYSQL_H
-#define MYSQL_H
+#ifndef MYSQL_HPP
+#define MYSQL_HPP
 
 #include <iostream>
 #include <string>
