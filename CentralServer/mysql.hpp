@@ -22,17 +22,17 @@ public:
         setupServerDB();
     }
 
-    void sendPoll(std::string courriel, std::string prenom, std::string nom, int age, bool interet) {
+    void sendPoll(std::string email, std::string firstName, std::string lastName, int age, bool interest) {
         connectToServerDB();
         
         PreparedStatement* stmt = con->prepareStatement(
-            "INSERT INTO Polls (courriel, prenom, nom, age, interet) VALUES (?, ?, ?, ?, ?)");
+            "INSERT INTO Polls (email, firstName, lastName, age, interest) VALUES (?, ?, ?, ?, ?)");
 
-        stmt->setString(1, courriel);
-        stmt->setString(2, prenom);
-        stmt->setString(3, nom);
+        stmt->setString(1, email);
+        stmt->setString(2, firstName);
+        stmt->setString(3, lastName);
         stmt->setInt(4, age);
-        stmt->setBoolean(5, interet);
+        stmt->setBoolean(5, interest);
         stmt->execute();
 
         delete stmt;
@@ -62,11 +62,11 @@ private:
         // TODO : ask android app how they manage string verification
         stmt->execute(
             "CREATE TABLE Polls ("
-            "courriel VARCHAR(40), "
-            "prenom VARCHAR(40), "
-            "nom VARCHAR(40), "
+            "email VARCHAR(40), "
+            "firstName VARCHAR(40), "
+            "lastName VARCHAR(40), "
             "age TINYINT, "
-            "interet BOOL)"
+            "interest BOOL)"
         );
 
         delete stmt;

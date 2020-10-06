@@ -47,19 +47,21 @@ private:
         Routes::Get(router, "/", Routes::bind(&Server::welcome, this));
         Routes::Post(router, "/ip_server", Routes::bind(&Server::postIP, this));
         Routes::Get(router, "/messages", Routes::bind(&Server::getAllMsg, this));
-        Routes::Put(router, "/sondage", Routes::bind(&Server::sendPoll, this));
+        Routes::Post(router, "/survey", Routes::bind(&Server::sendPoll, this));
 
     }
 
     // Routes fonctions
     void welcome (const Rest::Request& req, Http::ResponseWriter res) {
         res.send(Http::Code::Ok, "Hello from server");
+        cout << "connection established" << endl;
     }
 
     void postIP (const Rest::Request& req, Http::ResponseWriter res) {
         string newMsg = req.body();
         msgs.push_back(newMsg);
         res.send(Http::Code::Ok, "Server received IP : " + newMsg + " from Android");
+        cout << newMsg << endl;
     }
 
     void getAllMsg(const Rest::Request& req, Http::ResponseWriter res) {
@@ -70,16 +72,20 @@ private:
     }
 
     void sendPoll(const Rest::Request& req, Http::ResponseWriter res) {
+        // cout << "in sendPoll()" << endl;
         json j = json::parse(req.body());
+        // string msg = req.body();
+        // cout << msg << endl;
         MySQL db;
         db.sendPoll(
-            j["courriel"].get<string>(),
-            j["prenom"].get<string>(),
-            j["nom"].get<string>(),
+            j["email"].get<string>(),
+            j["firstName"].get<string>(),
+            j["lastName"].get<string>(),
             j["age"].get<int>(),
-            j["interet"].get<bool>()
+            j["interest"].get<bool>()
         );
         res.send(Http::Code::Ok, "Server got poll");
+        // res.send(Http::Code::Ok, msg);
         // TODO: Http::Code::Bad_Request
     }
 };
