@@ -29,6 +29,9 @@ interface WebBixiService {
     @GET("/station/code")
     fun getStationCode(@Field("body") code: Int):Call<Station>
 
+    @GET("/station/all")
+    fun getAllStationCode(@Field("body") code: Int):Call<List<Station>>
+
     @GET("/donnees/usage/annee/temps/station")
     fun getStationDonnees(@Field("body") reqData: ReqData):Call<StatOfStation>
 

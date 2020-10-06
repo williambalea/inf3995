@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ApplicationAndroid</string>
+    <string name="code">Code</string>
+    <string name="name">Name</string>
+    <string name="station_details">Station details</string>
+    <string name="search_station">Search station</string>
+</resources>
