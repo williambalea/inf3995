@@ -3,7 +3,7 @@ version: "3.3"
 ## Traefik set up ##
 services:
   traefik:
-    image: traefik:v2.0
+    image: traefik:v2.3
     restart: always
     container_name: traefik
     ports:
@@ -19,7 +19,7 @@ services:
       - --providers.docker.exposedbydefault=false # <== Don't expose every container to traefik
       - --providers.file.filename=/dynamic.yaml # <== Referring to a dynamic configuration file
       - --providers.docker.network=web # <== Operate on the docker network named web
-      - --providers.docker.network=backend # <== Operate on the docker network named web
+      # - --providers.docker.network=backend # <== Operate on the docker network named web
       #- --providers.docker.endpoint=ssh://traefik@192.168.2.5:2=9000
       - --entrypoints.web.address=:80 # <== Defining an entrypoint for port :80 named web   
       - --entrypoints.web-secured.address=:443 # <== Defining an entrypoint for https on port :443 
@@ -35,23 +35,22 @@ services:
     networks:
       - web # <== Placing traefik on the network named web, to access containers on this network
     labels:
-      - "traefik.frontend.rule=Host:traefik.example.com"
-      - "traefik.port=8080"
+      # - "traefik.frontend.rule=Host:traefik.example.com"
+      # - "traefik.port=8080"
       - "traefik.enable=true" # <== Enable traefik on itself to view dashboard and assign subdomain to$
-      - "traefik.frontend.auth.basic.users=admin:$$apr1$$W89uqqq1$$nlwh8YWt7vmWCwsKpIxGf0"
+      # - "traefik.frontend.auth.basic.users=admin:$$apr1$$W89uqqq1$$nlwh8YWt7vmWCwsKpIxGf0"
       - "traefik.http.routers.api.rule=Host(`traefikApi`)" # <== Setting the domain for the d$
       - "traefik.http.routers.api.service=api@internal" # <== Enabling the api to be a service to acce$
-      - "traefik.http.routers.dashboard.middlewares=auth"
-      - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$W89uqqq1$$nlwh8YWt7vmWCwsKpIxGf0"
+      # - "traefik.http.routers.dashboard.middlewares=auth"
+      # - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$W89uqqq1$$nlwh8YWt7vmWCwsKpIxGf0"
   
   server:
-    container_name: serverwebcentral
+    container_name: server
     build: ./
-    ports: 
-      - "2000:2000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:server.localhost"
   
 networks:
   web:
     external: true
-  backend:
-    external: false

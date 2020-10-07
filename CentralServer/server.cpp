@@ -25,7 +25,8 @@ public :
         httpEndpoint->serveThreaded();
         cout << "Server is running on " << _addr.host() << ":" << _addr.port() << " ..." << endl;
         string command = "";
-        cin >> command;
+        while (command !="stop")
+            cin >> command;
         cout << "Stopping server.\n" ;
         httpEndpoint->shutdown();
     }
