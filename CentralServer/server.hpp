@@ -1,3 +1,6 @@
+#ifndef SERVER_HPP
+#define SERVER_HPP
+
 #include <pistache/endpoint.h>
 #include <pistache/router.h>
 #include <pistache/http.h>
@@ -100,3 +103,5 @@ void Server::sendPoll(const Rest::Request& req, Http::ResponseWriter res) {
     res.send(Http::Code::Ok, "Server got poll");
     // TODO: Http::Code::Bad_Request
 }
+
+#endif // SERVER_HPP
