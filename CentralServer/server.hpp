@@ -38,7 +38,7 @@ private:
 
 
 Server::Server(Address &addr_, MySQL &db_) {
-    httpEndpoint = make_shared<Http::Endpoint>(addr);
+    httpEndpoint = make_shared<Http::Endpoint>(addr_);
     addr = addr_;
     db = db_;
     
