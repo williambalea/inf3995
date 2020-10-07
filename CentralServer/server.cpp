@@ -39,9 +39,9 @@ private:
 
     void setupRoutes() {
         using namespace Rest;
-        Routes::Get(router, "/", Routes::bind(&Server::welcome, this));
-        Routes::Post(router, "/ip_server", Routes::bind(&Server::postIP, this));
-        Routes::Get(router, "/messages", Routes::bind(&Server::getAllMsg, this));
+        Routes::Get(router, "/server/", Routes::bind(&Server::welcome, this));
+        Routes::Post(router, "/server/ip_server", Routes::bind(&Server::postIP, this));
+        Routes::Get(router, "/server/messages", Routes::bind(&Server::getAllMsg, this));
 
     }
 
