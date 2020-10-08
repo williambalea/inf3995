@@ -42,8 +42,7 @@ class IpAddressDialog: AppCompatDialogFragment() {
 
         form{
             input(editTextIpAddress){
-                //matches("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}↵\n" +
-                  //      "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$").description("Enter a valid IP Address!")
+                matches("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$").description("Enter a valid IP Address!")
             }
             input(editTextPort){
                 isNumber().atLeast(1)

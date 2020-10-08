@@ -1,21 +1,18 @@
 package inf3995.bixiapplication
-
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
 
 interface WebBixiService {
 
-    @GET("/")
+    @GET("/server")
     fun getHelloWorld():Call<String>
 
-    @GET("/messages")
+    @GET("/server/messages")
     fun getPostedMessages():Call<String>
 
-    //@FormUrlEncoded
-    @POST("ip_server")
-    fun sendServerIP(/*@Field("body")*/ @Body ipAddress:String):Call<String>
+    @POST("/server/ip_server")
+    fun sendServerIP(@Body ipAddress:String):Call<String>
 
-    @POST("survey")
+    @POST("/server/survey")
     fun sendServerSurveyData(@Body survey: String):Call<String>
 }

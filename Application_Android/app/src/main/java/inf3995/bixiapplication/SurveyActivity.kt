@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.vvalidator.form
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.survey.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -71,9 +70,6 @@ class SurveyActivity : AppCompatActivity() {
         surveyJsonObject.addProperty("lastName", surveyData.lastName)
         surveyJsonObject.addProperty("age", surveyData.age)
         surveyJsonObject.addProperty("interested", surveyData.interest)*/
-
-        println(jsonString)
-
 
         val service5: WebBixiService = retrofit5.create(WebBixiService::class.java)
         val call5: Call<String> = service5.sendServerSurveyData(jsonString)

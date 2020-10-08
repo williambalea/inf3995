@@ -14,7 +14,7 @@
     <string name="age">Age</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="are_you_interedted_by_bixi">Are you interedted by Bixi?</string>
+    <string name="are_you_interested_by_bixi">Are you interested by Bixi?</string>
     <string name="send">Send</string>
     <string name="skip">Skip</string>
 </resources>
