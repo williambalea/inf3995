@@ -1,6 +1,9 @@
 import mysql.connector
 import json
+import socket
+import requests as rq
 from mysql.connector import Error
+# import EnginSQL
 
 HOST_NAME = "34.70.117.28"
 USER_NAME = "root"
@@ -8,6 +11,8 @@ USER_PASSWORD = "jerome"
 MY_DATABASE = "Bixi"
 SQL_REQ1 = "SELECT * FROM Stations"
 CODE_STATION = "5003"
+URL_POST_TEMP = "/serveur/code"
+PORT = 2000
 
 def create_connection(host_name, user_name, user_password):
     connection = None
@@ -35,7 +40,19 @@ def getStationCode(allo):
     return json.dumps(json_data)
 
 connection = create_connection(HOST_NAME, USER_NAME, USER_PASSWORD)
+# connection = EnginSQL()
 station5003 = getStationCode(CODE_STATION)
+
+# sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# try:
+#     sock.connect((HOST, PORT))
+# except Exception as e:
+#     print("Cannot connect to the server:", e)
+
+payload = station5003
+
+r = rq.post("http://httpbin.org/post", params = payload)
+
 
 
 print(station5003)
