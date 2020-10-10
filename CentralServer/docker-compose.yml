@@ -55,3 +55,19 @@ services:
       - "traefik.http.routers.serverContainer-secured.rule=PathPrefix(`/server`)" # <== Your Domain Name for the https rule 
       - "traefik.http.routers.serverContainer-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
       - "traefik.http.routers.serverContainer-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
+
+  engin1:
+    build: ../engin3AI/.
+    restart: always
+    container_name: engin1
+    ports:
+      - "5000:5000"
+    labels: 
+        #### Labels define the behavior and rules of the traefik proxy for this container ####
+        - "traefik.enable=true" # <== Enable traefik to proxy this container
+        - "traefik.http.routers.engin1.rule=PathPrefix(`/engin1`)" # <== Your Domain Name goes here for the http rule
+        - "traefik.http.routers.engin1.entrypoints=web" # <== Defining the entrypoint for http, **ref: line 30
+        - "traefik.http.routers.engin1.middlewares=redirect@file" # <== This is a middleware to redirect to https
+        - "traefik.http.routers.engin1-secured.rule=PathPrefix(`/engin1`)" # <== Your Domain Name for the https rule 
+        - "traefik.http.routers.engin1-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
+        - "traefik.http.routers.engin1-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
