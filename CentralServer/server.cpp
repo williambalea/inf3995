@@ -2,8 +2,8 @@
 
 int main() {
     Address addr(Ipv4::any(), Port(2000));
-    Server server(addr);
-    server.init();
+    MySQL db;
+    Server server(addr, db);
     server.run();
     return 0;
 }
