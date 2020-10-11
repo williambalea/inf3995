@@ -33,20 +33,19 @@ class EnginSQL:
     def getStationCode(self, code):
         mycursor = self.connection.cursor()
         mycursor.execute("SELECT S.name, S.latitude, S.longitude FROM Stations S WHERE code='{}'".format(code))
-        row_headers=[x[0] for x in mycursor.description] #extract row headers
-        myresult = mycursor.fetchall()
+        return self.toJson(mycursor)
+
+
+    def getAllStations(self):
+        mycursor = self.connection.cursor()
+        mycursor.execute("SELECT * FROM Stations")
+        return self.toJson(mycursor)
+
+
+    def toJson(self, cursor):
+        row_headers=[x[0] for x in cursor.description] #extract row headers
+        myresult = cursor.fetchall()
         json_data=[]
         for result in myresult:
             json_data.append(dict(zip(row_headers,result)))
         return json.dumps(json_data)
-
-
-    # def getAllStations(self):
-    #     mycursor = self.connection.cursor()
-    #     mycursor.execute("SELECT * FROM Stations")
-    #     row_headers=[x[0] for x in mycursor.description] #extract row headers
-    #     myresult = mycursor.fetchall()
-    #     json_data=[]
-    #     for result in myresult:
-    #         json_data.append(dict(zip(row_headers,result)))
-    #     return json.dumps(json_data)
