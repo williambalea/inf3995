@@ -4,16 +4,26 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
-import android.view.MenuItem
+import android.view.View
+import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.view.menu.MenuView
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.station_items.*
 import kotlinx.android.synthetic.main.station_list_activity_main.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
-class ListStationActivity : AppCompatActivity(), StationAdapter.ClickedItem {
+class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { //StationAdapter.ClickedItem
+    private val TAG = "Stations List"
+    val ipAddress = "70.80.27.156"
+    val port = "2000"
 
     var itemListModal = arrayOf(
         Station(123, "Cote vertu Est", 11.244456F, 21.076599F),
@@ -27,133 +37,113 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickedItem {
         Station(239, "Centre ville", 19.374980F, 29.356466F),
         Station(120, "Avenue papineau", 20.3744180F, 30.986466F)
     )
-    var itemModalList = ArrayList<Station>()
+    var stationModalList = ArrayList<Station>()
     var stationAdapter: StationAdapter? = null
-  //  var popupMenu:PopupMenu? = null
+    private lateinit var dataButton: Button
+    private lateinit var coordinatesButton: Button
+    private lateinit var statisticsButton: Button
+    private lateinit var predictionButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.station_list_activity_main)
 
         for(item in itemListModal){
-            itemModalList.add(item)
+            stationModalList.add(item)
         }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
 
         stationAdapter = StationAdapter(this)
-        stationAdapter!!.setData(itemModalList)
+        stationAdapter!!.setData(stationModalList)
         recyclerView.adapter = stationAdapter
 
-       // popupMenu = PopupMenu.findViewById(R.id.buttonsOptions)
-    /*
-        val popupMenu = PopupMenu(this,findViewById(R.id.buttonsOptions) )
-        popupMenu.menuInflater.inflate(R.menu.popup_menu,popupMenu.menu)
-        popupMenu.setOnMenuItemClickListener {
-                item ->
-            when(item.itemId){
-                R.id.action_popup_details ->{
-                    val intent = Intent(this, DetailedStationActivity::class.java).putExtra("data",itemModal)
-                    startActivity(intent)
-                    true
-                }
-                R.id.action_popup_data ->{
-                    val intent = Intent(this, DataStationActivity::class.java).putExtra("data",itemModal)
-                    startActivity(intent)
-                    true
-                }
-                R.id.action_popup_statistics ->{
-                    val intent = Intent(this, StatisticsStationActivity::class.java).putExtra("data",itemModal)
-                    startActivity(intent)
-                    true
-                }
-                R.id.action_popup_predictions ->{
-                    val intent = Intent(this, PredictionsStationActivity::class.java).putExtra("data",itemModal)
-                    startActivity(intent)
-                    true
-                }
-                else -> false
-            }
-        }
-        //popupMenu.inflate(R.menu.popup_menu)
-        buttonsOptions.setOnClickListener{
-            popupMenu.show()
-        }
-    */
-
+        requestConnectionWithServer()
+        //requestToServer()
     }
 
-    override fun clickedItem(station: Station) {
+    /*
+    fun onClick(v: View?) {
+        val itemView : MenuView.ItemView?=null
+        dataButton = findViewById(R.id.data_button)
+        coordinatesButton = findViewById(R.id.coordinates_button)
+        statisticsButton = findViewById(R.id.statistics_button)
+        predictionButton = findViewById(R.id.prediction_button)
+
+        when(itemView){
+            coordinates_button ->{
+                Toast.makeText(this, "Coordinates Button clicked", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, DetailedStationActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            data_button ->{
+                Toast.makeText(this, "Data Button clicked", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, DataStationActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            statistics_button ->{
+                Toast.makeText(this, "Statistics Button clicked", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, StatisticsStationActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            prediction_button ->{
+                Toast.makeText(this, "Predictions Button clicked", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, PredictionsStationActivity::class.java)       //.putExtra("data",itemModal)
+                startActivity(intent)
+                true
+            }
+            else -> false
+
+        }
+
+    }
+    */
+
+    override fun clickedStation(station: Station) {
         var itemModal = station
+       // val itemView : MenuView.ItemView?=null
         Log.e("TAG","===> " + itemModal.name)
         var name = itemModal.name
         startActivity(Intent(this@ListStationActivity, DetailedStationActivity::class.java).putExtra("data", itemModal))
-
+        //startActivity(Intent(this@ListStationActivity, StatisticsStationActivity::class.java).putExtra("data", itemModal))
         /*
-        val popupMenu = PopupMenu(this,findViewById(R.id.buttonsOptions) )
-        popupMenu.menuInflater.inflate(R.menu.popup_menu,popupMenu.menu)
-      //  menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
-
-        when(popupMenu.){
-            R.id.action_popup_details ->{
+        when(itemView){
+            coordinates_button ->{
+                Toast.makeText(this, "Coordinates Button clicked", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, DetailedStationActivity::class.java).putExtra("data", itemModal)
                 startActivity(intent)
                 true
             }
-            R.id.action_popup_data ->{
-                val intent = Intent(this, DataStationActivity::class.java).putExtra("data",itemModal)
+            data_button ->{
+                Toast.makeText(this, "Data Button clicked", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, DataStationActivity::class.java).putExtra("data", itemModal)
                 startActivity(intent)
                 true
             }
-            R.id.action_popup_statistics ->{
-                val intent = Intent(this, StatisticsStationActivity::class.java).putExtra("data",itemModal)
+            statistics_button ->{
+                Toast.makeText(this, "Statistics Button clicked", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, StatisticsStationActivity::class.java).putExtra("data", itemModal)
                 startActivity(intent)
                 true
             }
-            R.id.action_popup_predictions ->{
-                val intent = Intent(this, PredictionsStationActivity::class.java).putExtra("data",itemModal)
+            prediction_button ->{
+                Toast.makeText(this, "Predictions Button clicked", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, PredictionsStationActivity::class.java).putExtra("data", itemModal)       //.putExtra("data",itemModal)
                 startActivity(intent)
                 true
             }
-        */
-    }
-
-
-    /*
-    override fun clickOptionsItems(station: Station) {
-        var itemModal = station
-        val popupMenu = PopupMenu(this, buttonsOptions)
-        popupMenu.setOnMenuItemClickListener {
-                item ->
-            when(item.itemId){
-                R.id.action_popup_details ->{
-                    val intent = Intent(this, DetailedStationActivity::class.java).putExtra("data",itemModal)
-                    startActivity(intent)
-                    true
-                }
-                R.id.action_popup_data ->{
-                    val intent = Intent(this, DataStationActivity::class.java).putExtra("data",itemModal)
-                    startActivity(intent)
-                    true
-                }
-                R.id.action_popup_statistics ->{
-                    val intent = Intent(this, StatisticsStationActivity::class.java).putExtra("data",itemModal)
-                    startActivity(intent)
-                    true
-                }
-                R.id.action_popup_predictions ->{
-                    val intent = Intent(this, PredictionsStationActivity::class.java).putExtra("data",itemModal)
-                    startActivity(intent)
-                    true
-                }
-                else -> false
-            }
+            else -> false
         }
-        popupMenu.inflate(R.menu.popup_menu)
-        popupMenu.show()
+        */
+
     }
-*/
+
+
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         var menuItem = menu!!.findItem(R.id.searchView)
@@ -178,6 +168,48 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickedItem {
         return true
     }
 
+    private fun requestToServer () {
 
+        // get Server Ip adress
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://$ipAddress:$port/")
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+
+        val service: WebBixiService = retrofit.create(WebBixiService::class.java)
+        val call: Call<List<Station>> = service.getAllStationCode()
+
+        call.enqueue(object : Callback<List<Station>> {
+            override fun onResponse(
+                call: Call<List<Station>>?,
+                response: Response<List<Station>>?
+            ) {
+                Log.i(TAG, "Réponse du Serveur: ${response?.body()}")
+            }
+            override fun onFailure(call: Call<List<Station>>?, t: Throwable) {
+            }
+        })
+    }
+
+    private fun requestConnectionWithServer() {
+
+        // get Server Ip adress
+        val retrofit2 = Retrofit.Builder()
+            .baseUrl("http://$ipAddress:$port/")
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+
+        val service2: WebBixiService = retrofit2.create(WebBixiService::class.java)
+        val call2: Call<String> = service2.getHelloWorld()
+
+        call2.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>?, response: Response<String>?) {
+                Log.i(TAG, "Réponse du Serveur: ${response?.body()}")
+            }
+
+            override fun onFailure(call: Call<String>?, t: Throwable) {
+            }
+        })
+    }
 
 }

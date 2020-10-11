@@ -5,39 +5,54 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.Toast
-import androidx.appcompat.widget.PopupMenu
+import android.widget.*
+import androidx.appcompat.view.menu.MenuView
 import androidx.core.content.ContextCompat.startActivity
-import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.station_items.view.*
 import kotlin.collections.ArrayList
 
-class StationAdapter(var clickedItem: ClickedItem):RecyclerView.Adapter<StationAdapter.StationAdapterViewHolder>(),
+class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Adapter<StationAdapter.StationAdapterViewHolder>(), //var clickedItem: ClickedItem
     Filterable {
 
+
     lateinit var stationList: ArrayList<Station>
-    lateinit var stationListFilter: ArrayList<Station>
+    var stationListFilter: ArrayList<Station>? = null
+    lateinit var context: Context
 
 
     fun setData(stationList:ArrayList<Station>){
         this.stationList = stationList
         this.stationListFilter = stationList
+        this.context = context
         notifyDataSetChanged()
     }
 
-    class StationAdapterViewHolder(itemView:View):RecyclerView.ViewHolder(itemView),View.OnClickListener {
+     class StationAdapterViewHolder(itemView:View):RecyclerView.ViewHolder(itemView) {
+
+        /* var imageView:ImageView
+            var name:TextView
+            var code:TextView
+            var imageButton:ImageButton
+            init {
+                imageView = itemView.findViewById(R.id.imageView)
+                name=itemView.findViewById(R.id.name)
+                code=itemView.findViewById(R.id.code)
+                imageButton=itemView.findViewById(R.id.buttonsOptions)
+            }
+        */
+
         var imageView = itemView.imageView
         var name = itemView.name
         var code = itemView.code
-        var imageButton = itemView.buttonsOptions
-        override fun onClick(v: View?) {
-            TODO("Not yet implemented")
-        }
+         //var imageButton = itemView.buttonsOptions
 
-    }
+         var dataButton = itemView.data_button
+         var statisticButton = itemView.statistics_button
+         var predictionButton = itemView.prediction_button
+         var coordinatesButton = itemView.coordinates_button
+
+     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StationAdapterViewHolder {
         return StationAdapterViewHolder(
@@ -47,74 +62,52 @@ class StationAdapter(var clickedItem: ClickedItem):RecyclerView.Adapter<StationA
 
     override fun onBindViewHolder(holder: StationAdapterViewHolder, position: Int) {
         var station = stationList[position]
-
         holder.name.text = station.name
         holder.code.text = station.code.toString()
         //holder.latitude.text = itemModal.latitude
         //holder.longitude.text = itemModal.longitude
-        holder.itemView.setOnClickListener{
-            clickedItem.clickedItem(station)
+
+
+        holder.coordinatesButton.setOnClickListener{
+           // Toast.makeText(this, "Coordinates Button clicked", Toast.LENGTH_SHORT).show()
+           val intent = Intent(context, DetailedStationActivity::class.java).putExtra("data", station)
+            //startActivity(Intent(this, DetailedStationActivity::class.java).putExtra("data", station))
+            context.startActivity(intent)
         }
 
-    /*
-        holder.imageButton.setOnClickListener{
-            val popupMenu = PopupMenu(context, holder.imageButton,GravityCompat.START )
-            popupMenu.menuInflater.inflate(R.menu.popup_menu,popupMenu.menu)
-            popupMenu.setOnMenuItemClickListener {item ->
-                when(item.itemId){
-                    R.id.action_popup_details ->{
-                        Toast.makeText(context,context.getString(R.string.station_coordinates), Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    R.id.action_popup_data ->{
-                        Toast.makeText(context,context.getString(R.string.station_data), Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    R.id.action_popup_statistics ->{
-                        Toast.makeText(context,context.getString(R.string.station_statistics), Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    R.id.action_popup_predictions ->{
-                        Toast.makeText(context,context.getString(R.string.station_predictions), Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    else -> false
-                }
-            }
-            popupMenu.show()
+        holder.statisticButton.setOnClickListener{
+           // Toast.makeText(this, "Statistics Button clicked", Toast.LENGTH_SHORT).show()
+            val intent = Intent(context, StatisticsStationActivity::class.java).putExtra("data", station)
+            context.startActivity(intent)
         }
-   */
-        /*when(popupMenu.){
-          R.id.action_popup_details ->{
-              val intent = Intent(this, DetailedStationActivity::class.java).putExtra("data", itemModal)
-              startActivity(intent)
-              true
-          }
-          R.id.action_popup_data ->{
-              val intent = Intent(this, DataStationActivity::class.java).putExtra("data",itemModal)
-              startActivity(intent)
-              true
-          }
-          R.id.action_popup_statistics ->{
-              val intent = Intent(this, StatisticsStationActivity::class.java).putExtra("data",itemModal)
-              startActivity(intent)
-              true
-          }
-          R.id.action_popup_predictions ->{
-              val intent = Intent(this, PredictionsStationActivity::class.java).putExtra("data",itemModal)
-              startActivity(intent)
-              true
-          }
-      */
+
+        holder.dataButton.setOnClickListener{
+          //  Toast.makeText(this, "Data Button clicked", Toast.LENGTH_SHORT).show()
+            val intent = Intent(context, DataStationActivity::class.java).putExtra("data", station)
+            context.startActivity(intent)
+        }
+
+        holder.predictionButton.setOnClickListener{
+           // Toast.makeText(this, "Prediction Button clicked", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this.context, PredictionsStationActivity::class.java).putExtra("data", station)
+            context.startActivity(intent)
+        }
+
+        holder.itemView.setOnClickListener {
+               clickedStationListener.clickedStation(station)
+        }
+
     }
+
 
     override fun getItemCount(): Int {
         return stationList.size
     }
 
-    interface ClickedItem {
-       fun clickedItem(station: Station)
-        //fun clickOptionsItems(station:Station)
+    interface ClickListener {
+       fun clickedStation(station: Station)
+       //fun onClick(view: View)
+
     }
 
     override fun getFilter(): Filter {
@@ -122,14 +115,14 @@ class StationAdapter(var clickedItem: ClickedItem):RecyclerView.Adapter<StationA
             override fun performFiltering(charsequence: CharSequence?): FilterResults {
                 val filtersResults = FilterResults()
                 if (charsequence == null || charsequence.length < 0) {
-                    filtersResults.count = stationListFilter.size
+                    filtersResults.count = stationListFilter!!.size
                     filtersResults.values = stationListFilter
                 } else {
                     var searchChr = charsequence.toString().toLowerCase()
 
                     var itemModalTemp = ArrayList<Station>()
 
-                    for (item in stationListFilter) {
+                    for (item in stationListFilter!!) {
                         if ( item.name.toLowerCase().contains(searchChr) || item.name.toLowerCase().startsWith(searchChr) || item.code.toString().contains(searchChr)) {
                             itemModalTemp.add(item)
                         }

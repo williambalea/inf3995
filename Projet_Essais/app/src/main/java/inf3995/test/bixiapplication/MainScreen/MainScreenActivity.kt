@@ -29,8 +29,6 @@ class MainScreenActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-
-
     }
 
 

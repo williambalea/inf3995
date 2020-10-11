@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="4dp"
@@ -22,7 +23,7 @@
         android:src="@drawable/ic_place_black_48dp" />
 
     <LinearLayout
-        android:layout_width="605dp"
+        android:layout_width="383dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -50,12 +51,48 @@
 
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/buttonsOptions"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"
-        android:src="@drawable/more_vert_black_48dp" />
+        android:layout_height="120dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/coordinates_button"
+            android:layout_width="105dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="COORDINATES"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/data_button"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="DATA"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:text="DATA" />
+
+        <Button
+            android:id="@+id/statistics_button"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="STATISTICS"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/prediction_button"
+            android:layout_width="105dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="PREDICTIONS"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </LinearLayout>
 
