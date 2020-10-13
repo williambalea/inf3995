@@ -30,6 +30,15 @@ class EnginSQL:
             print(f"The error '{e}' occurred")
         return self.connection
 
+    def toJson(self, cursor):
+        row_headers=[x[0] for x in cursor.description] #extract row headers
+        myresult = cursor.fetchall()
+        json_data=[]
+        for result in myresult:
+            json_data.append(dict(zip(row_headers,result)))
+        return json.dumps(json_data)
+
+        
     def getStationCode(self, code):
         mycursor = self.connection.cursor()
         mycursor.execute("SELECT S.name, S.latitude, S.longitude FROM Stations S WHERE code='{}'".format(code))
@@ -41,11 +50,3 @@ class EnginSQL:
         mycursor.execute("SELECT * FROM Stations")
         return self.toJson(mycursor)
 
-
-    def toJson(self, cursor):
-        row_headers=[x[0] for x in cursor.description] #extract row headers
-        myresult = cursor.fetchall()
-        json_data=[]
-        for result in myresult:
-            json_data.append(dict(zip(row_headers,result)))
-        return json.dumps(json_data)
