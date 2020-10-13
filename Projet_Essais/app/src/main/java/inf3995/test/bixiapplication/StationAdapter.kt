@@ -1,13 +1,10 @@
 package inf3995.test.bixiapplication
 
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.view.menu.MenuView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.station_items.view.*
 import kotlinx.android.synthetic.main.station_items.view.code
@@ -22,13 +19,12 @@ class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Ada
 
     lateinit var stationList: ArrayList<Station>
     var stationListFilter: ArrayList<Station>? = null
-    lateinit var context: Context
+    //lateinit var context: Context
 
 
     fun setData(stationList:ArrayList<Station>, context: Context){
         this.stationList = stationList
         this.stationListFilter = stationList
-        this.context = context
         notifyDataSetChanged()
     }
 
@@ -92,21 +88,21 @@ class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Ada
 
         /*holder.coordinatesButton.setOnClickListener{
            // Toast.makeText(this, "Coordinates Button clicked", Toast.LENGTH_SHORT).show()
-           val intent = Intent(context, DetailedStationActivity::class.java).putExtra("data", station)
+           val intent = Intent(holder.coordinatesButton.context, StationCoordinatesActivity::class.java).putExtra("data", station)
             //startActivity(Intent(this, DetailedStationActivity::class.java).putExtra("data", station))
-            context.startActivity(intent)
+            holder.coordinatesButton.context.startActivity(intent)
         }
 
         holder.statisticButton.setOnClickListener{
            // Toast.makeText(this, "Statistics Button clicked", Toast.LENGTH_SHORT).show()
-            val intent = Intent(context, StatisticsStationActivity::class.java).putExtra("data", station)
-            context.startActivity(intent)
+            val intent = Intent(holder.statisticButton.context, StationStatisticsActivity::class.java).putExtra("data", station)
+            holder.statisticButton.context.startActivity(intent)
         }
 
         holder.dataButton.setOnClickListener{
           //  Toast.makeText(this, "Data Button clicked", Toast.LENGTH_SHORT).show()
-            val intent = Intent(context, DataStationActivity::class.java).putExtra("data", station)
-            context.startActivity(intent)
+            val intent = Intent(holder.dataButton.context, StationsDataActivity::class.java).putExtra("data", station)
+            holder.dataButton.context.startActivity(intent)
         }
 
         holder.predictionButton.setOnClickListener{
@@ -115,9 +111,9 @@ class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Ada
             context.startActivity(intent)
         }*/
 
-        holder.itemView.setOnClickListener {
-               clickedStationListener.clickedStation(station)
-        }
+      //  holder.itemView.setOnClickListener {
+       //        clickedStationListener.clickedStation(station)
+       // }
 
     }
 

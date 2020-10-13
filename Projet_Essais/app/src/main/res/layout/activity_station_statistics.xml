@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:background="@drawable/background_bg"
     android:orientation="vertical" android:weightSum="9"
-    tools:context=".DetailedStationActivity"
+    tools:context=".StationStatisticsActivity"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://schemas.android.com/tools ">
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="8dp"
+    <LinearLayout android:layout_width="match_parent" android:layout_height="6dp"
         android:layout_weight="1" app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintTop_toBottomOf="parent">
 
@@ -16,7 +16,7 @@
             android:layout_width="match_parent" android:layout_height="match_parent">
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_gravity="center" android:text="Detailed Data Station"
+                android:layout_gravity="center" android:text="STATION STATISTICS"
                 android:textColor="@color/colorWhite" android:textSize="40sp"
                 android:textStyle="bold" />
         </androidx.appcompat.widget.Toolbar>

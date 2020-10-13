@@ -3,9 +3,9 @@ package inf3995.test.bixiapplication
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class StatisticsStationActivity : AppCompatActivity() {
+class GlobalDataActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_statistics_station)
+        setContentView(R.layout.activity_global_data)
     }
 }

@@ -4,15 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
-import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.menu.MenuView
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.station_items.*
 import kotlinx.android.synthetic.main.station_list_activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,11 +26,19 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
         Station(375, "Montreal Nord", 13.365400F, 23.000466F),
         Station(458, "Polytechnique", 14.321400F, 24.348466F),
         Station(589, "Montréal", 15.374980F, 25.356466F),
-        Station(600, "Boulevard Saint Laurent", 16.3744180F, 26.986466F),
+        Station(600, "Saint Laurent", 16.3744180F, 26.986466F),
         Station(987, "Saint michel", 17.365400F, 27.000466F),
         Station(876, "Cote des neiges", 18.321400F, 28.348466F),
-        Station(239, "Centre ville", 19.374980F, 29.356466F),
+        Station(239, "Centre ville", 49.374980F, 29.356466F),
+        Station(376, "Montreal Ouest", 53.365400F, 23.000466F),
+        Station(444, "ETS", 14.321400F, 24.348466F),
+        Station(580, "Saint_constant", 35.374980F, 25.356466F),
+        Station(600, "Bonaventure", 16.3744180F, 26.986466F),
+        Station(917, "Boulevard Lavesque", 47.365400F, 27.000466F),
+        Station(874, "Cote sainte catherine", 18.321400F, 28.348466F),
+        Station(289, "Cote de Liesse", 19.374980F, 49.356466F),
         Station(120, "Avenue papineau", 20.3744180F, 30.986466F)
+
     )
     var stationModalList = ArrayList<Station>()
     var stationAdapter: StationAdapter? = null
@@ -108,7 +111,7 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
        // val itemView : MenuView.ItemView?=null
         Log.e("TAG","===> " + itemModal.name)
         var name = itemModal.name
-        startActivity(Intent(this@ListStationActivity, DetailedStationActivity::class.java).putExtra("data", itemModal))
+        //startActivity(Intent(this@ListStationActivity, StationCoordinatesActivity::class.java).putExtra("data", itemModal))
         //startActivity(Intent(this@ListStationActivity, StatisticsStationActivity::class.java).putExtra("data", itemModal))
         /*
         when(itemView){

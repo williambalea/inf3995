@@ -2,8 +2,10 @@
 <resources>
     <color name="colorPrimary">#3d95d0</color>
     <color name="colorPrimaryDark">#489855</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#EB483C</color>
+    <color name="colorBIXI">#EB483C</color>
     <color name="colorWhite">#fff</color>
+    <color name="colorbutton">#AA00FF</color>
 
     <color name="colorPrimary1">#6200EE</color>
     <color name="colorPrimaryDark1">#3700B3</color>
@@ -12,7 +14,7 @@
 
     <!--text color -->
     <color name = "textColor">#273d52</color>
-    <color name = "headerColor">#145795</color>
+    <color name = "headerColor">#6200EE</color>
 
     <!--gradient color -->
     <color name = "startColor">#006797</color>

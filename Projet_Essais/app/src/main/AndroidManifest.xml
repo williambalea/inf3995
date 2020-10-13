@@ -11,11 +11,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PredictionsStationActivity"></activity>
-        <activity android:name=".StatisticsStationActivity" />
-        <activity android:name=".DataStationActivity" />
+        <activity android:name=".StationsDataActivity"></activity>
+        <activity android:name=".StationPredictionsActivity" />
+        <activity android:name=".StationStatisticsActivity" />
+        <activity android:name=".GlobalPredictionsActivity" />
+        <activity android:name=".GlobalStatisticsActivity" />
+        <activity android:name=".GlobalDataActivity" />
         <activity android:name=".ListStationActivity" />
-        <activity android:name=".DetailedStationActivity" />
+        <activity android:name=".StationCoordinatesActivity" />
         <activity
             android:name=".MainScreen.MainScreenActivity"
             android:windowSoftInputMode="adjustPan">

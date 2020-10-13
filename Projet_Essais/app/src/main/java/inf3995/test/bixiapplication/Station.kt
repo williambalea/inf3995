@@ -8,4 +8,4 @@ data class Station(
     var latitude: Float,
     var longitude: Float,
 
-): Serializable {}
+    ): Serializable {}

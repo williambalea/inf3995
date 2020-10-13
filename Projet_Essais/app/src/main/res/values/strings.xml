@@ -12,9 +12,18 @@
     <string name="global_usage_statistics_of_bixi_stations">GLOBAL USAGE STATISTICS OF BIXI STATIONS</string>
     <string name="global_data_of_bixi_stations">GLOBAL DATA OF BIXI STATIONS</string>
     <string name="bixi_over_to_you">BIXI OVER TO YOU</string>
-    <string name="bixi_stations">BIXI STATIONS</string>
     <string name="station_coordinates">station_coordinates</string>
     <string name="station_data">station_data</string>
     <string name="station_statistics">station_statistics</string>
     <string name="station_predictions">station_predictions</string>
+    <string name="all_about_bixi_stations">ALL ABOUT BIXI STATIONS</string>
+    <string name="list_of_stations">LIST OF STATIONS</string>
+    <string name="global_usage_data">GLOBAL USAGE DATA</string>
+    <string name="global_usage_statistics">GLOBAL USAGE STATISTICS</string>
+    <string name="global_usage_predictions">GLOBAL USAGE PREDICTIONS</string>
+    <string name="bixi_stations">BIXI STATIONS</string>
+    <string name="coordinates">COORDINATES</string>
+    <string name="data">DATA</string>
+    <string name="statistics">STATISTICS</string>
+    <string name="predictions">PREDICTIONS</string>
 </resources>
