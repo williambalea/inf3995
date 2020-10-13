@@ -10,6 +10,10 @@ import androidx.appcompat.view.menu.MenuView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.station_items.view.*
+import kotlinx.android.synthetic.main.station_items.view.code
+import kotlinx.android.synthetic.main.station_items.view.imageView
+import kotlinx.android.synthetic.main.station_items.view.name
+import kotlinx.android.synthetic.main.station_items2.view.*
 import kotlin.collections.ArrayList
 
 class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Adapter<StationAdapter.StationAdapterViewHolder>(), //var clickedItem: ClickedItem
@@ -21,7 +25,7 @@ class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Ada
     lateinit var context: Context
 
 
-    fun setData(stationList:ArrayList<Station>){
+    fun setData(stationList:ArrayList<Station>, context: Context){
         this.stationList = stationList
         this.stationListFilter = stationList
         this.context = context
@@ -51,12 +55,12 @@ class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Ada
          var statisticButton = itemView.statistics_button
          var predictionButton = itemView.prediction_button
          var coordinatesButton = itemView.coordinates_button
-
+         var dropDownMenu = itemView.dropDownMenu
      }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StationAdapterViewHolder {
         return StationAdapterViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.station_items,parent,false)
+            LayoutInflater.from(parent.context).inflate(R.layout.station_items2,parent,false)
         )
     }
 
@@ -67,8 +71,26 @@ class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Ada
         //holder.latitude.text = itemModal.latitude
         //holder.longitude.text = itemModal.longitude
 
+        holder.dropDownMenu.setOnClickListener{
+            val popupMenu = PopupMenu(this.context,holder.dropDownMenu)
+            popupMenu.menuInflater.inflate(R.menu.popup_menu,popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
+                when(item.itemId) {
+                    R.id.action_popup_details ->
+                        context.startActivity(Intent(context, DetailedStationActivity::class.java).putExtra("data", station))
+                    R.id.action_popup_data ->
+                        context.startActivity(Intent(context, DataStationActivity::class.java).putExtra("data", station))
+                    R.id.action_popup_statistics ->
+                        context.startActivity(Intent(context, StatisticsStationActivity::class.java).putExtra("data", station))
+                    R.id.action_popup_predictions ->
+                        context.startActivity(Intent(context, PredictionsStationActivity::class.java).putExtra("data", station))
+                }
+                true
+            })
+            popupMenu.show()
+        }
 
-        holder.coordinatesButton.setOnClickListener{
+        /*holder.coordinatesButton.setOnClickListener{
            // Toast.makeText(this, "Coordinates Button clicked", Toast.LENGTH_SHORT).show()
            val intent = Intent(context, DetailedStationActivity::class.java).putExtra("data", station)
             //startActivity(Intent(this, DetailedStationActivity::class.java).putExtra("data", station))
@@ -91,7 +113,7 @@ class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Ada
            // Toast.makeText(this, "Prediction Button clicked", Toast.LENGTH_SHORT).show()
             val intent = Intent(this.context, PredictionsStationActivity::class.java).putExtra("data", station)
             context.startActivity(intent)
-        }
+        }*/
 
         holder.itemView.setOnClickListener {
                clickedStationListener.clickedStation(station)

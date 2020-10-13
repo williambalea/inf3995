@@ -56,7 +56,7 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
         recyclerView.setHasFixedSize(true)
 
         stationAdapter = StationAdapter(this)
-        stationAdapter!!.setData(stationModalList)
+        stationAdapter!!.setData(stationModalList, this)
         recyclerView.adapter = stationAdapter
 
         requestConnectionWithServer()
