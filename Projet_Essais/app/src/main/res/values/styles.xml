@@ -1,7 +1,6 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 <!-- Base application theme. -->
     <!--style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar" -->>
-    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
     <!-- Customize your theme here. -->
     <item name="colorPrimary">@color/colorPrimary</item>
@@ -33,6 +32,20 @@
 <style name ="MenuItems" parent = "AppTheme">
     <item name="android:textSize">20sp</item>
     <item name="android:layout_height">50dp</item>
+
 </style>
+
+
+    <!-- to customize the popup menu in station_list_activity  -->
+    <style name="BasePopupMenu" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_height">100dp</item>
+        <item name="android:textColor">@color/colortextdata</item>
+        <item name="android:textSize">40sp</item>
+        <item name="android:popupBackground">#888888</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">sans-serif-light</item>
+    </style>
 
 </resources>

@@ -1,16 +1,19 @@
 package inf3995.test.bixiapplication
 
+import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.station_items.*
+import kotlinx.android.synthetic.main.station_items_with_button.view.*
+import kotlinx.android.synthetic.main.station_items_with_button.view.code
+import kotlinx.android.synthetic.main.station_items_with_button.view.imageView
+import kotlinx.android.synthetic.main.station_items_with_button.view.name
 import kotlinx.android.synthetic.main.station_items.view.*
-import kotlinx.android.synthetic.main.station_items.view.code
-import kotlinx.android.synthetic.main.station_items.view.imageView
-import kotlinx.android.synthetic.main.station_items.view.name
-import kotlinx.android.synthetic.main.station_items2.view.*
 import kotlin.collections.ArrayList
 
 class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Adapter<StationAdapter.StationAdapterViewHolder>(), //var clickedItem: ClickedItem
@@ -19,28 +22,19 @@ class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Ada
 
     lateinit var stationList: ArrayList<Station>
     var stationListFilter: ArrayList<Station>? = null
-    //lateinit var context: Context
+    lateinit var context: Context
 
 
     fun setData(stationList:ArrayList<Station>, context: Context){
         this.stationList = stationList
         this.stationListFilter = stationList
+        this.context = context
         notifyDataSetChanged()
     }
 
      class StationAdapterViewHolder(itemView:View):RecyclerView.ViewHolder(itemView) {
 
-        /* var imageView:ImageView
-            var name:TextView
-            var code:TextView
-            var imageButton:ImageButton
-            init {
-                imageView = itemView.findViewById(R.id.imageView)
-                name=itemView.findViewById(R.id.name)
-                code=itemView.findViewById(R.id.code)
-                imageButton=itemView.findViewById(R.id.buttonsOptions)
-            }
-        */
+
 
         var imageView = itemView.imageView
         var name = itemView.name
@@ -56,7 +50,7 @@ class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Ada
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StationAdapterViewHolder {
         return StationAdapterViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.station_items2,parent,false)
+            LayoutInflater.from(parent.context).inflate(R.layout.station_items,parent,false)
         )
     }
 
@@ -68,52 +62,26 @@ class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Ada
         //holder.longitude.text = itemModal.longitude
 
         holder.dropDownMenu.setOnClickListener{
-            val popupMenu = PopupMenu(this.context,holder.dropDownMenu)
+            //var popupMenu = PopupMenu(this.context,holder.dropDownMenu)
+            val wrapper = ContextThemeWrapper(this.context, R.style.BasePopupMenu)
+             val popupMenu = android.widget.PopupMenu(wrapper, holder.dropDownMenu)
+
             popupMenu.menuInflater.inflate(R.menu.popup_menu,popupMenu.menu)
             popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
                 when(item.itemId) {
                     R.id.action_popup_details ->
-                        context.startActivity(Intent(context, DetailedStationActivity::class.java).putExtra("data", station))
+                        context.startActivity(Intent(context, StationCoordinatesActivity::class.java).putExtra("data", station))
                     R.id.action_popup_data ->
-                        context.startActivity(Intent(context, DataStationActivity::class.java).putExtra("data", station))
+                        context.startActivity(Intent(context, StationsDataActivity::class.java).putExtra("data", station))
                     R.id.action_popup_statistics ->
-                        context.startActivity(Intent(context, StatisticsStationActivity::class.java).putExtra("data", station))
+                        context.startActivity(Intent(context, StationStatisticsActivity::class.java).putExtra("data", station))
                     R.id.action_popup_predictions ->
-                        context.startActivity(Intent(context, PredictionsStationActivity::class.java).putExtra("data", station))
+                        context.startActivity(Intent(context, StationPredictionsActivity::class.java).putExtra("data", station))
                 }
                 true
             })
             popupMenu.show()
         }
-
-        /*holder.coordinatesButton.setOnClickListener{
-           // Toast.makeText(this, "Coordinates Button clicked", Toast.LENGTH_SHORT).show()
-           val intent = Intent(holder.coordinatesButton.context, StationCoordinatesActivity::class.java).putExtra("data", station)
-            //startActivity(Intent(this, DetailedStationActivity::class.java).putExtra("data", station))
-            holder.coordinatesButton.context.startActivity(intent)
-        }
-
-        holder.statisticButton.setOnClickListener{
-           // Toast.makeText(this, "Statistics Button clicked", Toast.LENGTH_SHORT).show()
-            val intent = Intent(holder.statisticButton.context, StationStatisticsActivity::class.java).putExtra("data", station)
-            holder.statisticButton.context.startActivity(intent)
-        }
-
-        holder.dataButton.setOnClickListener{
-          //  Toast.makeText(this, "Data Button clicked", Toast.LENGTH_SHORT).show()
-            val intent = Intent(holder.dataButton.context, StationsDataActivity::class.java).putExtra("data", station)
-            holder.dataButton.context.startActivity(intent)
-        }
-
-        holder.predictionButton.setOnClickListener{
-           // Toast.makeText(this, "Prediction Button clicked", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this.context, PredictionsStationActivity::class.java).putExtra("data", station)
-            context.startActivity(intent)
-        }*/
-
-      //  holder.itemView.setOnClickListener {
-       //        clickedStationListener.clickedStation(station)
-       // }
 
     }
 
@@ -124,7 +92,6 @@ class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Ada
 
     interface ClickListener {
        fun clickedStation(station: Station)
-       //fun onClick(view: View)
 
     }
 

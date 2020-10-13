@@ -11,6 +11,9 @@
     <color name="colorPrimaryDark1">#3700B3</color>
     <color name="colorAccent1">#03DAC5</color>
     <color name="colorWhite1">#03DAC5</color>
+    <color name="colortextdata">#130877</color>
+    <color name="colortextlabel">#B90C0C0C</color>
+
 
     <!--text color -->
     <color name = "textColor">#273d52</color>

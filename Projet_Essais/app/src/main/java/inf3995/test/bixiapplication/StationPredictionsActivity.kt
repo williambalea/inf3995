@@ -14,8 +14,7 @@ class StationPredictionsActivity : AppCompatActivity() {
         station = intent.getSerializableExtra("data") as Station
         Station_code.text = station!!.code.toString()
         Station_name.text = station!!.name
-        Station_latitude.text = station!!.latitude.toString()
-        Station_longitude.text = station!!.longitude.toString()
+
 
     }
 }

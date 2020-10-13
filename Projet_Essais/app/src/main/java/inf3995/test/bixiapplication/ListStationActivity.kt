@@ -6,8 +6,11 @@ import android.util.Log
 import android.view.Menu
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.station_items.*
 import kotlinx.android.synthetic.main.station_list_activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -50,6 +53,7 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.station_list_activity_main)
+
 
         for(item in itemListModal){
             stationModalList.add(item)
