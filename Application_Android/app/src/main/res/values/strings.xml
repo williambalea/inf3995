@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">ApplicationAndroid</string>
     <string name="code">Code</string>
     <string name="name">Name</string>
     <string name="station_details">Station details</string>
@@ -28,4 +27,22 @@
     <string name="predictions">PREDICTIONS</string>
     <string name="station_code_label">Station Code :</string>
     <string name="station_coordinates_title">STATION COORDINATES</string>
+    <string name="app_name">BixiApplication</string>
+    <string name="enter_your_ip_address">Enter the server ip address</string>
+    <string name="cancel">CANCEL</string>
+    <string name="ok">OK</string>
+    <string name="ip_address">ip address</string>
+    <string name="welcome_to_bixi">Welcome to Bixi!</string>
+    <string name="confirm_server_address">Confirm server address</string>
+    <string name="port">port</string>
+    <string name="survey">Survey</string>
+    <string name="e_mail">E-mail</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="age">Age</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="are_you_interested_by_bixi">Are you interested by Bixi?</string>
+    <string name="send">Send</string>
+    <string name="skip">Skip</string>
 </resources>

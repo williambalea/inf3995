@@ -22,12 +22,18 @@
         <activity
             android:name="inf3995.bixiapplication.MainScreen.MainScreenActivity"
             android:windowSoftInputMode="adjustPan">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+
+        <activity android:name=".SurveyActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--<activity android:name=".SurveyActivity" >
+        </activity>-->
     </application>
 
 </manifest>

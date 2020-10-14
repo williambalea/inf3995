@@ -8,8 +8,8 @@ android {
     buildToolsVersion "30.0.1"
 
     defaultConfig {
-        applicationId "inf3995.test.bixiapplication"
-        minSdkVersion 15
+        applicationId "inf3995.bixiapplication"
+        minSdkVersion 16
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -47,6 +47,9 @@ dependencies {
     // For control over item selection of both touch and mouse driven selection
     implementation "androidx.cardview:cardview:1.0.0"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'com.afollestad:vvalidator:0.2.2'
+
 
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
