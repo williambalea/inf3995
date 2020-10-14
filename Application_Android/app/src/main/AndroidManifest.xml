@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="inf3995.bixiapplication">
+    package="inf3995.test.bixiapplication">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,10 +10,18 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".DetailsStationActivity"></activity>
-        <activity android:name=".MainActivity">
+        android:theme="@style/AppTheme">
+        <activity android:name="inf3995.bixiapplication.StationsDataActivity"></activity>
+        <activity android:name="inf3995.bixiapplication.StationPredictionsActivity" />
+        <activity android:name="inf3995.bixiapplication.StationStatisticsActivity" />
+        <activity android:name="inf3995.bixiapplication.GlobalPredictionsActivity" />
+        <activity android:name="inf3995.bixiapplication.GlobalStatisticsActivity" />
+        <activity android:name="inf3995.bixiapplication.GlobalDataActivity" />
+        <activity android:name="inf3995.bixiapplication.ListStationActivity" />
+        <activity android:name="inf3995.bixiapplication.StationCoordinatesActivity" />
+        <activity
+            android:name="inf3995.bixiapplication.MainScreen.MainScreenActivity"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
