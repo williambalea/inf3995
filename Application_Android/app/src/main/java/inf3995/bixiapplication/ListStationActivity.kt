@@ -8,8 +8,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.station_list_activity_main.*
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -65,8 +69,8 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
         stationAdapter!!.setData(stationModalList, this)
         recyclerView.adapter = stationAdapter
 
-        requestConnectionWithServer(ipAddress, port)
-        //requestToServer()
+        requestConnectionWithServer(IpAddressDialog.ipAddressInput, "2000")
+        requestToServer(IpAddressDialog.ipAddressInput, "2000")
     }
 
 
@@ -107,6 +111,7 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
     }
 
     private fun requestToServer (ipAddress:String, port:String) {
+    var reponse_serveur:JsonObject
 
         // get Server Ip adress
         val retrofit = Retrofit.Builder()
@@ -123,11 +128,40 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
                 response: Response<String>?
             ) {
                 Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
+
+                val mareponse = response
+              //  reponse_serveur = Json.decodeFromString<Station>(mareponse)
             }
             override fun onFailure(call: Call<String>?, t: Throwable) {
             }
         })
     }
+    private fun requestToServer1 (ipAddress:String, port:String) {
+
+        // get Server Ip adress
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://$ipAddress:$port/")
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+
+        val service: WebBixiService = retrofit.create(WebBixiService::class.java)
+        val call: Call<String> = service.getAllStationCode()
+
+        call.enqueue(object : Callback<String> {
+            override fun onResponse(
+                call: Call<String>?,
+                response: Response<String>?
+            ) {
+                Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
+
+                val mareponse = response
+                //  reponse_serveur = Json.decodeFromString<Station>(mareponse)
+            }
+            override fun onFailure(call: Call<String>?, t: Throwable) {
+            }
+        })
+    }
+
 
     private fun requestConnectionWithServer(ipAddresss:String, ports:String) {
 
@@ -138,13 +172,13 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
             .build()
 
         val service2: WebBixiService = retrofit2.create(WebBixiService::class.java)
-        val call2: Call<String> = service2.getHelloWorld(ipAddresss)
+        val call2: Call<String> = service2.getHelloWorld()
 
         call2.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
                 Log.i(TAG, "Réponse 2 du Serveur: ${response?.body()}")
-            }
 
+            }
             override fun onFailure(call: Call<String>?, t: Throwable) {
             }
         })

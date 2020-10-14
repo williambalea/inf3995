@@ -12,8 +12,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name="inf3995.bixiapplication.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <activity android:name="inf3995.bixiapplication.StationsDataActivity"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="inf3995.bixiapplication.StationsDataActivity" />
         <activity android:name="inf3995.bixiapplication.StationPredictionsActivity" />
         <activity android:name="inf3995.bixiapplication.StationStatisticsActivity" />
         <activity android:name="inf3995.bixiapplication.GlobalPredictionsActivity" />
@@ -24,15 +30,7 @@
         <activity android:name="inf3995.bixiapplication.SurveyActivity" />
         <activity
             android:name="inf3995.bixiapplication.MainScreen.MainScreenActivity"
-            android:windowSoftInputMode="adjustPan"/>
-
-        <activity android:name="inf3995.bixiapplication.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:windowSoftInputMode="adjustPan" />
     </application>
 
 </manifest>

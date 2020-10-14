@@ -1,10 +1,12 @@
 package inf3995.bixiapplication
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.vvalidator.form
 import com.google.gson.Gson
+import inf3995.bixiapplication.MainScreen.MainScreenActivity
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.survey.*
 import retrofit2.Call
@@ -47,10 +49,15 @@ class SurveyActivity : AppCompatActivity() {
             submitWith(buttonSend) { result ->
                 surveyData = SurveyData(editTextEmail.text.toString(), editTextFirstName.text.toString(), editTextLastName.text.toString(), Integer.parseInt(editTextAge.text.toString()),checkBoxYesSurvey.isChecked)
                 sendSurveyData(surveyData)
+                val intent = Intent(this@SurveyActivity, MainScreenActivity::class.java)
+                startActivity(intent)
             }
         }
 
-        buttonSkip.setOnClickListener {}
+        buttonSkip.setOnClickListener {
+            val intent = Intent(this@SurveyActivity, MainScreenActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun sendSurveyData(surveyData: SurveyData) {
