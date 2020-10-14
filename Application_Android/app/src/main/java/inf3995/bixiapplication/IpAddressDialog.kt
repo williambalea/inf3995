@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.afollestad.vvalidator.form
+import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.setting_ip_address_dialog.*
 import retrofit2.Call
 import retrofit2.Callback

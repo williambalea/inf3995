@@ -10,8 +10,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name="inf3995.bixiapplication.StationsDataActivity"></activity>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+
+        <activity android:name="inf3995.bixiapplication.StationsDataActivity"/>
         <activity android:name="inf3995.bixiapplication.StationPredictionsActivity" />
         <activity android:name="inf3995.bixiapplication.StationStatisticsActivity" />
         <activity android:name="inf3995.bixiapplication.GlobalPredictionsActivity" />
@@ -19,21 +21,18 @@
         <activity android:name="inf3995.bixiapplication.GlobalDataActivity" />
         <activity android:name="inf3995.bixiapplication.ListStationActivity" />
         <activity android:name="inf3995.bixiapplication.StationCoordinatesActivity" />
+        <activity android:name="inf3995.bixiapplication.SurveyActivity" />
         <activity
             android:name="inf3995.bixiapplication.MainScreen.MainScreenActivity"
-            android:windowSoftInputMode="adjustPan">
-        android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+            android:windowSoftInputMode="adjustPan"/>
 
-        <activity android:name=".SurveyActivity">
+        <activity android:name="inf3995.bixiapplication.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity android:name=".SurveyActivity" >
-        </activity>-->
     </application>
 
 </manifest>

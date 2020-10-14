@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.vvalidator.form
 import com.google.gson.Gson
+import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.survey.*
 import retrofit2.Call
 import retrofit2.Callback
