@@ -10,15 +10,18 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.station_list_activity_main.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+
 
 class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { //StationAdapter.ClickedItem
     private val TAG = "Stations List"
@@ -58,9 +61,12 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.station_list_activity_main)
 
-        for(item in itemListModal){
+        /*for(item in itemListModal){
             stationModalList.add(item)
-        }
+        }*/
+
+        requestToServer(IpAddressDialog.ipAddressInput, IpAddressDialog.portInput)
+        requestConnectionWithServer(IpAddressDialog.ipAddressInput, IpAddressDialog.portInput)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
@@ -69,8 +75,7 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
         stationAdapter!!.setData(stationModalList, this)
         recyclerView.adapter = stationAdapter
 
-        requestConnectionWithServer(IpAddressDialog.ipAddressInput, "2000")
-        requestToServer(IpAddressDialog.ipAddressInput, "2000")
+
     }
 
 
@@ -129,10 +134,16 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
             ) {
                 Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
 
-                val mareponse = response
-              //  reponse_serveur = Json.decodeFromString<Station>(mareponse)
+                val arrayStationType = object : TypeToken<Array<Station>>() {}.type
+                val jObj: Array<Station> = Gson().fromJson(response?.body(), arrayStationType)
+                for(item in jObj){
+                    stationModalList.add(item)
+                    Log.i(TAG, "Array :${item}")
+                }
             }
             override fun onFailure(call: Call<String>?, t: Throwable) {
+                Log.i(TAG, "erreur!")
+
             }
         })
     }
