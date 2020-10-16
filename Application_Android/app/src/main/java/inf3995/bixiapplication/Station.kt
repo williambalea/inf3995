@@ -1,15 +1,14 @@
 package inf3995.bixiapplication
 
 import retrofit2.Call
-
 import retrofit2.Retrofit
+import okhttp3.OkHttpClient
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.Serializable
 
 
 
-@kotlinx.serialization.Serializable
 data class Station(
     var code :Int,
     var name: String,
@@ -24,9 +23,9 @@ object ServiceBuilder{
         .addConverterFactory(GsonConverterFactory.create())
         .client(client)
         .build()
-
-    val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-    val call: Call<String> = service.getAllStationCode()
+    fun<T>buildService(service:Class<T>):T{
+        return retrofit.create(service)
+    }
 }
 
 data class data(

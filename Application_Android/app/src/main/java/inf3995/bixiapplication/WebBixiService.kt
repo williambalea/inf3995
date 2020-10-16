@@ -28,6 +28,7 @@ interface WebBixiService {
     fun sendServerSurveyData(@Body survey: String):Call<String>
 
     @GET("/station/all")
-    fun getAllStationCode():Call<String>
+    fun getAllStationCode(): Call<String>
+   // fun getAllStationCode(): Call<ArrayList<Station>>
 
 }

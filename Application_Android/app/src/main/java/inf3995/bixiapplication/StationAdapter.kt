@@ -16,16 +16,15 @@ import kotlinx.android.synthetic.main.station_items_with_button.view.name
 import kotlinx.android.synthetic.main.station_items.view.*
 import kotlin.collections.ArrayList
 
-class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Adapter<StationAdapter.StationAdapterViewHolder>(), //var clickedItem: ClickedItem
+class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHolder>(), //var clickedItem: ClickedItem
     Filterable {
-
-
+    //var stationList: ArrayList<Station>
     lateinit var stationList: ArrayList<Station>
     var stationListFilter: ArrayList<Station>? = null
     lateinit var context: Context
 
 
-    fun setData(stationList:ArrayList<Station>, context: Context){
+     fun setData(stationList:ArrayList<Station>, context: Context){
         this.stationList = stationList
         this.stationListFilter = stationList
         this.context = context
@@ -33,8 +32,6 @@ class StationAdapter(var clickedStationListener: ClickListener):RecyclerView.Ada
     }
 
      class StationAdapterViewHolder(itemView:View):RecyclerView.ViewHolder(itemView) {
-
-
 
         var imageView = itemView.imageView
         var name = itemView.name

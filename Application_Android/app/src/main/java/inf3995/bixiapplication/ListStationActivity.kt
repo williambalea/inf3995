@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import inf3995.test.bixiapplication.R
@@ -17,14 +18,16 @@ import kotlinx.coroutines.async
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
+import org.xml.sax.Parser
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+
 import kotlinx.coroutines.*
 import okhttp3.internal.wait
-
+import java.io.StringReader
 
 class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { //StationAdapter.ClickedItem
     private val TAG = "Stations List"
@@ -33,7 +36,9 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
     //val port = "2000"
     val port = "2001"
 
-    /*var itemListModal = arrayOf(
+
+    //var itemListModal: ArrayList<Station>? = null
+   /* var itemListModal = arrayListOf(
         Station(123, "Cote vertu Est", 11.244456F, 21.076599F),
         Station(452, "Langelier Est", 12.374400F, 22.356466F),
         Station(375, "Montreal Nord", 13.365400F, 23.000466F),
@@ -64,20 +69,8 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.station_list_activity_main)
 
-        /*for(item in itemListModal){
-            stationModalList.add(item)
-        }*/
-
         requestToServer(IpAddressDialog.ipAddressInput, IpAddressDialog.portInput)
         requestConnectionWithServer(IpAddressDialog.ipAddressInput, IpAddressDialog.portInput)
-
-        stationAdapter = StationAdapter(this)
-        stationAdapter!!.setData(stationModalList, this)
-        recyclerView.adapter = stationAdapter
-
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.setHasFixedSize(true)
-
 
     }
 
@@ -119,7 +112,6 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
     }
 
     private fun requestToServer (ipAddress:String, port:String) {
-    var reponse_serveur:JsonObject
 
         // get Server Ip adress
         val retrofit = Retrofit.Builder()
@@ -131,18 +123,12 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
         val call: Call<String> = service.getAllStationCode()
 
         call.enqueue(object : Callback<String> {
-            override fun onResponse(
-                call: Call<String>?,
-                response: Response<String>?
-            ) {
-                Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
-
+            override fun onResponse( call: Call<String>?, response: Response<String>?) {
+               Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
                 val arrayStationType = object : TypeToken<Array<Station>>() {}.type
                 val jObj: Array<Station> = Gson().fromJson(response?.body(), arrayStationType)
-                for(item in jObj){
-                    stationModalList.add(item)
-                    Log.i(TAG, "Array :${item}")
-                }
+                makeRecyclerView(jObj)
+
             }
             override fun onFailure(call: Call<String>?, t: Throwable) {
                 Log.i(TAG, "erreur!")
@@ -150,32 +136,19 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
             }
         })
     }
-    private fun requestToServer1 (ipAddress:String, port:String) {
 
-        // get Server Ip adress
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://$ipAddress:$port/")
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .build()
+    private fun makeRecyclerView(listStation: Array<Station>) {
+        for(item in listStation){
+            stationModalList.add(item)
+            Log.i(TAG, "Array :${item}")
+        }
+        stationAdapter = StationAdapter()   //(this)
+        stationAdapter!!.setData(stationModalList, this@ListStationActivity)
+        recyclerView.adapter = stationAdapter
 
-        val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        val call: Call<String> = service.getAllStationCode()
-
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(
-                call: Call<String>?,
-                response: Response<String>?
-            ) {
-                Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
-
-                val mareponse = response
-                //  reponse_serveur = Json.decodeFromString<Station>(mareponse)
-            }
-            override fun onFailure(call: Call<String>?, t: Throwable) {
-            }
-        })
+        recyclerView.layoutManager = LinearLayoutManager(this@ListStationActivity)
+        recyclerView.setHasFixedSize(true)
     }
-
 
     private fun requestConnectionWithServer(ipAddresss:String, ports:String) {
 
