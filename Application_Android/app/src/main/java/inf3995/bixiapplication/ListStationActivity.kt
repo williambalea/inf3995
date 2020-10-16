@@ -10,25 +10,28 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.station_list_activity_main.*
-import org.xml.sax.Parser
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import retrofit2.*
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.IOException
 import java.io.StringReader
 
 class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { //StationAdapter.ClickedItem
     private val TAG = "Stations List"
     //val ipAddress = "70.80.27.156"
-    val ipAddress = "135.19.27.218"
+    //val ipAddress = "135.19.27.218"
     //val port = "2000"
-    val port = "2001"
+    //val port = "2001"
     //var itemListModal: ArrayList<Station>? = null
+
     var itemListModal = arrayListOf(
         Station(123, "Cote vertu Est", 11.244456F, 21.076599F),
         Station(452, "Langelier Est", 12.374400F, 22.356466F),
@@ -50,6 +53,7 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
 
     )
 
+
     var stationModalList = ArrayList<Station>()
     var stationAdapter: StationAdapter? = null
     private lateinit var dataButton: Button
@@ -65,9 +69,11 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
 
         requestToServer(IpAddressDialog.ipAddressInput, IpAddressDialog.portInput)
 
-        for(item in itemListModal){
+        /*for(item in itemListModal!!){
             stationModalList.add(item)
         }
+
+         */
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
@@ -81,15 +87,13 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
 
     override fun clickedStation(station: Station) {
         var itemModal = station
-       // val itemView : MenuView.ItemView?=null
-        Log.e("TAG","===> " + itemModal.name)
-        var name = itemModal.name
+        // val itemView : MenuView.ItemView?=null
+        Log.e("TAG", "===> " + itemModal.name)
+       // var name = itemModal.name
         //startActivity(Intent(this@ListStationActivity, StationCoordinatesActivity::class.java).putExtra("data", itemModal))
         //startActivity(Intent(this@ListStationActivity, StatisticsStationActivity::class.java).putExtra("data", itemModal))
 
     }
-
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
@@ -97,16 +101,24 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
         val searchView = menuItem.actionView as SearchView
 
         searchView.maxWidth = Int.MAX_VALUE
-        searchView.setOnQueryTextListener(object:SearchView.OnQueryTextListener{
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(filterString: String?): Boolean {
                 stationAdapter!!.filter.filter(filterString)
-                Toast.makeText(this@ListStationActivity, "Looking for Station containing the word  $filterString ", Toast.LENGTH_LONG ).show()
+                Toast.makeText(
+                    this@ListStationActivity,
+                    "Looking for Station containing the word  $filterString ",
+                    Toast.LENGTH_LONG
+                ).show()
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 stationAdapter!!.filter.filter(newText)
-                Toast.makeText(this@ListStationActivity, "Looking for Station containing the word  $newText ", Toast.LENGTH_LONG ).show()
+                Toast.makeText(
+                    this@ListStationActivity,
+                    "Looking for Station containing the word  $newText ",
+                    Toast.LENGTH_LONG
+                ).show()
                 return true
             }
 
@@ -115,40 +127,58 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
         return true
     }
 
-    private fun requestToServer (ipAddress:String, port:String) {
+    private fun requestToServer(ipAddress: String, port: String) {
 
         // get Server Ip adress
         val retrofit = Retrofit.Builder()
             .baseUrl("http://$ipAddress:$port/")
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
-
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         val call: Call<String> = service.getAllStationCode()
 
         call.enqueue(object : Callback<String> {
-           // @RequiresApi(Build.VERSION_CODES.KITKAT)
-            override fun onResponse( call: Call<String>?, response: Response<String>?) {
-               Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
-                /* Reading JSON with the streaming API  at https://github.com/cbeust/klaxon*/
-               val klaxon = Klaxon()
-               JsonReader(StringReader(response?.body())).use { reader ->
-                   //val result = arrayListOf<Station>()
-                   reader.beginArray {
-                       while (reader.hasNext()) {
-                           val station = klaxon.parse<Station>(reader)
-                           if (station != null) {
-                               itemListModal.add(station)
+            override fun onResponse(
+                call: Call<String>?,
+                response: Response<String>?
+            ) {
+                Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
+
+                val arrayStationType = object : TypeToken<Array<Station>>() {}.type
+                val jObj: Array<Station> = Gson().fromJson(response?.body(), arrayStationType)
+                for (item in jObj) {
+                    stationModalList.add(item)
+                    Log.i(TAG, "Array :${item}")
+                }
+            }
+
+            /*
+                call.enqueue(object : Callback<String> {
+                   // @RequiresApi(Build.VERSION_CODES.KITKAT)
+                    override fun onResponse( call: Call<String>?, response: Response<String>?) {
+                       Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
+                        /* Reading JSON with the streaming API  at https://github.com/cbeust/klaxon*/
+                       val klaxon = Klaxon()
+                       JsonReader(StringReader(response?.body())).use { reader ->
+                           //val result = arrayListOf<Station>()
+                           reader.beginArray {
+                               while (reader.hasNext()) {
+                                   val station = klaxon.parse<Station>(reader)
+                                   if (station != null) {
+                                       itemListModal.add(station)
+                                   }
+                               }
                            }
                        }
-                   }
-               }
 
-            }
+                    }
+
+                 */
             override fun onFailure(call: Call<String>?, t: Throwable) {
             }
         })
     }
+
         /*
     private fun requestToServer (ipAddress:String, port:String) {
         var reponse_serveur:JsonObject

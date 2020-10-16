@@ -18,7 +18,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 
-private const val TAG = "SettingsDialog"
+const val TAG = "SettingsDialog"
 //var connectivity: Boolean = false;
 
 class IpAddressDialog: AppCompatDialogFragment() {
