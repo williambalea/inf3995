@@ -8,20 +8,25 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.beust.klaxon.JsonReader
-import com.beust.klaxon.Klaxon
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.station_list_activity_main.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import retrofit2.*
+import kotlinx.coroutines.async
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import org.json.JSONObject
+import org.xml.sax.Parser
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.io.IOException
+
+import kotlinx.coroutines.*
+import okhttp3.internal.wait
 import java.io.StringReader
 
 class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { //StationAdapter.ClickedItem
@@ -30,9 +35,11 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
     //val ipAddress = "135.19.27.218"
     //val port = "2000"
     //val port = "2001"
-    //var itemListModal: ArrayList<Station>? = null
+    val port = "2001"
 
-    var itemListModal = arrayListOf(
+
+    //var itemListModal: ArrayList<Station>? = null
+   /* var itemListModal = arrayListOf(
         Station(123, "Cote vertu Est", 11.244456F, 21.076599F),
         Station(452, "Langelier Est", 12.374400F, 22.356466F),
         Station(375, "Montreal Nord", 13.365400F, 23.000466F),
@@ -51,9 +58,7 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
         Station(289, "Cote de Liesse", 19.374980F, 49.356466F),
         Station(120, "Avenue papineau", 20.3744180F, 30.986466F)
 
-    )
-
-
+    )*/
     var stationModalList = ArrayList<Station>()
     var stationAdapter: StationAdapter? = null
     private lateinit var dataButton: Button
@@ -65,22 +70,8 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.station_list_activity_main)
 
-        requestConnectionWithServer(IpAddressDialog.ipAddressInput, IpAddressDialog.portInput)
-
         requestToServer(IpAddressDialog.ipAddressInput, IpAddressDialog.portInput)
-
-        /*for(item in itemListModal!!){
-            stationModalList.add(item)
-        }
-
-         */
-
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.setHasFixedSize(true)
-
-        stationAdapter = StationAdapter()   //(this)
-        stationAdapter!!.setData(stationModalList, this)
-        recyclerView.adapter = stationAdapter
+        requestConnectionWithServer(IpAddressDialog.ipAddressInput, IpAddressDialog.portInput)
 
     }
 
@@ -138,82 +129,34 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
         val call: Call<String> = service.getAllStationCode()
 
         call.enqueue(object : Callback<String> {
-            override fun onResponse(
-                call: Call<String>?,
-                response: Response<String>?
-            ) {
-                Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
-
+            override fun onResponse( call: Call<String>?, response: Response<String>?) {
+               Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
                 val arrayStationType = object : TypeToken<Array<Station>>() {}.type
                 val jObj: Array<Station> = Gson().fromJson(response?.body(), arrayStationType)
-                for (item in jObj) {
-                    stationModalList.add(item)
-                    Log.i(TAG, "Array :${item}")
-                }
-            }
-
-            /*
-                call.enqueue(object : Callback<String> {
-                   // @RequiresApi(Build.VERSION_CODES.KITKAT)
-                    override fun onResponse( call: Call<String>?, response: Response<String>?) {
-                       Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
-                        /* Reading JSON with the streaming API  at https://github.com/cbeust/klaxon*/
-                       val klaxon = Klaxon()
-                       JsonReader(StringReader(response?.body())).use { reader ->
-                           //val result = arrayListOf<Station>()
-                           reader.beginArray {
-                               while (reader.hasNext()) {
-                                   val station = klaxon.parse<Station>(reader)
-                                   if (station != null) {
-                                       itemListModal.add(station)
-                                   }
-                               }
-                           }
-                       }
+                makeRecyclerView(jObj)
 
                     }
 
                  */
             override fun onFailure(call: Call<String>?, t: Throwable) {
+                Log.i(TAG, "erreur!")
+
             }
         })
     }
 
-        /*
-    private fun requestToServer (ipAddress:String, port:String) {
-        var reponse_serveur:JsonObject
+    private fun makeRecyclerView(listStation: Array<Station>) {
+        for(item in listStation){
+            stationModalList.add(item)
+            Log.i(TAG, "Array :${item}")
+        }
+        stationAdapter = StationAdapter()   //(this)
+        stationAdapter!!.setData(stationModalList, this@ListStationActivity)
+        recyclerView.adapter = stationAdapter
 
-        // get Server Ip adress
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://$ipAddress:$port/")
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .build()
-
-        val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        val call: Call<ArrayList<Station>> = service.getAllStationCode()
-
-        call.enqueue(object : Callback<ArrayList<Station>> {
-            // @RequiresApi(Build.VERSION_CODES.KITKAT)
-            override fun onResponse(
-                call: Call<ArrayList<Station>>?,
-                response: Response<ArrayList<Station>>?
-            ) {
-                Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
-                //val gson = GsonBuilder().create()
-                //val model = gson.fromJson(response?.body(), Array<Station>::class.java).toMutableList()
-                // val packagesArray = gson.fromJson(response.toString(), Array<Station>::class.java).toMutableList()
-                //for(item in model){
-                //    stationModalList.add(item)
-                //}
-                itemListModal = response?.body()!!
-                stationModalList = response?.body()!!
-                //recyclerView.adapter = StationAdapter(response.body()!!)
-            }
-            override fun onFailure(call: Call<ArrayList<Station>>?, t: Throwable) {
-            }
-        })
+        recyclerView.layoutManager = LinearLayoutManager(this@ListStationActivity)
+        recyclerView.setHasFixedSize(true)
     }
-*/
 
     private fun requestConnectionWithServer(ipAddresss:String, ports:String) {
 

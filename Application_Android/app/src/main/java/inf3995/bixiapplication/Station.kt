@@ -19,7 +19,7 @@ data class Station(
 object ServiceBuilder{
     private val client = okhttp3.OkHttpClient.Builder().build()
     private val retrofit = Retrofit.Builder()
-        .baseUrl("http://$IpAddressDialog.ipAddressInput:$IpAddressDialog.port/")
+        .baseUrl("http://${IpAddressDialog.ipAddressInput}:${IpAddressDialog.portInput}/")
         .addConverterFactory(GsonConverterFactory.create())
         .client(client)
         .build()
