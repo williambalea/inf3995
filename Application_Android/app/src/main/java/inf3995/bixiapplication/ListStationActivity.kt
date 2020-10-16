@@ -13,6 +13,7 @@ import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.station_list_activity_main.*
+import kotlinx.coroutines.async
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
@@ -21,6 +22,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import kotlinx.coroutines.*
+import okhttp3.internal.wait
 
 
 class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { //StationAdapter.ClickedItem
@@ -30,7 +33,7 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
     //val port = "2000"
     val port = "2001"
 
-    var itemListModal = arrayOf(
+    /*var itemListModal = arrayOf(
         Station(123, "Cote vertu Est", 11.244456F, 21.076599F),
         Station(452, "Langelier Est", 12.374400F, 22.356466F),
         Station(375, "Montreal Nord", 13.365400F, 23.000466F),
@@ -49,7 +52,7 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
         Station(289, "Cote de Liesse", 19.374980F, 49.356466F),
         Station(120, "Avenue papineau", 20.3744180F, 30.986466F)
 
-    )
+    )*/
     var stationModalList = ArrayList<Station>()
     var stationAdapter: StationAdapter? = null
     private lateinit var dataButton: Button
@@ -68,12 +71,12 @@ class ListStationActivity : AppCompatActivity(), StationAdapter.ClickListener { 
         requestToServer(IpAddressDialog.ipAddressInput, IpAddressDialog.portInput)
         requestConnectionWithServer(IpAddressDialog.ipAddressInput, IpAddressDialog.portInput)
 
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.setHasFixedSize(true)
-
         stationAdapter = StationAdapter(this)
         stationAdapter!!.setData(stationModalList, this)
         recyclerView.adapter = stationAdapter
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.setHasFixedSize(true)
 
 
     }
