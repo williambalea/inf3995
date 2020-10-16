@@ -87,10 +87,6 @@ class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHol
         return stationList.size
     }
 
-    interface ClickListener {
-       fun clickedStation(station: Station)
-
-    }
 
     override fun getFilter(): Filter {
         return object:Filter(){
