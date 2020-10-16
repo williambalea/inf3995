@@ -17,13 +17,20 @@ PORT = 2000
 
 
 enginsql = EnginSQL()
-station5003 = enginsql.getStationCode(CODE_STATION)
-allStations = enginsql.getAllStations()
+# station5003 = enginsql.getStationCode(CODE_STATION)
+# allStations = enginsql.getAllStations()
 
-with open('data.json', 'w') as outfile:
-    json.dump(allStations, outfile)
-print(station5003)
+# with open('data.json', 'w') as outfile:
+#     json.dump(allStations, outfile)
+# print(station5003)
 # print(allStations)
+# test = enginsql.getAllStations()
+# query = enginsql.getquery1()
 
+amijson = enginsql.getStationCode(5003)
+
+# stationCode = enginsql.getStationCode(5003)
+# tablejson = enginsql.toJSON2(table)
+print(amijson)
 
 

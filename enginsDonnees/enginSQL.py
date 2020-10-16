@@ -1,6 +1,7 @@
 import mysql.connector
 from mysql.connector import Error
 import json
+from matplotlib import pyplot as plt
 
 class EnginSQL:
 
@@ -30,23 +31,32 @@ class EnginSQL:
             print(f"The error '{e}' occurred")
         return self.connection
 
-    def toJson(self, cursor):
-        row_headers=[x[0] for x in cursor.description] #extract row headers
-        myresult = cursor.fetchall()
-        json_data=[]
-        for result in myresult:
-            json_data.append(dict(zip(row_headers,result)))
-        return json.dumps(json_data)
 
-        
+    def query_db(self,query, args=(), one=False):
+        myCursor = self.connection.cursor(buffered=True)
+        myCursor.execute(query)
+        r = [dict((myCursor.description[i][0], value) \
+                for i, value in enumerate(row)) for row in myCursor.fetchall()]
+        # cur.connection.close()
+        return (r[0] if r else None) if one else r
+
+    def toJson(self, data):
+        return json.dumps(data)
+
     def getStationCode(self, code):
-        mycursor = self.connection.cursor()
-        mycursor.execute("SELECT S.name, S.latitude, S.longitude FROM Stations S WHERE code='{}'".format(code))
-        return self.toJson(mycursor)
+        query = "SELECT S.name, S.latitude, S.longitude FROM Stations S WHERE code='{}'".format(code)
+        return self.toJson(self.query_db(query))
+        
 
 
     def getAllStations(self):
-        mycursor = self.connection.cursor()
-        mycursor.execute("SELECT * FROM Stations")
-        return self.toJson(mycursor)
-
+        query = "SELECT * FROM Stations"
+        return self.toJson(self.query_db(query))
+    
+    # def getAllYearRaw(self, year):
+    #     query = 'SELECT * FROM BixiRentals'
+    #     query += str(year)
+    #     myCursor = self.connection.cursor()
+    #     myCursor.execute(query)
+        
+    #     return self.toJson(myCursor)
