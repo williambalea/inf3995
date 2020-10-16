@@ -4,6 +4,7 @@ import json
 import socket
 import requests as rq
 from enginSQL import EnginSQL
+import pandas as pd
 
 HOST_NAME = "34.70.117.28"
 USER_NAME = "root"
@@ -26,11 +27,15 @@ enginsql = EnginSQL()
 # print(allStations)
 # test = enginsql.getAllStations()
 # query = enginsql.getquery1()
-
-amijson = enginsql.getStationCode(5003)
+station = 'toutes'
+year = 2015
+amijson = enginsql.getDataUsage(2015, "5003")
+topd = enginsql.jsonToPandas(amijson)
+print(topd)
+# pdObject = pd.read_json(amijson)
 
 # stationCode = enginsql.getStationCode(5003)
 # tablejson = enginsql.toJSON2(table)
-print(amijson)
+# print(pdObject)
 
 

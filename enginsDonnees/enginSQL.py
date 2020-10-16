@@ -2,6 +2,8 @@ import mysql.connector
 from mysql.connector import Error
 import json
 from matplotlib import pyplot as plt
+import pandas as pd
+from flask.json import jsonify
 
 class EnginSQL:
 
@@ -42,21 +44,29 @@ class EnginSQL:
 
     def toJson(self, data):
         return json.dumps(data)
+    
+    def jsonToPandas(self, jsonObj):
+        return pd.read_json(jsonObj)
 
+    def plot(self, pandas):
+
+        return 0
+
+    #queries 
     def getStationCode(self, code):
         query = "SELECT S.name, S.latitude, S.longitude FROM Stations S WHERE code='{}'".format(code)
         return self.toJson(self.query_db(query))
         
-
-
     def getAllStations(self):
         query = "SELECT * FROM Stations"
         return self.toJson(self.query_db(query))
     
-    # def getAllYearRaw(self, year):
-    #     query = 'SELECT * FROM BixiRentals'
-    #     query += str(year)
-    #     myCursor = self.connection.cursor()
-    #     myCursor.execute(query)
-        
-    #     return self.toJson(myCursor)
+    def getDataUsage(self,year, station):
+        query = "SELECT * FROM BixiRentals"
+        query += str(year)
+        if station != "toutes":
+            query += " WHERE startStationCode='{}'".format(station)
+            query += " OR endStationCode='{}' ".format(station)
+        # query += " WHERE startDate LIKE '%4/15%' AND startDate between '4/15/2015 7:58' AND '4/17/2015 8:00' "
+        return self.toJson(self.query_db(query))
+        # return query
