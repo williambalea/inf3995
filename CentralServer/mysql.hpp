@@ -1,12 +1,11 @@
 #ifndef MYSQL_HPP
 #define MYSQL_HPP
 
-#include <iostream>
-#include <string>
 #include <mysql_connection.h>
 #include <mysql_driver.h>
 #include <cppconn/statement.h>
 #include <cppconn/prepared_statement.h>
+#include "json.hpp"
 
 #define HOST "tcp://34.70.117.28:3306"
 #define USER "root"
@@ -14,11 +13,13 @@
 
 using namespace sql;
 using namespace sql::mysql;
+using json = nlohmann::json;
 
 class MySQL {
 public:
     MySQL();
     void sendPoll(std::string email, std::string firstName, std::string lastName, int age, bool interest);
+    json getPolls();
 
 private:
     void connect();
@@ -51,6 +52,27 @@ void MySQL::sendPoll(std::string email, std::string firstName, std::string lastN
 
     delete stmt;
     disconnect();
+}
+
+json MySQL::getPolls() {
+    connect();
+    Statement *stmt = con->createStatement();
+    ResultSet *res  = stmt->executeQuery("SELECT * FROM Polls");
+    json allData;
+    while (res->next()) {
+        json data;
+        data["email"]     = res->getString("email");
+        data["firstName"] = res->getString("firstName");
+        data["lastName"]  = res->getString("lastName");
+        data["age"]       = res->getInt("age");
+        data["interest"]  = res->getBoolean("interest");
+        allData.push_back(data);
+    }
+
+    delete res;
+    delete stmt;
+    disconnect();
+    return allData;
 }
 
 void MySQL::connect() {

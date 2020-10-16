@@ -22,12 +22,14 @@ public :
 private:
     void init();
     void setupRoutes();
+    void createDummies();
 
     // Routes fonctions
-    void welcome  (const Rest::Request& req, Http::ResponseWriter res);
-    void postIP   (const Rest::Request& req, Http::ResponseWriter res);
-    void getAllMsg(const Rest::Request& req, Http::ResponseWriter res);
+    void newConn  (const Rest::Request& req, Http::ResponseWriter res);
+    void postIP   (const Rest::Request& req, Http::ResponseWriter res); // TODO: remove this
+    void getAllMsg(const Rest::Request& req, Http::ResponseWriter res); // TODO: remove this
     void sendPoll (const Rest::Request& req, Http::ResponseWriter res);
+    void getPolls  (const Rest::Request& req, Http::ResponseWriter res);
 
     shared_ptr<Http::Endpoint> httpEndpoint;
     Rest::Router router;
@@ -49,9 +51,11 @@ void Server::run() {
     httpEndpoint->setHandler(router.handler());
     httpEndpoint->serveThreaded();
     cout << "Server is running on " << addr.host() << ":" << addr.port() << " ..." << endl;
+    createDummies();
     string command = "";
-    while (command != "stop")
+    while (command != "stop") {
         cin >> command;
+    }
     cout << "Stopping server.\n" ;
     httpEndpoint->shutdown();
 }
@@ -64,16 +68,16 @@ void Server::init() {
 
 void Server::setupRoutes() {
     using namespace Rest;
-    Routes::Get(router, "/server/", Routes::bind(&Server::welcome, this));
-    Routes::Post(router, "/server/ip_server", Routes::bind(&Server::postIP, this));
-    Routes::Get(router, "/server/messages", Routes::bind(&Server::getAllMsg, this));
+    Routes::Get (router, "/server/", Routes::bind(&Server::newConn, this));
+    Routes::Post(router, "/server/ip_server", Routes::bind(&Server::postIP, this)); // TODO: remove this
+    Routes::Get (router, "/server/messages", Routes::bind(&Server::getAllMsg, this)); // TODO: remove this
     Routes::Post(router, "/server/survey", Routes::bind(&Server::sendPoll, this));
-
+    Routes::Get (router, "/server/survey", Routes::bind(&Server::getPolls, this));
 }
 
 // Routes fonctions
-void Server::welcome (const Rest::Request& req, Http::ResponseWriter res) {
-    res.send(Http::Code::Ok, "Hello from server");
+void Server::newConn (const Rest::Request& req, Http::ResponseWriter res) {
+    res.send(Http::Code::Ok, "Connected to server!");
     cout << "connection established" << endl;
 }
 
@@ -102,6 +106,31 @@ void Server::sendPoll(const Rest::Request& req, Http::ResponseWriter res) {
     );
     res.send(Http::Code::Ok, "Server got poll");
     // TODO: Http::Code::Bad_Request
+}
+
+void Server::getPolls(const Rest::Request& req, Http::ResponseWriter res) {
+    json data = db.getPolls();
+    cout << "sending polls to PC" << endl;
+    res.send(Http::Code::Ok, data.dump());
+}
+
+// TODO: remove
+void Server::createDummies() {
+    for (int i = 0; i < 20; i++) {
+        json j;
+        j["email"] = to_string(i) + "@poly.ca";
+        j["firstName"] = to_string('a' + i);
+        j["lastName"] = to_string('A' + i);
+        j["age"] = i;
+        j["interest"] = (i % 2) ? true : false;
+        db.sendPoll(
+            j["email"].get<string>(),
+            j["firstName"].get<string>(),
+            j["lastName"].get<string>(),
+            j["age"].get<int>(),
+            j["interest"].get<bool>()
+        );
+    }
 }
 
 #endif // SERVER_HPP
