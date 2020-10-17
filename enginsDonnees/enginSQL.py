@@ -68,5 +68,6 @@ class EnginSQL:
             query += " WHERE startStationCode='{}'".format(station)
             query += " OR endStationCode='{}' ".format(station)
         # query += " WHERE startDate LIKE '%4/15%' AND startDate between '4/15/2015 7:58' AND '4/17/2015 8:00' "
+        print(query)
         return self.toJson(self.query_db(query))
         # return query
