@@ -72,7 +72,7 @@ void Server::setupRoutes() {
     Routes::Post(router, "/server/ip_server", Routes::bind(&Server::postIP, this)); // TODO: remove this
     Routes::Get (router, "/server/messages", Routes::bind(&Server::getAllMsg, this)); // TODO: remove this
     Routes::Post(router, "/server/survey", Routes::bind(&Server::sendPoll, this));
-    Routes::Get (router, "/server/survey", Routes::bind(&Server::getPolls, this));
+    Routes::Get (router, "/server/survey", Routes::bind(&Server::getPolls, this)); 
 }
 
 // Routes fonctions
