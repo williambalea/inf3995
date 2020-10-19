@@ -16,148 +16,190 @@ ApplicationWindow {
         id: backend
     }
 
-    TabBar {
-        id: tabBar
-        x: 0
-        y: 0
-        width: parent.width
-        height: 0
-        currentIndex: 0
+    Item {
+        id: login
+        visible: true
 
-        TabButton {
-            id: tab0
-            x: 310
-            y: 0
-            height: 48
-            text: qsTr("Surveys")
-            Layout.preferredWidth: 150
+        LoginPage {
+            id: loginPage
         }
-
-        TabButton {
-            id: tab1
-            x: 155
-            y: 0
-            text: qsTr("Data Engine 1")
-            Layout.preferredWidth: 150
-        }
-
-        TabButton {
-            id: tab2
-            x: 0
-            y: 0
-            text: qsTr("Data Engine 2")
-            Layout.preferredWidth: 150
-        }
-
 
     }
 
-    SwipeView {
-        id: swipeView
-        x: 0
-        y: 48
-        width: 1280
-        height: 912
-        interactive: false
-        currentIndex: tabBar.currentIndex
+    Item {
+        id: app
+        visible: false
 
-        Page {
-            id: page
+        TabBar {
+            id: tabBar
+            x: 0
+            y: 0
             width: applicationWindow.width
-            height: applicationWindow.height - 48
-            background: Rectangle {
-                color: "#b12c2c"
+            height: 0
+            currentIndex: 0
+
+            TabButton {
+                id: tab0
+                x: 310
+                y: 0
+                height: 48
+                text: qsTr("Surveys")
+                Layout.preferredWidth: 150
             }
 
-            Label {
-                id: label
+            TabButton {
+                id: tab1
+                x: 155
+                y: 0
+                text: qsTr("Data Engine 1")
+                Layout.preferredWidth: 150
+            }
+
+            TabButton {
+                id: tab2
                 x: 0
                 y: 0
-                width: 180
-                height: 57
-                text: qsTr("")
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                font.pointSize: 22
+                text: qsTr("Data Engine 2")
+                Layout.preferredWidth: 150
+            }
+
+            TabButton {
+                id: tab3
+                x: 0
+                y: 0
+                text: qsTr("Data Engine 3")
+                Layout.preferredWidth: 150
             }
 
 
-            Button {
-                id: button
-                x: 1052
-                y: 9
-                width: 191
-                height: 48
-                text: qsTr("Refresh")
+        }
 
-                Connections {
-                    target: button
-                     onClicked: function () {
-                         print("from qml");
-                         backend.refresh();
-                         print(backend.sqlData);
-                     }
+        SwipeView {
+            id: swipeView
+            x: 0
+            y: 48
+            width: 1280
+            height: 912
+            interactive: false
+            currentIndex: tabBar.currentIndex
+
+            Page {
+                id: surveyPage
+                width: applicationWindow.width
+                height: applicationWindow.height - 48
+                background: Rectangle {
+                    color: "#b12c2c"
+                }
+
+                Label {
+                    id: label
+                    x: 0
+                    y: 0
+                    width: 180
+                    height: 57
+                    text: qsTr("")
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pointSize: 22
+                }
+
+
+                Button {
+                    id: refreshButton
+                    x: 1052
+                    y: 9
+                    width: 191
+                    height: 48
+                    text: qsTr("Refresh")
+
+                    Connections {
+                        target: refreshButton
+                        onClicked: function () {
+                            print("from qml");
+                            backend.refresh();
+                            print(backend.sqlData);
+                        }
+                    }
+                }
+
+                Page3 {
+                    id: page3
+                    x: 56
+                    y: 558
+                    width: 512
+                    height: 200
+                    anchors.bottomMargin: 40
+                    anchors.leftMargin: 31
+                    anchors.rightMargin: 37
+                    anchors.topMargin: 72
+                    model: JSON.parse(backend.sqlData)
+                    Component.onCompleted: backend.refresh()
+
                 }
             }
 
-            Page3 {
-                id: page3
-                x: 56
-                y: 558
-                width: 512
-                height: 200
-                anchors.bottomMargin: 40
-                anchors.leftMargin: 31
-                anchors.rightMargin: 37
-                anchors.topMargin: 72
-                model: JSON.parse(backend.sqlData)
-                Component.onCompleted: backend.refresh()
+            Page {
+                id: engine1Page
+                width: applicationWindow.width
+                height: applicationWindow.height - 48
+                Label {
+                    id: label1
+                    x: 0
+                    y: 0
+                    width: 180
+                    height: 57
+                    text: qsTr("Page 2")
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pointSize: 22
+                }
+                background: Rectangle {
+                    color: "#f36a6a"
+                }
+            }
 
+            Page {
+                id: engine2Page
+                width: applicationWindow.width
+                height: applicationWindow.height - 48
+                Label {
+                    id: label2
+                    x: 0
+                    y: 0
+                    width: 180
+                    height: 57
+                    text: qsTr("Page 3")
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pointSize: 22
+                }
+                background: Rectangle {
+                    color: "#0c79b7"
+                }
+            }
+
+            Page {
+                id: engine3Page
+                width: applicationWindow.width
+                height: applicationWindow.height - 48
+                Label {
+                    id: label3
+                    x: 0
+                    y: 0
+                    width: 180
+                    height: 57
+                    text: qsTr("Page 4")
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pointSize: 22
+                }
+                background: Rectangle {
+                    color: "#0c79b7"
+                }
             }
         }
 
-        Page {
-            id: page1
-            width: applicationWindow.width
-            height: applicationWindow.height - 48
-            Label {
-                id: label1
-                x: 0
-                y: 0
-                width: 180
-                height: 57
-                text: qsTr("Page 2")
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                font.pointSize: 22
-            }
-            background: Rectangle {
-                color: "#f36a6a"
-            }
-        }
-
-        Page {
-            id: page2
-            width: applicationWindow.width
-            height: applicationWindow.height - 48
-            Label {
-                id: label2
-                x: 0
-                y: 0
-                width: 180
-                height: 57
-                text: qsTr("Page 3")
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                font.pointSize: 22
-            }
-            background: Rectangle {
-                color: "#0c79b7"
-            }
-        }
     }
-
-
 }
 
 /*##^##
