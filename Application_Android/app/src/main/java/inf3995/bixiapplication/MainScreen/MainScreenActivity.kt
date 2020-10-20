@@ -23,18 +23,12 @@ class MainScreenActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main_screen)
 
         btn1 = findViewById(button)
-        btn2 = findViewById(R.id.button2)
         btn3 = findViewById(R.id.button3)
         btn4 = findViewById(R.id.button4)
 
 
         btn1.setOnClickListener{
             val intent = Intent(this, ListStationActivity::class.java)
-            startActivity(intent)
-        }
-
-        btn2.setOnClickListener{
-            val intent = Intent(this, GlobalDataActivity::class.java)
             startActivity(intent)
         }
 

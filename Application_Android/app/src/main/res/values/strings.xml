@@ -49,5 +49,5 @@
     <string name="period">Period</string>
     <string name="display">display</string>
     <string name="choose_year">Choose Year</string>
-    <string name="global_usage_data">GLOBAL USAGE DATA</string>
+    <string name="global_usage_statistic">GLOBAL USAGE STATISTIC</string>
 </resources>

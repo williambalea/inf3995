@@ -18,19 +18,21 @@ class GlobalDataActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_global_data)
 
-        val years_List = listOf("","2014", "2015", "2015")
-        val years_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, years_List)
-        spnTime.adapter=years_adapter
-        val period_List = listOf("","Monthly", "Daily", "Per Hour")
-        val period_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, period_List)
-        spnPeriod.adapter = period_adapter
-        limitDropDownmenuHeight(spnPeriod)
-        limitDropDownmenuHeight(spnTime)
+        val yearsList = listOf("","2014", "2015", "2015")
+        val yearsAdapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, yearsList)
+        spnTime.adapter=yearsAdapter
+
+        val periodList = listOf("","Monthly", "Daily", "Per Hour")
+        val periodAdapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, periodList)
+        spnPeriod.adapter = periodAdapter
+
+        limitDropDownMenuHeight(spnPeriod)
+        limitDropDownMenuHeight(spnTime)
 
         spnTime.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val item:String = years_List[position]
+                val item:String = yearsList[position]
                 Toast.makeText(this@GlobalDataActivity, "Year $item selected", Toast.LENGTH_SHORT).show()
                 annee = item
             }
@@ -39,14 +41,14 @@ class GlobalDataActivity : AppCompatActivity() {
         spnPeriod.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val item:String = period_List[position]
+                val item:String = periodList[position]
                 Toast.makeText(this@GlobalDataActivity, "Period $item selected", Toast.LENGTH_SHORT).show()
                 temps = item
             }
         }
     }
 
-    fun limitDropDownmenuHeight(spnTest: Spinner){
+    fun limitDropDownMenuHeight(spnTest: Spinner){
         val popup = Spinner::class.java.getDeclaredField("mPopup")
         popup.isAccessible =true
         val popupWindow =popup.get(spnTest) as ListPopupWindow
