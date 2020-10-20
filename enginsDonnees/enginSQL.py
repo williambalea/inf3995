@@ -33,7 +33,6 @@ class EnginSQL:
             print(f"The error '{e}' occurred")
         return self.connection
 
-
     def query_db(self,query, args=(), one=False):
         myCursor = self.connection.cursor(buffered=True)
         myCursor.execute(query)
@@ -42,15 +41,22 @@ class EnginSQL:
         # cur.connection.close()
         return (r[0] if r else None) if one else r
 
+    def query_pd(self, query):
+        print('1. query to pandas waiting')
+        df = pd.read_sql_query(query, self.connection)
+        print('gotpanda, now to datetime start')
+        df['startDate'] = pd.to_datetime(df['startDate'], infer_datetime_format=True)
+        df['endDate'] = pd.to_datetime(df['endDate'], infer_datetime_format=True)
+        return df
+
+
+
     def toJson(self, data):
         return json.dumps(data)
     
     def jsonToPandas(self, jsonObj):
         return pd.read_json(jsonObj)
 
-    def plot(self, pandas):
-
-        return 0
 
     #queries 
     def getStationCode(self, code):
@@ -70,4 +76,6 @@ class EnginSQL:
         # query += " WHERE startDate LIKE '%4/15%' AND startDate between '4/15/2015 7:58' AND '4/17/2015 8:00' "
         print(query)
         return self.toJson(self.query_db(query))
+        # return self.query_db(query)
         # return query
+    
