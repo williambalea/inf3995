@@ -7,6 +7,9 @@ RUN apt-get install -y curl
 RUN apt-get install -y git
 RUN curl -s "https://cmake.org/files/v3.18/cmake-3.18.2-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local
 
+#Install mysql cppconn
+RUN apt-get install -y libmysqlcppconn-dev
+
 #Install Pistache
 WORKDIR /home
 RUN git clone https://github.com/oktal/pistache.git
@@ -23,7 +26,7 @@ WORKDIR /usr/src/bixi
 COPY . . 
 
 # Compile server
-RUN g++ server.cpp -o server -lpistache -pthread
+RUN g++ server.cpp -o server -lpistache -pthread -lmysqlcppconn
 
 
 #Expose port
