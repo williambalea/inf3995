@@ -6,13 +6,19 @@
 #include <pistache/http.h>
 #include <iostream>
 #include <string>
-#include <vector>
+#include <signal.h>
 #include "mysql.hpp"
 #include "json.hpp"
 
 using namespace Pistache;
 using namespace std;
 using json = nlohmann::json;
+
+volatile sig_atomic_t stop;
+
+void intHandler(int signum) {
+    stop = 1;
+}
 
 class Server {
 public :
@@ -26,8 +32,6 @@ private:
 
     // Routes fonctions
     void newConn  (const Rest::Request& req, Http::ResponseWriter res);
-    void postIP   (const Rest::Request& req, Http::ResponseWriter res); // TODO: remove this
-    void getAllMsg(const Rest::Request& req, Http::ResponseWriter res); // TODO: remove this
     void sendPoll (const Rest::Request& req, Http::ResponseWriter res);
     void getPolls  (const Rest::Request& req, Http::ResponseWriter res);
 
@@ -35,7 +39,6 @@ private:
     Rest::Router router;
     Address addr;
     MySQL db;
-    vector<string> msgs; // Pour livrable 1 seulement.
 };
 
 
@@ -48,15 +51,21 @@ Server::Server(Address &addr_, MySQL &db_) {
 }
 
 void Server::run() {
+    // For ctl+C
+    signal(SIGINT, intHandler);
+    stop = 0;
+
     httpEndpoint->setHandler(router.handler());
     httpEndpoint->serveThreaded();
-    cout << "Server is running on " << addr.host() << ":" << addr.port() << " ..." << endl;
+    cout << "Server is running on " << addr.host() << ":" << addr.port() << endl;
+    
+    // TODO: remove dummies
     createDummies();
-    string command = "";
-    while (command != "stop") {
-        cin >> command;
-    }
-    cout << "Stopping server.\n" ;
+
+    // listening for a ctl+C
+    while (!stop) {}
+
+    cout << "shutting down...\n";
     httpEndpoint->shutdown();
 }
 
@@ -69,8 +78,6 @@ void Server::init() {
 void Server::setupRoutes() {
     using namespace Rest;
     Routes::Get (router, "/server/", Routes::bind(&Server::newConn, this));
-    Routes::Post(router, "/server/ip_server", Routes::bind(&Server::postIP, this)); // TODO: remove this
-    Routes::Get (router, "/server/messages", Routes::bind(&Server::getAllMsg, this)); // TODO: remove this
     Routes::Post(router, "/server/survey", Routes::bind(&Server::sendPoll, this));
     Routes::Get (router, "/server/survey", Routes::bind(&Server::getPolls, this)); 
 }
@@ -78,21 +85,7 @@ void Server::setupRoutes() {
 // Routes fonctions
 void Server::newConn (const Rest::Request& req, Http::ResponseWriter res) {
     res.send(Http::Code::Ok, "Connected to server!");
-    cout << "connection established" << endl;
-}
-
-void Server::postIP (const Rest::Request& req, Http::ResponseWriter res) {
-    string newMsg = req.body();
-    msgs.push_back(newMsg);
-    res.send(Http::Code::Ok, "Server received IP : " + newMsg + " from Android");
-    cout << newMsg << endl;
-}
-
-void Server::getAllMsg(const Rest::Request& req, Http::ResponseWriter res) {
-    string buffer = "";
-    for (int i = 0; i < msgs.size(); i++)
-        buffer += msgs.at(i) + '\n';
-    res.send(Http::Code::Ok, buffer);
+    cout << "new connection established" << endl;
 }
 
 void Server::sendPoll(const Rest::Request& req, Http::ResponseWriter res) {
@@ -116,7 +109,10 @@ void Server::getPolls(const Rest::Request& req, Http::ResponseWriter res) {
 
 // TODO: remove
 void Server::createDummies() {
+    cout << "creating dummies ";
+    cout.flush();
     for (int i = 0; i < 20; i++) {
+        if (stop) break;
         json j;
         j["email"] = to_string(i) + "@poly.ca";
         j["firstName"] = to_string('a' + i);
@@ -130,7 +126,10 @@ void Server::createDummies() {
             j["age"].get<int>(),
             j["interest"].get<bool>()
         );
+        cout << ".";
+        cout.flush();
     }
-}
+    cout << " Done!\n";
+} // createDummies
 
 #endif // SERVER_HPP
