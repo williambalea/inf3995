@@ -1,14 +1,14 @@
-FROM python:3.8-alpine
+FROM python:3.8.5
 
 #Install dependencies
 RUN mkdir /usr/src/engin1/
 WORKDIR /usr/src/engin1/
-RUN pip3 install Flask
+RUN pip3 install --upgrade pip
+RUN pip3 install Flask mysql-connector-python matplotlib pandas
 COPY . .
 
-ENV FLASK_APP=engin1.py
+ENV FLASK_APP=enginHTTP.py
 ENV FLASK_RUN_HOST=0.0.0.0
-RUN apk add --no-cache gcc musl-dev linux-headers
 
 EXPOSE 5000
 #Start engin1 server
