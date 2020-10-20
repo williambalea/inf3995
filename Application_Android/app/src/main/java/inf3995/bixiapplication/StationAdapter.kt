@@ -61,7 +61,7 @@ class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHol
         holder.dropDownMenu.setOnClickListener{
             //var popupMenu = PopupMenu(this.context,holder.dropDownMenu)
             val wrapper = ContextThemeWrapper(this.context, R.style.BasePopupMenu)
-             val popupMenu = android.widget.PopupMenu(wrapper, holder.dropDownMenu)
+            val popupMenu = android.widget.PopupMenu(wrapper, holder.dropDownMenu)
 
             popupMenu.menuInflater.inflate(R.menu.popup_menu,popupMenu.menu)
             popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->

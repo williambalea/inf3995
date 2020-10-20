@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="code">Code</string>
     <string name="name">Name</string>
     <string name="station_details">Station details</string>
@@ -17,7 +17,6 @@
     <string name="station_predictions">Station Predictions</string>
     <string name="all_about_bixi_stations">ALL ABOUT BIXI STATIONS</string>
     <string name="list_of_stations">LIST OF STATIONS</string>
-    <string name="global_usage_data">GLOBAL USAGE DATA</string>
     <string name="global_usage_statistics">GLOBAL USAGE STATISTICS</string>
     <string name="global_usage_predictions">GLOBAL USAGE PREDICTIONS</string>
     <string name="bixi_stations">BIXI STATIONS</string>
@@ -45,4 +44,10 @@
     <string name="are_you_interested_by_bixi">Are you interested by Bixi?</string>
     <string name="send">Send</string>
     <string name="skip">Skip</string>
+    <string name="choose_period">Choose Period</string>
+    <string name="year">Year</string>
+    <string name="period">Period</string>
+    <string name="display">display</string>
+    <string name="choose_year">Choose Year</string>
+    <string name="global_usage_data">GLOBAL USAGE DATA</string>
 </resources>

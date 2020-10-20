@@ -36,6 +36,7 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
     }
 
 
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         val menuItem = menu!!.findItem(R.id.searchView)
