@@ -10,15 +10,15 @@ enginsql = EnginSQL()
 #     EnginSQL()
 
 
-@app.route('/')
+@app.route('/engin1')
 def hello_world():
-    return 'Hello World'
+    return 'Hello World from Engin 1'
 
-@app.route('/station/<code>')
+@app.route('/engin1/station/<code>')
 def stationCode(code):
     return enginsql.getStationCode(code)
     
-@app.route('/station/all')
+@app.route('/engin1/station/all')
 def allStation():
     return enginsql.getAllStations()
 

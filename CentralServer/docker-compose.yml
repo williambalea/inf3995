@@ -59,8 +59,6 @@ services:
       - "traefik.http.routers.serverContainer-secured.rule=PathPrefix(`/server`)" # <== Your Domain Name for the https rule 
       - "traefik.http.routers.serverContainer-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
       - "traefik.http.routers.serverContainer-secured.tls.certresolver=mytls" # <== Defining certsresolvers for https
-      - "traefik.http.routers.serverContainer-secured.tls=true" # <== Defining certsresolvers for https
-
 
   engin1:
     build: ../enginsDonnees/.
@@ -75,5 +73,3 @@ services:
         - "traefik.http.routers.engin1-secured.rule=PathPrefix(`/engin1`)" # <== Your Domain Name for the https rule 
         - "traefik.http.routers.engin1-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
         - "traefik.http.routers.engin1-secured.tls.certresolver=mytls" # <== Defining certsresolvers for https
-        - "traefik.http.routers.engin1-secured.tls=true" # <== Defining certsresolvers for https
-
