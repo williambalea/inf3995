@@ -36,15 +36,11 @@ timeWeek = "parjourdelasemaine"
 timeMonth = "parmois"
 
 # query = "SELECT * FROM Stations"
-query = "SELECT BixiRentals2014.* FROM BixiRentals2014"
-# query = 'SELECT startDate FROM Bixi.BixiRentals2014 WHERE str_to_date(startDate, %m/%d/%Y %H:%i).HOUR;'
+# query = "SELECT BixiRentals2014.* FROM BixiRentals2014"
 
-# df2 = enginsql.query_pd("SELECT * FROM BixiRentals2017")
-dfcsv = pd.read_csv('../../kaggleData/OD_2014.csv')
-# dfcsv = pd.read_csv('/home/jmlasnier/Desktop/kaggleData/OD_2014.csv')
-# print(dfcsv)
-# engin2.getGraphHour(dfcsv, station)
-# engin2.getGraphMonth(dfcsv, stationToutes, timeMonth)
-engin2.getGraphWeekDay(dfcsv, stationToutes, timeWeek)
-# engin2.getGraphHour(dfcsv, stationToutes, timeHour)
+print('3. reading csv')
+# dfcsv = pd.read_csv('../../kaggleData/OD_2014.csv')
+dfcsv = pd.read_csv('./OD_2016.csv')
 
+print('entering engin2.getgraphperTime func')
+engin2.getGraphPerTime(dfcsv, stationToutes, timeMonth)
