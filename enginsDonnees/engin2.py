@@ -13,141 +13,76 @@ class Engin2:
 
     def __init__(self):
         return None 
-             
-
-    # def getPerHourCountStart(self, df, station):
-    #     # print(station)
-    #     if station != 'toutes':
-    #         #Get indexes where name column has value stationCode
-    #         indexNames = df[df['startStationCode'] != int(station)].index
-    #         #Delete these row indexes from dataFrame
-    #         df.drop(indexNames , inplace=True)
-    #     # print(df)
-    #     print('line27')
-    #     df['startDate'] = pd.to_datetime(df['startDate'])
-    #     print('line29')
-    #     # df.to_csv('after1.csv', index=False) 
-    #     startDateSeries = df['startDate'].values.astype('datetime64[m]')
-    #     print('line32')
-    #     hours = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
-    #     print('5. beginning bincount')
-    #     hourCount = np.bincount(hours)
-    #     # return dict(zip(range(24), hourCount))
-    #     return hourCount
+                      
+    def getPerTimeCountStart(self, df, station, time):
+            #filter rows
+            if station != 'toutes':
+                #Get indexes where name column has value stationCode
+                indexNames = df[df['start_station_code'] != int(station)].index
+                #Delete these row indexes from dataFrame
+                df.drop(indexNames , inplace=True)
+                
+            startDateSeries = df['start_date'].values.astype('datetime64[m]')
+            print('line32') 
+            if time == "parheure":
+                timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
+            elif time == "parjourdelasemaine":
+                timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+4, 7)
+            elif time == "parmois":
+                timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
+            print('5. beginning bincount')
+            timeCount = np.bincount(timeNumber)
+            # return dict(zip(range(24), hourCount))
+            return timeCount
     
-    # def getPerHourCountEnd(self,df, station):
-    #     if station != 'toutes':
-    #         # Get indexes where name column has value john
-    #         indexNames = df[df['endStationCode'] != int(station)].index
-    #         # Delete these row indexes from dataFrame
-    #         df.drop(indexNames , inplace=True)
-    #     # df['endDate'] = pd.to_datetime(df['endDate'], infer_datetime_format=True)
-    #     print('allo')
-    #     startDateSeries = df['endDate'].values.astype('datetime64[m]')
-    #     hours = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
-    #     hourCount = np.bincount(hours)
-    #     # return dict(zip(range(24), counts))
-    #     return hourCount
-          
-
-    def getPerHourCountStart(self, df, station):
-        # print(station)
-        if station != 'toutes':
-            #Get indexes where name column has value stationCode
-            indexNames = df[df['startStationCode'] != int(station)].index
-            #Delete these row indexes from dataFrame
-            df.drop(indexNames , inplace=True)
-        # print(df)
-        print('line27')
-        df['start_date'] = pd.to_datetime(df['start_date'])
-        print('line29')
-        # df.to_csv('after1.csv', index=False) 
-        startDateSeries = df['start_date'].values.astype('datetime64[m]')
-        print('line32')
-        hours = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
-        print('5. beginning bincount')
-        hourCount = np.bincount(hours)
-        # return dict(zip(range(24), hourCount))
-        return hourCount
+    def getPerTimeCountEnd(self, df, station, time):
+            #filter rows
+            if station != 'toutes':
+                #Get indexes where name column has value stationCode
+                indexNames = df[df['end_station_code'] != int(station)].index
+                #Delete these row indexes from dataFrame
+                df.drop(indexNames , inplace=True)
+                
+            startDateSeries = df['end_date'].values.astype('datetime64[m]')
+            if time == "parheure":
+                timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
+            elif time == "parjourdelasemaine":
+                timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+4, 7)
+            elif time == "parmois":
+                timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
+            timeCount = np.bincount(timeNumber)
+            # return dict(zip(range(24), hourCount))
+            return timeCount
     
-    def getPerHourCountEnd(self,df, station):
-        if station != 'toutes':
-            # Get indexes where name column has value john
-            indexNames = df[df['endStationCode'] != int(station)].index
-            # Delete these row indexes from dataFrame
-            df.drop(indexNames , inplace=True)
-        # df['endDate'] = pd.to_datetime(df['endDate'], infer_datetime_format=True)
-        print('allo')
-        startDateSeries = df['end_date'].values.astype('datetime64[m]')
-        hours = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
-        hourCount = np.bincount(hours)
-        # return dict(zip(range(24), counts))
-        return hourCount
-
-    def getPerWeekDayCountStart(self, df, station):
-        if station != 'toutes':
-            # Get indexes where name column has value john
-            indexNames = df[df['start_station_code'] != int(station)].index
-            # Delete these row indexes from dataFrame
-            df.drop(indexNames , inplace=True)
-        df['start_date'] = pd.to_datetime(df['start_date'])
-        startDateSeries = df['start_date'].values.astype('datetime64[m]')
-        #0=thursday, 2=saturday, 4=monday, 6=wednesday
-        #with +4, 0=sunday, 2=tuesday, 5=friday, 6-saturday 
-        days = np.remainder(startDateSeries.astype("M8[D]").astype("int")+4, 7)
-        dayCount = np.bincount(days)
-        # return dict(zip(range(24), counts))
-        return dayCount
-
-    def getPerWeekDayCountEnd(self, df, station):
-        if station != 'toutes':
-            # Get indexes where name column has value john
-            indexNames = df[df['end_station_code'] != int(station)].index
-            # Delete these row indexes from dataFrame
-            df.drop(indexNames , inplace=True)
-        df['end_date'] = pd.to_datetime(df['end_date'])
-        startDateSeries = df['end_date'].values.astype('datetime64[m]')
-        #0=thursday, 2=saturday, 4=monday, 6=wednesday
-        #with +4, 0=sunday, 2=tuesday, 5=friday, 6-saturday 
-        days = np.remainder(startDateSeries.astype("M8[D]").astype("int")+4, 7)
-        dayCount = np.bincount(days)
-        # return dict(zip(range(24), counts))
-        return dayCount
-
-    def getPerMonthCountStart(self, df, station):
-        if station != 'toutes':
-            # Get indexes where name column has value john
-            indexNames = df[df['start_station_code'] != int(station)].index
-            # Delete these row indexes from dataFrame
-            df.drop(indexNames , inplace=True)
-        print(df)
-        df['start_date'] = pd.to_datetime(df['start_date'])
-        startDateSeries = df['start_date'].values.astype('datetime64[m]')
-        print('startDateSeries: ')
-        print(startDateSeries)
-        months = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
-        print('months: ')
-        print(months)
-        monthCount = np.bincount(months)
-        return monthCount
-    
-    def getPerMonthCountEnd(self, df, station):
-        if station != 'toutes':
-            # Get indexes where name column has value john
-            indexNames = df[df['end_station_code'] != int(station)].index
-            # Delete these row indexes from dataFrame
-            df.drop(indexNames , inplace=True)
-        df['end_date'] = pd.to_datetime(df['end_date'])
-        startDateSeries = df['end_date'].values.astype('datetime64[m]')
-        months = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
-        monthCount = np.bincount(months)
-        return monthCount
-
-    def getGraphHour(self, df, station):
+    def getGraphPerTime(self, df, station, time):
         print('2. entering getgraph')
-        hourCountStart = self.getPerHourCountStart(df, station)
+        TimeCountStart = self.getPerTimeCountStart(df, station, time)
         print('6. done with getcountstart ')
-        hourCountEnd = self.getPerHourCountEnd(df, station)
+        TimeCountEnd = self.getPerTimeCountEnd(df, station, time)
+        print('7. done with getcountend')
+        # set width of bar
+        barWidth = 0.25
+        # Set position of bar on X axis
+        r1 = np.arange(len(TimeCountStart))
+        r2 = [x + barWidth for x in r1]
+        # Make the plot
+        plt.bar(r1, TimeCountStart, color='#0A6BF3', width=barWidth, edgecolor='white', label='Start')
+        plt.bar(r2, TimeCountEnd, color='#F3380A', width=barWidth, edgecolor='white', label='End')
+        # Add xticks on the middle of the group bars
+        plt.xlabel('Per Hour', fontweight='bold')
+        plt.ylabel('User Count', fontweight='bold')
+        plt.xticks([r + barWidth for r in range(len(TimeCountStart))], self.hourLabel)
+        plt.title('Bixi usage per Hour of the Day for Station#{}'.format(station))
+        # Create legend & Show graphic
+        plt.legend()
+        plt.show()
+
+
+    def getGraphHour(self, df, station, time):
+        print('2. entering getgraph')
+        hourCountStart = self.getPerTimeCountStart(df, station, time)
+        print('6. done with getcountstart ')
+        hourCountEnd = self.getPerTimeCountEnd(df, station, time)
         print('7. done with getcountend')
         # set width of bar
         barWidth = 0.25
@@ -166,9 +101,14 @@ class Engin2:
         plt.legend()
         plt.show()
 
-    def getGraphWeekDay(self, df, station):
-        weekCountStart = self.getPerWeekDayCountStart(df, station)
-        weekCountEnd = self.getPerWeekDayCountEnd(df, station)
+
+
+    def getGraphWeekDay(self, df, station, time):
+        print('2. entering getgraph')
+        weekCountStart = self.getPerTimeCountStart(df, station, time)
+        print('6. done with getcountstart ')
+        weekCountEnd = self.getPerTimeCountEnd(df, station, time)
+        print('7. got all count')
         # set width of bar
         barWidth = 0.25
         # Set position of bar on X axis
@@ -184,12 +124,13 @@ class Engin2:
         plt.title('Bixi usage per Weekday for Station#{}'.format(station))
         # Create legend & Show graphic
         plt.legend()
-        plt.savefig('foo.png')
-        # plt.show()
+        plt.show()
 
-    def getGraphMonth(self, df, station):
-        monthCountStart = self.getPerMonthCountStart(df, station)
-        monthCountEnd = self.getPerMonthCountEnd(df, station)
+    def getGraphMonth(self, df, station, time):
+        print('2. entering getgraph')
+        monthCountStart = self.getPerTimeCountStart(df, station, time)
+        print('6. done with getcountstart ')
+        monthCountEnd = self.getPerTimeCountEnd(df, station, time)
         # set width of bar
         barWidth = 0.25
         # Set position of bar on X axis

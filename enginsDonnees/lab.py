@@ -25,18 +25,26 @@ enginsql = EnginSQL()
 print('creating engin2')
 engin2 = Engin2()
 
-station = 'toutes'
-year = 2017
+stationToutes = 'toutes'
+station6202 = 6202
+year2014 = 2014
+year2015 = 2015
+year2016 = 2016
+year2017 = 2017
+timeHour = "parheure"
+timeWeek = "parjourdelasemaine"
+timeMonth = "parmois"
 
 # query = "SELECT * FROM Stations"
 query = "SELECT BixiRentals2014.* FROM BixiRentals2014"
 # query = 'SELECT startDate FROM Bixi.BixiRentals2014 WHERE str_to_date(startDate, %m/%d/%Y %H:%i).HOUR;'
 
 # df2 = enginsql.query_pd("SELECT * FROM BixiRentals2017")
-dfcsv = pd.read_csv('/home/jmlasnier/Desktop/kaggleData/OD_2014.csv')
-print(dfcsv)
-dfcsv['start_date'] = pd.to_datetime(dfcsv['start_date'], infer_datetime_format=True)
-dfcsv['end_date'] = pd.to_datetime(dfcsv['end_date'], infer_datetime_format=True)
+dfcsv = pd.read_csv('../../kaggleData/OD_2014.csv')
+# dfcsv = pd.read_csv('/home/jmlasnier/Desktop/kaggleData/OD_2014.csv')
+# print(dfcsv)
 # engin2.getGraphHour(dfcsv, station)
-engin2.getGraphMonth(dfcsv, station)
+# engin2.getGraphMonth(dfcsv, stationToutes, timeMonth)
+engin2.getGraphWeekDay(dfcsv, stationToutes, timeWeek)
+# engin2.getGraphHour(dfcsv, stationToutes, timeHour)
 
