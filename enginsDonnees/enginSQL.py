@@ -14,7 +14,7 @@ class EnginSQL:
     connection = None
     
 
-
+    #constructor
     def __init__(self):
         self.connection = self.create_connection(self.DB_HOSTNAME, self.DB_USERNAME, self.DB_PASSWORD, self.DB_NAMEOFBD)
 
@@ -33,6 +33,7 @@ class EnginSQL:
             print(f"The error '{e}' occurred")
         return self.connection
 
+    #query db then to king of json with ' instead of "
     def query_db(self,query, args=(), one=False):
         myCursor = self.connection.cursor(buffered=True)
         myCursor.execute(query)
@@ -41,7 +42,9 @@ class EnginSQL:
         # cur.connection.close()
         return (r[0] if r else None) if one else r
 
+    #query to db and returns pandas object directly
     def query_pd(self, query):
+        print(query)
         print('1. query to pandas waiting')
         df = pd.read_sql_query(query, self.connection)
         print('gotpanda, now to datetime start')
