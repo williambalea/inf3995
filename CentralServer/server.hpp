@@ -29,7 +29,7 @@ private:
     void setupRoutes();
     void setSIGINTListener();
     void createDummies();
-    void log(string addr, string msg);
+    void log(string msg);
 
     // Routes fonctions
     void newConn  (const Rest::Request& req, Http::ResponseWriter res);
@@ -88,8 +88,8 @@ void Server::setSIGINTListener() {
     sigint = 0;
 }
 
-void Server::log(string addr, string msg) {
-    cout << getTime() << addr << ": " << msg << endl;
+void Server::log(string msg) {
+    cout << getTime() << msg << endl;
 }
 
 /*---------------------------
@@ -97,7 +97,7 @@ void Server::log(string addr, string msg) {
 ---------------------------*/
 void Server::newConn (const Rest::Request& req, Http::ResponseWriter res) {
     res.send(Http::Code::Ok, "Connected to server!");
-    log(req.address().host(), "new connection");
+    log("new connection");
 }
 
 void Server::sendPoll(const Rest::Request& req, Http::ResponseWriter res) {
@@ -111,12 +111,12 @@ void Server::sendPoll(const Rest::Request& req, Http::ResponseWriter res) {
             j.at("interest")
         );
         res.send(Http::Code::Ok, "Server got your survey!");
-        log(req.address().host(), "sent a survey");
+        log("sent a survey");
 
     } catch (json::exception &e) {
         res.send(Http::Code::Bad_Request, e.what());
         string msg = e.what();
-        log(req.address().host(), "failed to send survey " + msg);
+        log("failed to send survey " + msg);
     }
     
 }
@@ -126,10 +126,10 @@ void Server::getPolls(const Rest::Request& req, Http::ResponseWriter res) {
     json data = db.getPolls(err);
     if (!err) {
         res.send(Http::Code::Ok, data.dump());
-        log(req.address().host(), "requested surveys");
+        log("requested surveys");
     } else {
         res.send(Http::Code::Bad_Request, "server couldn't connect to database.");
-        log(req.address().host(), "failed to request surveys. Can't connect to database.");
+        log("failed to request surveys. Can't connect to database.");
     }
 
 }
