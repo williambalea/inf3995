@@ -16,7 +16,7 @@ data class Station(
     var longitude: Float,
     ): Serializable {}
 
-object ServiceBuilder{
+/* object ServiceBuilder{
     private val client = okhttp3.OkHttpClient.Builder().build()
     private val retrofit = Retrofit.Builder()
         .baseUrl("http://${IpAddressDialog.ipAddressInput}:${IpAddressDialog.portInput}/")
@@ -26,24 +26,26 @@ object ServiceBuilder{
     fun<T>buildService(service:Class<T>):T{
         return retrofit.create(service)
     }
-}
+    }
+*/
+
 
 data class data(
-    var caracteristiqueTemps :Int,
-    var valeur: Int
+    var temps :String,
+    var departureValue: Int,
+    var arrivalValue: Int
    ): Serializable {}
 
-data class DataStation(
-    var code :Int,
-    var name: String,
-    var annee: Int,
-    var listData: ArrayList<data>
-    ): Serializable {}
 
-data class StatisticStation(
-    var code :Int,
-    var name: String,
-    var annee: Int,
+data class MonthlyStatisticStation(
+    var donnees: ArrayList<data>,
+    var graphique: String
+): Serializable {}
+
+data class DailyStatisticStation(
+    // var code :Int,
+    //var name: String,
+    //var annee: Int,
     var listData: ArrayList<data>,
     var graphique: String
 ): Serializable {}

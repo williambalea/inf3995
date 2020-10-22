@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import inf3995.test.bixiapplication.R
 
-class global_data_fragment:Fragment() {
+class global_prediction_fragment:Fragment() {
 
     val TAG:String = "Global_data_fragment"
 

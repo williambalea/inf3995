@@ -68,8 +68,6 @@ class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHol
                 when(item.itemId) {
                     R.id.action_popup_details ->
                         context.startActivity(Intent(context, StationCoordinatesActivity::class.java).putExtra("data", station))
-                    R.id.action_popup_data ->
-                        context.startActivity(Intent(context, StationsDataActivity::class.java).putExtra("data", station))
                     R.id.action_popup_statistics ->
                         context.startActivity(Intent(context, StationStatisticsActivity::class.java).putExtra("data", station))
                     R.id.action_popup_predictions ->

@@ -18,8 +18,12 @@ interface WebBixiService {
 
     @GET("/messages")
     fun getPostedMessages():Call<String>
+
     @GET("/station/code")
     fun getStationCode(@Field("body") code: Int):Call<Station>
+
+    @GET("/donnees/usage/<année>/<temps>/<station>")
+    fun getStationStatistics(@Field("body") annee:Int, temps:String, code: Int):Call<String>
 
     @POST("/ip_server")
     fun sendServerIP(@Body ipAddress:String):Call<String>

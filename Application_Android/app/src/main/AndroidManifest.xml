@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name="inf3995.bixiapplication.StationStatistics.MonthlyStationStatisticActivity"></activity>
         <activity android:name="inf3995.bixiapplication.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

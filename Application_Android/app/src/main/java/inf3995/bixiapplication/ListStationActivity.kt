@@ -25,7 +25,7 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
         val ipAddress = "135.19.27.218"
         val port = "2000"
         val port = "2001" */
-
+        /*
         var itemListModal = arrayListOf(
             Station(123, "Cote vertu Est", 11.244456F, 21.076599F),
             Station(452, "Langelier Est", 12.374400F, 22.356466F),
@@ -44,7 +44,7 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
             Station(874, "Cote sainte catherine", 18.321400F, 28.348466F),
             Station(289, "Cote de Liesse", 19.374980F, 49.356466F),
             Station(120, "Avenue papineau", 20.3744180F, 30.986466F))
-
+        */
 
     private val TAG = "Stations List"
     var stationModalList = ArrayList<Station>()
@@ -57,9 +57,9 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.station_list_activity_main)
-        for (item in itemListModal){
+        /*for (item in itemListModal){
             stationModalList.add(item)
-        }
+        }*/
         requestToServer(IpAddressDialog.ipAddressInput, IpAddressDialog.portInput)
         requestConnectionWithServer(IpAddressDialog.ipAddressInput, IpAddressDialog.portInput)
     }
