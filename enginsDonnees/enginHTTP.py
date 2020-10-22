@@ -1,5 +1,6 @@
 from flask import Flask
 from enginSQL import EnginSQL
+from engin2 import Engin2
 app = Flask(__name__)
 
 
@@ -20,7 +21,16 @@ def stationCode(code):
     
 @app.route('/engin1/station/all')
 def allStation():
-    return enginsql.getAllStations()
+    return enginsql.getAllStations() 
+
+@app.route('/donnees/usage/<annee>/<temps>/<station>')
+def dataUsage(annee, temps, station):
+    engin2 = Engin2()
+    path = "../../kaggleData/OD_'{}'".format(annee)
+    path += ".csv"
+    df = pd.read_csv(path)
+
+    return engin2.getGraphPerTime(df, station, temps)
 
     
 # @app.route('/test/<year>')

@@ -27,6 +27,7 @@ engin2 = Engin2()
 
 stationToutes = 'toutes'
 station6202 = 6202
+squareVic = 6043
 year2014 = 2014
 year2015 = 2015
 year2016 = 2016
@@ -40,7 +41,7 @@ timeMonth = "parmois"
 
 print('3. reading csv')
 # dfcsv = pd.read_csv('../../kaggleData/OD_2014.csv')
-dfcsv = pd.read_csv('./OD_2016.csv')
+dfcsv = pd.read_csv('../../kaggleData/OD_2016.csv')
 
 print('entering engin2.getgraphperTime func')
-engin2.getGraphPerTime(dfcsv, stationToutes, timeMonth)
+engin2.getGraphPerTime(dfcsv, squareVic, timeMonth)
