@@ -81,7 +81,11 @@ class SurveyActivity : AppCompatActivity() {
 
         call5.enqueue(object: Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG,"Réponse 2 du Serveur: ${response?.body()}   code:${response?.code()}    message:${response?.message()}")
+                if(!response?.body().isNullOrBlank())
+                    Log.i(TAG,"Réponse 2 du Serveur: ${response?.body()}")
+                else
+                    Log.i(TAG,"${response?.body()} --->   code:${response?.code()}    message:${response?.message()}")
+
                 Toast.makeText(this@SurveyActivity,"your answers were send successfully!", Toast.LENGTH_SHORT).show()
             }
             override fun onFailure(call: Call<String>?, t: Throwable) {

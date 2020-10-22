@@ -69,7 +69,11 @@ class IpAddressDialog: AppCompatDialogFragment() {
 
         call4.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}    code:${response?.code()}   message:${response?.message()}")
+                if(!response?.body().isNullOrBlank())
+                    Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
+                else
+                    Log.i(TAG,"${response?.body()} --->   code:${response?.code()}    message:${response?.message()}")
+
             }
             override fun onFailure(call: Call<String>?, t: Throwable) {
                 Log.i(TAG,"Error when getting message from server!    cause: ${t.cause}     message: ${t.message}")

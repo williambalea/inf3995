@@ -88,7 +88,10 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}    code:${response?.code()}   message:${response?.message()}")
+                if(!response?.body().isNullOrBlank())
+                    Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
+                else
+                    Log.i(TAG,"${response?.body()} --->   code:${response?.code()}    message:${response?.message()}")
                 val arrayStationType = object : TypeToken<Array<Station>>() {}.type
                 val jObj: Array<Station> = Gson().fromJson(response?.body(), arrayStationType)
                 makeRecyclerView(jObj)
