@@ -13,11 +13,18 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.station_list_activity_main.*
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
+
 
 class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
 
@@ -32,7 +39,7 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.station_list_activity_main)
-        requestToServer(IpAddressDialog.ipAddressInput, IpAddressDialog.portInput)
+        requestToServer(IpAddressDialog.ipAddressInput)
     }
 
 
@@ -68,26 +75,28 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
         return true
     }
 
-    private fun requestToServer(ipAddress: String, port: String) {
-
+    private fun requestToServer(ipAddress: String) {
         // get check connexion with Server Hello from Server
+
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://$ipAddress:$port/")
+            .baseUrl("http://$ipAddress")
             .addConverterFactory(ScalarsConverterFactory.create())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         val call: Call<String> = service.getAllStationCode()
 
         call.enqueue(object : Callback<String> {
-            override fun onResponse( call: Call<String>?, response: Response<String>?) {
-               Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
+            override fun onResponse(call: Call<String>?, response: Response<String>?) {
+                Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
                 val arrayStationType = object : TypeToken<Array<Station>>() {}.type
                 val jObj: Array<Station> = Gson().fromJson(response?.body(), arrayStationType)
                 makeRecyclerView(jObj)
                 llProgressBar.visibility = View.GONE
             }
+
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Echec de connexion avec le serveur !!!")
+                Log.i(TAG, "Echec de connexion avec le serveur !!! 1:${t.cause} 2:${t.message}")
             }
         })
     }

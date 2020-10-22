@@ -64,31 +64,25 @@ class SurveyActivity : AppCompatActivity() {
 
         // Post Server Ip address
         val retrofit5 = Retrofit.Builder()
-            .baseUrl("http://${IpAddressDialog.ipAddressInput}:${IpAddressDialog.portInput}/")
+            .baseUrl("https://${IpAddressDialog.ipAddressInput}")
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
 
         var gson = Gson()
         var jsonString = gson.toJson(surveyData)
-
-        /*val surveyJsonObject = JsonObject()
-        surveyJsonObject.addProperty("email", surveyData.email)
-        surveyJsonObject.addProperty("firstName", surveyData.firstName)
-        surveyJsonObject.addProperty("lastName", surveyData.lastName)
-        surveyJsonObject.addProperty("age", surveyData.age)
-        surveyJsonObject.addProperty("interested", surveyData.interest)*/
 
         val service5: WebBixiService = retrofit5.create(WebBixiService::class.java)
         val call5: Call<String> = service5.sendServerSurveyData(jsonString)
 
         call5.enqueue(object: Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG,"Réponse 2 du Serveur: ${response?.body()}")
+                Log.i(TAG,"Réponse 2 du Serveur: ${response?.body()} 3:${response?.code()} 4:${response?.errorBody()} 5:${response?.message()}")
                 Toast.makeText(this@SurveyActivity,"your answers were send successfully!", Toast.LENGTH_SHORT).show()
             }
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG,"Erreur!")
+                Log.i(TAG,"Erreur! 3: ${t.message}   4: ${t.cause}")
                 Toast.makeText(this@SurveyActivity,"Error found while sending!", Toast.LENGTH_SHORT).show()
             }
         })

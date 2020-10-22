@@ -10,7 +10,7 @@ import retrofit2.http.*
 
 interface WebBixiService {
 
-    @GET("/")
+    @GET("/server/")
     fun getHelloWorld():Call<String>
 
   //  @POST("/")
@@ -21,13 +21,10 @@ interface WebBixiService {
     @GET("/station/code")
     fun getStationCode(@Field("body") code: Int):Call<Station>
 
-    @POST("/ip_server")
-    fun sendServerIP(@Body ipAddress:String):Call<String>
-
-    @POST("/survey")
+    @POST("/server/survey")
     fun sendServerSurveyData(@Body survey: String):Call<String>
 
-    @GET("/station/all")
+    @GET("/engin1/station/all")
     fun getAllStationCode(): Call<String>
    // fun getAllStationCode(): Call<ArrayList<Station>>
 

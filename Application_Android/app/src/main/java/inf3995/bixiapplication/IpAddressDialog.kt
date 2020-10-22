@@ -25,7 +25,6 @@ class IpAddressDialog: AppCompatDialogFragment() {
 
     companion object {
         lateinit var ipAddressInput :String
-        lateinit var portInput: String
     }
 
     override fun onCreateView(
@@ -45,14 +44,9 @@ class IpAddressDialog: AppCompatDialogFragment() {
             input(editTextIpAddress){
                 matches("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$").description("Enter a valid IP Address!")
             }
-            input(editTextPort){
-                isNumber().atLeast(1)
-                isNumber().lessThan(65535)
-            }
             submitWith(okButton) { result ->
                 ipAddressInput = editTextIpAddress.text.toString()
-                portInput = editTextPort.text.toString()
-                communicationServer(ipAddressInput, portInput)
+                communicationServer(ipAddressInput)
                 startActivity(Intent(activity, SurveyActivity::class.java))
                 dismiss()
                 //Toast.makeText(activity, "Can't connect to server!", Toast.LENGTH_SHORT).show()
@@ -61,29 +55,13 @@ class IpAddressDialog: AppCompatDialogFragment() {
         cancelButton.setOnClickListener{dismiss()}
     }
 
-    private fun communicationServer (ipAddress:String, port:String){
-
-        // Post Server Ip adress
-        val retrofit5 = Retrofit.Builder()
-            .baseUrl("http://$ipAddress:$port/")
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .build()
-
-        val service5: WebBixiService = retrofit5.create(WebBixiService::class.java)
-        val call5:Call<String> = service5.sendServerIP(ipAddress)
-
-        call5.enqueue(object: Callback<String> {
-            override fun onResponse(call: Call<String>?, response: Response<String>?) {
-
-            }
-            override fun onFailure(call: Call<String>?, t: Throwable) {
-            }
-        })
+    private fun communicationServer (ipAddress:String ){
 
         // Get Hello World
         val retrofit4 = Retrofit.Builder()
-            .baseUrl("http://$ipAddress:$port/")
+            .baseUrl("http://$ipAddress")
             .addConverterFactory(ScalarsConverterFactory.create())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
 
         val service4: WebBixiService = retrofit4.create(WebBixiService::class.java)
@@ -99,8 +77,9 @@ class IpAddressDialog: AppCompatDialogFragment() {
 
         // Get Hello World
         val retrofit2 = Retrofit.Builder()
-            .baseUrl("http://$ipAddress:$port/")
+            .baseUrl("http://$ipAddress")
             .addConverterFactory(ScalarsConverterFactory.create())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
 
         val service2: WebBixiService = retrofit2.create(WebBixiService::class.java)

@@ -17,11 +17,11 @@ data class Station(
     ): Serializable {}
 
 object ServiceBuilder{
-    private val client = okhttp3.OkHttpClient.Builder().build()
+    //private val client = okhttp3.OkHttpClient.Builder().build()
     private val retrofit = Retrofit.Builder()
-        .baseUrl("http://${IpAddressDialog.ipAddressInput}:${IpAddressDialog.portInput}/")
+        .baseUrl("http://${IpAddressDialog.ipAddressInput}")
         .addConverterFactory(GsonConverterFactory.create())
-        .client(client)
+        .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
         .build()
     fun<T>buildService(service:Class<T>):T{
         return retrofit.create(service)
