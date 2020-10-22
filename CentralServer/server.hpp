@@ -65,8 +65,8 @@ void Server::run() {
     // listening for a ctl+C
     while (!sigint) {}
 
-    cout << "shutting down...\n";
     httpEndpoint->shutdown();
+    cout << "server closed\n";
 }
 
 void Server::init() {
@@ -101,22 +101,37 @@ void Server::newConn (const Rest::Request& req, Http::ResponseWriter res) {
 }
 
 void Server::sendPoll(const Rest::Request& req, Http::ResponseWriter res) {
-    json j = json::parse(req.body());
-    db.sendPoll(
-        j["email"].get<string>(),
-        j["firstName"].get<string>(),
-        j["lastName"].get<string>(),
-        j["age"].get<int>(),
-        j["interest"].get<bool>()
-    );
-    res.send(Http::Code::Ok, "Server got your poll!");
-    // TODO: Http::Code::Bad_Request
+    try {
+        json j = json::parse(req.body());
+        db.sendPoll(
+            j.at("lastName"),
+            j.at("firstName"),
+            j.at("email"),
+            j.at("age"),
+            j.at("interest")
+        );
+        res.send(Http::Code::Ok, "Server got your survey!");
+        log(req.address().host(), "sent a survey");
+
+    } catch (json::exception &e) {
+        res.send(Http::Code::Bad_Request, e.what());
+        string msg = e.what();
+        log(req.address().host(), "failed to send survey " + msg);
+    }
+    
 }
 
 void Server::getPolls(const Rest::Request& req, Http::ResponseWriter res) {
-    json data = db.getPolls();
-    res.send(Http::Code::Ok, data.dump());
-    log(req.address().host(), "PC requested polls");
+    bool err;
+    json data = db.getPolls(err);
+    if (!err) {
+        res.send(Http::Code::Ok, data.dump());
+        log(req.address().host(), "requested surveys");
+    } else {
+        res.send(Http::Code::Bad_Request, "server couldn't connect to database.");
+        log(req.address().host(), "failed to request surveys. Can't connect to database.");
+    }
+
 }
 
 /*---------------------------
@@ -155,14 +170,14 @@ void Server::createDummies() {
         j["email"] = to_string(i) + "@poly.ca";
         j["firstName"] = to_string('a' + i);
         j["lastName"] = to_string('A' + i);
-        j["age"] = i;
+        j["age"] = i + 100;
         j["interest"] = (i % 2) ? true : false;
         db.sendPoll(
-            j["email"].get<string>(),
-            j["firstName"].get<string>(),
-            j["lastName"].get<string>(),
-            j["age"].get<int>(),
-            j["interest"].get<bool>()
+            j.at("lastName"),
+            j.at("firstName"),
+            j.at("email"),
+            j.at("age"),
+            j.at("interest")
         );
         cout << ".";
         cout.flush();
