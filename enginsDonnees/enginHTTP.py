@@ -1,9 +1,15 @@
 from flask import Flask
 from enginSQL import EnginSQL
 from engin2 import Engin2
+import pandas as pd
 app = Flask(__name__)
 
-
+# - flask http request
+# - curl localhost:5000
+# run server
+# $ export FLASK_APP=enginHTTP.py
+# $ flask run
+# $ curl 127.0.0.1:5000/route
 
 
 enginsql = EnginSQL()
@@ -23,21 +29,20 @@ def stationCode(code):
 def allStation():
     return enginsql.getAllStations() 
 
-@app.route('/donnees/usage/<annee>/<temps>/<station>')
-def dataUsage(annee, temps, station):
+@app.route('/engin2/data/usage/<year>/<time>/<station>')
+def dataUsage(year, time, station):
+    ye = int(year)
+    ti = str(time)
+    if str(station) == 'toutes':
+        st = st(station)
+    else:
+        st = int(station)
+
     engin2 = Engin2()
-    path = "./kaggleData/OD_'{}'".format(annee)
+    path = "./kaggleData/OD_{}".format(ye)
     path += ".csv"
     df = pd.read_csv(path)
-    countstart = 
-    countend
-    graph = 
-    #conversion construction json
-
-    json1 = 
-    return json1
-
-    
-# @app.route('/test/<year>')
-# def test(year):
-#     return enginsql.getAllYearRaw(year)
+    countStart = engin2.getPerTimeCountStart(df, st, ti)
+    countEnd = engin2.getPerTimeCountEnd(df, st, ti)
+    plt = engin2.getGraphPerTime(countStart, countEnd, st, ti)
+    return engin2.toBase64(plt)

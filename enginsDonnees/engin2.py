@@ -4,11 +4,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import base64
 
 class Engin2:
 
     hourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
-    monthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov']#, 'Dec']
+    monthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     weekDayLabel = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
     def __init__(self):
@@ -28,13 +29,16 @@ class Engin2:
         print('line27') 
         if time == "parheure":
             timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
+            label = self.hourLabel
         elif time == "parjourdelasemaine":
             timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+4, 7)
+            label = self.weekDayLabel
         elif time == "parmois":
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
+            label = self.monthLabel
         print('line 34')
         print(timeNumber)
-        timeCount = np.bincount(timeNumber)
+        timeCount = np.bincount(timeNumber, None, len(label))
         print(timeCount)
         print('dict')
         # print(dict(zip(range(12), hourCount)))
@@ -53,17 +57,29 @@ class Engin2:
         startDateSeries = dfEnd['end_date'].values.astype('datetime64[m]')
         if time == "parheure":
             timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
+            label = self.hourLabel
         elif time == "parjourdelasemaine":
             timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+4, 7)
+            label = self.weekDayLabel
         elif time == "parmois":
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
+            label = self.monthLabel
         print('line55')
-        timeCount = np.bincount(timeNumber)
+        timeCount = np.bincount(timeNumber, None, len(label))
         # return dict(zip(range(24), hourCount))
         return timeCount
     
     def getGraphPerTime(self, countStart, countEnd, station, time):
         print('2. entering getgraph')
+        # print('oldcountstart')
+        # print(oldcountStart)
+        # print('countEnd')
+        # print(countEnd)
+        if time == 'parmois':
+            countStart = countStart[3:len(countStart)-1]
+            countEnd = countEnd[3:len(countEnd)-1]
+        print('countstart')
+        print(countStart)
         # set width of bar
         barWidth = 0.25
         # Set position of bar on X axis
@@ -79,22 +95,32 @@ class Engin2:
         if time == "parheure":
             plt.xlabel('Per Hour', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
-            plt.xticks([r + barWidth for r in range(len(countStart))], self.hourLabel)
+            plt.xticks([r + barWidth for r in range(len(countStart))], self.hourLabel[:len(countStart)])
             plt.title('Bixi usage per Hour of the Day for Station#{}'.format(station))
         elif time == "parjourdelasemaine":
             plt.xlabel('Per Hour', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
-            plt.xticks([r + barWidth for r in range(len(countStart))], self.weekDayLabel)
+            plt.xticks([r + barWidth for r in range(len(countStart))], self.weekDayLabel[:len(countStart)])
             plt.title('Bixi usage per Weekday for Station#{}'.format(station))
         elif time == "parmois":
             plt.xlabel('Per Hour', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
-            plt.xticks([r + barWidth for r in range(len(countStart))], self.monthLabel)
+            plt.xticks([r + barWidth for r in range(len(countStart))], self.monthLabel[3:len(countStart)+3])
             plt.title('Bixi usage per Month for Station#{}'.format(station))
-        
+        print(len(countStart))
+        print(self.monthLabel[3:len(countStart)-1])
         # Create legend & Show graphic
         print('adding legend')
         plt.legend()
         print('showing plot')
         # plt.show()
         return plt
+
+
+    def toBase64(self, plt):
+        plt.savefig('bar.png')
+        with open("bar.png", "rb") as imageFile:
+            str = base64.b64encode(imageFile.read()).decode('utf-8')
+            strg = str[:-1]
+            print(strg)
+        return strg

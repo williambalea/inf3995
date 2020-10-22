@@ -41,16 +41,41 @@ timeMonth = "parmois"
 # query = "SELECT * FROM Stations"
 # query = "SELECT BixiRentals2014.* FROM BixiRentals2014"
 
-print('3. reading csv')
-# dfcsv = pd.read_csv('../../kaggleData/OD_2014.csv')
-# dfcsv = pd.read_csv('./kaggleData/OD_test.csv')
-dfcsv = pd.read_csv('./kaggleData/OD_2016.csv')
-print('countStart)')
-countStart = engin2.getPerTimeCountStart(dfcsv, station5003, timeMonth)
-print('countEnd')
-countEnd = engin2.getPerTimeCountEnd(dfcsv, station5003, timeMonth)
-print('entering engin2.getgraphperTime func')
-plt2 = engin2.getGraphPerTime(countStart, countEnd, station5003, timeMonth)
+# print('3. reading csv')
+# dfcsv = pd.read_csv('../../kaggleData/OD_2016.csv')
+# # dfcsv = pd.read_csv('./kaggleData/OD_test.csv')
+# # dfcsv = pd.read_csv('./kaggleData/OD_20   16.csv')
+# print(dfcsv)
+# print('countStart)')
+# station = squareVic
+# time = timeHour
+# countStart = engin2.getPerTimeCountStart(dfcsv, station, time)
+# print('countEnd')
+# countEnd = engin2.getPerTimeCountEnd(dfcsv, station, time)
+# print('entering engin2.getgraphperTime func')
+# plt2 = engin2.getGraphPerTime(countStart, countEnd, station, time)
+
+# print(engin2.toBase64(plt2))
+
+
+def dataUsage(year, time, station):
+    ye = int(year)
+    ti = str(time)
+    if str(station) == 'toutes':
+        st = st(station)
+    else:
+        st = int(station)
+
+    engin2 = Engin2()
+    path = "./kaggleData/OD_{}".format(ye)
+    path += ".csv"
+    df = pd.read_csv(path)
+    countStart = engin2.getPerTimeCountStart(df, st, ti)
+    countEnd = engin2.getPerTimeCountEnd(df, st, ti)
+    plt = engin2.getGraphPerTime(countStart, countEnd, st, ti)
+    return engin2.toBase64(plt)
+
+print(dataUsage(2016, 'parmois', 6043))
 # plt2.show()
 
 # plt2.savefig('foo.png')
