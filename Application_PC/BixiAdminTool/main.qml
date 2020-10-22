@@ -18,7 +18,7 @@ ApplicationWindow {
 
     Item {
         id: login
-        visible: true
+        visible: !backend.isLoggedIn
 
         LoginPage {
             id: loginPage
@@ -28,7 +28,7 @@ ApplicationWindow {
 
     Item {
         id: app
-        visible: false
+        visible: backend.isLoggedIn
 
         TabBar {
             id: tabBar
@@ -153,6 +153,20 @@ ApplicationWindow {
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 22
                 }
+
+                TextArea {
+                    id: textArea
+                    x: 127
+                    y: 125
+                    width: 1026
+                    height: 662
+                    verticalAlignment: Text.AlignBottom
+                    placeholderText: qsTr("Text Area")
+                    background: Rectangle {
+                        color: "#ffffff"
+                    }
+                }
+
                 background: Rectangle {
                     color: "#f36a6a"
                 }
@@ -173,6 +187,20 @@ ApplicationWindow {
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 22
                 }
+
+                TextArea {
+                    id: textArea1
+                    x: 127
+                    y: 125
+                    width: 1026
+                    height: 662
+                    verticalAlignment: Text.AlignBottom
+                    placeholderText: qsTr("Text Area")
+                    background: Rectangle {
+                        color: "#ffffff"
+                    }
+                }
+
                 background: Rectangle {
                     color: "#0c79b7"
                 }
@@ -193,6 +221,20 @@ ApplicationWindow {
                     verticalAlignment: Text.AlignVCenter
                     font.pointSize: 22
                 }
+
+                TextArea {
+                    id: textArea2
+                    x: 127
+                    y: 125
+                    width: 1026
+                    height: 662
+                    verticalAlignment: Text.AlignBottom
+                    placeholderText: qsTr("Text Area")
+                    background: Rectangle {
+                        color: "#ffffff"
+                    }
+                }
+
                 background: Rectangle {
                     color: "#0c79b7"
                 }

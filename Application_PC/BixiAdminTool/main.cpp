@@ -1,7 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include "backend.h"
-#include "tablemodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +18,6 @@ int main(int argc, char *argv[])
 
     // Registering new QML types here
     qmlRegisterType<BackEnd>("custom.classes", 1, 0, "BackEnd");
-    qmlRegisterType<TableModel>("custom.classes", 1, 0, "TableModel");
 
     engine.load(url);
 

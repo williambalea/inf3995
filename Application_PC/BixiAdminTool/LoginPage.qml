@@ -9,6 +9,7 @@ Page{
     width: parent.width
     height: parent.height
 
+
     Label {
         id: label3
         x: 435
@@ -60,12 +61,26 @@ Page{
         Connections {
             target: loginButton
             onClicked: function() {
-                if (user.text === "admin" && pw.text === "admin") {
-                    login.visible = false;
-                    app.visible = true;
-                }
+                backend.user = user.text;
+                backend.pass = pw.text;
+                backend.login();
+                backend.attemps = false;
             }
         }
+    }
+
+    Text {
+        id: error
+        visible: backend.attemps
+        x: 429
+        y: 604
+        width: 422
+        height: 40
+        color: "#b20909"
+        text: qsTr("Wrong user and/or password")
+        font.pixelSize: 33
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
     }
     
 }

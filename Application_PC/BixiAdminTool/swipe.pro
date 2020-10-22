@@ -12,8 +12,7 @@ QML_IMPORT_MAJOR_VERSION = 1
 
 SOURCES += \
         backend.cpp \
-        main.cpp \
-    tablemodel.cpp
+        main.cpp
 
 RESOURCES += qml.qrc
 
@@ -29,5 +28,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    backend.h \
-    tablemodel.h
+    backend.h
