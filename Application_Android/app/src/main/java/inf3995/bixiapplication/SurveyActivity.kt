@@ -54,8 +54,7 @@ class SurveyActivity : AppCompatActivity() {
             submitWith(buttonSend) { result ->
                 surveyData = SurveyData(editTextEmail.text.toString(), editTextFirstName.text.toString(), editTextLastName.text.toString(), Integer.parseInt(editTextAge.text.toString()),checkBoxYesSurvey.isChecked)
                 sendSurveyData(surveyData)
-                val intent = Intent(this@SurveyActivity, MainScreenActivity::class.java)
-                startActivity(intent)
+
             }
         }
 
@@ -87,12 +86,13 @@ class SurveyActivity : AppCompatActivity() {
                     Log.i(TAG,"Réponse 2 du Serveur: ${response?.body()}")
                 else
                     Log.i(TAG,"${response?.body()} --->   code:${response?.code()}    message:${response?.message()}")
-
+                val intent = Intent(this@SurveyActivity, MainScreenActivity::class.java)
+                startActivity(intent)
             }
             override fun onFailure(call: Call<String>?, t: Throwable) {
                 Log.i(TAG,"Erreur when sending survey!    cause: ${t.cause}    message: ${t.message}")
                 val builder = AlertDialog.Builder(this@SurveyActivity)
-                builder.setTitle("Survey status").setMessage("Error while sending survey to server!")
+                builder.setTitle("Error while sending survey to server!").setMessage("cause: ${t.cause} \n message: ${t.message}")
                 builder.show()
             }
         })

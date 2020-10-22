@@ -84,7 +84,7 @@ class IpAddressDialog: AppCompatDialogFragment() {
             override fun onFailure(call: Call<String>?, t: Throwable) {
                 Log.i(TAG,"Error when getting message from server!    cause: ${t.cause}     message: ${t.message}")
                 val builder = AlertDialog.Builder(requireContext())
-                builder.setTitle("Connection status").setMessage("Connection to server failed!")
+                builder.setTitle("Connection to server failed!").setMessage("cause: ${t.cause} \n message: ${t.message}")
                 builder.show()
             }
         })

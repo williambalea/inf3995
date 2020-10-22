@@ -105,7 +105,7 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
             override fun onFailure(call: Call<String>?, t: Throwable) {
                 Log.i(TAG, "Error when receiving list of stations!    cause:${t.cause}     message:${t.message}")
                 val builder = AlertDialog.Builder(this@ListStationActivity)
-                builder.setTitle("Station list status").setMessage("Error while loading station list!")
+                builder.setTitle("Error while loading station list!").setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()
             }
         })
