@@ -23,6 +23,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
+import java.util.Calendar.SECOND
+import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
@@ -83,7 +85,7 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress")
             .addConverterFactory(ScalarsConverterFactory.create())
-            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().readTimeout(5, TimeUnit.SECONDS).build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         val call: Call<String> = service.getAllStationCode()
