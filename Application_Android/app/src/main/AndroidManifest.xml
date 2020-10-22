@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="inf3995.bixiapplication.MainActivity">
+        <activity android:name="inf3995.bixiapplication.SurveyActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +27,6 @@
         <activity android:name="inf3995.bixiapplication.GlobalDataActivity" />
         <activity android:name="inf3995.bixiapplication.ListStationActivity" />
         <activity android:name="inf3995.bixiapplication.StationCoordinatesActivity" />
-        <activity android:name="inf3995.bixiapplication.SurveyActivity" />
         <activity
             android:name="inf3995.bixiapplication.MainScreen.MainScreenActivity"
             android:windowSoftInputMode="adjustPan" />
