@@ -32,9 +32,10 @@ private:
     void log(string msg);
 
     // Routes fonctions
-    void newConn  (const Rest::Request& req, Http::ResponseWriter res);
-    void sendPoll (const Rest::Request& req, Http::ResponseWriter res);
-    void getPolls  (const Rest::Request& req, Http::ResponseWriter res);
+    void newConn(const Rest::Request& req, Http::ResponseWriter res);
+    void login(const Rest::Request& req, Http::ResponseWriter res);
+    void sendPoll(const Rest::Request& req, Http::ResponseWriter res);
+    void getPolls(const Rest::Request& req, Http::ResponseWriter res);
 
     shared_ptr<Http::Endpoint> httpEndpoint;
     Rest::Router router;
@@ -60,7 +61,7 @@ void Server::run() {
     cout << getTime() << "server is running on " << addr.host() << ":" << addr.port() << endl;
     
     // TODO: remove dummies
-    createDummies();
+    //createDummies();
 
     // listening for a ctl+C
     while (!sigint) {}
@@ -80,7 +81,8 @@ void Server::setupRoutes() {
     using namespace Rest;
     Routes::Get (router, "/server/", Routes::bind(&Server::newConn, this));
     Routes::Post(router, "/server/survey", Routes::bind(&Server::sendPoll, this));
-    Routes::Get (router, "/server/survey", Routes::bind(&Server::getPolls, this)); 
+    Routes::Get (router, "/server/survey", Routes::bind(&Server::getPolls, this));
+    Routes::Get (router, "/server/user/login", Routes::bind(&Server::login, this));
 }
 
 void Server::setSIGINTListener() {
@@ -95,9 +97,26 @@ void Server::log(string msg) {
 /*---------------------------
     Routes Fonction
 ---------------------------*/
-void Server::newConn (const Rest::Request& req, Http::ResponseWriter res) {
+void Server::newConn(const Rest::Request& req, Http::ResponseWriter res) {
     res.send(Http::Code::Ok, "Connected to server!");
     log("new connection");
+}
+
+void Server::login(const Rest::Request& req, Http::ResponseWriter res) {
+    auto headers = req.headers();
+    auto auth = headers.tryGet<Http::Header::Authorization>();
+    bool access = false;
+    if (auth != NULL) {
+        string user = auth.get()->getBasicUser();
+        string pass = auth.get()->getBasicPassword();
+        if (user == "admin" && pass == "admin") {
+            res.send(Http::Code::Ok, "authentified");
+            log("admin authentified");
+            return;
+        }
+    }
+    res.send(Http::Code::Unauthorized, "Unauthorized connection!");
+    log("authentification attempt failed");
 }
 
 void Server::sendPoll(const Rest::Request& req, Http::ResponseWriter res) {
