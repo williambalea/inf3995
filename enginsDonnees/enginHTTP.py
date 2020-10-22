@@ -26,11 +26,16 @@ def allStation():
 @app.route('/donnees/usage/<annee>/<temps>/<station>')
 def dataUsage(annee, temps, station):
     engin2 = Engin2()
-    path = "../../kaggleData/OD_'{}'".format(annee)
+    path = "./kaggleData/OD_'{}'".format(annee)
     path += ".csv"
     df = pd.read_csv(path)
+    countstart = 
+    countend
+    graph = 
+    #conversion construction json
 
-    return engin2.getGraphPerTime(df, station, temps)
+    json1 = 
+    return json1
 
     
 # @app.route('/test/<year>')

@@ -33,8 +33,11 @@ class Engin2:
         elif time == "parmois":
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
         print('line 34')
+        print(timeNumber)
         timeCount = np.bincount(timeNumber)
-        # return dict(zip(range(24), hourCount))
+        print(timeCount)
+        print('dict')
+        # print(dict(zip(range(12), hourCount)))
         return timeCount
     
     def getPerTimeCountEnd(self, df, station, time):

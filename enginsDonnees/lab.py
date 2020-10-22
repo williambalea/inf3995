@@ -43,16 +43,25 @@ timeMonth = "parmois"
 
 print('3. reading csv')
 # dfcsv = pd.read_csv('../../kaggleData/OD_2014.csv')
+# dfcsv = pd.read_csv('./kaggleData/OD_test.csv')
 dfcsv = pd.read_csv('./kaggleData/OD_2016.csv')
 print('countStart)')
-countStart = engin2.getPerTimeCountStart(dfcsv, squareVic, timeMonth)
+countStart = engin2.getPerTimeCountStart(dfcsv, station5003, timeMonth)
 print('countEnd')
-countEnd = engin2.getPerTimeCountEnd(dfcsv, squareVic, timeMonth)
+countEnd = engin2.getPerTimeCountEnd(dfcsv, station5003, timeMonth)
 print('entering engin2.getgraphperTime func')
-plt2 = engin2.getGraphPerTime(countStart, countEnd, stationToutes, timeMonth)
-plt2.show()
+plt2 = engin2.getGraphPerTime(countStart, countEnd, station5003, timeMonth)
+# plt2.show()
 
 # plt2.savefig('foo.png')
+
+# print('this is string')
+# with open("foo.png", "rb") as imageFile:
+#     str = base64.b64encode(imageFile.read())
+#     # print(str)
+# text_file = open("sample.txt", "w")
+# n = text_file.write(str)
+# text_file.close()
 
 # # assume your plot is saved to tfile
 # with open(plt2) as fin:
