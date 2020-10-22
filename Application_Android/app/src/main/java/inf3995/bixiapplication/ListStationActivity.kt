@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import com.google.gson.reflect.TypeToken
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.station_list_activity_main.*
 import okhttp3.OkHttpClient
+import okhttp3.internal.wait
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -99,7 +101,10 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Error when receiving list of stations !!!    cause:${t.cause}     message:${t.message}")
+                Log.i(TAG, "Error when receiving list of stations!    cause:${t.cause}     message:${t.message}")
+                val builder = AlertDialog.Builder(this@ListStationActivity)
+                builder.setTitle("Station list status").setMessage("Error while loading station list!")
+                builder.show()
             }
         })
     }

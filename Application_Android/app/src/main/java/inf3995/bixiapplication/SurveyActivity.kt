@@ -3,7 +3,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.afollestad.vvalidator.form
 import com.google.gson.Gson
 import inf3995.bixiapplication.MainScreen.MainScreenActivity
@@ -86,11 +88,12 @@ class SurveyActivity : AppCompatActivity() {
                 else
                     Log.i(TAG,"${response?.body()} --->   code:${response?.code()}    message:${response?.message()}")
 
-                Toast.makeText(this@SurveyActivity,"your answers were send successfully!", Toast.LENGTH_SHORT).show()
             }
             override fun onFailure(call: Call<String>?, t: Throwable) {
                 Log.i(TAG,"Erreur when sending survey!    cause: ${t.cause}    message: ${t.message}")
-                Toast.makeText(this@SurveyActivity,"Error found while sending!", Toast.LENGTH_SHORT).show()
+                val builder = AlertDialog.Builder(this@SurveyActivity)
+                builder.setTitle("Survey status").setMessage("Error while sending survey to server!")
+                builder.show()
             }
         })
     }
