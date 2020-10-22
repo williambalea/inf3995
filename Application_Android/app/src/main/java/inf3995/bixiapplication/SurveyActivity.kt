@@ -22,10 +22,13 @@ class SurveyActivity : AppCompatActivity() {
 
     lateinit var surveyData: SurveyData
     var TAG :String = "SurveyActivity"
+    val dialog = IpAddressDialog()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.survey)
+        dialog.show(supportFragmentManager, null)
 
         form{
             input(editTextEmail){
@@ -78,11 +81,11 @@ class SurveyActivity : AppCompatActivity() {
 
         call5.enqueue(object: Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG,"Réponse 2 du Serveur: ${response?.body()} 3:${response?.code()} 4:${response?.errorBody()} 5:${response?.message()}")
+                Log.i(TAG,"Réponse 2 du Serveur: ${response?.body()}   code:${response?.code()}    message:${response?.message()}")
                 Toast.makeText(this@SurveyActivity,"your answers were send successfully!", Toast.LENGTH_SHORT).show()
             }
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG,"Erreur! 3: ${t.message}   4: ${t.cause}")
+                Log.i(TAG,"Erreur when sending survey!    cause: ${t.cause}    message: ${t.message}")
                 Toast.makeText(this@SurveyActivity,"Error found while sending!", Toast.LENGTH_SHORT).show()
             }
         })

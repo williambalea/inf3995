@@ -79,7 +79,7 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
         // get check connexion with Server Hello from Server
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://$ipAddress")
+            .baseUrl("https://$ipAddress")
             .addConverterFactory(ScalarsConverterFactory.create())
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
@@ -88,7 +88,7 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
+                Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}    code:${response?.code()}   message:${response?.message()}")
                 val arrayStationType = object : TypeToken<Array<Station>>() {}.type
                 val jObj: Array<Station> = Gson().fromJson(response?.body(), arrayStationType)
                 makeRecyclerView(jObj)
@@ -96,7 +96,7 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Echec de connexion avec le serveur !!! 1:${t.cause} 2:${t.message}")
+                Log.i(TAG, "Error when receiving list of stations !!!    cause:${t.cause}     message:${t.message}")
             }
         })
     }

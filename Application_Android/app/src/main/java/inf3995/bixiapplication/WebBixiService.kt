@@ -13,11 +13,6 @@ interface WebBixiService {
     @GET("/server/")
     fun getHelloWorld():Call<String>
 
-  //  @POST("/")
-   // fun getHelloWorld(@Body ipAddresss: String): Call<String>
-
-    @GET("/messages")
-    fun getPostedMessages():Call<String>
     @GET("/station/code")
     fun getStationCode(@Field("body") code: Int):Call<Station>
 

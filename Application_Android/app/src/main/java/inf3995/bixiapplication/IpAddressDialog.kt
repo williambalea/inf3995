@@ -16,6 +16,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import kotlin.system.exitProcess
 
 
 const val TAG = "SettingsDialog"
@@ -47,19 +48,18 @@ class IpAddressDialog: AppCompatDialogFragment() {
             submitWith(okButton) { result ->
                 ipAddressInput = editTextIpAddress.text.toString()
                 communicationServer(ipAddressInput)
-                startActivity(Intent(activity, SurveyActivity::class.java))
                 dismiss()
                 //Toast.makeText(activity, "Can't connect to server!", Toast.LENGTH_SHORT).show()
             }
         }
-        cancelButton.setOnClickListener{dismiss()}
+        cancelButton.setOnClickListener{ exitProcess(0);}
     }
 
     private fun communicationServer (ipAddress:String ){
 
         // Get Hello World
         val retrofit4 = Retrofit.Builder()
-            .baseUrl("http://$ipAddress")
+            .baseUrl("https://$ipAddress")
             .addConverterFactory(ScalarsConverterFactory.create())
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
@@ -69,28 +69,10 @@ class IpAddressDialog: AppCompatDialogFragment() {
 
         call4.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
+                Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}    code:${response?.code()}   message:${response?.message()}")
             }
             override fun onFailure(call: Call<String>?, t: Throwable) {
-            }
-        })
-
-        // Get Hello World
-        val retrofit2 = Retrofit.Builder()
-            .baseUrl("http://$ipAddress")
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
-            .build()
-
-        val service2: WebBixiService = retrofit2.create(WebBixiService::class.java)
-        val call2: Call<String> = service2.getPostedMessages()
-
-        call2.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse 3 du Serveur: ${response?.body()}")
-
-            }
-            override fun onFailure(call: Call<String>?, t: Throwable) {
+                Log.i(TAG,"Error when getting message from server!    cause: ${t.cause}     message: ${t.message}")
             }
         })
 
