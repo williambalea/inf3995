@@ -3,7 +3,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.afollestad.vvalidator.form
 import com.google.gson.Gson
 import inf3995.bixiapplication.MainScreen.MainScreenActivity
@@ -22,10 +24,13 @@ class SurveyActivity : AppCompatActivity() {
 
     lateinit var surveyData: SurveyData
     var TAG :String = "SurveyActivity"
+    val dialog = IpAddressDialog()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.survey)
+        dialog.show(supportFragmentManager, null)
 
         form{
             input(editTextEmail){
@@ -49,8 +54,7 @@ class SurveyActivity : AppCompatActivity() {
             submitWith(buttonSend) { result ->
                 surveyData = SurveyData(editTextEmail.text.toString(), editTextFirstName.text.toString(), editTextLastName.text.toString(), Integer.parseInt(editTextAge.text.toString()),checkBoxYesSurvey.isChecked)
                 sendSurveyData(surveyData)
-                val intent = Intent(this@SurveyActivity, MainScreenActivity::class.java)
-                startActivity(intent)
+
             }
         }
 
@@ -64,32 +68,32 @@ class SurveyActivity : AppCompatActivity() {
 
         // Post Server Ip address
         val retrofit5 = Retrofit.Builder()
-            .baseUrl("http://${IpAddressDialog.ipAddressInput}:${IpAddressDialog.portInput}/")
+            .baseUrl("https://${IpAddressDialog.ipAddressInput}")
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
 
         var gson = Gson()
         var jsonString = gson.toJson(surveyData)
-
-        /*val surveyJsonObject = JsonObject()
-        surveyJsonObject.addProperty("email", surveyData.email)
-        surveyJsonObject.addProperty("firstName", surveyData.firstName)
-        surveyJsonObject.addProperty("lastName", surveyData.lastName)
-        surveyJsonObject.addProperty("age", surveyData.age)
-        surveyJsonObject.addProperty("interested", surveyData.interest)*/
 
         val service5: WebBixiService = retrofit5.create(WebBixiService::class.java)
         val call5: Call<String> = service5.sendServerSurveyData(jsonString)
 
         call5.enqueue(object: Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG,"Réponse 2 du Serveur: ${response?.body()}")
-                Toast.makeText(this@SurveyActivity,"your answers were send successfully!", Toast.LENGTH_SHORT).show()
+                if(!response?.body().isNullOrBlank())
+                    Log.i(TAG,"Réponse 2 du Serveur: ${response?.body()}")
+                else
+                    Log.i(TAG,"${response?.body()} --->   code:${response?.code()}    message:${response?.message()}")
+                val intent = Intent(this@SurveyActivity, MainScreenActivity::class.java)
+                startActivity(intent)
             }
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG,"Erreur!")
-                Toast.makeText(this@SurveyActivity,"Error found while sending!", Toast.LENGTH_SHORT).show()
+                Log.i(TAG,"Erreur when sending survey!    cause: ${t.cause}    message: ${t.message}")
+                val builder = AlertDialog.Builder(this@SurveyActivity)
+                builder.setTitle("Error while sending survey to server!").setMessage("cause: ${t.cause} \n message: ${t.message}")
+                builder.show()
             }
         })
     }

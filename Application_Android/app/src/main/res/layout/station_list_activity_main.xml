@@ -6,7 +6,14 @@
     android:orientation="vertical"
     android:background="@drawable/background_bg"
     android:layout_height="match_parent"
-    tools:context="inf3995.bixiapplication.ListStationActivity" >
+    tools:context="inf3995.bixiapplication.ListStationActivity">
+
+    <!---progress bar-->
+    <include
+        android:id="@+id/llProgressBar"
+        android:visibility="visible"
+        layout="@layout/progress_bar"/>
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_height="wrap_content"
