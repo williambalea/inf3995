@@ -9,6 +9,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import base64
 
 HOST_NAME = "34.70.117.28"
 USER_NAME = "root"
@@ -27,6 +28,7 @@ engin2 = Engin2()
 
 stationToutes = 'toutes'
 station6202 = 6202
+station5003 = 5003
 squareVic = 6043
 year2014 = 2014
 year2015 = 2015
@@ -41,7 +43,19 @@ timeMonth = "parmois"
 
 print('3. reading csv')
 # dfcsv = pd.read_csv('../../kaggleData/OD_2014.csv')
-dfcsv = pd.read_csv('../../kaggleData/OD_2016.csv')
-
+dfcsv = pd.read_csv('./kaggleData/OD_2016.csv')
+print('countStart)')
+countStart = engin2.getPerTimeCountStart(dfcsv, squareVic, timeMonth)
+print('countEnd')
+countEnd = engin2.getPerTimeCountEnd(dfcsv, squareVic, timeMonth)
 print('entering engin2.getgraphperTime func')
-engin2.getGraphPerTime(dfcsv, squareVic, timeMonth)
+plt2 = engin2.getGraphPerTime(countStart, countEnd, stationToutes, timeMonth)
+plt2.show()
+
+# plt2.savefig('foo.png')
+
+# # assume your plot is saved to tfile
+# with open(plt2) as fin:
+#     read_in = fin.read()
+#     b64_data = base64.urlsafe_b64encode(read_in.decode('utf-8'))
+# # now send over the network

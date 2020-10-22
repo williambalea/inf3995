@@ -15,88 +15,83 @@ class Engin2:
         return None 
                       
     def getPerTimeCountStart(self, df, station, time):
-            #filter rows
-            print('filtering timecountstart')
-            if station != 'toutes':
-                #Get indexes where name column has value stationCode
-                indexNames = df[df['start_station_code'] != int(station)].index
-                #Delete these row indexes from dataFrame
-                df.drop(indexNames , inplace=True)
-            print('line25')
-            startDateSeries = df['start_date'].values.astype('datetime64[m]')
-            print('line27') 
-            if time == "parheure":
-                timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
-            elif time == "parjourdelasemaine":
-                timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+4, 7)
-            elif time == "parmois":
-                timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
-            print('line 34')
-            timeCount = np.bincount(timeNumber)
-            # return dict(zip(range(24), hourCount))
-            return timeCount
+        dfStart = df[['start_date', 'start_station_code']].copy()
+        #filter rows
+        print('filtering timecountstart')
+        if station != 'toutes':
+            #Get indexes where name column has value stationCode
+            indexNames = dfStart[dfStart['start_station_code'] != int(station)].index
+            #Delete these row indexes from dataFrame
+            dfStart.drop(indexNames , inplace=True)
+        print('line25')
+        startDateSeries = dfStart['start_date'].values.astype('datetime64[m]')
+        print('line27') 
+        if time == "parheure":
+            timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
+        elif time == "parjourdelasemaine":
+            timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+4, 7)
+        elif time == "parmois":
+            timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
+        print('line 34')
+        timeCount = np.bincount(timeNumber)
+        # return dict(zip(range(24), hourCount))
+        return timeCount
     
     def getPerTimeCountEnd(self, df, station, time):
-            #filter rows
-            print('line41')
-            if station != 'toutes':
-                #Get indexes where name column has value stationCode
-                indexNames = df[df['end_station_code'] != int(station)].index
-                #Delete these row indexes from dataFrame
-                df.drop(indexNames , inplace=True)
-            print('line47')
-            startDateSeries = df['end_date'].values.astype('datetime64[m]')
-            if time == "parheure":
-                timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
-            elif time == "parjourdelasemaine":
-                timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+4, 7)
-            elif time == "parmois":
-                timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
-            print('line55')
-            timeCount = np.bincount(timeNumber)
-            # return dict(zip(range(24), hourCount))
-            return timeCount
-    
-    def getGraphPerTime(self, df, station, time):
-        dfStart = df[['start_date', 'start_station_code']].copy()
         dfEnd = df[['end_date', 'end_station_code']].copy()
-        print(dfStart)
-        print('allo1 creating')
+        #filter rows
+        print('line41')
+        if station != 'toutes':
+            #Get indexes where name column has value stationCode
+            indexNames = dfEnd[dfEnd['end_station_code'] != int(station)].index
+            #Delete these row indexes from dataFrame
+            dfEnd.drop(indexNames , inplace=True)
+        print('line47')
+        startDateSeries = dfEnd['end_date'].values.astype('datetime64[m]')
+        if time == "parheure":
+            timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
+        elif time == "parjourdelasemaine":
+            timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+4, 7)
+        elif time == "parmois":
+            timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
+        print('line55')
+        timeCount = np.bincount(timeNumber)
+        # return dict(zip(range(24), hourCount))
+        return timeCount
+    
+    def getGraphPerTime(self, countStart, countEnd, station, time):
         print('2. entering getgraph')
-        TimeCountStart = self.getPerTimeCountStart(dfStart, station, time)
-        TimeCountEnd = self.getPerTimeCountEnd(dfEnd, station, time)
-        print('6. done with getcountstart ')
-        print('7. done with getcountend')
         # set width of bar
         barWidth = 0.25
         # Set position of bar on X axis
         print('setting position of bar')
-        r1 = np.arange(len(TimeCountStart))
+        r1 = np.arange(len(countStart))
         r2 = [x + barWidth for x in r1]
         # Make the plot
         print('making the plot')
-        plt.bar(r1, TimeCountStart, color='#0A6BF3', width=barWidth, edgecolor='white', label='Start')
-        plt.bar(r2, TimeCountEnd, color='#F3380A', width=barWidth, edgecolor='white', label='End')
+        plt.bar(r1, countStart, color='#0A6BF3', width=barWidth, edgecolor='white', label='Start')
+        plt.bar(r2, countEnd, color='#F3380A', width=barWidth, edgecolor='white', label='End')
         # Add xticks on the middle of the group bars
         ('adding xticks')
         if time == "parheure":
             plt.xlabel('Per Hour', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
-            plt.xticks([r + barWidth for r in range(len(TimeCountStart))], self.hourLabel)
+            plt.xticks([r + barWidth for r in range(len(countStart))], self.hourLabel)
             plt.title('Bixi usage per Hour of the Day for Station#{}'.format(station))
         elif time == "parjourdelasemaine":
             plt.xlabel('Per Hour', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
-            plt.xticks([r + barWidth for r in range(len(TimeCountStart))], self.weekDayLabel)
+            plt.xticks([r + barWidth for r in range(len(countStart))], self.weekDayLabel)
             plt.title('Bixi usage per Weekday for Station#{}'.format(station))
         elif time == "parmois":
             plt.xlabel('Per Hour', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
-            plt.xticks([r + barWidth for r in range(len(TimeCountStart))], self.monthLabel)
+            plt.xticks([r + barWidth for r in range(len(countStart))], self.monthLabel)
             plt.title('Bixi usage per Month for Station#{}'.format(station))
         
         # Create legend & Show graphic
         print('adding legend')
         plt.legend()
         print('showing plot')
-        plt.show()
+        # plt.show()
+        return plt
