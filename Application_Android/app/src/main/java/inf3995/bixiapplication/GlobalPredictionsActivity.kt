@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import inf3995.bixiapplication.Fragment.global_prediction_fragment
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_global_predictions.*
 
@@ -55,8 +54,8 @@ class GlobalPredictionsActivity : AppCompatActivity() {
 
     fun showGlobal_data_fragment(){
         val transaction = manager.beginTransaction()
-        val fragment = global_prediction_fragment()
-        transaction.replace(R.id.global_data_fragment_holder, fragment)
+       // val fragment = global_prediction_fragment()
+      //  transaction.replace(R.id.global_data_fragment_holder, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
     }

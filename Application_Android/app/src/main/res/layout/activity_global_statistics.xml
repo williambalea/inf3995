@@ -7,7 +7,7 @@
     android:background="@drawable/background_bg"
     android:orientation="vertical"
     android:weightSum="9"
-    tools:context="inf3995.bixiapplication.GlobalDataActivity">
+    tools:context="inf3995.bixiapplication.GlobalStatisticsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

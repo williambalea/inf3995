@@ -7,9 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import inf3995.bixiapplication.Fragment.global_data_fragment
 import android.util.Base64
-import android.view.View
 import android.widget.*
 import inf3995.bixiapplication.StationStatistics.DailyStationStatisticActivity
 import inf3995.bixiapplication.StationStatistics.HourlyStationStatisticActivity
@@ -18,7 +16,6 @@ import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.*
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
-import kotlinx.android.synthetic.main.activity_stations_data.*
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
 import kotlinx.android.synthetic.main.activity_global_predictions.*

@@ -29,6 +29,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.ByteArrayOutputStream
+import java.util.concurrent.TimeUnit
 
 class MonthlyStationStatisticActivity : AppCompatActivity() {
 
@@ -60,18 +61,19 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
 
         myTableLayout = findViewById(R.id.table_main)
         myImageString = findViewById(R.id.image)
-        requestToServer(IpAddressDialog.ipAddressInput, IpAddressDialog.portInput)
+        requestToServer(IpAddressDialog.ipAddressInput)
         image.setImageBitmap(Base64Util.convertStringToBitmap(myImageString))
     }
 
 
 
-    private fun requestToServer(ipAddress: String, port: String) {
+    private fun requestToServer(ipAddress: String) {
 
         // get check connexion with Server Hello from Server
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://$ipAddress:$port/")
+            .baseUrl("https://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         val call: Call<String> = service.getStationStatistics(annee!!, temps, code!!)
