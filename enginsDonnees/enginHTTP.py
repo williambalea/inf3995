@@ -13,6 +13,7 @@ app = Flask(__name__)
 
 
 enginsql = EnginSQL()
+engin2 = Engin2()
 # with app.app_context():
 #     EnginSQL()
 
@@ -31,18 +32,4 @@ def allStation():
 
 @app.route('/engin2/data/usage/<year>/<time>/<station>')
 def dataUsage(year, time, station):
-    ye = int(year)
-    ti = str(time)
-    if str(station) == 'toutes':
-        st = st(station)
-    else:
-        st = int(station)
-
-    engin2 = Engin2()
-    path = "./kaggleData/OD_{}".format(ye)
-    path += ".csv"
-    df = pd.read_csv(path)
-    countStart = engin2.getPerTimeCountStart(df, st, ti)
-    countEnd = engin2.getPerTimeCountEnd(df, st, ti)
-    plt = engin2.getGraphPerTime(countStart, countEnd, st, ti)
-    return engin2.toBase64(plt)
+    return engin2.dataGraphtoJSON(year, time, station)

@@ -10,6 +10,7 @@ class Engin2:
 
     hourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
     monthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    monthLabel2 = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov']
     weekDayLabel = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
     def __init__(self):
@@ -122,5 +123,32 @@ class Engin2:
         with open("bar.png", "rb") as imageFile:
             str = base64.b64encode(imageFile.read()).decode('utf-8')
             strg = str[:-1]
-            print(strg)
+            # print(strg)
         return strg
+
+    def dataGraphtoJSON(self, year, time, station):
+        ye = int(year)
+        ti = str(time)
+        if str(station) == 'toutes':
+            st = st(station)
+        else:
+            st = int(station)
+
+        path = "./kaggleData/OD_{}".format(ye)
+        path += ".csv"
+        df = pd.read_csv(path)
+        countStart = self.getPerTimeCountStart(df, st, ti)
+        countEnd = self.getPerTimeCountEnd(df, st, ti)
+        graphString = self.toBase64(self.getGraphPerTime(countStart, countEnd, st, ti))
+        
+        myJson =  '{  "donnees":{ "time":[], "departureValue":[], "arrivalValue":[] }, "graph":[] }'
+
+        o = json.loads(myJson)
+        o["donnees"]["time"] = self.monthLabel2
+        o["donnees"]["departureValue"] = countStart[3:len(countStart)-1].tolist()
+        o["donnees"]["arrivalValue"] = countEnd[3:len(countEnd)-1].tolist()
+        o["graph"] = graphString
+
+        # newJSON = json.dumps(o)
+        
+        return json.dumps(o)

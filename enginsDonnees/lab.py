@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import base64
+from easydict import EasyDict as edict
 
 HOST_NAME = "34.70.117.28"
 USER_NAME = "root"
@@ -59,6 +60,10 @@ timeMonth = "parmois"
 
 
 def dataUsage(year, time, station):
+    hourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
+    monthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    monthLabel2 = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov']
+    weekDayLabel = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
     ye = int(year)
     ti = str(time)
     if str(station) == 'toutes':
@@ -72,10 +77,34 @@ def dataUsage(year, time, station):
     df = pd.read_csv(path)
     countStart = engin2.getPerTimeCountStart(df, st, ti)
     countEnd = engin2.getPerTimeCountEnd(df, st, ti)
-    plt = engin2.getGraphPerTime(countStart, countEnd, st, ti)
-    return engin2.toBase64(plt)
+    graphString = engin2.toBase64(engin2.getGraphPerTime(countStart, countEnd, st, ti))
+    # countStart[3:len(countStart)-1],
+    print('coutstart:')
+    print(countStart[3:len(countStart)-1])
+    print('countEnd:')
+    print(countEnd[3:len(countStart)-1])
+    print('monthLabel')
+    print(monthLabel2)
+    # myJson =  '{  "donnees":{"time":[], "startCount":[], "endCount":[] }, "graph":[] }'
+    myJson =  '{  "donnees":{ "time":[], "departureValue":[], "arrivalValue":[] }, "graph":[] }'
 
-print(dataUsage(2016, 'parmois', 6043))
+
+    o = json.loads(myJson)
+    o["donnees"]["time"] = monthLabel2
+    o["donnees"]["startCount"] = countStart[3:len(countStart)-1].tolist()
+    o["donnees"]["endCount"] = countEnd[3:len(countEnd)-1].tolist()
+    o["graph"] = graphString
+
+    newJSON = json.dumps(o)
+    
+    return newJSON
+# print(dataUsage(2016, 'parmois', 6043))
+
+print('alloallo')
+print(engin2.dataGraphtoJSON(2016, 'parmois', 6043))
+# data = dataUsage(2016, 'parmois', 6043)
+# myjson = json.dumps(data)
+# print(myjson)
 # plt2.show()
 
 # plt2.savefig('foo.png')
