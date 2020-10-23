@@ -1,11 +1,19 @@
 from flask import Flask
 from enginSQL import EnginSQL
+from engin2 import Engin2
+import pandas as pd
 app = Flask(__name__)
 
-
+# - flask http request
+# - curl localhost:5000
+# run server
+# $ export FLASK_APP=enginHTTP.py
+# $ flask run
+# $ curl 127.0.0.1:5000/route
 
 
 enginsql = EnginSQL()
+engin2 = Engin2()
 # with app.app_context():
 #     EnginSQL()
 
@@ -20,9 +28,8 @@ def stationCode(code):
     
 @app.route('/engin1/station/all')
 def allStation():
-    return enginsql.getAllStations()
+    return enginsql.getAllStations() 
 
-    
-# @app.route('/test/<year>')
-# def test(year):
-#     return enginsql.getAllYearRaw(year)
+@app.route('/engin2/data/usage/<year>/<time>/<station>')
+def dataUsage(year, time, station):
+    return engin2.dataGraphtoJSON(year, time, station)

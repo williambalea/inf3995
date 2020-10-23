@@ -9,6 +9,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import base64
+from easydict import EasyDict as edict
 
 HOST_NAME = "34.70.117.28"
 USER_NAME = "root"
@@ -20,84 +22,103 @@ URL_POST_TEMP = "/serveur/code"
 PORT = 2000
 
 colors = ["#006D2C", "#31A354", "#74C476"]
-
+print('creating enginsql')
 enginsql = EnginSQL()
+print('creating engin2')
 engin2 = Engin2()
 
-station = 'toutes'
-year = 2015
+stationToutes = 'toutes'
+station6202 = 6202
+station5003 = 5003
+squareVic = 6043
+year2014 = 2014
+year2015 = 2015
+year2016 = 2016
+year2017 = 2017
+timeHour = "parheure"
+timeWeek = "parjourdelasemaine"
+timeMonth = "parmois"
+
+# query = "SELECT * FROM Stations"
+# query = "SELECT BixiRentals2014.* FROM BixiRentals2014"
+
+# print('3. reading csv')
+# dfcsv = pd.read_csv('../../kaggleData/OD_2016.csv')
+# # dfcsv = pd.read_csv('./kaggleData/OD_test.csv')
+# # dfcsv = pd.read_csv('./kaggleData/OD_20   16.csv')
+# print(dfcsv)
+# print('countStart)')
+# station = squareVic
+# time = timeHour
+# countStart = engin2.getPerTimeCountStart(dfcsv, station, time)
+# print('countEnd')
+# countEnd = engin2.getPerTimeCountEnd(dfcsv, station, time)
+# print('entering engin2.getgraphperTime func')
+# plt2 = engin2.getGraphPerTime(countStart, countEnd, station, time)
+
+# print(engin2.toBase64(plt2))
 
 
-#create dataframe
-amijson = enginsql.getDataUsage(2015, "5003")
-df = enginsql.jsonToPandas(amijson)
+def dataUsage(year, time, station):
+    hourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
+    monthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    monthLabel2 = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov']
+    weekDayLabel = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    ye = int(year)
+    ti = str(time)
+    if str(station) == 'toutes':
+        st = st(station)
+    else:
+        st = int(station)
 
-#convert string to datetime type
-df['endDate'] = pd.to_datetime(df['endDate'])
-
-
-
-print('Par heures:')
-hourCountStart = engin2.getPerHourCountStart(df)
-hourCountEnd = engin2.getPerHourCountEnd(df)
-# print(hourCountEnd)
-# print(hourCountStart)
-# new = np.stack((hourCountStart, hourCountEnd), axis=1)
-# print("new: ")
-# print(new)
-# sns.displot(list(new), multiple="stack", rug=True)
-# plt.show()
-
-# set width of bar
-barWidth = 0.25
- 
-# set height of bar
-bars1 = [12, 30, 1, 8, 22]
-bars2 = [28, 6, 16, 5, 10]
-bars3 = [29, 3, 24, 25, 17]
- 
-# Set position of bar on X axis
-r1 = np.arange(len(hourCountStart))
-r2 = [x + barWidth for x in r1]
- 
-# Make the plot
-plt.bar(r1, hourCountStart, color='#0A6BF3', width=barWidth, edgecolor='white', label='Start')
-plt.bar(r2, hourCountEnd, color='#F3380A', width=barWidth, edgecolor='white', label='End')
- 
-# Add xticks on the middle of the group bars
-plt.xlabel('Per Hour', fontweight='bold')
-plt.ylabel('User Count', fontweight='bold')
-plt.xticks([r + barWidth for r in range(len(hourCountStart))], ['0h', '1h', '02', '03', '04', '05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23'])
- 
-# Create legend & Show graphic
-plt.legend()
-plt.show()
-# print('Par jour de la semaine:')
-# print(getPerWeekDayCount(df))
-# print('Par heure:')
-# print(getPerHourCountStart(df))
+    engin2 = Engin2()
+    path = "./kaggleData/OD_{}".format(ye)
+    path += ".csv"
+    df = pd.read_csv(path)
+    countStart = engin2.getPerTimeCountStart(df, st, ti)
+    countEnd = engin2.getPerTimeCountEnd(df, st, ti)
+    graphString = engin2.toBase64(engin2.getGraphPerTime(countStart, countEnd, st, ti))
+    # countStart[3:len(countStart)-1],
+    print('coutstart:')
+    print(countStart[3:len(countStart)-1])
+    print('countEnd:')
+    print(countEnd[3:len(countStart)-1])
+    print('monthLabel')
+    print(monthLabel2)
+    # myJson =  '{  "donnees":{"time":[], "startCount":[], "endCount":[] }, "graph":[] }'
+    myJson =  '{  "donnees":{ "time":[], "departureValue":[], "arrivalValue":[] }, "graph":[] }'
 
 
-# sns.displot(list(startCount), list(endCount),  multiple="stack", rug=True)
-# sns.displot(list(endCount), multiple="stack", rug=True)
-# plt.show()
+    o = json.loads(myJson)
+    o["donnees"]["time"] = monthLabel2
+    o["donnees"]["startCount"] = countStart[3:len(countStart)-1].tolist()
+    o["donnees"]["endCount"] = countEnd[3:len(countEnd)-1].tolist()
+    o["graph"] = graphString
 
+    newJSON = json.dumps(o)
+    
+    return newJSON
+# print(dataUsage(2016, 'parmois', 6043))
 
-#potential solution
-# df = df.set_index('startDate')
-# test = df.groupby(df.index.hour).count()
-# print(test)
+print('alloallo')
+print(engin2.dataGraphtoJSON(2016, 'parmois', 6043))
+# data = dataUsage(2016, 'parmois', 6043)
+# myjson = json.dumps(data)
+# print(myjson)
+# plt2.show()
 
+# plt2.savefig('foo.png')
 
+# print('this is string')
+# with open("foo.png", "rb") as imageFile:
+#     str = base64.b64encode(imageFile.read())
+#     # print(str)
+# text_file = open("sample.txt", "w")
+# n = text_file.write(str)
+# text_file.close()
 
-
-# startDateDf = startDateDf.set_index('startDate')
-# df.set_index(StartDate)
-df.to_csv('out2.csv', index=False) 
-# a scatter plot comparing num_children and num_pets
-# print(test)
-# df.plot(kind='bar',x='id',y='durationSec',color='red')
-# plt.show()
-
-
-
+# # assume your plot is saved to tfile
+# with open(plt2) as fin:
+#     read_in = fin.read()
+#     b64_data = base64.urlsafe_b64encode(read_in.decode('utf-8'))
+# # now send over the network
