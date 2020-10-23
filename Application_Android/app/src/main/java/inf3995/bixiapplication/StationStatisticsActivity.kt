@@ -81,26 +81,26 @@ class StationStatisticsActivity : AppCompatActivity() {
             when (temps){
                 "parmois"-> {
                     val intent = Intent(this@StationStatisticsActivity, MonthlyStationStatisticActivity::class.java)
-                    intent.putExtra("Code", code)
+                    intent.putExtra("data", station)
                     intent.putExtra("Annee", annee)
-                    intent.putExtra("Name", name)
+                    //intent.putExtra("Name", name)
                     intent.putExtra("Temps", temps)
                     startActivity(intent)
 
                 }
                 "parjourdelasemaine"-> {
                     val intent = Intent(this@StationStatisticsActivity, DailyStationStatisticActivity::class.java)
-                    intent.putExtra("Code", code)
+                    intent.putExtra("data", station)
                     intent.putExtra("Annee", annee)
-                    intent.putExtra("Name", name)
+                    //intent.putExtra("Name", name)
                     intent.putExtra("Temps", temps)
                     startActivity(intent)
                 }
                 "parheure"-> {
                     val intent = Intent(this@StationStatisticsActivity, HourlyStationStatisticActivity::class.java)
-                    intent.putExtra("Code", code)
+                    intent.putExtra("data", station)
                     intent.putExtra("Annee", annee)
-                    intent.putExtra("Name", name)
+                    //intent.putExtra("Name", name)
                     intent.putExtra("Temps", temps)
                     startActivity(intent)
                 }

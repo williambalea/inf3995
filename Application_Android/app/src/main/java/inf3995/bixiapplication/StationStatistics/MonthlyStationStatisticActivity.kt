@@ -47,25 +47,22 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_monthly_station_statistic)
-        val codas = intent.getStringExtra("Code")?.toInt()
+        //val codas = intent.getStringExtra("Code")?.toInt()
         val tempas = intent.getStringExtra("Temps")
-        val namas = intent.getStringExtra("Name")
+        //val namas = intent.getStringExtra("Name")
         val annas = intent.getStringExtra("Annee")?.toInt()
-       // station = intent.getSerializableExtra("data") as Station
+       station = intent.getSerializableExtra("data") as Station
 
-       Station_code.text = codas.toString()
-       Station_name.text = namas
+       Station_code.text = station!!.code.toString()
+       Station_name.text = station!!.name
 
         if (tempas != null) {
             temps = tempas
         }
-        if (codas != null) {
-            code = codas
-            Log.i(TAG, "papa: $code!!")
-        }
         if (annas != null) {
             annee = annas
         }
+        code =  station!!.code
         myTableLayout = findViewById(R.id.table_main)
         myImage = findViewById(R.id.image)
         //IpAddressDialog.ipAddressInput?.let { requestToServer(it) }
