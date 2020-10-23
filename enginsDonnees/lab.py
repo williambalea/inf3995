@@ -3,7 +3,7 @@ from mysql.connector import Error
 import json
 import socket
 import requests as rq
-from enginSQL import EnginSQL
+from engin1 import Engin1
 from engin2 import Engin2
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -23,7 +23,7 @@ PORT = 2000
 
 colors = ["#006D2C", "#31A354", "#74C476"]
 print('creating enginsql')
-enginsql = EnginSQL()
+engin1 = Engin1()
 print('creating engin2')
 engin2 = Engin2()
 
