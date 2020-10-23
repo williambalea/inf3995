@@ -44,10 +44,7 @@ class EnginSQL:
 
     #query to db and returns pandas object directly
     def query_pd(self, query):
-        print(query)
-        print('1. query to pandas waiting')
         df = pd.read_sql_query(query, self.connection)
-        print('gotpanda, now to datetime start')
         df['start_date'] = pd.to_datetime(df['start_date'], infer_datetime_format=True)
         df['end_date'] = pd.to_datetime(df['end_date'], infer_datetime_format=True)
         return df
@@ -77,7 +74,6 @@ class EnginSQL:
             query += " WHERE startStationCode='{}'".format(station)
             query += " OR endStationCode='{}' ".format(station)
         # query += " WHERE startDate LIKE '%4/15%' AND startDate between '4/15/2015 7:58' AND '4/17/2015 8:00' "
-        print(query)
         return self.toJson(self.query_db(query))
         # return self.query_db(query)
         # return query

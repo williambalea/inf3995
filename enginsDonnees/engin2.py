@@ -19,15 +19,12 @@ class Engin2:
     def getPerTimeCountStart(self, df, station, time):
         dfStart = df[['start_date', 'start_station_code']].copy()
         #filter rows
-        print('filtering timecountstart')
         if station != 'toutes':
             #Get indexes where name column has value stationCode
             indexNames = dfStart[dfStart['start_station_code'] != int(station)].index
             #Delete these row indexes from dataFrame
             dfStart.drop(indexNames , inplace=True)
-        print('line25')
         startDateSeries = dfStart['start_date'].values.astype('datetime64[m]')
-        print('line27') 
         if time == "parheure":
             timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
             label = self.hourLabel
@@ -37,25 +34,17 @@ class Engin2:
         elif time == "parmois":
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
             label = self.monthLabel
-        print('line 34')
-        print(timeNumber)
         timeCount = np.bincount(timeNumber, None, len(label))
-        print(len(label))
-        print(timeCount)
-        print('dict')
-        # print(dict(zip(range(12), hourCount)))
         return timeCount
     
     def getPerTimeCountEnd(self, df, station, time):
         dfEnd = df[['end_date', 'end_station_code']].copy()
         #filter rows
-        print('line41')
         if station != 'toutes':
             #Get indexes where name column has value stationCode
             indexNames = dfEnd[dfEnd['end_station_code'] != int(station)].index
             #Delete these row indexes from dataFrame
             dfEnd.drop(indexNames , inplace=True)
-        print('line47')
         startDateSeries = dfEnd['end_date'].values.astype('datetime64[m]')
         if time == "parheure":
             timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
@@ -66,30 +55,20 @@ class Engin2:
         elif time == "parmois":
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
             label = self.monthLabel
-        print('line55')
         timeCount = np.bincount(timeNumber, None, len(label))
         # return dict(zip(range(24), hourCount))
         return timeCount
     
     def getGraphPerTime(self, countStart, countEnd, station, time):
-        print('2. entering getgraph')
-        # print('oldcountstart')
-        # print(oldcountStart)
-        # print('countEnd')
-        # print(countEnd)
         if time == 'parmois':
             countStart = countStart[3:len(countStart)-1]
             countEnd = countEnd[3:len(countEnd)-1]
-        print('countstart')
-        print(countStart)
         # set width of bar
         barWidth = 0.25
         # Set position of bar on X axis
-        print('setting position of bar')
         r1 = np.arange(len(countStart))
         r2 = [x + barWidth for x in r1]
         # Make the plot
-        print('making the plot')
         plt.bar(r1, countStart, color='#0A6BF3', width=barWidth, edgecolor='white', label='Start')
         plt.bar(r2, countEnd, color='#F3380A', width=barWidth, edgecolor='white', label='End')
         # Add xticks on the middle of the group bars
@@ -109,12 +88,8 @@ class Engin2:
             plt.ylabel('User Count', fontweight='bold')
             plt.xticks([r + barWidth for r in range(len(countStart))], self.monthLabel[3:len(countStart)+3])
             plt.title('Bixi usage per Month for Station#{}'.format(station))
-        print(len(countStart))
-        # print(self.monthLabel[len(countStart)])
         # Create legend & Show graphic
-        print('adding legend')
         plt.legend()
-        print('showing plot')
         # plt.show()
         plt.savefig('bar.png')
         return plt
@@ -142,10 +117,6 @@ class Engin2:
         df = pd.read_csv(path)
         countStart = self.getPerTimeCountStart(df, st, ti)
         countEnd = self.getPerTimeCountEnd(df, st, ti)
-        print('countstart')
-        print(countStart)
-        print('Len Countstart')
-        print(len(countStart))
         
         self.getGraphPerTime(countStart, countEnd, st, ti)
         graphString = self.toBase64()
