@@ -1,29 +1,16 @@
 package inf3995.bixiapplication
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import android.util.Base64
-import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import inf3995.bixiapplication.StationStatistics.DailyStationStatisticActivity
 import inf3995.bixiapplication.StationStatistics.HourlyStationStatisticActivity
 import inf3995.bixiapplication.StationStatistics.MonthlyStationStatisticActivity
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.*
-import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
-import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
-import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
-import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
 import kotlinx.android.synthetic.main.activity_global_predictions.*
-import kotlinx.android.synthetic.main.activity_global_predictions.spnPeriod
-import kotlinx.android.synthetic.main.activity_global_predictions.spnTime
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.*
-import kotlinx.android.synthetic.main.global_data_fragment.*
-import java.io.ByteArrayOutputStream
 
 class StationStatisticsActivity : AppCompatActivity() {
 
@@ -39,14 +26,14 @@ class StationStatisticsActivity : AppCompatActivity() {
         Station_code.text = station!!.code.toString()
         Station_name.text = station!!.name
        //val code = station!!.code
-        val years_List = listOf("","2014", "2015", "2016")
+        val years_List = listOf("","2014", "2015", "2016","2017")
         val years_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, years_List)
         spnTime.adapter = years_adapter
-        val period_List = listOf("","Monthly", "Daily", "Hourly")
+        val period_List = listOf("","parmois", "parjourdelasemaine", "parheure")
         val period_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, period_List)
         spnPeriod.adapter = period_adapter
-       // limitDropDownmenuHeight(spnPeriod)
-     //   limitDropDownmenuHeight(spnTime)
+        limitDropDownmenuHeight(spnPeriod)
+        limitDropDownmenuHeight(spnTime)
 
         spnTime.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -92,7 +79,7 @@ class StationStatisticsActivity : AppCompatActivity() {
             val temps = temps
             val name = station!!.name
             when (temps){
-                "Monthly"-> {
+                "parmois"-> {
                     val intent = Intent(this@StationStatisticsActivity, MonthlyStationStatisticActivity::class.java)
                     intent.putExtra("Code", code)
                     intent.putExtra("Annee", annee)
@@ -101,7 +88,7 @@ class StationStatisticsActivity : AppCompatActivity() {
                     startActivity(intent)
 
                 }
-                "Daily"-> {
+                "parjourdelasemaine"-> {
                     val intent = Intent(this@StationStatisticsActivity, DailyStationStatisticActivity::class.java)
                     intent.putExtra("Code", code)
                     intent.putExtra("Annee", annee)
@@ -109,7 +96,7 @@ class StationStatisticsActivity : AppCompatActivity() {
                     intent.putExtra("Temps", temps)
                     startActivity(intent)
                 }
-                "Hourly"-> {
+                "parheure"-> {
                     val intent = Intent(this@StationStatisticsActivity, HourlyStationStatisticActivity::class.java)
                     intent.putExtra("Code", code)
                     intent.putExtra("Annee", annee)
