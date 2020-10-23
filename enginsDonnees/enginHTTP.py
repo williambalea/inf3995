@@ -30,6 +30,6 @@ def stationCode(code):
 def allStation():
     return enginsql.getAllStations() 
 
-@app.route('/engin2/data/usage/<year>/<time>/<station>')
+@app.route('/engin1/data/usage/<year>/<time>/<station>')
 def dataUsage(year, time, station):
     return engin2.dataGraphtoJSON(year, time, station)
