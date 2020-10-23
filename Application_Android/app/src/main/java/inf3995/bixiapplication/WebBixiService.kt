@@ -19,10 +19,11 @@ interface WebBixiService {
     @GET("/station/code")
     fun getStationCode(@Field("body") code: Int):Call<Station>
 
-    @POST("/server/survey")
-    @GET("/donnees/usage/<année>/<temps>/<station>")
-    fun getStationStatistics(@Field("body") annee:Int, temps:String, code: Int):Call<String>
 
+    @GET("/engin1/data/usage/{year}/{time}/{station}")
+    fun getStationStatistics(@Field("body") year:Int, time:String, station: Int):Call<String>
+
+    @POST("/server/survey")
     fun sendServerSurveyData(@Body survey: String):Call<String>
 
     @GET("/engin1/station/all")

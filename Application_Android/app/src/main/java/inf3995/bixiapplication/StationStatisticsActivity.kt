@@ -30,7 +30,7 @@ class StationStatisticsActivity : AppCompatActivity() {
     var station : Station?=null
     var temps: String? = null
     var annee: String? = null
-    val manager = supportFragmentManager
+    var display_click: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,15 +38,15 @@ class StationStatisticsActivity : AppCompatActivity() {
         station = intent.getSerializableExtra("data") as Station
         Station_code.text = station!!.code.toString()
         Station_name.text = station!!.name
-
+       //val code = station!!.code
         val years_List = listOf("","2014", "2015", "2016")
         val years_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, years_List)
-        spnTime.adapter=years_adapter
+        spnTime.adapter = years_adapter
         val period_List = listOf("","Monthly", "Daily", "Hourly")
         val period_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, period_List)
         spnPeriod.adapter = period_adapter
-        limitDropDownmenuHeight(spnPeriod)
-        limitDropDownmenuHeight(spnTime)
+       // limitDropDownmenuHeight(spnPeriod)
+     //   limitDropDownmenuHeight(spnTime)
 
         spnTime.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -66,24 +66,46 @@ class StationStatisticsActivity : AppCompatActivity() {
             }
         }
 
-        val display_click = findViewById(R.id.display_button) as Button
-        display_click.setOnClickListener{
+        display_click = findViewById(R.id.display_button)
+
+       /*
+        display_click!!.setOnClickListener{
+            val code = station!!.code
+            val annee = annee
+            val temps = temps
+            val name = station!!.name
+            val intent = Intent(this, MonthlyStationStatisticActivity::class.java)
+            intent.putExtra("Code", code)
+            intent.putExtra("Annee", annee)
+            intent.putExtra("Name", name)
+            intent.putExtra("Temps", temps)
+            startActivity(intent)
+        }
+        */
+
+       //val display_click = findViewById(R.id.display_button) as Button
+
+        display_click!!.setOnClickListener{
             Toast.makeText(this," $station.name station Statistics", Toast.LENGTH_SHORT).show()
             val code = station!!.code
             val annee = annee
             val temps = temps
+            val name = station!!.name
             when (temps){
                 "Monthly"-> {
                     val intent = Intent(this@StationStatisticsActivity, MonthlyStationStatisticActivity::class.java)
                     intent.putExtra("Code", code)
                     intent.putExtra("Annee", annee)
+                    intent.putExtra("Name", name)
                     intent.putExtra("Temps", temps)
                     startActivity(intent)
+
                 }
                 "Daily"-> {
                     val intent = Intent(this@StationStatisticsActivity, DailyStationStatisticActivity::class.java)
                     intent.putExtra("Code", code)
                     intent.putExtra("Annee", annee)
+                    intent.putExtra("Name", name)
                     intent.putExtra("Temps", temps)
                     startActivity(intent)
                 }
@@ -91,6 +113,7 @@ class StationStatisticsActivity : AppCompatActivity() {
                     val intent = Intent(this@StationStatisticsActivity, HourlyStationStatisticActivity::class.java)
                     intent.putExtra("Code", code)
                     intent.putExtra("Annee", annee)
+                    intent.putExtra("Name", name)
                     intent.putExtra("Temps", temps)
                     startActivity(intent)
                 }
@@ -104,14 +127,6 @@ class StationStatisticsActivity : AppCompatActivity() {
         popup.isAccessible =true
         val popupWindow =popup.get(spnTest) as ListPopupWindow
         popupWindow.height = (5*resources.displayMetrics.density).toInt()
-    }
-
-    fun show_Monthly_statistic_fragment(){
-        val transaction = manager.beginTransaction()
-       // val fragment = global_data_fragment_holder()
-        //transaction.replace(R.id.global_data_fragment_holder, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
     }
 
 

@@ -14,20 +14,12 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.station_list_activity_main.*
-import okhttp3.OkHttpClient
-import okhttp3.internal.wait
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.security.cert.CertificateException
-import java.security.cert.X509Certificate
-import java.util.Calendar.SECOND
 import java.util.concurrent.TimeUnit
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
 
 class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
@@ -72,7 +64,7 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
         /*for (item in itemListModal){
             stationModalList.add(item)
         }*/
-        requestToServer(IpAddressDialog.ipAddressInput)
+        IpAddressDialog.ipAddressInput?.let { requestToServer(it) }
     }
 
 

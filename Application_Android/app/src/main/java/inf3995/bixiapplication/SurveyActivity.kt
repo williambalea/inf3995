@@ -21,7 +21,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class SurveyActivity : AppCompatActivity() {
 
-
     lateinit var surveyData: SurveyData
     var TAG :String = "SurveyActivity"
     val dialog = IpAddressDialog()
@@ -54,7 +53,6 @@ class SurveyActivity : AppCompatActivity() {
             submitWith(buttonSend) { result ->
                 surveyData = SurveyData(editTextEmail.text.toString(), editTextFirstName.text.toString(), editTextLastName.text.toString(), Integer.parseInt(editTextAge.text.toString()),checkBoxYesSurvey.isChecked)
                 sendSurveyData(surveyData)
-
             }
         }
 

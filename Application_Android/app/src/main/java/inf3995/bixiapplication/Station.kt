@@ -31,21 +31,19 @@ data class Station(
 
 
 data class data(
-    var temps :String,
-    var departureValue: Int,
-    var arrivalValue: Int
+    var time :Array<String>,
+    var departureValue: Array<Int>,
+    var arrivalValue: Array<Int>
    ): Serializable {}
 
 
 data class MonthlyStatisticStation(
-    var donnees: ArrayList<data>,
+    var donnees: data,
     var graphique: String
 ): Serializable {}
 
 data class DailyStatisticStation(
-    // var code :Int,
-    //var name: String,
-    //var annee: Int,
+
     var listData: ArrayList<data>,
     var graphique: String
 ): Serializable {}

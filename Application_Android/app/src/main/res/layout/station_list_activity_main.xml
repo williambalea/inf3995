@@ -11,7 +11,7 @@
     <!---progress bar-->
     <include
         android:id="@+id/llProgressBar"
-        android:visibility="visible"
+        android:visibility="invisible"
         layout="@layout/progress_bar"/>
 
     <androidx.appcompat.widget.Toolbar

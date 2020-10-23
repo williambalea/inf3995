@@ -29,7 +29,7 @@ const val TAG = "SettingsDialog"
 class IpAddressDialog: AppCompatDialogFragment() {
 
     companion object {
-        lateinit var ipAddressInput :String
+        var ipAddressInput :String? = null
     }
 
     override fun onCreateView(
@@ -51,7 +51,7 @@ class IpAddressDialog: AppCompatDialogFragment() {
             }
             submitWith(okButton) { result ->
                 ipAddressInput = editTextIpAddress.text.toString()
-                communicationServer(ipAddressInput)
+                communicationServer(ipAddressInput!!)
                 //Toast.makeText(activity, "Can't connect to server!", Toast.LENGTH_SHORT).show()
             }
         }
