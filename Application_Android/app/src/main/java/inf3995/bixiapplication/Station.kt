@@ -39,7 +39,7 @@ data class data(
 
 data class MonthlyStatisticStation(
     var donnees: data,
-    var graphique: String
+    var graph: String
 ): Serializable {}
 
 data class DailyStatisticStation(

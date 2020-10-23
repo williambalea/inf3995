@@ -29,7 +29,7 @@ const val TAG = "SettingsDialog"
 class IpAddressDialog: AppCompatDialogFragment() {
 
     companion object {
-        var ipAddressInput :String? = null
+        lateinit var ipAddressInput :String
     }
 
     override fun onCreateView(

@@ -64,7 +64,7 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
         /*for (item in itemListModal){
             stationModalList.add(item)
         }*/
-        IpAddressDialog.ipAddressInput?.let { requestToServer(it) }
+        requestToServer(IpAddressDialog.ipAddressInput)
     }
 
 
