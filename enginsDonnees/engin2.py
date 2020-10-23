@@ -40,6 +40,7 @@ class Engin2:
         print('line 34')
         print(timeNumber)
         timeCount = np.bincount(timeNumber, None, len(label))
+        print(len(label))
         print(timeCount)
         print('dict')
         # print(dict(zip(range(12), hourCount)))
@@ -94,36 +95,38 @@ class Engin2:
         # Add xticks on the middle of the group bars
         ('adding xticks')
         if time == "parheure":
-            plt.xlabel('Per Hour', fontweight='bold')
+            plt.xlabel('Per Day', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
             plt.xticks([r + barWidth for r in range(len(countStart))], self.hourLabel[:len(countStart)])
             plt.title('Bixi usage per Hour of the Day for Station#{}'.format(station))
         elif time == "parjourdelasemaine":
-            plt.xlabel('Per Hour', fontweight='bold')
+            plt.xlabel('Per Week Day', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
             plt.xticks([r + barWidth for r in range(len(countStart))], self.weekDayLabel[:len(countStart)])
             plt.title('Bixi usage per Weekday for Station#{}'.format(station))
         elif time == "parmois":
-            plt.xlabel('Per Hour', fontweight='bold')
+            plt.xlabel('Per Month', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
             plt.xticks([r + barWidth for r in range(len(countStart))], self.monthLabel[3:len(countStart)+3])
             plt.title('Bixi usage per Month for Station#{}'.format(station))
         print(len(countStart))
-        print(self.monthLabel[3:len(countStart)-1])
+        # print(self.monthLabel[len(countStart)])
         # Create legend & Show graphic
         print('adding legend')
         plt.legend()
         print('showing plot')
         # plt.show()
+        plt.savefig('bar.png')
         return plt
 
 
-    def toBase64(self, plt):
-        plt.savefig('bar.png')
+    def toBase64(self):
+        # plt.savefig('bar.png')
         with open("bar.png", "rb") as imageFile:
             str = base64.b64encode(imageFile.read()).decode('utf-8')
             strg = str[:-1]
             # print(strg)
+
         return strg
 
     def dataGraphtoJSON(self, year, time, station):
@@ -139,18 +142,27 @@ class Engin2:
         df = pd.read_csv(path)
         countStart = self.getPerTimeCountStart(df, st, ti)
         countEnd = self.getPerTimeCountEnd(df, st, ti)
-        graphString = self.toBase64(self.getGraphPerTime(countStart, countEnd, st, ti))
+        print('countstart')
+        print(countStart)
+        print('Len Countstart')
+        print(len(countStart))
         
-
+        self.getGraphPerTime(countStart, countEnd, st, ti)
+        graphString = self.toBase64()
+        # graphString = self.getGraphPerTime(countStart, countEnd, st, ti)
+        if time == "parheure":
+            label = self.hourLabel
+        elif time == "parjourdelasemaine":
+            label = self.weekDayLabel
+        elif time == "parmois":
+            label = self.monthLabel
 
         myJson =  '{  "donnees":{ "time":[], "departureValue":[], "arrivalValue":[] }, "graph":[] }'
 
         o = json.loads(myJson)
-        o["donnees"]["time"] = self.monthLabel2
-        o["donnees"]["departureValue"] = countStart[3:len(countStart)-1].tolist()
-        o["donnees"]["arrivalValue"] = countEnd[3:len(countEnd)-1].tolist()
+        o["donnees"]["time"] = label
+        o["donnees"]["departureValue"] = countStart[0:len(countStart)].tolist()
+        o["donnees"]["arrivalValue"] = countEnd[0:len(countStart)].tolist()
         o["graph"] = graphString
-
-        # newJSON = json.dumps(o)
-        print('done ok')
+        
         return json.dumps(o)
