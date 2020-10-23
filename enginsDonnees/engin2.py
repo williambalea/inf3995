@@ -130,7 +130,7 @@ class Engin2:
         ye = int(year)
         ti = str(time)
         if str(station) == 'toutes':
-            st = st(station)
+            st = str(station)
         else:
             st = int(station)
 
@@ -141,6 +141,8 @@ class Engin2:
         countEnd = self.getPerTimeCountEnd(df, st, ti)
         graphString = self.toBase64(self.getGraphPerTime(countStart, countEnd, st, ti))
         
+
+
         myJson =  '{  "donnees":{ "time":[], "departureValue":[], "arrivalValue":[] }, "graph":[] }'
 
         o = json.loads(myJson)
@@ -150,5 +152,5 @@ class Engin2:
         o["graph"] = graphString
 
         # newJSON = json.dumps(o)
-        
+        print('done ok')
         return json.dumps(o)
