@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="inf3995.bixiapplication.StationStatistics.DailyStationStatisticActivity"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/coord_station"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:background="@drawable/recyclerview_bg"
         android:orientation="vertical"
         android:padding="10dp">
@@ -49,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/name"
                 android:textColor="@color/colortextdata"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/Station_name"
@@ -60,14 +66,16 @@
                 android:text="@string/station_name"
                 android:textColor="@color/colortextlabel"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:fontFamily="sans-serif"/>
         </LinearLayout>
     </LinearLayout>
 
 
     <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:orientation="vertical">
 
         <ScrollView
             android:id="@+id/scrollView1"
@@ -86,239 +94,442 @@
                 <TextView
                     android:id="@+id/txt"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Daily Departures and Arrivals :"
-                    android:textSize = "20sp"
+                    android:layout_height="30dp"
+                    android:layout_margin="5sp"
+                    android:text="@string/daily_departures_and_arrivals_at_this_station"
+                    android:textSize="20sp"
                     android:textStyle="bold">
+
                 </TextView>
 
                 <TableRow
                     android:background="#DD2C00"
                     android:padding="5dp">
+
                     <TextView
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textStyle="bold"
-                        android:textColor="#fff"
-                        android:text="Rank" />
+                        android:id="@+id/text00"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/rank"
+                        android:textColor="#ffff"
+                        android:textStyle="bold" />
+
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textStyle="bold"
-                        android:textColor="#fff"
-                        android:text="Day" />
+                        android:id="@+id/text01"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/month"
+                        android:textColor="#ffff"
+                        android:textStyle="bold" />
+
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textStyle="bold"
-                        android:textColor="#fff"
-                        android:text="Departure" />
+
+                        android:id="@+id/text02"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/departure"
+                        android:textColor="#ffff"
+                        android:textStyle="bold" />
+
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textStyle="bold"
-                        android:textColor="#fff"
-                        android:text="Arrival" />
-                </TableRow>
-                <TableRow
-                    android:background="#08D50000"
-                    android:padding="5dp">
-                    <TextView
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="1" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Monday" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="500" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="395" />
+                        android:id="@+id/text03"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/arrival"
+                        android:textColor="#ffff"
+                        android:textStyle="bold" />
                 </TableRow>
 
                 <TableRow
-                    android:background="#08D50000"
+                    android:background="@color/colortablerow"
                     android:padding="5dp">
-                    <TextView
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="2" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Tuesday" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="254" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="312" />
 
+                    <TextView
+                        android:id="@+id/text10"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/_1"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text11"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/monday"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+
+                        android:id="@+id/text12"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text13"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
                 </TableRow>
 
                 <TableRow
-                    android:background="#08D50000"
+                    android:background="@color/colortablerow"
                     android:padding="5dp">
-                    <TextView
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="3" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Wednesday" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="378" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="220" />
 
+                    <TextView
+                        android:id="@+id/text20"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/_2"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text21"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/tuesday"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+
+                        android:id="@+id/text22"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text23"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
                 </TableRow>
 
                 <TableRow
-                    android:background="#08D50000"
+                    android:background="@color/colortablerow"
                     android:padding="5dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="4" />
-                    <TextView
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Thursday" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="756" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="817" />
 
+                    <TextView
+                        android:id="@+id/text30"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/_3"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text31"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/wednesday"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+
+                        android:id="@+id/text32"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text33"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
                 </TableRow>
+
                 <TableRow
-                    android:background="#08D50000"
+                    android:background="@color/colortablerow"
                     android:padding="5dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="5" />
-                    <TextView
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Friday" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="756" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="817" />
 
+                    <TextView
+                        android:id="@+id/text40"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/_4"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text41"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/thursday"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+
+                        android:id="@+id/text42"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text43"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
                 </TableRow>
 
                 <TableRow
-                    android:background="#08D50000"
+                    android:background="@color/colortablerow"
                     android:padding="5dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="6" />
-                    <TextView
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Saturday" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="756" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="817" />
 
+                    <TextView
+                        android:id="@+id/text50"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/_5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text51"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/friday"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+
+                        android:id="@+id/text52"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text53"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
                 </TableRow>
+
                 <TableRow
-                    android:background="#08D50000"
+                    android:background="@color/colortablerow"
                     android:padding="5dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="7" />
-                    <TextView
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Sunday" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="756" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="817" />
 
+                    <TextView
+                        android:id="@+id/text60"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/_6"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text61"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/saturday"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+
+                        android:id="@+id/text62"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text63"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
                 </TableRow>
+
+                <TableRow
+                    android:background="@color/colortablerow"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/text70"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="@string/_7"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text71"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:text="Sunday"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+
+                        android:id="@+id/text72"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text73"
+                        android:layout_width="130dp"
+                        android:layout_height="30dp"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colortextdata"
+                        android:textStyle="bold" />
+                </TableRow>
+
 
             </TableLayout>
         </ScrollView>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ScrollView
+        <ImageView
+            android:id="@+id/image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/banana"/>
-        </ScrollView>
+            android:layout_height="730dp"
+            android:layout_marginTop="0dp"
+            android:src="@drawable/oranges" />
     </LinearLayout>
 
 </LinearLayout>

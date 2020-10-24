@@ -26,6 +26,7 @@
         <activity android:name="inf3995.bixiapplication.GlobalPredictionsActivity" />
         <activity android:name="inf3995.bixiapplication.GlobalStatisticsActivity" />
         <activity android:name="inf3995.bixiapplication.StationStatistics.DailyStationStatisticActivity" />
+        <activity android:name="inf3995.bixiapplication.StationStatistics.HourlyStationStatisticActivity" />
         <activity android:name="inf3995.bixiapplication.ListStationActivity" />
         <activity android:name="inf3995.bixiapplication.StationCoordinatesActivity" />
         <activity

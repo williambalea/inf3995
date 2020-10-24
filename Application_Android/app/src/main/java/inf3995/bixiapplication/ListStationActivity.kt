@@ -100,7 +100,7 @@ class ListStationActivity : AppCompatActivity(){ //StationAdapter.ClickedItem
         return true
     }
 
-    private fun requestToServer(ipAddress: String) {
+    private fun requestToServer(ipAddress: String?) {
         // get check connexion with Server Hello from Server
 
         val retrofit = Retrofit.Builder()

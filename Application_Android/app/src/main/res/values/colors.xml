@@ -13,6 +13,8 @@
     <color name="colorWhite1">#03DAC5</color>
     <color name="colortextdata">#130877</color>
     <color name="colortextlabel">#B90C0C0C</color>
+    <color name="colortablerow">#17D50000</color>
+
 
 
     <!--text color -->
