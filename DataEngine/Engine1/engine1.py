@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import pandas as pd
 from flask.json import jsonify
 
-class Engin1:
+class Engine1:
 
     DB_HOSTNAME = "34.70.117.28"
     DB_USERNAME = "root"
@@ -68,7 +68,7 @@ class Engin1:
     def getDataUsage(self,year, station):
         query = "SELECT * FROM BixiRentals"
         query += str(year)
-        if station != "toutes":
+        if station != "all":
             query += " WHERE startStationCode='{}'".format(station)
             query += " OR endStationCode='{}' ".format(station)
         return self.toJson(self.query_db(query))
