@@ -90,14 +90,17 @@ class Engine2:
         # Create legend & Show graphic
         plt.legend()
         plt.savefig('bar.png')
+        plt.show()
         return plt
 
 
     def toBase64(self):
         # plt.savefig('bar.png')
         with open("bar.png", "rb") as imageFile:
-            str = base64.b64encode(imageFile.read()).decode('utf-8')
-            strg = str[:-1]
+            strg = base64.b64encode(imageFile.read()).decode('utf-8')
+            while strg[-1] == '=':
+                strg = strg[:-1]
+                
             # print(strg)
 
         return strg
