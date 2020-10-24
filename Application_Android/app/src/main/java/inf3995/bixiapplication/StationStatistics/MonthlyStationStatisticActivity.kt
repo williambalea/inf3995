@@ -277,6 +277,14 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
  */
 
 
+    private fun convertString64ToImage(base64String: String): Bitmap {
+        val decodedString = decode(base64String, Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+    }
+
+    /*
+
+     */
     object Base64Util {
         private val IMG_WIDTH = 640
         private val IMG_HEIGHT = 480
@@ -302,6 +310,5 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
             return convertString64ToImage(resizeBase64Image(base64String))
         }
     }
-
 
 }

@@ -126,7 +126,7 @@
                         android:textAlignment="center"
                         android:gravity="center_horizontal"
                         android:layout_weight="0.5"
-                        android:text="@string/month"
+                        android:text="@string/day"
                         android:textColor="#ffff"
                         android:textStyle="bold" />
 

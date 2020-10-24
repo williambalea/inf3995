@@ -129,7 +129,7 @@
                             android:textAlignment="center"
                             android:gravity="center_horizontal"
                             android:layout_weight="0.2"
-                            android:text="@string/month"
+                            android:text="@string/hour"
                             android:textColor="#ffff"
                             android:textStyle="bold" />
 
@@ -824,7 +824,7 @@
                             android:textAlignment="center"
                             android:gravity="center_horizontal"
                             android:layout_weight="0.2"
-                            android:text="@string/month"
+                            android:text="@string/hour"
                             android:textColor="#ffff"
                             android:textStyle="bold" />
 
