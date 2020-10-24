@@ -110,7 +110,7 @@ class Engine2:
         else:
             st = int(station)
 
-        path = "./kaggleData/OD_{}".format(ye)
+        path = "../kaggleData/OD_{}".format(ye)
         path += ".csv"
         df = pd.read_csv(path)
         countStart = self.getPerTimeCountStart(df, st, ti)
