@@ -5,7 +5,9 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -14,39 +16,11 @@ import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
 import kotlinx.android.synthetic.main.activity_hourly_station_statistic.*
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.*
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.image
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text102
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text103
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text112
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text113
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text12
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text122
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text123
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text13
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text22
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text23
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text32
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text33
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text42
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text43
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text52
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text53
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text62
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text63
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text72
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text73
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text82
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text83
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text92
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text93
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.io.ByteArrayOutputStream
-import kotlinx.android.synthetic.main.activity_hourly_station_statistic.statisticYear as statisticYear1
 
 class HourlyStationStatisticActivity : AppCompatActivity() {
     var station : Station? = null
@@ -109,10 +83,14 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
                 //addData(jObj)
                 fillData(jObj)
                 //fillmyTablelayout(jObj)
+                lllProgressBar.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Echec de connexion avec le serveur !!!")
+                Log.i(TAG, "Error when receiving statistic!    cause:${t.cause}     message:${t.message}")
+                val builder = AlertDialog.Builder(this@HourlyStationStatisticActivity)
+                builder.setTitle("Error while loading statistic!").setMessage("cause:${t.cause} \n message:${t.message}")
+                builder.show()
             }
         })
     }
@@ -132,54 +110,54 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
         Log.i(TAG, "affichage du graphique ")
 
         //val text10 = findViewById(R.id.text10) as TextView
-        text12.setText(jObj.donnees.departureValue[0].toString())
-        text13.setText(jObj.donnees.arrivalValue[0].toString())
-        text22.setText(jObj.donnees.departureValue[1].toString())
-        text23.setText(jObj.donnees.arrivalValue[1].toString())
-        text32.setText(jObj.donnees.departureValue[2].toString())
-        text33.setText(jObj.donnees.arrivalValue[2].toString())
-        text42.setText(jObj.donnees.departureValue[3].toString())
-        text43.setText(jObj.donnees.arrivalValue[3].toString())
-        text52.setText(jObj.donnees.departureValue[4].toString())
-        text53.setText(jObj.donnees.arrivalValue[4].toString())
-        text62.setText(jObj.donnees.departureValue[5].toString())
-        text63.setText(jObj.donnees.arrivalValue[5].toString())
-        text72.setText(jObj.donnees.departureValue[6].toString())
-        text73.setText(jObj.donnees.arrivalValue[6].toString())
-        text82.setText(jObj.donnees.departureValue[7].toString())
-        text83.setText(jObj.donnees.arrivalValue[7].toString())
-        text92.setText(jObj.donnees.departureValue[8].toString())
-        text93.setText(jObj.donnees.arrivalValue[8].toString())
-        text102.setText(jObj.donnees.departureValue[9].toString())
-        text103.setText(jObj.donnees.arrivalValue[9].toString())
-        text112.setText(jObj.donnees.departureValue[10].toString())
-        text113.setText(jObj.donnees.arrivalValue[10].toString())
-        text122.setText(jObj.donnees.departureValue[11].toString())
-        text123.setText(jObj.donnees.arrivalValue[11].toString())
-        text132.setText(jObj.donnees.departureValue[12].toString())
-        text133.setText(jObj.donnees.arrivalValue[12].toString())
-        text142.setText(jObj.donnees.departureValue[13].toString())
-        text143.setText(jObj.donnees.arrivalValue[13].toString())
-        text152.setText(jObj.donnees.departureValue[14].toString())
-        text153.setText(jObj.donnees.arrivalValue[14].toString())
-        text162.setText(jObj.donnees.departureValue[15].toString())
-        text163.setText(jObj.donnees.arrivalValue[15].toString())
-        text172.setText(jObj.donnees.departureValue[16].toString())
-        text173.setText(jObj.donnees.arrivalValue[16].toString())
-        text182.setText(jObj.donnees.departureValue[17].toString())
-        text183.setText(jObj.donnees.arrivalValue[17].toString())
-        text192.setText(jObj.donnees.departureValue[18].toString())
-        text193.setText(jObj.donnees.arrivalValue[18].toString())
-        text202.setText(jObj.donnees.departureValue[19].toString())
-        text203.setText(jObj.donnees.arrivalValue[19].toString())
-        text212.setText(jObj.donnees.departureValue[20].toString())
-        text213.setText(jObj.donnees.arrivalValue[20].toString())
-        text222.setText(jObj.donnees.departureValue[21].toString())
-        text223.setText(jObj.donnees.arrivalValue[21].toString())
-        text232.setText(jObj.donnees.departureValue[22].toString())
-        text233.setText(jObj.donnees.arrivalValue[22].toString())
-        text242.setText(jObj.donnees.departureValue[23].toString())
-        text243.setText(jObj.donnees.arrivalValue[23].toString())
+        text12.setText(jObj.data.departureValue[0].toString())
+        text13.setText(jObj.data.arrivalValue[0].toString())
+        text22.setText(jObj.data.departureValue[1].toString())
+        text23.setText(jObj.data.arrivalValue[1].toString())
+        text32.setText(jObj.data.departureValue[2].toString())
+        text33.setText(jObj.data.arrivalValue[2].toString())
+        text42.setText(jObj.data.departureValue[3].toString())
+        text43.setText(jObj.data.arrivalValue[3].toString())
+        text52.setText(jObj.data.departureValue[4].toString())
+        text53.setText(jObj.data.arrivalValue[4].toString())
+        text62.setText(jObj.data.departureValue[5].toString())
+        text63.setText(jObj.data.arrivalValue[5].toString())
+        text72.setText(jObj.data.departureValue[6].toString())
+        text73.setText(jObj.data.arrivalValue[6].toString())
+        text82.setText(jObj.data.departureValue[7].toString())
+        text83.setText(jObj.data.arrivalValue[7].toString())
+        text92.setText(jObj.data.departureValue[8].toString())
+        text93.setText(jObj.data.arrivalValue[8].toString())
+        text102.setText(jObj.data.departureValue[9].toString())
+        text103.setText(jObj.data.arrivalValue[9].toString())
+        text112.setText(jObj.data.departureValue[10].toString())
+        text113.setText(jObj.data.arrivalValue[10].toString())
+        text122.setText(jObj.data.departureValue[11].toString())
+        text123.setText(jObj.data.arrivalValue[11].toString())
+        text132.setText(jObj.data.departureValue[12].toString())
+        text133.setText(jObj.data.arrivalValue[12].toString())
+        text142.setText(jObj.data.departureValue[13].toString())
+        text143.setText(jObj.data.arrivalValue[13].toString())
+        text152.setText(jObj.data.departureValue[14].toString())
+        text153.setText(jObj.data.arrivalValue[14].toString())
+        text162.setText(jObj.data.departureValue[15].toString())
+        text163.setText(jObj.data.arrivalValue[15].toString())
+        text172.setText(jObj.data.departureValue[16].toString())
+        text173.setText(jObj.data.arrivalValue[16].toString())
+        text182.setText(jObj.data.departureValue[17].toString())
+        text183.setText(jObj.data.arrivalValue[17].toString())
+        text192.setText(jObj.data.departureValue[18].toString())
+        text193.setText(jObj.data.arrivalValue[18].toString())
+        text202.setText(jObj.data.departureValue[19].toString())
+        text203.setText(jObj.data.arrivalValue[19].toString())
+        text212.setText(jObj.data.departureValue[20].toString())
+        text213.setText(jObj.data.arrivalValue[20].toString())
+        text222.setText(jObj.data.departureValue[21].toString())
+        text223.setText(jObj.data.arrivalValue[21].toString())
+        text232.setText(jObj.data.departureValue[22].toString())
+        text233.setText(jObj.data.arrivalValue[22].toString())
+        text242.setText(jObj.data.departureValue[23].toString())
+        text243.setText(jObj.data.arrivalValue[23].toString())
 
     }
 

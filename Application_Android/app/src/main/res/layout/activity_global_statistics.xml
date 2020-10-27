@@ -133,7 +133,7 @@
                     android:textSize="30sp" />
 
                 <Button
-                    android:id="@+id/buttonSend"
+                    android:id="@+id/buttonDisplayGlobal"
                     android:layout_width="200dp"
                     android:layout_height="85dp"
                     android:layout_gravity="center"

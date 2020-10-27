@@ -22,11 +22,14 @@
         </activity>
         <activity android:name="inf3995.bixiapplication.StationPredictionsActivity" />
         <activity android:name="inf3995.bixiapplication.StationStatistics.MonthlyStationStatisticActivity"/>
+        <activity android:name="inf3995.bixiapplication.StationStatistics.MonthlyStationStatisticGlobalActivity"/>
         <activity android:name="inf3995.bixiapplication.StationStatisticsActivity" />
         <activity android:name="inf3995.bixiapplication.GlobalPredictionsActivity" />
         <activity android:name="inf3995.bixiapplication.GlobalStatisticsActivity" />
         <activity android:name="inf3995.bixiapplication.StationStatistics.DailyStationStatisticActivity" />
+        <activity android:name="inf3995.bixiapplication.StationStatistics.DailyStationStatisticGlobalActivity"/>
         <activity android:name="inf3995.bixiapplication.StationStatistics.HourlyStationStatisticActivity" />
+        <activity android:name="inf3995.bixiapplication.StationStatistics.HourlyStationStatisticGlobalActivity" />
         <activity android:name="inf3995.bixiapplication.ListStationActivity" />
         <activity android:name="inf3995.bixiapplication.StationCoordinatesActivity" />
         <activity

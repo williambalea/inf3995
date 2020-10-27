@@ -10,14 +10,18 @@ import inf3995.bixiapplication.StationStatistics.HourlyStationStatisticActivity
 import inf3995.bixiapplication.StationStatistics.MonthlyStationStatisticActivity
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.*
+import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
+import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
 import kotlinx.android.synthetic.main.activity_global_predictions.*
+import kotlinx.android.synthetic.main.activity_global_predictions.spnPeriod
+import kotlinx.android.synthetic.main.activity_global_predictions.spnTime
+import kotlinx.android.synthetic.main.activity_station_statistics.*
 
 class StationStatisticsActivity : AppCompatActivity() {
 
     var station : Station?=null
-    var temps: String? = null
-    var annee: String? = null
-    var display_click: Button? = null
+    var time: String? = null
+    var year: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +33,7 @@ class StationStatisticsActivity : AppCompatActivity() {
         val years_List = listOf("","2014", "2015", "2016","2017")
         val years_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, years_List)
         spnTime.adapter = years_adapter
-        val period_List = listOf("","parmois", "parjourdelasemaine", "parheure")
+        val period_List = listOf("","perMonth", "perWeekDay","perHour")
         val period_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, period_List)
         spnPeriod.adapter = period_adapter
         limitDropDownmenuHeight(spnPeriod)
@@ -40,7 +44,7 @@ class StationStatisticsActivity : AppCompatActivity() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val item:String = years_List[position]
                 Toast.makeText(this@StationStatisticsActivity, "Year $item selected", Toast.LENGTH_SHORT).show()
-                annee = item
+                year = item
             }
         }
 
@@ -49,11 +53,9 @@ class StationStatisticsActivity : AppCompatActivity() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val item:String = period_List[position]
                 Toast.makeText(this@StationStatisticsActivity, "Period $item selected", Toast.LENGTH_SHORT).show()
-                temps = item
+                time = item
             }
         }
-
-        display_click = findViewById(R.id.display_button)
 
        /*
         display_click!!.setOnClickListener{
@@ -72,35 +74,32 @@ class StationStatisticsActivity : AppCompatActivity() {
 
        //val display_click = findViewById(R.id.display_button) as Button
 
-        display_click!!.setOnClickListener{
+        display_button.setOnClickListener{
             Toast.makeText(this," $station.name station Statistics", Toast.LENGTH_SHORT).show()
             val code = station!!.code
-            val annee = annee
-            val temps = temps
+            val annee = year
+            val temps = time
             val name = station!!.name
             when (temps){
-                "parmois"-> {
+                "perMonth"-> {
                     val intent = Intent(this@StationStatisticsActivity, MonthlyStationStatisticActivity::class.java)
                     intent.putExtra("data", station)
                     intent.putExtra("Annee", annee)
-                    //intent.putExtra("Name", name)
                     intent.putExtra("Temps", temps)
                     startActivity(intent)
 
                 }
-                "parjourdelasemaine"-> {
+                "perWeekDay"-> {
                     val intent = Intent(this@StationStatisticsActivity, DailyStationStatisticActivity::class.java)
                     intent.putExtra("data", station)
                     intent.putExtra("Annee", annee)
-                    //intent.putExtra("Name", name)
                     intent.putExtra("Temps", temps)
                     startActivity(intent)
                 }
-                "parheure"-> {
+                "perHour"-> {
                     val intent = Intent(this@StationStatisticsActivity, HourlyStationStatisticActivity::class.java)
                     intent.putExtra("data", station)
                     intent.putExtra("Annee", annee)
-                    //intent.putExtra("Name", name)
                     intent.putExtra("Temps", temps)
                     startActivity(intent)
                 }

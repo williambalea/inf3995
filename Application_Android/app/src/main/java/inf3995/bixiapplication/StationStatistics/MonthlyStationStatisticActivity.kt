@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Base64.decode
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -27,7 +29,7 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
     var station : Station? = null
     lateinit var temps: String
     var code: Int = 0
-    var annee= 0
+    var year = 0
     var myImage:ImageView? = null
     private val TAG = "Monthly Station Statistics"
 
@@ -46,9 +48,9 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
         }
 
         if (annas != null) {
-            annee = annas
+            year = annas
         }
-        statisticYear.text = annee.toString()
+        statisticYear.text = year.toString()
         code =  station!!.code
         myImage = findViewById(R.id.image)
         requestToServer(IpAddressDialog.ipAddressInput)
@@ -65,7 +67,7 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        val call: Call<String> = service.getStationStatistics(annee, temps, code)
+        val call: Call<String> = service.getStationStatistics(year, temps, code)
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
@@ -83,10 +85,14 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
                 //addData(jObj)
                 fillData(jObj)
                 //fillmyTablelayout(jObj)
+                lllProgressBar.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Echec de connexion avec le serveur !!!")
+                Log.i(TAG, "Error when receiving statistic!    cause:${t.cause}     message:${t.message}")
+                val builder = AlertDialog.Builder(this@MonthlyStationStatisticActivity)
+                builder.setTitle("Error while loading statistic!").setMessage("cause:${t.cause} \n message:${t.message}")
+                builder.show()
             }
         })
     }
@@ -101,31 +107,31 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
         Log.i(TAG, "affichage du graphique ")
 
         //val text10 = findViewById(R.id.text10) as TextView
-        text12.setText(jObj.donnees.departureValue[0].toString())
-        text13.setText(jObj.donnees.arrivalValue[0].toString())
-        text22.setText(jObj.donnees.departureValue[1].toString())
-        text23.setText(jObj.donnees.arrivalValue[1].toString())
-        text32.setText(jObj.donnees.departureValue[2].toString())
-        text33.setText(jObj.donnees.arrivalValue[2].toString())
-        text42.setText(jObj.donnees.departureValue[3].toString())
-        text43.setText(jObj.donnees.arrivalValue[3].toString())
-        text52.setText(jObj.donnees.departureValue[4].toString())
-        text53.setText(jObj.donnees.arrivalValue[4].toString())
-        text62.setText(jObj.donnees.departureValue[5].toString())
-        text63.setText(jObj.donnees.arrivalValue[5].toString())
-        text72.setText(jObj.donnees.departureValue[6].toString())
-        text73.setText(jObj.donnees.arrivalValue[6].toString())
-        text82.setText(jObj.donnees.departureValue[7].toString())
-        text83.setText(jObj.donnees.arrivalValue[7].toString())
+        text12.setText(jObj.data.departureValue[0].toString())
+        text13.setText(jObj.data.arrivalValue[0].toString())
+        text22.setText(jObj.data.departureValue[1].toString())
+        text23.setText(jObj.data.arrivalValue[1].toString())
+        text32.setText(jObj.data.departureValue[2].toString())
+        text33.setText(jObj.data.arrivalValue[2].toString())
+        text42.setText(jObj.data.departureValue[3].toString())
+        text43.setText(jObj.data.arrivalValue[3].toString())
+        text52.setText(jObj.data.departureValue[4].toString())
+        text53.setText(jObj.data.arrivalValue[4].toString())
+        text62.setText(jObj.data.departureValue[5].toString())
+        text63.setText(jObj.data.arrivalValue[5].toString())
+        text72.setText(jObj.data.departureValue[6].toString())
+        text73.setText(jObj.data.arrivalValue[6].toString())
+        text82.setText(jObj.data.departureValue[7].toString())
+        text83.setText(jObj.data.arrivalValue[7].toString())
 
-        text92.setText(jObj.donnees.departureValue[8].toString())
-        text93.setText(jObj.donnees.arrivalValue[8].toString())
-        text102.setText(jObj.donnees.departureValue[9].toString())
-        text103.setText(jObj.donnees.arrivalValue[9].toString())
-        text112.setText(jObj.donnees.departureValue[10].toString())
-        text113.setText(jObj.donnees.arrivalValue[10].toString())
-        text122.setText(jObj.donnees.departureValue[11].toString())
-        text123.setText(jObj.donnees.arrivalValue[11].toString())
+        text92.setText(jObj.data.departureValue[8].toString())
+        text93.setText(jObj.data.arrivalValue[8].toString())
+        text102.setText(jObj.data.departureValue[9].toString())
+        text103.setText(jObj.data.arrivalValue[9].toString())
+        text112.setText(jObj.data.departureValue[10].toString())
+        text113.setText(jObj.data.arrivalValue[10].toString())
+        text122.setText(jObj.data.departureValue[11].toString())
+        text123.setText(jObj.data.arrivalValue[11].toString())
 
     }
 
