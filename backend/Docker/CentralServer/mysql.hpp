@@ -19,10 +19,10 @@ class MySQL {
 public:
     MySQL();
     void sendPoll(std::string email, std::string firstName, std::string lastName, int age, bool interest);
-    json getPolls();
+    json getPolls(bool &err);
 
 private:
-    void connect();
+    bool connect();
     void disconnect();
     void setup();
 
@@ -54,8 +54,8 @@ void MySQL::sendPoll(std::string email, std::string firstName, std::string lastN
     disconnect();
 }
 
-json MySQL::getPolls() {
-    connect();
+json MySQL::getPolls(bool &err) {
+    err = !connect();
     Statement *stmt = con->createStatement();
     ResultSet *res  = stmt->executeQuery("SELECT * FROM Polls");
     json allData;
@@ -75,11 +75,12 @@ json MySQL::getPolls() {
     return allData;
 }
 
-void MySQL::connect() {
+bool MySQL::connect() {
     con = driver->connect(HOST, USER, PASS);
     Statement* stmt = con->createStatement();
     stmt->execute("USE Server");
     delete stmt;
+    return con->isValid();
 }
 
 void MySQL::disconnect() {

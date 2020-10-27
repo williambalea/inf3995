@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import pandas as pd
 from flask.json import jsonify
 
-class EnginSQL:
+class Engine1:
 
     DB_HOSTNAME = "34.70.117.28"
     DB_USERNAME = "root"
@@ -14,7 +14,7 @@ class EnginSQL:
     connection = None
     
 
-
+    #constructor
     def __init__(self):
         self.connection = self.create_connection(self.DB_HOSTNAME, self.DB_USERNAME, self.DB_PASSWORD, self.DB_NAMEOFBD)
 
@@ -33,7 +33,7 @@ class EnginSQL:
             print(f"The error '{e}' occurred")
         return self.connection
 
-
+    #query db then to kind of json with ' instead of "
     def query_db(self,query, args=(), one=False):
         myCursor = self.connection.cursor(buffered=True)
         myCursor.execute(query)
@@ -42,32 +42,33 @@ class EnginSQL:
         # cur.connection.close()
         return (r[0] if r else None) if one else r
 
+    #query to db and returns pandas object directly
+    def query_pd(self, query):
+        df = pd.read_sql_query(query, self.connection)
+        df['start_date'] = pd.to_datetime(df['start_date'], infer_datetime_format=True)
+        df['end_date'] = pd.to_datetime(df['end_date'], infer_datetime_format=True)
+        return df
+
+
     def toJson(self, data):
         return json.dumps(data)
     
     def jsonToPandas(self, jsonObj):
         return pd.read_json(jsonObj)
 
-    def plot(self, pandas):
-
-        return 0
-
     #queries 
     def getStationCode(self, code):
-        query = "SELECT S.name, S.latitude, S.longitude FROM Stations S WHERE code='{}'".format(code)
+        query = "SELECT S.name, S.latitude, S.longitude FROM Stations2017 S WHERE code='{}'".format(code)
         return self.toJson(self.query_db(query))
         
     def getAllStations(self):
-        query = "SELECT * FROM Stations"
+        query = "SELECT * FROM Stations2017"
         return self.toJson(self.query_db(query))
     
     def getDataUsage(self,year, station):
         query = "SELECT * FROM BixiRentals"
         query += str(year)
-        if station != "toutes":
+        if station != "all":
             query += " WHERE startStationCode='{}'".format(station)
             query += " OR endStationCode='{}' ".format(station)
-        # query += " WHERE startDate LIKE '%4/15%' AND startDate between '4/15/2015 7:58' AND '4/17/2015 8:00' "
-        print(query)
         return self.toJson(self.query_db(query))
-        # return query
