@@ -7,28 +7,27 @@ import custom.classes 1.0
 ApplicationWindow {
     id: applicationWindow
     width: 1280
-    height: 960
+    height: 720
     visible: true
-    color: "#ffffff"
     title: qsTr("Bixi Admin Tool")
 
     BackEnd {
         id: backend
     }
 
-    Item {
-        id: login
-        visible: !backend.isLoggedIn
+//    Item {
+//        id: login
+//        visible: !backend.isLoggedIn
 
-        LoginPage {
-            id: loginPage
-        }
+//        LoginPage {
+//            id: loginPage
+//        }
 
-    }
+//    }
 
     Item {
         id: app
-        visible: backend.isLoggedIn
+        visible: !backend.isLoggedIn
 
         TabBar {
             id: tabBar
@@ -79,7 +78,7 @@ ApplicationWindow {
             x: 0
             y: 48
             width: 1280
-            height: 912
+            height: 676
             interactive: false
             currentIndex: tabBar.currentIndex
 
@@ -88,7 +87,7 @@ ApplicationWindow {
                 width: applicationWindow.width
                 height: applicationWindow.height - 48
                 background: Rectangle {
-                    color: "#b12c2c"
+                    color: "#be3d34"
                 }
 
                 Label {
@@ -128,7 +127,7 @@ ApplicationWindow {
                     y: 558
                     width: 512
                     height: 200
-                    anchors.bottomMargin: 40
+                    anchors.bottomMargin: 36
                     anchors.leftMargin: 31
                     anchors.rightMargin: 37
                     anchors.topMargin: 72
@@ -168,7 +167,7 @@ ApplicationWindow {
                 }
 
                 background: Rectangle {
-                    color: "#f36a6a"
+                    color: "#be3d34"
                 }
             }
 
@@ -202,7 +201,7 @@ ApplicationWindow {
                 }
 
                 background: Rectangle {
-                    color: "#0c79b7"
+                    color: "#be3d34"
                 }
             }
 
@@ -227,7 +226,7 @@ ApplicationWindow {
                     x: 127
                     y: 125
                     width: 1026
-                    height: 662
+                    height: 500
                     verticalAlignment: Text.AlignBottom
                     placeholderText: qsTr("Text Area")
                     background: Rectangle {
@@ -236,7 +235,7 @@ ApplicationWindow {
                 }
 
                 background: Rectangle {
-                    color: "#0c79b7"
+                    color: "#be3d34"
                 }
             }
         }

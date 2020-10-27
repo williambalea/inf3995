@@ -15,6 +15,7 @@ SOURCES += \
         main.cpp
 
 RESOURCES += qml.qrc
+RESOURCES += logo.png
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH = ./
@@ -29,3 +30,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     backend.h
+
+DISTFILES += \
+    logo.png
