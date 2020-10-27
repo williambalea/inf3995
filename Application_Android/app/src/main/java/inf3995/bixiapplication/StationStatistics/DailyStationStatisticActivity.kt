@@ -19,6 +19,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.lang.Exception
 import java.time.Year
 
 class DailyStationStatisticActivity : AppCompatActivity() {
@@ -91,24 +92,29 @@ class DailyStationStatisticActivity : AppCompatActivity() {
         val myImageString = jObj.graph
         val image1 = findViewById(R.id.image) as ImageView
       //  image1.setImageBitmap(Base64Util.convertStringToBitmap(myImageString))
-        image1.setImageBitmap(convertString64ToImage(myImageString))
+        //image1.setImageBitmap(convertString64ToImage(myImageString))
+        try{image1.setImageBitmap(convertString64ToImage(myImageString))}
+        catch (e: Exception){
+            Log.e(TAG,"error")
+        }
         Log.i(TAG, "affichage du graphique ")
 
         //val text10 = findViewById(R.id.text10) as TextView
-        text12.setText(jObj.donnees.departureValue[0].toString())
-        text13.setText(jObj.donnees.arrivalValue[0].toString())
-        text22.setText(jObj.donnees.departureValue[1].toString())
-        text23.setText(jObj.donnees.arrivalValue[1].toString())
-        text32.setText(jObj.donnees.departureValue[2].toString())
-        text33.setText(jObj.donnees.arrivalValue[2].toString())
-        text42.setText(jObj.donnees.departureValue[3].toString())
-        text43.setText(jObj.donnees.arrivalValue[3].toString())
-        text52.setText(jObj.donnees.departureValue[4].toString())
-        text53.setText(jObj.donnees.arrivalValue[4].toString())
-        text62.setText(jObj.donnees.departureValue[5].toString())
-        text63.setText(jObj.donnees.arrivalValue[5].toString())
-        text72.setText(jObj.donnees.departureValue[6].toString())
-        text73.setText(jObj.donnees.arrivalValue[6].toString())
+        text12.setText(jObj.data.departureValue[0].toString())
+        text13.setText(jObj.data.arrivalValue[0].toString())
+        text22.setText(jObj.data.departureValue[1].toString())
+        text23.setText(jObj.data.arrivalValue[1].toString())
+        text32.setText(jObj.data.departureValue[2].toString())
+        text33.setText(jObj.data.arrivalValue[2].toString())
+        text42.setText(jObj.data.departureValue[3].toString())
+        text43.setText(jObj.data.arrivalValue[3].toString())
+        text52.setText(jObj.data.departureValue[4].toString())
+        text53.setText(jObj.data.arrivalValue[4].toString())
+        text62.setText(jObj.data.departureValue[5].toString())
+        text63.setText(jObj.data.arrivalValue[5].toString())
+        text72.setText(jObj.data.departureValue[6].toString())
+        text73.setText(jObj.data.arrivalValue[6].toString())
+
 
     }
 

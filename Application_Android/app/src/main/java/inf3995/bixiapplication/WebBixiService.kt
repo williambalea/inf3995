@@ -16,16 +16,16 @@ interface WebBixiService {
   //  @POST("/")
    // fun getHelloWorld(@Body ipAddresss: String): Call<String>
 
-    @GET("/station/code")
+    @GET("engine1/station/code")
     fun getStationCode(@Field("body") code: Int):Call<Station>
 
-    @GET("/engin1/data/usage/{year}/{time}/{station}")
+    @GET("/engine2/data/usage/{year}/{time}/{station}")
     fun getStationStatistics(@Path("year") year:Int, @Path("time") time:String, @Path("station") station: Int): Call<String>
 
     @POST("/server/survey")
     fun sendServerSurveyData(@Body survey: String):Call<String>
 
-    @GET("/engin1/station/all")
+    @GET("/engine1/station/all")
     fun getAllStationCode(): Call<String>
    // fun getAllStationCode(): Call<ArrayList<Station>>
 

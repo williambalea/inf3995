@@ -29,7 +29,7 @@ class StationStatisticsActivity : AppCompatActivity() {
         val years_List = listOf("","2014", "2015", "2016","2017")
         val years_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, years_List)
         spnTime.adapter = years_adapter
-        val period_List = listOf("","parmois", "parjourdelasemaine", "parheure")
+        val period_List = listOf("","perMonth", "perWeekDay", "perHour")
         val period_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, period_List)
         spnPeriod.adapter = period_adapter
         limitDropDownmenuHeight(spnPeriod)
@@ -79,7 +79,7 @@ class StationStatisticsActivity : AppCompatActivity() {
             val temps = temps
             val name = station!!.name
             when (temps){
-                "parmois"-> {
+                "perMonth"-> {
                     val intent = Intent(this@StationStatisticsActivity, MonthlyStationStatisticActivity::class.java)
                     intent.putExtra("data", station)
                     intent.putExtra("Annee", annee)
@@ -88,7 +88,7 @@ class StationStatisticsActivity : AppCompatActivity() {
                     startActivity(intent)
 
                 }
-                "parjourdelasemaine"-> {
+                "perWeekDay"-> {
                     val intent = Intent(this@StationStatisticsActivity, DailyStationStatisticActivity::class.java)
                     intent.putExtra("data", station)
                     intent.putExtra("Annee", annee)
@@ -96,7 +96,7 @@ class StationStatisticsActivity : AppCompatActivity() {
                     intent.putExtra("Temps", temps)
                     startActivity(intent)
                 }
-                "parheure"-> {
+                "perHour"-> {
                     val intent = Intent(this@StationStatisticsActivity, HourlyStationStatisticActivity::class.java)
                     intent.putExtra("data", station)
                     intent.putExtra("Annee", annee)
