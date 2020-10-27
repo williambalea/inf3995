@@ -61,7 +61,7 @@ void Server::run() {
     cout << getTime() << "server is running on " << addr.host() << ":" << addr.port() << endl;
     
     // TODO: remove dummies
-    //createDummies();
+    createDummies();
 
     // listening for a ctl+C
     while (!sigint) {}
@@ -123,11 +123,11 @@ void Server::sendPoll(const Rest::Request& req, Http::ResponseWriter res) {
     try {
         json j = json::parse(req.body());
         db.sendPoll(
-            j.at("lastName"),
-            j.at("firstName"),
-            j.at("email"),
-            j.at("age"),
-            j.at("interest")
+            j["email"].get<string>(),
+            j["firstName"].get<string>(),
+            j["lastName"].get<string>(),
+            j["age"].get<int>(),
+            j["interest"].get<bool>()
         );
         res.send(Http::Code::Ok, "Server got your survey!");
         log("sent a survey");
@@ -192,9 +192,9 @@ void Server::createDummies() {
         j["age"] = i + 100;
         j["interest"] = (i % 2) ? true : false;
         db.sendPoll(
-            j.at("lastName"),
-            j.at("firstName"),
             j.at("email"),
+            j.at("firstName"),
+            j.at("lastName"),
             j.at("age"),
             j.at("interest")
         );
