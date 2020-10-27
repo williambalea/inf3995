@@ -6,8 +6,8 @@ import custom.classes 1.0
 
 ApplicationWindow {
     id: applicationWindow
-    width: 1280
-    height: 720
+    width: 1000
+    height: 600
     visible: true
     color: "#9b0000"
     title: qsTr("Bixi Admin Tool")
@@ -34,7 +34,7 @@ ApplicationWindow {
         TabBar {
             id: tabBar
             x: 0
-            y: 45
+            y: 50
             width: applicationWindow.width
             height: 0
             currentIndex: 0
@@ -92,9 +92,9 @@ ApplicationWindow {
         SwipeView {
             id: swipeView
             x: 0
-            y: 86
+            y: 91
             width: 1280
-            height: 633
+            height: 628
             interactive: false
             currentIndex: tabBar.currentIndex
 
@@ -108,11 +108,13 @@ ApplicationWindow {
 
                 Button {
                     id: refreshButton
-                    x: 542
-                    y: 571
                     width: 191
                     height: 48
+                    x: applicationWindow.width/2 - width/2
+                    y: applicationWindow.height - 155
+
                     text: qsTr("Refresh")
+                    transformOrigin: Item.Center
                     Material.background: "#d52b1e"
                     Material.foreground: "#ffffff"
 
@@ -128,14 +130,10 @@ ApplicationWindow {
 
                 Page3 {
                     id: page3
-                    x: 56
-                    y: 558
-                    width: 512
-                    height: 200
-                    anchors.bottomMargin: 79
-                    anchors.leftMargin: 32
-                    anchors.rightMargin: 37
-                    anchors.topMargin: 29
+                    anchors.bottomMargin: 80
+                    anchors.leftMargin: 30
+                    anchors.rightMargin: 30
+                    anchors.topMargin: 30
                     model: JSON.parse(backend.sqlData)
                     Component.onCompleted: backend.refresh()
 
@@ -156,24 +154,32 @@ ApplicationWindow {
         }
 
         Image {
-            id: image
+            id: logo
             x: 8
             y: 0
-            width: 82
-            height: 45
+            width: 117
+            height: 50
             source: "logoW.png"
+            mipmap: true
             fillMode: Image.PreserveAspectFit
         }
 
         RoundButton {
             id: roundButton
-            x: 1233
+            x: applicationWindow.width - 50
             y: 0
+            width: 50
+            height: 50
+            font.pointSize: 40
+            padding: 0
+            topPadding: 0
+            font.bold: false
             flat: true
-            font.pointSize: 11
             display: AbstractButton.IconOnly
             icon.source: "settings-24px.svg"
             icon.color: "#ffffff"
+            icon.width: width/1.5
+            icon.height: height/1.5
         }
     }
 }
@@ -182,6 +188,6 @@ ApplicationWindow {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:4}
+    D{i:0;formeditorZoom:0.25;height:720;width:1280}
 }
 ##^##*/
