@@ -75,7 +75,7 @@ services:
         - "traefik.http.routers.engine1-secured.tls.certresolver=mytls" # <== Defining certsresolvers for https
 
   engine2:
-    build: ../DataEngine/Engine2/.
+    build: ../DataEngine/.
     restart: always
     container_name: engine2
     labels: 
