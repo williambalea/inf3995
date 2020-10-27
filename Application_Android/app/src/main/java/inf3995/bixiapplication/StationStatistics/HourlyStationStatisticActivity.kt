@@ -46,6 +46,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.ByteArrayOutputStream
+import kotlinx.android.synthetic.main.activity_hourly_station_statistic.statisticYear as statisticYear1
 
 class HourlyStationStatisticActivity : AppCompatActivity() {
     var station : Station? = null
@@ -65,12 +66,15 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
         Station_code.text = station!!.code.toString()
         Station_name.text = station!!.name
 
+
         if (tempas != null) {
             temps = tempas
         }
+
         if (annas != null) {
             annee = annas
         }
+        statisticYear.text = annee.toString()
         code =  station!!.code
         myImage = findViewById(R.id.image)
         requestToServer(IpAddressDialog.ipAddressInput)
@@ -112,19 +116,19 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
             }
         })
     }
-/*
- private fun convertString64ToImage(base64String: String): Bitmap {
-        val decodedString = Base64.decode(base64String, Base64.NO_WRAP)
+        /*
+
+ */
+    private fun convertString64ToImage(base64String: String): Bitmap {
+        val decodedString = Base64.decode(base64String, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
     }
- */
 
     private fun fillData(jObj: MonthlyStatisticStation) {
         val myImageString = jObj.graph
         val image1 = findViewById(R.id.image) as ImageView
-        image1.setImageBitmap(Base64Util.convertStringToBitmap(myImageString))
-        image.maxHeight.equals(332)
-        image.maxWidth.equals(332)
+      //  image1.setImageBitmap(Base64Util.convertStringToBitmap(myImageString))
+        image1.setImageBitmap(convertString64ToImage(myImageString))
         Log.i(TAG, "affichage du graphique ")
 
         //val text10 = findViewById(R.id.text10) as TextView
@@ -179,6 +183,7 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
 
     }
 
+  /*
     object Base64Util {
         private val IMG_WIDTH = 640
         private val IMG_HEIGHT = 480
@@ -204,5 +209,6 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
             return convertString64ToImage(resizeBase64Image(base64String))
         }
     }
+   */
 
 }

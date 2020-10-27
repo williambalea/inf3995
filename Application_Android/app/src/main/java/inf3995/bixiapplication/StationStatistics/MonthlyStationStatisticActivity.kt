@@ -2,14 +2,11 @@ package inf3995.bixiapplication.StationStatistics
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Base64
 import android.util.Base64.decode
 import android.util.Log
-import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -23,7 +20,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.io.ByteArrayOutputStream
 
 
 class MonthlyStationStatisticActivity : AppCompatActivity() {
@@ -48,9 +44,11 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
         if (tempas != null) {
             temps = tempas
         }
+
         if (annas != null) {
             annee = annas
         }
+        statisticYear.text = annee.toString()
         code =  station!!.code
         myImage = findViewById(R.id.image)
         requestToServer(IpAddressDialog.ipAddressInput)
@@ -96,7 +94,8 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
     private fun fillData(jObj:MonthlyStatisticStation) {
         val myImageString = jObj.graph
         val image1 = findViewById(R.id.image) as ImageView
-        image1.setImageBitmap(Base64Util.convertStringToBitmap(myImageString))
+       // image1.setImageBitmap(Base64Util.convertStringToBitmap(myImageString))
+        image1.setImageBitmap(convertString64ToImage(myImageString))
         image.maxHeight.equals(332)
         image.maxWidth.equals(332)
         Log.i(TAG, "affichage du graphique ")
@@ -283,9 +282,7 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
     }
 
     /*
-
-     */
-    object Base64Util {
+object Base64Util {
         private val IMG_WIDTH = 640
         private val IMG_HEIGHT = 480
         private fun resizeBase64Image(base64image: String): String {
@@ -310,5 +307,7 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
             return convertString64ToImage(resizeBase64Image(base64String))
         }
     }
+     */
+
 
 }

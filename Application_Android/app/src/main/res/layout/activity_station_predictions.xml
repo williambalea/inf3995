@@ -120,7 +120,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="8"
-        android:background="@drawable/recyclerview_bg"
+        android:background="@drawable/recyclerview_bg_2"
         android:layout_gravity="center"
         android:orientation="vertical"
         android:padding="5dp">

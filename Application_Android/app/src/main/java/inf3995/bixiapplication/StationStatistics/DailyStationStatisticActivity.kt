@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import android.widget.ImageView
-import android.widget.TableLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -20,7 +19,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.io.ByteArrayOutputStream
+import java.time.Year
 
 class DailyStationStatisticActivity : AppCompatActivity() {
 
@@ -47,6 +46,7 @@ class DailyStationStatisticActivity : AppCompatActivity() {
         if (annas != null) {
             annee = annas
         }
+        statisticYear.text = annee.toString()
         code =  station!!.code
         myImage = findViewById(R.id.image)
         requestToServer(IpAddressDialog.ipAddressInput)
@@ -82,12 +82,16 @@ class DailyStationStatisticActivity : AppCompatActivity() {
         })
     }
 
+    private fun convertString64ToImage(base64String: String): Bitmap {
+        val decodedString = Base64.decode(base64String, Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+    }
+
     private fun fillData(jObj:MonthlyStatisticStation) {
         val myImageString = jObj.graph
         val image1 = findViewById(R.id.image) as ImageView
-        image1.setImageBitmap(Base64Util.convertStringToBitmap(myImageString))
-        image.maxHeight.equals(332)
-        image.maxWidth.equals(332)
+      //  image1.setImageBitmap(Base64Util.convertStringToBitmap(myImageString))
+        image1.setImageBitmap(convertString64ToImage(myImageString))
         Log.i(TAG, "affichage du graphique ")
 
         //val text10 = findViewById(R.id.text10) as TextView
@@ -108,6 +112,7 @@ class DailyStationStatisticActivity : AppCompatActivity() {
 
     }
 
+/*
     object Base64Util {
         private val IMG_WIDTH = 640
         private val IMG_HEIGHT = 480
@@ -134,5 +139,6 @@ class DailyStationStatisticActivity : AppCompatActivity() {
             return convertString64ToImage(resizeBase64Image(base64String))
         }
     }
+ */
 
 }

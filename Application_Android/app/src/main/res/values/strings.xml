@@ -55,7 +55,7 @@
     <string name="arrival">Arrival</string>
     <string name="month">Month</string>
     <string name="rank">Rank</string>
-    <string name="monthly_departures_and_arrivals">Monthly departures and arrivals at this station</string>
+    <string name="monthly_departures_and_arrivals">Monthly departures and arrivals at this station for year: </string>
     <string name="_1">1</string>
     <string name="_2">2</string>
     <string name="_3">3</string>
@@ -80,14 +80,14 @@
     <string name="mar">March</string>
     <string name="february">February</string>
     <string name="january">January</string>
-    <string name="daily_departures_and_arrivals_at_this_station">Daily departures and arrivals at this station</string>
+    <string name="daily_departures_and_arrivals_at_this_station">Daily departures and arrivals at this station for year: </string>
     <string name="monday">Monday</string>
     <string name="tuesday">Tuesday</string>
     <string name="wednesday">Wednesday</string>
     <string name="thursday">Thursday</string>
     <string name="friday">Friday</string>
     <string name="saturday">Saturday</string>
-    <string name="departures_and_arrivals_per_hour_at_this_station">Departures and arrivals per hour at this station</string>
+    <string name="departures_and_arrivals_per_hour_at_this_station">Departures and arrivals per hour at this station for year: </string>
     <string name="_0h">0h</string>
     <string name="_1h">1h</string>
     <string name="_2h">2h</string>
@@ -124,4 +124,5 @@
     <string name="_24">24</string>
     <string name="day">Day</string>
     <string name="hour">Hour</string>
+    <string name="year_of_statistic">Year of Statistic</string>
 </resources>
