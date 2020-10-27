@@ -6,8 +6,8 @@ import custom.classes 1.0
 
 ApplicationWindow {
     id: applicationWindow
-    width: 1280
-    height: 720
+    width: 1000
+    height: 600
     visible: true
     color: "#9b0000"
     title: qsTr("Bixi Admin Tool")
@@ -17,24 +17,24 @@ ApplicationWindow {
         id: backend
     }
 
-//    Item {
-//        id: login
-//        visible: !backend.isLoggedIn
+    Item {
+        id: login
+        visible: !backend.isLoggedIn
 
-//        LoginPage {
-//            id: loginPage
-//        }
+        LoginPage {
+            id: loginPage
+        }
 
-//    }
+    }
 
     Item {
         id: app
-        visible: !backend.isLoggedIn
+        visible: backend.isLoggedIn
 
         TabBar {
             id: tabBar
             x: 0
-            y: 60
+            y: 50
             width: applicationWindow.width
             height: 0
             currentIndex: 0
@@ -92,9 +92,9 @@ ApplicationWindow {
         SwipeView {
             id: swipeView
             x: 0
-            y: 101
+            y: 91
             width: 1280
-            height: 618
+            height: 628
             interactive: false
             currentIndex: tabBar.currentIndex
 
@@ -157,8 +157,8 @@ ApplicationWindow {
             id: logo
             x: 8
             y: 0
-            width: 128
-            height: 60
+            width: 117
+            height: 50
             source: "logoW.png"
             mipmap: true
             fillMode: Image.PreserveAspectFit
@@ -166,10 +166,10 @@ ApplicationWindow {
 
         RoundButton {
             id: roundButton
-            x: applicationWindow.width - logo.width/2
+            x: applicationWindow.width - 50
             y: 0
-            width: 64
-            height: 60
+            width: 50
+            height: 50
             font.pointSize: 40
             padding: 0
             topPadding: 0
@@ -188,6 +188,6 @@ ApplicationWindow {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.75}D{i:22}
+    D{i:0;formeditorZoom:0.25;height:720;width:1280}
 }
 ##^##*/

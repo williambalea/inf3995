@@ -143,6 +143,6 @@ Page{
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.5}D{i:2}
+    D{i:0;formeditorZoom:0.5}
 }
 ##^##*/
