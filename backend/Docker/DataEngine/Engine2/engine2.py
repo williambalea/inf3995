@@ -81,7 +81,7 @@ class Engine2:
         if time == "perHour":
             plt.xlabel('Per Day', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
-            plt.xticks([r + barWidth for r in range(len(countStart))], self.hourLabel[:len(countStart)])
+            plt.xticks([r + barWidth for r in range(len(countStart))], self.hourLabel[:len(countStart)], rotation="vertical")
             plt.title('Bixi usage per Hour of the Day for Station#{}'.format(station))
         elif time == "perWeekDay":
             plt.xlabel('Per Week Day', fontweight='bold')
