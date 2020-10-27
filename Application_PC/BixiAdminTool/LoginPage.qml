@@ -24,12 +24,12 @@ Page{
             id: error
             visible: backend.attemps
             x: 150
-            y: 375
+            y: 357
             width: 422
             height: 40
-            color: "#b20909"
+            color: "#d52b1e"
             text: qsTr("Wrong user and/or password")
-            font.pixelSize: 33
+            font.pixelSize: 22
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
@@ -138,8 +138,10 @@ Page{
     
 }
 
+
+
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.33000001311302185}
+    D{i:0;formeditorZoom:0.5}
 }
 ##^##*/

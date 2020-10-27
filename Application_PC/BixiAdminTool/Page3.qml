@@ -8,74 +8,61 @@ TableView {
     id: view
     anchors.fill: parent
 
-
-    BackEnd {
-        id: backend
-    }
-
-
-    function fetchHello() {
-        var client = new XMLHttpRequest();
-        client.open("GET", "https://10.0.0.105/server/survey", true);
-        client.onreadystatechange = function () {
-            if (client.readyState === client.DONE) {
-                print(client.responseText);
-                view.model = JSON.parse(client.responseText);
-            }
-        }
-        client.send();
-    }
-
-
     itemDelegate: Item {
         Text {
             text: styleData.value
-            font.pixelSize: 14
+            font.pixelSize: 16
+            verticalAlignment: Text.AlignVCenter
+            rightPadding: 10
+            leftPadding: 10
+            anchors.fill: parent
         }
     }
 
-    // il y a des delegate qui nous permettent de changer le style
-//    headerDelegate: Rectangle{
-//        height: 30
-//        border.width: 1
-//        color: "#FAEBD7"
-//        border.color: "#04f6f6"
-//        Text {
-//            id: headerName
-//            text: styleData.value
-//            font.pointSize: 15
-//            font.bold: true
-//            horizontalAlignment: Text.AlignHCenter
-//            verticalAlignment: Text.AlignVCenter
-//            anchors.fill: parent
-//        }
-//    }
+    rowDelegate:  Rectangle {
+        height: 40
+        property color rowColor: styleData.selected?"#FFCCC9":(styleData.alternate ? "#ffffff":"#EAEAEA")
+        color: rowColor
+    }
 
+    headerDelegate: Rectangle{
+        height: 40
+        Text {
+            id: headerName
+            text: styleData.value
+            font.pointSize: 12
+            verticalAlignment: Text.AlignVCenter
+            font.weight: Font.DemiBold
+            rightPadding: 10
+            leftPadding: 10
+            anchors.fill: parent
+        }
+    }
 
     TableViewColumn {
         role: 'firstName'
         title: "First Name"
-        width: 120
+        width: 180
     }
     TableViewColumn {
         role: 'lastName'
         title: "Last Name"
-        width: 120
+        width: 180
     }
     TableViewColumn {
         role: 'email'
         title: "E-mail"
-        width: 150
+        width: 250
     }
     TableViewColumn {
         role: 'age'
         title: "Age"
-        width: 40
+        width: 60
     }
     TableViewColumn {
         role: 'interest'
         title: "Interest"
-        width: 80
+        width: 90
     }
 
 }

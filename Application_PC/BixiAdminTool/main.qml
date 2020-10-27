@@ -15,19 +15,19 @@ ApplicationWindow {
         id: backend
     }
 
-//    Item {
-//        id: login
-//        visible: !backend.isLoggedIn
+    Item {
+        id: login
+        visible: !backend.isLoggedIn
 
-//        LoginPage {
-//            id: loginPage
-//        }
+        LoginPage {
+            id: loginPage
+        }
 
-//    }
+    }
 
     Item {
         id: app
-        visible: !backend.isLoggedIn
+        visible: backend.isLoggedIn
 
         TabBar {
             id: tabBar
@@ -90,19 +90,6 @@ ApplicationWindow {
                     color: "#be3d34"
                 }
 
-                Label {
-                    id: label
-                    x: 0
-                    y: 0
-                    width: 180
-                    height: 57
-                    text: qsTr("")
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 22
-                }
-
-
                 Button {
                     id: refreshButton
                     x: 1052
@@ -137,106 +124,16 @@ ApplicationWindow {
                 }
             }
 
-            Page {
+            Engine1Page {
                 id: engine1Page
-                width: applicationWindow.width
-                height: applicationWindow.height - 48
-                Label {
-                    id: label1
-                    x: 0
-                    y: 0
-                    width: 180
-                    height: 57
-                    text: qsTr("Page 2")
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 22
-                }
-
-                TextArea {
-                    id: textArea
-                    x: 127
-                    y: 125
-                    width: 1026
-                    height: 662
-                    verticalAlignment: Text.AlignBottom
-                    placeholderText: qsTr("Text Area")
-                    background: Rectangle {
-                        color: "#ffffff"
-                    }
-                }
-
-                background: Rectangle {
-                    color: "#be3d34"
-                }
             }
 
-            Page {
-                id: engine2Page
-                width: applicationWindow.width
-                height: applicationWindow.height - 48
-                Label {
-                    id: label2
-                    x: 0
-                    y: 0
-                    width: 180
-                    height: 57
-                    text: qsTr("Page 3")
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 22
-                }
-
-                TextArea {
-                    id: textArea1
-                    x: 127
-                    y: 125
-                    width: 1026
-                    height: 662
-                    verticalAlignment: Text.AlignBottom
-                    placeholderText: qsTr("Text Area")
-                    background: Rectangle {
-                        color: "#ffffff"
-                    }
-                }
-
-                background: Rectangle {
-                    color: "#be3d34"
-                }
+            Engine1Page {
+                id: engine1Page1
             }
 
-            Page {
-                id: engine3Page
-                width: applicationWindow.width
-                height: applicationWindow.height - 48
-                Label {
-                    id: label3
-                    x: 0
-                    y: 0
-                    width: 180
-                    height: 57
-                    text: qsTr("Page 4")
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.pointSize: 22
-                }
-
-                TextArea {
-                    id: textArea2
-                    x: 127
-                    y: 125
-                    width: 1026
-                    height: 500
-                    verticalAlignment: Text.AlignBottom
-                    placeholderText: qsTr("Text Area")
-                    background: Rectangle {
-                        color: "#ffffff"
-                    }
-                }
-
-                background: Rectangle {
-                    color: "#be3d34"
-                }
+            Engine1Page {
+                id: engine1Page2
             }
         }
 
