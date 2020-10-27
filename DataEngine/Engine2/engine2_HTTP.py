@@ -10,4 +10,4 @@ def hello_world():
 
 @app.route('/engin2/data/usage/<year>/<time>/<station>')
 def dataUsage(year, time, station):
-    return engine2.dataGraphtoJSON(year, time, station)
+    return engine2.datatoJSON(year, time, station)

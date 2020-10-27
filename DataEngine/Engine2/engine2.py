@@ -16,6 +16,7 @@ class Engine2:
         return None 
                       
     def getPerTimeCountStart(self, df, station, time):
+        print('getTimeCountStart()')
         dfStart = df[['start_date', 'start_station_code']].copy()
         #filter rows
         if station != 'all':
@@ -34,6 +35,8 @@ class Engine2:
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
             label = self.monthLabel
         timeCount = np.bincount(timeNumber, None, len(label))
+        print('TimeCount Start:')
+        print(timeCount)
         return timeCount
     
     def getPerTimeCountEnd(self, df, station, time):
@@ -55,10 +58,12 @@ class Engine2:
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
             label = self.monthLabel
         timeCount = np.bincount(timeNumber, None, len(label))
-        # return dict(zip(range(24), hourCount))
+        print('TimeCount Start:')
+        print(timeCount)
         return timeCount
     
     def getGraphPerTime(self, countStart, countEnd, station, time):
+        print('entering getGraphPerTime()')
         if time == 'perMonth':
             countStart = countStart[3:len(countStart)-1]
             countEnd = countEnd[3:len(countEnd)-1]
@@ -90,11 +95,13 @@ class Engine2:
         # Create legend & Show graphic
         plt.legend()
         plt.savefig('bar.png')
-        plt.show()
+        # plt.show()
+        print('graph generated')
         return plt
 
 
     def toBase64(self):
+        print('toBase64()')
         # plt.savefig('bar.png')
         with open("bar.png", "rb") as imageFile:
             strg = base64.b64encode(imageFile.read()).decode('utf-8')
@@ -105,7 +112,8 @@ class Engine2:
 
         return strg
 
-    def dataGraphtoJSON(self, year, time, station):
+    def datatoJSON(self, year, time, station):
+        print('datatoJSON()')
         ye = int(year)
         ti = str(time)
         if str(station) == 'all':
@@ -113,9 +121,11 @@ class Engine2:
         else:
             st = int(station)
 
-        path = "./kaggleData/OD_{}".format(ye)
+        path = "../kaggleData/OD_{}".format(ye)
         path += ".csv"
         df = pd.read_csv(path)
+        print('dataframe: ')
+        print(df)
         countStart = self.getPerTimeCountStart(df, st, ti)
         countEnd = self.getPerTimeCountEnd(df, st, ti)
         
@@ -137,4 +147,6 @@ class Engine2:
         o["data"]["arrivalValue"] = countEnd[0:len(countStart)].tolist()
         o["graph"] = graphString
         
+        print('Label used: ')
+        print(label)
         return json.dumps(o)

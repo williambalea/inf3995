@@ -58,11 +58,11 @@ class Engine1:
 
     #queries 
     def getStationCode(self, code):
-        query = "SELECT S.name, S.latitude, S.longitude FROM Stations S WHERE code='{}'".format(code)
+        query = "SELECT S.name, S.latitude, S.longitude FROM Stations2017 S WHERE code='{}'".format(code)
         return self.toJson(self.query_db(query))
         
     def getAllStations(self):
-        query = "SELECT * FROM Stations"
+        query = "SELECT * FROM Stations2017"
         return self.toJson(self.query_db(query))
     
     def getDataUsage(self,year, station):
