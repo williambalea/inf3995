@@ -16,6 +16,9 @@ SOURCES += \
 
 RESOURCES += qml.qrc
 RESOURCES += logo.png
+RESOURCES += logoW.png
+RESOURCES += settings-24px.svg
+
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH = ./
@@ -32,4 +35,6 @@ HEADERS += \
     backend.h
 
 DISTFILES += \
-    logo.png
+    logo.png \
+    logoW.png \
+    settings-24px.svg

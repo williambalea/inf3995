@@ -7,23 +7,23 @@ import custom.classes 1.0
 Page {
     id: engine1Page
     width: 1280
-    height: 700
+    height: 633
     
     TextArea {
         id: textArea
         x: 28
         y: 29
         width: 1223
-        height: 620
+        height: 570
         verticalAlignment: Text.AlignBottom
         placeholderText: qsTr("Text Area")
         background: Rectangle {
-            color: "#ffffff"
+            color: "#F5F5F6"
         }
     }
     
     background: Rectangle {
-        color: "#be3d34"
+        color: "#E1E2E1"
     }
 }
 

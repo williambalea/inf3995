@@ -21,7 +21,7 @@ TableView {
 
     rowDelegate:  Rectangle {
         height: 40
-        property color rowColor: styleData.selected?"#FFCCC9":(styleData.alternate ? "#ffffff":"#EAEAEA")
+        property color rowColor: styleData.selected?"#ff6348":(styleData.alternate ? "#ffffff":"#EAEAEA")
         color: rowColor
     }
 

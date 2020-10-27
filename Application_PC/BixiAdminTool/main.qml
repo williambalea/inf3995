@@ -9,7 +9,9 @@ ApplicationWindow {
     width: 1280
     height: 720
     visible: true
+    color: "#9b0000"
     title: qsTr("Bixi Admin Tool")
+    Material.accent: "#D52B1E"
 
     BackEnd {
         id: backend
@@ -32,18 +34,23 @@ ApplicationWindow {
         TabBar {
             id: tabBar
             x: 0
-            y: 0
+            y: 45
             width: applicationWindow.width
             height: 0
             currentIndex: 0
+            Material.accent: "#ffffff"
+            Material.foreground: "#ffffff"
+
 
             TabButton {
                 id: tab0
                 x: 310
                 y: 0
-                height: 48
                 text: qsTr("Surveys")
                 Layout.preferredWidth: 150
+                background: Rectangle {
+                    color: "#D52B1E"
+                }
             }
 
             TabButton {
@@ -52,6 +59,9 @@ ApplicationWindow {
                 y: 0
                 text: qsTr("Data Engine 1")
                 Layout.preferredWidth: 150
+                background: Rectangle {
+                    color: "#D52B1E"
+                }
             }
 
             TabButton {
@@ -60,6 +70,9 @@ ApplicationWindow {
                 y: 0
                 text: qsTr("Data Engine 2")
                 Layout.preferredWidth: 150
+                background: Rectangle {
+                    color: "#D52B1E"
+                }
             }
 
             TabButton {
@@ -68,6 +81,9 @@ ApplicationWindow {
                 y: 0
                 text: qsTr("Data Engine 3")
                 Layout.preferredWidth: 150
+                background: Rectangle {
+                    color: "#D52B1E"
+                }
             }
 
 
@@ -76,27 +92,29 @@ ApplicationWindow {
         SwipeView {
             id: swipeView
             x: 0
-            y: 48
+            y: 86
             width: 1280
-            height: 676
+            height: 633
             interactive: false
             currentIndex: tabBar.currentIndex
 
             Page {
                 id: surveyPage
                 width: applicationWindow.width
-                height: applicationWindow.height - 48
+                height: applicationWindow.height - 86
                 background: Rectangle {
-                    color: "#be3d34"
+                    color: "#E1E2E1"
                 }
 
                 Button {
                     id: refreshButton
-                    x: 1052
-                    y: 9
+                    x: 542
+                    y: 571
                     width: 191
                     height: 48
                     text: qsTr("Refresh")
+                    Material.background: "#d52b1e"
+                    Material.foreground: "#ffffff"
 
                     Connections {
                         target: refreshButton
@@ -114,10 +132,10 @@ ApplicationWindow {
                     y: 558
                     width: 512
                     height: 200
-                    anchors.bottomMargin: 36
-                    anchors.leftMargin: 31
+                    anchors.bottomMargin: 79
+                    anchors.leftMargin: 32
                     anchors.rightMargin: 37
-                    anchors.topMargin: 72
+                    anchors.topMargin: 29
                     model: JSON.parse(backend.sqlData)
                     Component.onCompleted: backend.refresh()
 
@@ -137,11 +155,33 @@ ApplicationWindow {
             }
         }
 
+        Image {
+            id: image
+            x: 8
+            y: 0
+            width: 82
+            height: 45
+            source: "logoW.png"
+            fillMode: Image.PreserveAspectFit
+        }
+
+        RoundButton {
+            id: roundButton
+            x: 1233
+            y: 0
+            flat: true
+            font.pointSize: 11
+            display: AbstractButton.IconOnly
+            icon.source: "settings-24px.svg"
+            icon.color: "#ffffff"
+        }
     }
 }
 
+
+
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.5}
+    D{i:0;formeditorZoom:4}
 }
 ##^##*/

@@ -9,7 +9,7 @@ Page{
     width: 1280
     height: 720
     background: Rectangle {
-        color: "#e66358"
+        color: "#ff6348"
     }
 
     Pane {
@@ -19,6 +19,7 @@ Page{
         width: 746
         height: 528
         Material.elevation: 4
+        Material.background: "#F5F5F6"
 
         Text {
             id: error
