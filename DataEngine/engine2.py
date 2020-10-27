@@ -1,12 +1,11 @@
 import json
-from enginSQL import EnginSQL
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import base64
 
-class Engin2:
+class Engine2:
 
     hourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
     monthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -17,122 +16,107 @@ class Engin2:
         return None 
                       
     def getPerTimeCountStart(self, df, station, time):
+        print('getTimeCountStart()', flush=True)
         dfStart = df[['start_date', 'start_station_code']].copy()
         #filter rows
-        print('filtering timecountstart')
-        if station != 'toutes':
+        if station != 'all':
             #Get indexes where name column has value stationCode
             indexNames = dfStart[dfStart['start_station_code'] != int(station)].index
             #Delete these row indexes from dataFrame
             dfStart.drop(indexNames , inplace=True)
-        print('line25')
         startDateSeries = dfStart['start_date'].values.astype('datetime64[m]')
-        print('line27') 
-        if time == "parheure":
+        if time == "perHour":
             timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
             label = self.hourLabel
-        elif time == "parjourdelasemaine":
+        elif time == "perWeekDay":
             timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+4, 7)
             label = self.weekDayLabel
-        elif time == "parmois":
+        elif time == "perMonth":
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
             label = self.monthLabel
-        print('line 34')
-        print(timeNumber)
         timeCount = np.bincount(timeNumber, None, len(label))
-        print(len(label))
+        print('TimeCount Start:', flush=True)
         print(timeCount)
-        print('dict')
-        # print(dict(zip(range(12), hourCount)))
         return timeCount
     
     def getPerTimeCountEnd(self, df, station, time):
         dfEnd = df[['end_date', 'end_station_code']].copy()
         #filter rows
-        print('line41')
-        if station != 'toutes':
+        if station != 'all':
             #Get indexes where name column has value stationCode
             indexNames = dfEnd[dfEnd['end_station_code'] != int(station)].index
             #Delete these row indexes from dataFrame
             dfEnd.drop(indexNames , inplace=True)
-        print('line47')
         startDateSeries = dfEnd['end_date'].values.astype('datetime64[m]')
-        if time == "parheure":
+        if time == "perHour":
             timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
             label = self.hourLabel
-        elif time == "parjourdelasemaine":
+        elif time == "perWeekDay":
             timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+4, 7)
             label = self.weekDayLabel
-        elif time == "parmois":
+        elif time == "perMonth":
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
             label = self.monthLabel
-        print('line55')
         timeCount = np.bincount(timeNumber, None, len(label))
-        # return dict(zip(range(24), hourCount))
+        print('TimeCount Start:', flush=True)
+        print(timeCount)
         return timeCount
     
     def getGraphPerTime(self, countStart, countEnd, station, time):
-        print('2. entering getgraph')
-        # print('oldcountstart')
-        # print(oldcountStart)
-        # print('countEnd')
-        # print(countEnd)
-        if time == 'parmois':
+        print('entering getGraphPerTime()', flush=True)
+        if time == 'perMonth':
             countStart = countStart[3:len(countStart)-1]
             countEnd = countEnd[3:len(countEnd)-1]
-        print('countstart')
-        print(countStart)
         # set width of bar
         barWidth = 0.25
         # Set position of bar on X axis
-        print('setting position of bar')
         r1 = np.arange(len(countStart))
         r2 = [x + barWidth for x in r1]
         # Make the plot
-        print('making the plot')
         plt.bar(r1, countStart, color='#0A6BF3', width=barWidth, edgecolor='white', label='Start')
         plt.bar(r2, countEnd, color='#F3380A', width=barWidth, edgecolor='white', label='End')
         # Add xticks on the middle of the group bars
         ('adding xticks')
-        if time == "parheure":
+        if time == "perHour":
             plt.xlabel('Per Day', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
             plt.xticks([r + barWidth for r in range(len(countStart))], self.hourLabel[:len(countStart)])
             plt.title('Bixi usage per Hour of the Day for Station#{}'.format(station))
-        elif time == "parjourdelasemaine":
+        elif time == "perWeekDay":
             plt.xlabel('Per Week Day', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
             plt.xticks([r + barWidth for r in range(len(countStart))], self.weekDayLabel[:len(countStart)])
             plt.title('Bixi usage per Weekday for Station#{}'.format(station))
-        elif time == "parmois":
+        elif time == "perMonth":
             plt.xlabel('Per Month', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
             plt.xticks([r + barWidth for r in range(len(countStart))], self.monthLabel[3:len(countStart)+3])
             plt.title('Bixi usage per Month for Station#{}'.format(station))
-        print(len(countStart))
-        # print(self.monthLabel[len(countStart)])
         # Create legend & Show graphic
-        print('adding legend')
         plt.legend()
-        print('showing plot')
-        # plt.show()
         plt.savefig('bar.png')
+        # plt.show()
+        print('graph generated', flush=True)
         return plt
 
 
     def toBase64(self):
+        print('toBase64()', flush=True)
         # plt.savefig('bar.png')
         with open("bar.png", "rb") as imageFile:
-            str = base64.b64encode(imageFile.read()).decode('utf-8')
-            strg = str[:-1]
+            strg = base64.b64encode(imageFile.read()).decode('utf-8')
+            while strg[-1] == '=':
+                strg = strg[:-1]
+                
             # print(strg)
 
         return strg
 
-    def dataGraphtoJSON(self, year, time, station):
+    def datatoJSON(self, year, time, station):
+        print('datatoJSON()', flush=True)
         ye = int(year)
         ti = str(time)
-        if str(station) == 'toutes':
+        if str(station) == 'all':
             st = str(station)
         else:
             st = int(station)
@@ -140,29 +124,29 @@ class Engin2:
         path = "./kaggleData/OD_{}".format(ye)
         path += ".csv"
         df = pd.read_csv(path)
+        print('dataframe: ', flush=True)
+        print(df, flush=True)
         countStart = self.getPerTimeCountStart(df, st, ti)
         countEnd = self.getPerTimeCountEnd(df, st, ti)
-        print('countstart')
-        print(countStart)
-        print('Len Countstart')
-        print(len(countStart))
         
         self.getGraphPerTime(countStart, countEnd, st, ti)
         graphString = self.toBase64()
         # graphString = self.getGraphPerTime(countStart, countEnd, st, ti)
-        if time == "parheure":
+        if time == "perHour":
             label = self.hourLabel
-        elif time == "parjourdelasemaine":
+        elif time == "perWeekDay":
             label = self.weekDayLabel
-        elif time == "parmois":
+        elif time == "perMonth":
             label = self.monthLabel
 
-        myJson =  '{  "donnees":{ "time":[], "departureValue":[], "arrivalValue":[] }, "graph":[] }'
+        myJson =  '{  "data":{ "time":[], "departureValue":[], "arrivalValue":[] }, "graph":[] }'
 
         o = json.loads(myJson)
-        o["donnees"]["time"] = label
-        o["donnees"]["departureValue"] = countStart[0:len(countStart)].tolist()
-        o["donnees"]["arrivalValue"] = countEnd[0:len(countStart)].tolist()
+        o["data"]["time"] = label
+        o["data"]["departureValue"] = countStart[0:len(countStart)].tolist()
+        o["data"]["arrivalValue"] = countEnd[0:len(countStart)].tolist()
         o["graph"] = graphString
         
+        print('Label used: ', flush=True)
+        print(label, flush=True)
         return json.dumps(o)

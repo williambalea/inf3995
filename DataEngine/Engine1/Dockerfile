@@ -7,7 +7,7 @@ RUN pip3 install --upgrade pip
 RUN pip3 install Flask mysql-connector-python matplotlib pandas seaborn easydict numpy
 COPY . .
 
-ENV FLASK_APP=enginHTTP.py
+ENV FLASK_APP=engine1_HTTP.py
 ENV FLASK_RUN_HOST=0.0.0.0
 
 EXPOSE 5000

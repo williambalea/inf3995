@@ -3,8 +3,8 @@ from mysql.connector import Error
 import json
 import socket
 import requests as rq
-from enginSQL import EnginSQL
-from engin2 import Engin2
+from Engine1.engine1 import Engine1
+from Engine2.engine2 import Engine2
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -23,11 +23,11 @@ PORT = 2000
 
 colors = ["#006D2C", "#31A354", "#74C476"]
 print('creating enginsql')
-enginsql = EnginSQL()
+engine1 = Engine1()
 print('creating engin2')
-engin2 = Engin2()
+engine2 = Engine2()
 
-stationToutes = 'toutes'
+stationToutes = 'all'
 station6202 = 6202
 station5003 = 5003
 squareVic = 6043
@@ -35,9 +35,9 @@ year2014 = 2014
 year2015 = 2015
 year2016 = 2016
 year2017 = 2017
-timeHour = "parheure"
-timeWeek = "parjourdelasemaine"
-timeMonth = "parmois"
+timeHour = "perHour"
+timeWeek = "perWeekDay"
+timeMonth = "perMonth"
 
 
-print(engin2.dataGraphtoJSON(year2014, timeHour, 'toutes'))
+print(engine2.datatoJSON(year2017, timeHour, station5003))
