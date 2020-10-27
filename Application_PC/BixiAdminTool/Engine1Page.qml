@@ -6,15 +6,15 @@ import custom.classes 1.0
 
 Page {
     id: engine1Page
-    width: 1280
-    height: 633
+    width: applicationWindow.width
+    height: applicationWindow.height - 86
     
     TextArea {
         id: textArea
-        x: 28
-        y: 29
-        width: 1223
-        height: 570
+        x: 30
+        y: 30
+        width: parent.width - 60
+        height: parent.height - 60
         verticalAlignment: Text.AlignBottom
         placeholderText: qsTr("Text Area")
         background: Rectangle {
@@ -29,6 +29,6 @@ Page {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.5}
+    D{i:0;formeditorZoom:0.33000001311302185;height:720;width:1280}
 }
 ##^##*/

@@ -68,6 +68,7 @@ void BackEnd::login() {
 void BackEnd::sqlFinished(QNetworkReply *reply)
 {
     QString data = QString::fromStdString(reply->readAll().toStdString());
+    qDebug() << data << '\n';
     setSqlData(data);
 }
 

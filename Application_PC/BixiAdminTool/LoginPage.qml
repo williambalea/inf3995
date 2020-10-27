@@ -6,18 +6,18 @@ import custom.classes 1.0
 
 Page{
     id: loginPage
-    width: 1280
-    height: 720
+    width: applicationWindow.width
+    height: applicationWindow.height
     background: Rectangle {
         color: "#ff6348"
     }
 
     Pane {
         id: pane
-        x: 267
-        y: 102
         width: 746
         height: 528
+        x: parent.width/2 - width/2
+        y: parent.height/2 - height/2
         Material.elevation: 4
         Material.background: "#F5F5F6"
 
@@ -49,7 +49,7 @@ Page{
             flat: false
             font.pointSize: 12
             antialiasing: true
-            focus: flase
+            focus: false
 
             Connections {
                 target: loginButton
@@ -91,7 +91,7 @@ Page{
                 layer.smooth: true
                 activeFocusOnTab: true
                 focus: true
-                antialiasing: tru
+                antialiasing: true
                 color: "#000000"
             }
         }
@@ -143,6 +143,6 @@ Page{
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.5}
+    D{i:0;formeditorZoom:0.5}D{i:2}
 }
 ##^##*/
