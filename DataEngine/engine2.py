@@ -73,6 +73,7 @@ class Engine2:
         r1 = np.arange(len(countStart))
         r2 = [x + barWidth for x in r1]
         # Make the plot
+        plt.clf()
         plt.bar(r1, countStart, color='#0A6BF3', width=barWidth, edgecolor='white', label='Start')
         plt.bar(r2, countEnd, color='#F3380A', width=barWidth, edgecolor='white', label='End')
         # Add xticks on the middle of the group bars
