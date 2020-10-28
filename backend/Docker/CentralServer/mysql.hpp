@@ -13,7 +13,8 @@ class MySQL {
 public:
 
     /**
-     * Gets the mysql drivers and calls setup()
+     * Gets the mysql drivers and calls setup(). The mysqlcppconn manages the 
+     * delete of the driver
      */
     MySQL();
 
