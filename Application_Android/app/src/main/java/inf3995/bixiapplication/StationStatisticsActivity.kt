@@ -5,14 +5,13 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import inf3995.bixiapplication.Data.Station
 import inf3995.bixiapplication.StationStatistics.DailyStationStatisticActivity
 import inf3995.bixiapplication.StationStatistics.HourlyStationStatisticActivity
 import inf3995.bixiapplication.StationStatistics.MonthlyStationStatisticActivity
 import inf3995.test.bixiapplication.R
-import kotlinx.android.synthetic.main.activity_coordinates_station.*
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
-import kotlinx.android.synthetic.main.activity_global_predictions.*
 import kotlinx.android.synthetic.main.activity_global_predictions.spnPeriod
 import kotlinx.android.synthetic.main.activity_global_predictions.spnTime
 import kotlinx.android.synthetic.main.activity_station_statistics.*
@@ -56,23 +55,6 @@ class StationStatisticsActivity : AppCompatActivity() {
                 time = item
             }
         }
-
-       /*
-        display_click!!.setOnClickListener{
-            val code = station!!.code
-            val annee = annee
-            val temps = temps
-            val name = station!!.name
-            val intent = Intent(this, MonthlyStationStatisticActivity::class.java)
-            intent.putExtra("Code", code)
-            intent.putExtra("Annee", annee)
-            intent.putExtra("Name", name)
-            intent.putExtra("Temps", temps)
-            startActivity(intent)
-        }
-        */
-
-       //val display_click = findViewById(R.id.display_button) as Button
 
         display_button.setOnClickListener{
             Toast.makeText(this," $station.name station Statistics", Toast.LENGTH_SHORT).show()

@@ -11,14 +11,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import inf3995.bixiapplication.IpAddressDialog
-import inf3995.bixiapplication.MonthlyStatisticStation
+import inf3995.bixiapplication.Dialog.IpAddressDialog
+import inf3995.bixiapplication.Data.MonthlyStatisticStation
 import inf3995.bixiapplication.UnsafeOkHttpClient
-import inf3995.bixiapplication.WebBixiService
+import inf3995.bixiapplication.Service.WebBixiService
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_hourly_station_statistic_global.*
-import kotlinx.android.synthetic.main.activity_hourly_station_statistic_global.lllProgressBar
-import kotlinx.android.synthetic.main.station_list_activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -84,9 +82,7 @@ class HourlyStationStatisticGlobalActivity : AppCompatActivity() {
             }
         })
     }
-    /*
 
-*/
     private fun convertString64ToImage(base64String: String): Bitmap {
         val decodedString = Base64.decode(base64String, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
@@ -94,11 +90,9 @@ class HourlyStationStatisticGlobalActivity : AppCompatActivity() {
 
     private fun fillData(jObj: MonthlyStatisticStation) {
         val myImageString = jObj.graph
-        //  image1.setImageBitmap(Base64Util.convertStringToBitmap(myImageString))
         imageGlobal.setImageBitmap(convertString64ToImage(myImageString))
         Log.i(TAG, "affichage du graphique ")
 
-        //val text10 = findViewById(R.id.text10) as TextView
         textGlobal12.setText(jObj.data.departureValue[0].toString())
         textGlobal13.setText(jObj.data.arrivalValue[0].toString())
         textGlobal22.setText(jObj.data.departureValue[1].toString())
@@ -149,33 +143,5 @@ class HourlyStationStatisticGlobalActivity : AppCompatActivity() {
         textGlobal243.setText(jObj.data.arrivalValue[23].toString())
 
     }
-
-    /*
-      object Base64Util {
-          private val IMG_WIDTH = 640
-          private val IMG_HEIGHT = 480
-          private fun resizeBase64Image(base64image: String): String {
-              val encodeByte: ByteArray = Base64.decode(base64image.toByteArray(), Base64.NO_WRAP)
-              val options = BitmapFactory.Options()
-              var image = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size, options)
-
-              image = Bitmap.createScaledBitmap(image, IMG_WIDTH, IMG_HEIGHT, false)
-              val baos = ByteArrayOutputStream()
-              image.compress(Bitmap.CompressFormat.PNG, 100, baos)
-              val b = baos.toByteArray()
-              System.gc()
-              return Base64.encodeToString(b, Base64.NO_PADDING)
-          }
-
-          private fun convertString64ToImage(base64String: String): Bitmap {
-              val decodedString = Base64.decode(base64String, Base64.DEFAULT)
-              return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-          }
-
-          fun convertStringToBitmap(base64String: String): Bitmap {
-              return convertString64ToImage(resizeBase64Image(base64String))
-          }
-      }
-     */
 
 }

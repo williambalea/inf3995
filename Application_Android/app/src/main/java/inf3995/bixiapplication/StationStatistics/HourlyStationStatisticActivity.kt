@@ -12,6 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import inf3995.bixiapplication.*
+import inf3995.bixiapplication.Data.MonthlyStatisticStation
+import inf3995.bixiapplication.Data.Station
+import inf3995.bixiapplication.Dialog.IpAddressDialog
+import inf3995.bixiapplication.Service.WebBixiService
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
@@ -21,7 +25,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.io.ByteArrayOutputStream
 import java.lang.Exception
 import kotlinx.android.synthetic.main.activity_hourly_station_statistic.statisticYear as statisticYear1
 
@@ -51,7 +54,7 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
         if (annas != null) {
             annee = annas
         }
-        statisticYear.text = annee.toString()
+        statisticYear1.text = annee.toString()
         code =  station!!.code
         myImage = findViewById(R.id.image)
         requestToServer(IpAddressDialog.ipAddressInput)
@@ -82,10 +85,7 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
                 val arrayStationType = object : TypeToken<MonthlyStatisticStation>() {}.type
                 val jObj: MonthlyStatisticStation = Gson().fromJson(response?.body(), arrayStationType)
                 Log.i(TAG, "L'objet : $jObj")
-                //addHeaders()
-                //addData(jObj)
                 fillData(jObj)
-                //fillmyTablelayout(jObj)
                 lllProgressBar.visibility = View.GONE
             }
 
@@ -108,7 +108,6 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
     private fun fillData(jObj: MonthlyStatisticStation) {
         val myImageString = jObj.graph
         val image1 = findViewById(R.id.image) as ImageView
-      //  image1.setImageBitmap(Base64Util.convertStringToBitmap(myImageString))
         try{image1.setImageBitmap(convertString64ToImage(myImageString))}
         catch (e: Exception){
             Log.e(TAG,"error")
@@ -116,7 +115,6 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
         //image1.setImageBitmap(convertString64ToImage(myImageString))
         Log.i(TAG, "affichage du graphique ")
 
-        //val text10 = findViewById(R.id.text10) as TextView
         text12.setText(jObj.data.departureValue[0].toString())
         text13.setText(jObj.data.arrivalValue[0].toString())
         text22.setText(jObj.data.departureValue[1].toString())
@@ -167,33 +165,5 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
         text243.setText(jObj.data.arrivalValue[23].toString())
 
     }
-
-  /*
-    object Base64Util {
-        private val IMG_WIDTH = 640
-        private val IMG_HEIGHT = 480
-        private fun resizeBase64Image(base64image: String): String {
-            val encodeByte: ByteArray = Base64.decode(base64image.toByteArray(), Base64.NO_WRAP)
-            val options = BitmapFactory.Options()
-            var image = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size, options)
-
-            image = Bitmap.createScaledBitmap(image, IMG_WIDTH, IMG_HEIGHT, false)
-            val baos = ByteArrayOutputStream()
-            image.compress(Bitmap.CompressFormat.PNG, 100, baos)
-            val b = baos.toByteArray()
-            System.gc()
-            return Base64.encodeToString(b, Base64.NO_PADDING)
-        }
-
-        private fun convertString64ToImage(base64String: String): Bitmap {
-            val decodedString = Base64.decode(base64String, Base64.DEFAULT)
-            return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-        }
-
-        fun convertStringToBitmap(base64String: String): Bitmap {
-            return convertString64ToImage(resizeBase64Image(base64String))
-        }
-    }
-   */
 
 }

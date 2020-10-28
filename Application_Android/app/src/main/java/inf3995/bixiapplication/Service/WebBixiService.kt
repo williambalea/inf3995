@@ -1,5 +1,6 @@
-package inf3995.bixiapplication
+package inf3995.bixiapplication.Service
 
+import inf3995.bixiapplication.Data.Station
 import retrofit2.Call
 import retrofit2.http.*
 

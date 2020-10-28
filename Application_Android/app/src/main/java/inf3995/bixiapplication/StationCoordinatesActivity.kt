@@ -2,6 +2,7 @@ package inf3995.bixiapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import inf3995.bixiapplication.Data.Station
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.*
 

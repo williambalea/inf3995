@@ -2,13 +2,14 @@ package inf3995.bixiapplication
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.afollestad.vvalidator.form
 import com.google.gson.Gson
+import inf3995.bixiapplication.Data.SurveyData
+import inf3995.bixiapplication.Dialog.IpAddressDialog
 import inf3995.bixiapplication.MainScreen.MainScreenActivity
+import inf3995.bixiapplication.Service.WebBixiService
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.survey.*
 import retrofit2.Call

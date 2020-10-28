@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.recyclerview.widget.RecyclerView
+import inf3995.bixiapplication.Data.Station
 import inf3995.test.bixiapplication.*
 import kotlinx.android.synthetic.main.station_items_with_button.view.*
 import kotlinx.android.synthetic.main.station_items_with_button.view.code
@@ -18,7 +19,6 @@ import kotlin.collections.ArrayList
 
 class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHolder>(), //var clickedItem: ClickedItem
     Filterable {
-    //var stationList: ArrayList<Station>
     lateinit var stationList: ArrayList<Station>
     var stationListFilter: ArrayList<Station>? = null
     lateinit var context: Context
@@ -36,7 +36,6 @@ class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHol
         var imageView = itemView.imageView
         var name = itemView.name
         var code = itemView.code
-         //var imageButton = itemView.buttonsOptions
 
          var dataButton = itemView.data_button
          var statisticButton = itemView.statistics_button
@@ -55,8 +54,6 @@ class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHol
         var station = stationList[position]
         holder.name.text = station.name
         holder.code.text = station.code.toString()
-        //holder.latitude.text = itemModal.latitude
-        //holder.longitude.text = itemModal.longitude
 
         holder.dropDownMenu.setOnClickListener{
             //var popupMenu = PopupMenu(this.context,holder.dropDownMenu)

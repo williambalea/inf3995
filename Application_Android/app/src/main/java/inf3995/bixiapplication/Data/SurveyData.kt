@@ -1,4 +1,4 @@
-package inf3995.bixiapplication
+package inf3995.bixiapplication.Data
 
 data class SurveyData(
     var email: String,

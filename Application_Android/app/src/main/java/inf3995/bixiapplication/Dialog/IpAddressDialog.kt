@@ -1,4 +1,4 @@
-package inf3995.bixiapplication
+package inf3995.bixiapplication.Dialog
 
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.afollestad.vvalidator.form
 import inf3995.bixiapplication.Service.WebBixiService
+import inf3995.bixiapplication.UnsafeOkHttpClient
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.setting_ip_address_dialog.*
 import retrofit2.Call

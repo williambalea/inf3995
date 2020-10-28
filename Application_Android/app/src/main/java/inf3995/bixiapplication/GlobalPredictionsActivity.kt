@@ -52,12 +52,4 @@ class GlobalPredictionsActivity : AppCompatActivity() {
         popupWindow.height = (5*resources.displayMetrics.density).toInt()
     }
 
-    fun showGlobal_data_fragment(){
-        val transaction = manager.beginTransaction()
-       // val fragment = global_prediction_fragment()
-      //  transaction.replace(R.id.global_data_fragment_holder, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
 }
