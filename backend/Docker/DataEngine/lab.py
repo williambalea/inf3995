@@ -40,4 +40,4 @@ timeWeek = "perWeekDay"
 timeMonth = "perMonth"
 
 
-print(engine2.datatoJSON(year2017, timeHour, station5003))
+print(engine2.datatoJSON(year2017, timeWeek, station5003))

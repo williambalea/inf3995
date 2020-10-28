@@ -10,7 +10,7 @@ class Engine2:
     hourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
     monthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     monthLabel2 = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov']
-    weekDayLabel = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    weekDayLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
     def __init__(self):
         return None 
@@ -29,7 +29,7 @@ class Engine2:
             timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
             label = self.hourLabel
         elif time == "perWeekDay":
-            timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+4, 7)
+            timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+3, 7)
             label = self.weekDayLabel
         elif time == "perMonth":
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
@@ -58,7 +58,7 @@ class Engine2:
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
             label = self.monthLabel
         timeCount = np.bincount(timeNumber, None, len(label))
-        print('TimeCount Start:', flush=True)
+        print('TimeCount End:', flush=True)
         print(timeCount)
         return timeCount
     
@@ -79,7 +79,7 @@ class Engine2:
         # Add xticks on the middle of the group bars
         ('adding xticks')
         if time == "perHour":
-            plt.xlabel('Per Day', fontweight='bold')
+            plt.xlabel('Per Hour', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
             plt.xticks([r + barWidth for r in range(len(countStart))], self.hourLabel[:len(countStart)], rotation="vertical")
             plt.title('Bixi usage per Hour of the Day for Station#{}'.format(station))
@@ -125,6 +125,7 @@ class Engine2:
         path = "./kaggleData/OD_{}".format(ye)
         path += ".csv"
         df = pd.read_csv(path)
+        # df = pd.read_csv(path, dtype={'end_station_code':int})
         print('dataframe: ', flush=True)
         print(df, flush=True)
         countStart = self.getPerTimeCountStart(df, st, ti)
