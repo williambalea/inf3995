@@ -9,7 +9,7 @@ Page{
     width: applicationWindow.width
     height: applicationWindow.height
     background: Rectangle {
-        color: "#ff6348"
+        color: "#d52b1e"
     }
 
     Pane {
@@ -109,19 +109,15 @@ Page{
                 Keys.onReturnPressed: activate()
 
             }
-
-            Text {
-                id: error
-                visible: backend.attemps
-                color: "#d52b1e"
-                text: qsTr("Wrong user and/or password")
-                font.pixelSize: 16
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Layout.preferredHeight: 40
-                Layout.preferredWidth: 422
-            }
+        }
+        Text {
+            id: error
+            visible: backend.attemps
+            color: "#d52b1e"
+            text: qsTr("Wrong user and/or password")
+            font.pixelSize: 16
+            x: (parent.width - width)/2
+            y: (parent.height - height)/2 + 130
         }
     }
 
