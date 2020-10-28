@@ -26,7 +26,7 @@ WORKDIR /usr/src/bixi
 COPY . . 
 
 # Compile server
-RUN g++ server.cpp -o server -lpistache -pthread -lmysqlcppconn
+RUN make
 
 
 #Expose port
