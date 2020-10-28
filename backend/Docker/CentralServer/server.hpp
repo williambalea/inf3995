@@ -4,37 +4,115 @@
 #include <pistache/endpoint.h>
 #include <pistache/router.h>
 #include <pistache/http.h>
-#include <iostream>
-#include <string>
 #include <signal.h>
-#include <ctime>
 #include "mysql.hpp"
-#include "json.hpp"
 
 using namespace Pistache;
 using namespace std;
-using json = nlohmann::json;
 
-volatile sig_atomic_t sigint;
+/**
+ * Used to track the SIGINT signal that is called when ctl+C to close server
+ */
+extern volatile sig_atomic_t sigint;
+
+/**
+ * Handler when ctl+C in command line. Sets the signum to 1 to end the 
+ * while loop in run()
+ * 
+ * @param signum Holds the signal status. Becomes 1 when we ctl+C
+ */
 void intHandler(int signum);
+
+/**
+ * Gets the time and date then formats for the logs like this:
+ * [HH:MM:SS] dd/mm/yyyy > 
+ * To be used in log() function only
+ */
 string getTime();
+
+
 
 class Server {
 public :
+    /**
+     * Makes an endpoint with addr_ then calls init()
+     * 
+     * @param addr_ The address used for the server
+     * @param db_   The mysql database used by the server
+     */
     explicit Server (Address &addr_, MySQL &db_);
+
+    /**
+     * Opens the server on addr and listens for SIGINT signal from ctl+C
+     * with a while loop. When there's a SIGINT, the server is closed. 
+     * Because of while loop, this should be called last in main()
+     */
     void run();
 
 private:
+
+    /**
+     * Sets options for the endpoint to use threads. Sets up the
+     * HTTP router and routes.
+     */
     void init();
+
+    /**
+     * Creates the different HTTP routes and their handlers
+     */
     void setupRoutes();
+
+    /**
+     * Links the SIGINT signal to a handler
+     */
     void setSIGINTListener();
+
+    // TODO: to remove
     void createDummies();
+
+    /**
+     * Gets the time from getTime() then appends the msg before cout
+     * 
+     * @param msg The message the be shown as log in command line
+     */
     void log(string msg);
 
-    // Routes fonctions
+    /**
+     * Responds with http 200 "Connected to server!" to know that server is running
+     * 
+     * @param req The HTTP request containing headers, body, etc.
+     * @param res The HTTP response containing the http code and server response
+     */
     void newConn(const Rest::Request& req, Http::ResponseWriter res);
+
+    /**
+     * Admin auth of the PC application
+     * Responds with http 200 "authentified" if successful
+     * responds with http 401 "Unauthorized connection!" if not
+     * 
+     * @param req The HTTP request containing headers, body, etc.
+     * @param res The HTTP response containing the http code and server response
+     */
     void login(const Rest::Request& req, Http::ResponseWriter res);
+
+    /**
+     * Sends completed survey received from Android app to the database.
+     * Responds with http 200 "Server got your survey!" when successful
+     * Responds with http 400 with the error when not. 
+     * 
+     * @param req The HTTP request containing headers, body, etc.
+     * @param res The HTTP response containing the http code and server response
+     */
     void sendPoll(const Rest::Request& req, Http::ResponseWriter res);
+
+    /**
+     * Gets all the surveys from the database and returns it to the Android app.
+     * Responds with http 200 and all the surveys in json format if successful
+     * Responds with http 400 "Server couldn't connect to database" if not.
+     * 
+     * @param req The HTTP request containing headers, body, etc.
+     * @param res The HTTP response containing the http code and server response
+     */
     void getPolls(const Rest::Request& req, Http::ResponseWriter res);
 
     shared_ptr<Http::Endpoint> httpEndpoint;
@@ -42,166 +120,5 @@ private:
     Address addr;
     MySQL db;
 };
-
-/*---------------------------
-    Server Class Functions
----------------------------*/
-Server::Server(Address &addr_, MySQL &db_) {
-    httpEndpoint = make_shared<Http::Endpoint>(addr_);
-    addr = addr_;
-    db = db_;
-    
-    init();
-}
-
-void Server::run() {
-    setSIGINTListener();
-
-    httpEndpoint->serveThreaded();
-    cout << getTime() << "server is running on " << addr.host() << ":" << addr.port() << endl;
-    
-    // TODO: remove dummies
-    createDummies();
-
-    // listening for a ctl+C
-    while (!sigint) {}
-
-    httpEndpoint->shutdown();
-    cout << "server closed\n";
-}
-
-void Server::init() {
-    auto opts = Http::Endpoint::options().threads(1);
-    httpEndpoint->init(opts);
-    setupRoutes();
-    httpEndpoint->setHandler(router.handler());    
-}
-
-void Server::setupRoutes() {
-    using namespace Rest;
-    Routes::Get (router, "/server/", Routes::bind(&Server::newConn, this));
-    Routes::Post(router, "/server/survey", Routes::bind(&Server::sendPoll, this));
-    Routes::Get (router, "/server/survey", Routes::bind(&Server::getPolls, this));
-    Routes::Get (router, "/server/user/login", Routes::bind(&Server::login, this));
-}
-
-void Server::setSIGINTListener() {
-    signal(SIGINT, intHandler);
-    sigint = 0;
-}
-
-void Server::log(string msg) {
-    cout << getTime() << msg << endl;
-}
-
-/*---------------------------
-    Routes Fonction
----------------------------*/
-void Server::newConn(const Rest::Request& req, Http::ResponseWriter res) {
-    res.send(Http::Code::Ok, "Connected to server!");
-    log("new connection");
-}
-
-void Server::login(const Rest::Request& req, Http::ResponseWriter res) {
-    auto headers = req.headers();
-    auto auth = headers.tryGet<Http::Header::Authorization>();
-    bool access = false;
-    if (auth != NULL) {
-        string user = auth.get()->getBasicUser();
-        string pass = auth.get()->getBasicPassword();
-        if (user == "admin" && pass == "admin") {
-            res.send(Http::Code::Ok, "authentified");
-            log("admin authentified");
-            return;
-        }
-    }
-    res.send(Http::Code::Unauthorized, "Unauthorized connection!");
-    log("authentification attempt failed");
-}
-
-void Server::sendPoll(const Rest::Request& req, Http::ResponseWriter res) {
-    try {
-        json j = json::parse(req.body());
-        db.sendPoll(
-            j["email"].get<string>(),
-            j["firstName"].get<string>(),
-            j["lastName"].get<string>(),
-            j["age"].get<int>(),
-            j["interest"].get<bool>()
-        );
-        res.send(Http::Code::Ok, "Server got your survey!");
-        log("sent a survey");
-
-    } catch (json::exception &e) {
-        res.send(Http::Code::Bad_Request, e.what());
-        string msg = e.what();
-        log("failed to send survey " + msg);
-    }
-    
-}
-
-void Server::getPolls(const Rest::Request& req, Http::ResponseWriter res) {
-    bool err;
-    json data = db.getPolls(err);
-    if (!err) {
-        res.send(Http::Code::Ok, data.dump());
-        log("requested surveys");
-    } else {
-        res.send(Http::Code::Bad_Request, "server couldn't connect to database.");
-        log("failed to request surveys. Can't connect to database.");
-    }
-
-}
-
-/*---------------------------
-    Global Functions
----------------------------*/
-void intHandler(int signum) {
-    sigint = 1;
-}
-
-string getTime() {
-    time_t now;
-    struct tm local;
-    now = time(NULL);
-    local = *localtime(&now);
-
-    string h = to_string(local.tm_hour);
-    string m = to_string(local.tm_min);
-    string s = local.tm_sec < 10 ? '0' + to_string(local.tm_sec) : to_string(local.tm_sec);
-    string d = to_string(local.tm_mday);
-    string t = to_string(local.tm_mon + 1);
-    string y = to_string(local.tm_year + 1900);
-
-
-    string buffer = "";
-    buffer += '[' + h + ':' + m + ':' + s + "] " + d + '/' + t + '/' + y + " > ";
-    return buffer;
-}
-
-// TODO: remove
-void Server::createDummies() {
-    cout << getTime() << "creating dummies ";
-    cout.flush();
-    for (int i = 0; i < 20; i++) {
-        if (sigint) break;
-        json j;
-        j["email"] = to_string(i) + "@poly.ca";
-        j["firstName"] = to_string('a' + i);
-        j["lastName"] = to_string('A' + i);
-        j["age"] = i + 100;
-        j["interest"] = (i % 2) ? true : false;
-        db.sendPoll(
-            j.at("email"),
-            j.at("firstName"),
-            j.at("lastName"),
-            j.at("age"),
-            j.at("interest")
-        );
-        cout << ".";
-        cout.flush();
-    }
-    cout << " Done!\n";
-} // createDummies
 
 #endif // SERVER_HPP
