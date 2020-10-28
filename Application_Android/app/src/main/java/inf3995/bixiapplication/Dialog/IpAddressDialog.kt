@@ -1,16 +1,14 @@
 package inf3995.bixiapplication
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.afollestad.vvalidator.form
+import inf3995.bixiapplication.Service.WebBixiService
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.setting_ip_address_dialog.*
 import retrofit2.Call
@@ -18,18 +16,15 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.security.AccessController.getContext
 import kotlin.system.exitProcess
 
 
 const val TAG = "SettingsDialog"
-//var connectivity: Boolean = false;
-//var connectionSucced: Boolean = false
+
 
 class IpAddressDialog: AppCompatDialogFragment() {
 
     companion object {
-        //lateinit var ipAddressInput :String
         var ipAddressInput :String? = null
     }
 
@@ -53,7 +48,6 @@ class IpAddressDialog: AppCompatDialogFragment() {
             submitWith(okButton) { result ->
                 ipAddressInput = editTextIpAddress.text.toString()
                 communicationServer(ipAddressInput!!)
-                //Toast.makeText(activity, "Can't connect to server!", Toast.LENGTH_SHORT).show()
             }
         }
         cancelButton.setOnClickListener{ exitProcess(0);}
@@ -89,11 +83,6 @@ class IpAddressDialog: AppCompatDialogFragment() {
                 builder.show()
             }
         })
-        /*if(connectionSucced){
-            val builder = AlertDialog.Builder(this.requireContext())
-            builder.setTitle("Connection status").setMessage("You have connected to the server successfully")
-            builder.show()
-            dismiss()
-        }*/
+
     }
 }

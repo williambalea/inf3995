@@ -16,20 +16,6 @@ data class Station(
     var longitude: Float,
     ): Serializable {}
 
-/* object ServiceBuilder{
-    private val client = okhttp3.OkHttpClient.Builder().build()
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("http://${IpAddressDialog.ipAddressInput}")
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
-        .build()
-    fun<T>buildService(service:Class<T>):T{
-        return retrofit.create(service)
-    }
-    }
-*/
-
-
 data class data(
     var time :Array<String>,
     var departureValue: Array<Int>,
