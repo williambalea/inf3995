@@ -11,6 +11,7 @@ class Engine2:
     monthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     monthLabel2 = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov']
     weekDayLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    firstDayMonday = 3
 
     def __init__(self):
         return None 
@@ -29,7 +30,7 @@ class Engine2:
             timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
             label = self.hourLabel
         elif time == "perWeekDay":
-            timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+3, 7)
+            timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+self.firstDayMonday, 7)
             label = self.weekDayLabel
         elif time == "perMonth":
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
@@ -44,7 +45,7 @@ class Engine2:
         #filter rows
         if station != 'all':
             #Get indexes where name column has value stationCode
-            indexNames = dfEnd[dfEnd['end_station_code'] != int(station)].index
+            indexNames = dfEnd[dfEnd['end_station_code'] != str(station)].index
             #Delete these row indexes from dataFrame
             dfEnd.drop(indexNames , inplace=True)
         startDateSeries = dfEnd['end_date'].values.astype('datetime64[m]')
@@ -52,7 +53,7 @@ class Engine2:
             timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
             label = self.hourLabel
         elif time == "perWeekDay":
-            timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+4, 7)
+            timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+self.firstDayMonday, 7)
             label = self.weekDayLabel
         elif time == "perMonth":
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
@@ -83,16 +84,19 @@ class Engine2:
             plt.ylabel('User Count', fontweight='bold')
             plt.xticks([r + barWidth for r in range(len(countStart))], self.hourLabel[:len(countStart)], rotation="vertical")
             plt.title('Bixi usage per Hour of the Day for Station#{}'.format(station))
+            plt.tight_layout()
         elif time == "perWeekDay":
             plt.xlabel('Per Week Day', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
             plt.xticks([r + barWidth for r in range(len(countStart))], self.weekDayLabel[:len(countStart)])
             plt.title('Bixi usage per Weekday for Station#{}'.format(station))
+            plt.tight_layout()
         elif time == "perMonth":
             plt.xlabel('Per Month', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
             plt.xticks([r + barWidth for r in range(len(countStart))], self.monthLabel[3:len(countStart)+3])
             plt.title('Bixi usage per Month for Station#{}'.format(station))
+            plt.tight_layout()
         # Create legend & Show graphic
         plt.legend()
         plt.savefig('bar.png')
@@ -120,12 +124,20 @@ class Engine2:
         if str(station) == 'all':
             st = str(station)
         else:
-            st = int(station)
+            st = station
 
         path = "./kaggleData/OD_{}".format(ye)
         path += ".csv"
-        df = pd.read_csv(path)
-        # df = pd.read_csv(path, dtype={'end_station_code':int})
+        # df = pd.read_csv(path)
+        # print(df.dtypes)
+        df = pd.read_csv(path, dtype={
+            'start_date':str,
+            'start_station_code':int,
+            'end_date':str,
+            'end_station_code':str,
+            'duration_sec':int,
+            'is_member':int})
+        print(df.dtypes)
         print('dataframe: ', flush=True)
         print(df, flush=True)
         countStart = self.getPerTimeCountStart(df, st, ti)
