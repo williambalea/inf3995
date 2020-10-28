@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>Page3.qml</file>
+        <file>LoginPage.qml</file>
+        <file>Engine1Page.qml</file>
+    </qresource>
+</RCC>

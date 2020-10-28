@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="inf3995.bixiapplication">
-    <uses-permission android:name="android.permission.INTERNET"/>
+    package="inf3995.test.bixiapplication">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,14 +12,29 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name="inf3995.bixiapplication.SurveyActivity">
 
-        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="inf3995.bixiapplication.StationPredictionsActivity" />
+        <activity android:name="inf3995.bixiapplication.StationStatistics.MonthlyStationStatisticActivity"/>
+        <activity android:name="inf3995.bixiapplication.StationStatistics.MonthlyStationStatisticGlobalActivity"/>
+        <activity android:name="inf3995.bixiapplication.StationStatisticsActivity" />
+        <activity android:name="inf3995.bixiapplication.GlobalPredictionsActivity" />
+        <activity android:name="inf3995.bixiapplication.GlobalStatisticsActivity" />
+        <activity android:name="inf3995.bixiapplication.StationStatistics.DailyStationStatisticActivity" />
+        <activity android:name="inf3995.bixiapplication.StationStatistics.DailyStationStatisticGlobalActivity"/>
+        <activity android:name="inf3995.bixiapplication.StationStatistics.HourlyStationStatisticActivity" />
+        <activity android:name="inf3995.bixiapplication.StationStatistics.HourlyStationStatisticGlobalActivity" />
+        <activity android:name="inf3995.bixiapplication.ListStationActivity" />
+        <activity android:name="inf3995.bixiapplication.StationCoordinatesActivity" />
+        <activity
+            android:name="inf3995.bixiapplication.MainScreen.MainScreenActivity"
+            android:windowSoftInputMode="adjustPan" />
     </application>
 
 </manifest>

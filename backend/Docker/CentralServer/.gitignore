@@ -1,0 +1,5 @@
+.vscode
+/server
+letsencrypt
+test.*
+*.o
