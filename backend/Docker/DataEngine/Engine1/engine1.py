@@ -28,9 +28,9 @@ class Engine1:
                 passwd=user_password,
                 database=db_name
             )
-            print("Connection to MySQL DB successful")
+            print("Connection to MySQL DB successful", flush=True)
         except Error as e:
-            print(f"The error '{e}' occurred")
+            print(f"The error '{e}' occurred", flush=True)
         return self.connection
 
     #query db then to kind of json with ' instead of "
@@ -39,7 +39,7 @@ class Engine1:
         myCursor.execute(query)
         r = [dict((myCursor.description[i][0], value) \
                 for i, value in enumerate(row)) for row in myCursor.fetchall()]
-        # cur.connection.close()
+        print("Fetching all data from mySQL", flush=True)
         return (r[0] if r else None) if one else r
 
     #query to db and returns pandas object directly
@@ -47,22 +47,27 @@ class Engine1:
         df = pd.read_sql_query(query, self.connection)
         df['start_date'] = pd.to_datetime(df['start_date'], infer_datetime_format=True)
         df['end_date'] = pd.to_datetime(df['end_date'], infer_datetime_format=True)
+        print("Fetch data into pandas object", flush=True)
         return df
 
 
     def toJson(self, data):
+        print("Data to JSON dumps", flush=True)
         return json.dumps(data)
     
     def jsonToPandas(self, jsonObj):
+        print("JSON to pandas object", flush=True)
         return pd.read_json(jsonObj)
 
     #queries 
     def getStationCode(self, code):
         query = "SELECT S.name, S.latitude, S.longitude FROM Stations2017 S WHERE code='{}'".format(code)
+        print(query, flush=True)
         return self.toJson(self.query_db(query))
         
     def getAllStations(self):
         query = "SELECT * FROM Stations2017"
+        print(query, flush=True)
         return self.toJson(self.query_db(query))
     
     def getDataUsage(self,year, station):
