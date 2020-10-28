@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_popup_details"
+        android:title="@string/station_coordinates"
+        android:orderInCategory="100"
+        />
+    <item
+        android:id="@+id/action_popup_statistics"
+        android:title="@string/station_statistics"
+        android:orderInCategory="100"/>
+    <item
+        android:id="@+id/action_popup_predictions"
+        android:title="@string/station_predictions"
+        android:orderInCategory="100"/>
+</menu>
