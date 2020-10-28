@@ -1,19 +1,18 @@
-MYSQL_LIBS=-lmysqlcppconn
-SERVER_LIBS=-lpistache -lpthread
-ALL_LIBS=$(MYSQL_LIBS) $(SERVER_LIBS)
+LIBS=-lmysqlcppconn -lpistache -lpthread
 CFLAGS=-Wall -Wextra -g -Wno-unused-parameter
+CC=g++
 
 output: main.o server.o mysql.o
-	g++ main.o server.o mysql.o -o server $(CFLAGS) $(ALL_LIBS)
+	$(CC) main.o server.o mysql.o -o server $(CFLAGS) $(LIBS)
 
 main.o: main.cpp
-	g++ -c $(CFLAGS) main.cpp
+	$(CC) -c $(CFLAGS) main.cpp
 
 server.o: server.cpp server.hpp
-	g++ -c $(CFLAGS) server.cpp $(SERVER_LIBS)
+	$(CC) -c $(CFLAGS) server.cpp
 
 mysql.o: mysql.cpp mysql.hpp
-	g++ -c $(CFLAGS) mysql.cpp $(MYSQL_LIBS)
+	$(CC) -c $(CFLAGS) mysql.cpp
 
 clean:
 	rm *.o server
