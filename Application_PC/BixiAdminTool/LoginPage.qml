@@ -9,7 +9,7 @@ Page{
     width: applicationWindow.width
     height: applicationWindow.height
     background: Rectangle {
-        color: "#ff6348"
+        color: "#d52b1e"
     }
 
     Pane {
