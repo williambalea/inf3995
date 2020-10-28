@@ -28,7 +28,7 @@ void Server::run() {
     cout << getTime() << "server is running on " << addr.host() << ":" << addr.port() << endl;
     
     // TODO: remove dummies
-    createDummies();
+    //createDummies();
 
     // listening for a ctl+C
     while (!sigint) {}
