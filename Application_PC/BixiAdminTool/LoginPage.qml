@@ -14,135 +14,123 @@ Page{
 
     Pane {
         id: pane
-        width: 746
-        height: 528
-        x: parent.width/2 - width/2
-        y: parent.height/2 - height/2
+        width: 700
+        height: 400
+        x: (applicationWindow.width - width)/2
+        y: (applicationWindow.height - height)/2
         Material.elevation: 4
         Material.background: "#F5F5F6"
 
-        Text {
-            id: error
-            visible: backend.attemps
-            x: 150
-            y: 357
-            width: 422
-            height: 40
-            color: "#d52b1e"
-            text: qsTr("Wrong user and/or password")
-            font.pixelSize: 22
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-        }
+        ColumnLayout {
+            x: parent.height/2
+            y: 50
 
-        Button {
-            id: loginButton
-            x: 208
-            y: 296
-            width: 306
-            height: 55
-            text: qsTr("Login")
-            font.weight: Font.Bold
-            font.bold: true
-            enabled: true
-            highlighted: true
-            flat: false
-            font.pointSize: 12
-            antialiasing: true
-            focus: false
+            Image {
+                id: image
+                source: "logo.png"
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.preferredHeight: 100
+                Layout.preferredWidth: 203
+                mipmap: true
+                fillMode: Image.PreserveAspectFit
+            }
 
-            Connections {
-                target: loginButton
-                onClicked: function() {
+            Rectangle {
+                radius: 5
+                border.color: "#7b7b7b"
+                border.width: 2
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.preferredHeight: 40
+                Layout.preferredWidth: 306
+                clip: true
+
+                TextField {
+                    id: user
+                    x: 9
+                    y: -4
+                    width: 289
+                    height: 55
+                    clip: false
+                    hoverEnabled: false
+                    placeholderText: qsTr("User")
+                    focus: true
+                    activeFocusOnTab: true
+                    Keys.onReturnPressed: loginButton.activate()
+                }
+
+            }
+
+            Rectangle {
+                radius: 5
+                border.color: "#7b7b7b"
+                border.width: 2
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.preferredHeight: 40
+                Layout.preferredWidth: 306
+                clip: true
+                TextField {
+                    id: pw
+                    x: 9
+                    y: -4
+                    width: 289
+                    height: 55
+                    placeholderText: qsTr("Password")
+                    hoverEnabled: false
+                    activeFocusOnTab: true
+                    clip: false
+                    echoMode: TextInput.Password
+                    Keys.onReturnPressed: loginButton.activate()
+                }
+            }
+
+            Button {
+                id: loginButton
+                text: qsTr("Login")
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.preferredHeight: 48
+                Layout.preferredWidth: 306
+                font.weight: Font.Bold
+                font.bold: true
+                enabled: true
+                highlighted: true
+                flat: false
+                font.pointSize: 12
+                antialiasing: true
+                focus: false
+                function activate() {
                     backend.user = user.text;
                     backend.pass = pw.text;
                     backend.login();
                     backend.attemps = false;
+
                 }
+
+                onClicked: activate()
+                Keys.onReturnPressed: activate()
+
             }
 
-        }
-
-        Rectangle {
-            x: 208
-            y: 169
-            border.width: 2
-            border.color: "#7b7b7b"
-            radius: 5
-            width: 306
-            height: 50
-
-            TextInput {
-                id: user
-                x: 0
-                y: 0
-                width: parent.width
-                height: parent.height
-                text: qsTr("User")
-                font.pixelSize: 24
-                horizontalAlignment: Text.AlignLeft
+            Text {
+                id: error
+                visible: backend.attemps
+                color: "#d52b1e"
+                text: qsTr("Wrong user and/or password")
+                font.pixelSize: 16
+                horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                topPadding: 0
-                bottomPadding: 0
-                rightPadding: 5
-                leftPadding: 10
-                selectByMouse: true
-                cursorVisible: false
-                layer.smooth: true
-                activeFocusOnTab: true
-                focus: true
-                antialiasing: true
-                color: "#000000"
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.preferredHeight: 40
+                Layout.preferredWidth: 422
             }
-        }
-
-        Rectangle {
-            x: 208
-            y: 233
-            width: 306
-            height: 50
-            radius: 5
-            border.color: "#7b7b7b"
-            border.width: 2
-
-            TextInput {
-                id: pw
-                x: 0
-                y: 0
-                width: parent.width
-                height: parent.height
-                text: qsTr("Text Input")
-                font.pixelSize: 24
-                horizontalAlignment: Text.AlignLeft
-                verticalAlignment: Text.AlignVCenter
-                rightPadding: 5
-                leftPadding: 10
-                antialiasing: true
-                activeFocusOnTab: true
-                focus: false
-                autoScroll: false
-                echoMode: TextInput.Password
-            }
-        }
-
-        Image {
-            id: image
-            x: 260
-            y: 27
-            width: 203
-            height: 100
-            source: "logo.png"
-            mipmap: true
-            fillMode: Image.PreserveAspectFit
         }
     }
-    
+
 }
 
 
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.5}
+    D{i:0;formeditorZoom:0.5;height:600;width:1000}
 }
 ##^##*/
