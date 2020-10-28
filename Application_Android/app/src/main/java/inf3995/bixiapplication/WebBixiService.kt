@@ -22,6 +22,9 @@ interface WebBixiService {
     @GET("/engine2/data/usage/{year}/{time}/{station}")
     fun getStationStatistics(@Path("year") year:Int, @Path("time") time:String, @Path("station") station: Int): Call<String>
 
+    @GET("/engine2/data/usage/{year}/{time}/all")
+    fun getStationStatisticsGlobal(@Path("year") year:Int, @Path("time") time:String): Call<String>
+
     @POST("/server/survey")
     fun sendServerSurveyData(@Body survey: String):Call<String>
 

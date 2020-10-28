@@ -5,7 +5,9 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -13,7 +15,7 @@ import inf3995.bixiapplication.*
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.*
+import kotlinx.android.synthetic.main.activity_daily_station_statistic.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -75,10 +77,14 @@ class DailyStationStatisticActivity : AppCompatActivity() {
                 val jObj: MonthlyStatisticStation = Gson().fromJson(response?.body(), arrayStationType)
                 Log.i(TAG, "L'objet : $jObj")
                 fillData(jObj)
+                lllProgressBar.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Echec de connexion avec le serveur !!!")
+                Log.i(TAG, "Error when receiving statistic!    cause:${t.cause}     message:${t.message}")
+                val builder = AlertDialog.Builder(this@DailyStationStatisticActivity)
+                builder.setTitle("Error while loading statistic!").setMessage("cause:${t.cause} \n message:${t.message}")
+                builder.show()
             }
         })
     }

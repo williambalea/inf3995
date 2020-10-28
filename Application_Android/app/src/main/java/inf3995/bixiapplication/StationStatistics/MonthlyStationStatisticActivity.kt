@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Base64.decode
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -28,7 +30,7 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
     var station : Station? = null
     lateinit var temps: String
     var code: Int = 0
-    var annee= 0
+    var year = 0
     var myImage:ImageView? = null
     private val TAG = "Monthly Station Statistics"
 
@@ -47,9 +49,9 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
         }
 
         if (annas != null) {
-            annee = annas
+            year = annas
         }
-        statisticYear.text = annee.toString()
+        statisticYear.text = year.toString()
         code =  station!!.code
         myImage = findViewById(R.id.image)
         requestToServer(IpAddressDialog.ipAddressInput)
@@ -66,7 +68,7 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        val call: Call<String> = service.getStationStatistics(annee, temps, code)
+        val call: Call<String> = service.getStationStatistics(year, temps, code)
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
@@ -84,10 +86,14 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
                 //addData(jObj)
                 fillData(jObj)
                 //fillmyTablelayout(jObj)
+                lllProgressBar.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Echec de connexion avec le serveur !!!")
+                Log.i(TAG, "Error when receiving statistic!    cause:${t.cause}     message:${t.message}")
+                val builder = AlertDialog.Builder(this@MonthlyStationStatisticActivity)
+                builder.setTitle("Error while loading statistic!").setMessage("cause:${t.cause} \n message:${t.message}")
+                builder.show()
             }
         })
     }

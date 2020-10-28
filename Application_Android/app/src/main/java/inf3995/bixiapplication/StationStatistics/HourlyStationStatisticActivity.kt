@@ -5,7 +5,9 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -14,32 +16,6 @@ import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
 import kotlinx.android.synthetic.main.activity_hourly_station_statistic.*
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.*
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.image
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text102
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text103
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text112
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text113
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text12
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text122
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text123
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text13
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text22
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text23
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text32
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text33
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text42
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text43
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text52
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text53
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text62
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text63
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text72
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text73
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text82
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text83
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text92
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text93
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -110,10 +86,14 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
                 //addData(jObj)
                 fillData(jObj)
                 //fillmyTablelayout(jObj)
+                lllProgressBar.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Echec de connexion avec le serveur !!!")
+                Log.i(TAG, "Error when receiving statistic!    cause:${t.cause}     message:${t.message}")
+                val builder = AlertDialog.Builder(this@HourlyStationStatisticActivity)
+                builder.setTitle("Error while loading statistic!").setMessage("cause:${t.cause} \n message:${t.message}")
+                builder.show()
             }
         })
     }

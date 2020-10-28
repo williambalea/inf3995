@@ -8,6 +8,11 @@
     tools:context="inf3995.bixiapplication.StationStatistics.DailyStationStatisticActivity"
     android:orientation="vertical">
 
+    <include
+        android:id="@+id/lllProgressBar"
+        android:visibility="visible"
+        layout="@layout/progress_bar"/>
+
     <LinearLayout
         android:id="@+id/coord_station"
         android:layout_width="match_parent"
