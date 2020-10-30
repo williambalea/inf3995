@@ -5,5 +5,7 @@
         <file>Page3.qml</file>
         <file>LoginPage.qml</file>
         <file>Engine1Page.qml</file>
+        <file>Settings.qml</file>
+        <file>App.qml</file>
     </qresource>
 </RCC>

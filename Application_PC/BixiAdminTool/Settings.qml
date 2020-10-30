@@ -6,15 +6,35 @@ import custom.classes 1.0
 
 Page {
     id: settings
-    width: applicationWindow.width
-    height: applicationWindow.height - 50
-    y: 50
-    background: Rectangle {
-        color: "#F5F5F6"
+    Rectangle {
+        width: parent.width;
+        height: 50;
+        color: "#9b0000"
     }
+
+    RoundButton {
+        id: roundButton
+        x: 0
+        y: 0
+        width: 50
+        height: 50
+        text: "+"
+        font.pointSize: 12
+        flat: true
+        display: AbstractButton.IconOnly
+        icon.source: "back.svg"
+        icon.color: "#ffffff"
+        icon.width: width/1.5
+        icon.height: height/1.5
+        onClicked: stackView.pop()
+    }
+
+
 
     Label {
         id: label
+        x: 428
+        y: 64
         width: 145
         height: 23
         color: "#ffffff"
@@ -22,8 +42,8 @@ Page {
         anchors.top: parent.top
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
-        anchors.topMargin: -37
-        anchors.horizontalCenterOffset: 0
+        anchors.topMargin: 14
+        anchors.horizontalCenterOffset: 1
         anchors.horizontalCenter: parent.horizontalCenter
         font.bold: true
         font.pointSize: 14
@@ -31,12 +51,12 @@ Page {
 
     Frame {
         id: frame
-        width: parent.width/2
-        height: parent.height/3
+        width: 494
+        x: (applicationWindow.width - width)/2
+        height: 182
         anchors.top: parent.top
-        anchors.horizontalCenterOffset: 0
-        anchors.topMargin: 20
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.topMargin: 75
+
         background: Rectangle {
             color: "transparent"
             border.color: "#7b7b7b"
@@ -111,7 +131,7 @@ Page {
         Rectangle {
             id: rectangle1
             x: 115
-            y: 97
+            y: 87
             width: 361
             height: 32
             radius: 5
@@ -119,6 +139,8 @@ Page {
             border.width: 2
             anchors.left: rectangle.left
             anchors.right: parent.right
+            anchors.rightMargin: 0
+            anchors.leftMargin: 0
             anchors.horizontalCenter: rectangle.horizontalCenter
             TextField {
                 id: newPass
@@ -159,10 +181,72 @@ Page {
 
     }
 
+    Frame {
+        id: frame1
+        x: (applicationWindow.width - width)/2
+        width: 494
+        height: 105
+        anchors.top: parent.top
+        Label {
+            id: changeIP
+            x: 0
+            y: 0
+            text: qsTr("Change IP Address")
+            anchors.left: parent.left
+            anchors.top: parent.top
+            font.bold: true
+            font.pointSize: 12
+        }
+
+        Label {
+            id: ipLab
+            x: 0
+            y: 55
+            text: qsTr("New Address")
+            anchors.verticalCenter: rectangle5.verticalCenter
+            anchors.left: parent.left
+            font.pointSize: 12
+        }
+
+
+
+        Rectangle {
+            id: rectangle5
+            x: 115
+            y: 49
+            width: 361
+            height: 32
+            radius: 5
+            border.color: "#e1e2e1"
+            border.width: 2
+            anchors.left: rectangle3.left
+            anchors.right: parent.right
+            anchors.horizontalCenter: rectangle3.horizontalCenter
+            TextField {
+                id: current1
+                x: 9
+                y: -7
+                width: 289
+                height: 55
+                activeFocusOnTab: true
+            }
+            clip: true
+        }
+        background: Rectangle {
+            color: "#00000000"
+            radius: 5
+            border.color: "#7b7b7b"
+            border.width: 2
+        }
+        anchors.topMargin: 269
+    }
+
+
+
 }
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.6600000262260437;height:600;width:1000}D{i:2}
+    D{i:0;autoSize:true;formeditorZoom:0.33000001311302185;height:600;width:1000}
 }
 ##^##*/
