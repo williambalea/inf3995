@@ -13,8 +13,8 @@ class Engine1:
     DB_PASSWORD = "jerome"
     DB_NAMEOFBD = "Bixi"
     connection = None
-    
-    logging.basicConfig(filename='engine1.log', filemode='w', level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+
+    logging.basicConfig(filename='engine1.log', filemode='w', level=logging.INFO, format='[%(asctime)s %(name)s]: %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
 
     #constructor
     def __init__(self):
@@ -57,4 +57,15 @@ class Engine1:
         query = "SELECT * FROM Stations2017"
         logging.info(query)
         return self.toJson(self.query_db(query))
-    
+
+    def logsToJSON(self):
+        i = 1
+        result = {}
+        with open('engine1.log') as f:
+            lines = f.readlines()
+            for line in lines:
+                r = line.split('\n')
+                result[i] = {'logs': r[0]}
+                i += 1
+        return json.dumps(result)
+        

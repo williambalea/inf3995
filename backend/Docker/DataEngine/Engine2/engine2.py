@@ -159,3 +159,14 @@ class Engine2:
         logging.info('Label used: ')
         logging.info(label)
         return json.dumps(o)
+    
+    def logsToJSON(self):
+        i = 1
+        result = {}
+        with open('engine2.log') as f:
+            lines = f.readlines()
+            for line in lines:
+                r = line.split('\n')
+                result[i] = {'logs': r[0]}
+                i += 1
+        return json.dumps(result)

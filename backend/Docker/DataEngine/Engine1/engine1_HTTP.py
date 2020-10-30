@@ -16,3 +16,7 @@ def stationCode(code):
 @app.route('/engine1/station/all')
 def allStation():
     return engine1.getAllStations() 
+
+@app.route('/engine1/logs')
+def logs():
+    return  engine1.logsToJSON()
