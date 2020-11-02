@@ -173,10 +173,20 @@
 
         </LinearLayout>
 
-
-
-
-
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="379dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="80dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/global_activity_button"
+            android:text="@string/show_station_on_map"
+            android:textColor="@color/colortextlabel"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
 
     </LinearLayout>

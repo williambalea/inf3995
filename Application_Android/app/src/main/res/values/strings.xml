@@ -126,4 +126,6 @@
     <string name="hour">Hour</string>
     <string name="year_of_statistic">Year of Statistic</string>
     <string name="monthly_departures_and_arrivals_for_all_the_station_this_year">Monthly departures and arrivals for all the station this year:</string>
+    <string name="show_station_on_map">Show Station on map</string>
+    <string name="api_key_map">AIzaSyBEryjegc1Gx_F_rYgoeMTxpiQff2T17e8</string>
 </resources>
