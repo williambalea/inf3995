@@ -58,10 +58,10 @@ class StationStatisticsActivity : AppCompatActivity() {
 
         display_button.setOnClickListener{
             Toast.makeText(this," $station.name station Statistics", Toast.LENGTH_SHORT).show()
-            val code = station!!.code
+            //val code = station!!.code
             val annee = year
             val temps = time
-            val name = station!!.name
+            //val name = station!!.name
             when (temps){
                 "perMonth"-> {
                     val intent = Intent(this@StationStatisticsActivity, MonthlyStationStatisticActivity::class.java)

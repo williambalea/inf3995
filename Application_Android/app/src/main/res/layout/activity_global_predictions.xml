@@ -37,11 +37,13 @@
                     android:layout_width="600dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:gravity="center_vertical"
                     android:text="@string/global_usage_predictions"
                     android:textAlignment="center"
                     android:textColor="@color/colorWhite"
                     android:textSize="60sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="RtlCompat" />
             </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
@@ -52,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="8"
-        android:background="@drawable/recyclerview_bg"
+        android:background="@drawable/recyclerview_bg_2"
         android:layout_gravity="center"
         android:orientation="vertical"
         android:padding="5dp">

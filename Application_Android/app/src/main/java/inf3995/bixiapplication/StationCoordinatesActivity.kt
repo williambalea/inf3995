@@ -1,9 +1,9 @@
 package inf3995.bixiapplication
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import inf3995.bixiapplication.Data.Station
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.*
@@ -26,7 +26,7 @@ class StationCoordinatesActivity : AppCompatActivity() {
         btn3 = findViewById(R.id.button3)
 
         btn3.setOnClickListener{
-            val intent = Intent(this, StationLocalisation::class.java).putExtra("data", station)
+            val intent = Intent(this, StationMapsActivity::class.java).putExtra("data", station)
             startActivity(intent)
         }
     }

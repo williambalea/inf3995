@@ -30,13 +30,14 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_place_black_48dp" />
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
                     android:textAlignment="center"
                     android:text="@string/station_coordinates_title"
                     android:textColor="@color/colorWhite"
-                    android:textSize="60sp"
+                    android:textSize="50sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -48,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="8"
-        android:background="@drawable/recyclerview_bg"
+        android:background="@drawable/recyclerview_bg_2"
         android:layout_gravity="center"
         android:orientation="vertical"
         android:padding="10dp">
@@ -65,9 +66,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_place_black_48dp"
-                android:text="Code : "
+                android:text="@string/code_attribut"
                 android:textColor="@color/colortextdata"
-                android:textSize="50sp"
+                android:textSize="45sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -76,9 +77,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="40dp"
                 android:layout_marginStart="40dp"
-                android:text="Station Code"
+                android:text="@string/station_code"
                 android:textColor="@color/colortextlabel"
-                android:textSize="50sp"
+                android:textSize="45sp"
                 android:textStyle="bold"
                  />
         </LinearLayout>
@@ -94,9 +95,9 @@
                 android:id="@+id/Station_name_Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name : "
+                android:text="@string/name_attribut"
                 android:textColor="@color/colortextdata"
-                android:textSize="50sp"
+                android:textSize="45sp"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/Station_name"
@@ -104,9 +105,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="40dp"
                 android:layout_marginStart="40dp"
-                android:text="Station Name"
+                android:text="@string/station_name"
                 android:textColor="@color/colortextlabel"
-                android:textSize="50sp"
+                android:textSize="45sp"
                 android:textStyle="bold"
                 app:fontFamily="sans-serif"/>
 
@@ -123,7 +124,7 @@
                 android:id="@+id/Station_latitude_Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Latitude : "
+                android:text="@string/latitude"
                 android:textColor="@color/colortextdata"
                 android:textSize="50sp"
                 android:textStyle="bold" />
@@ -131,15 +132,14 @@
             <TextView android:id="@+id/Station_latitude"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Station Latitude:"
                 android:lineSpacingExtra="10sp"
-                android:text="Station Latitude"
+                android:text="@string/station_latitude"
                 android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/colortextlabel"
                 android:layout_marginLeft="40dp"
                 android:layout_marginStart="40dp"
-                android:textSize="50sp"
+                android:textSize="45sp"
                 android:textStyle="bold"
                 app:fontFamily="sans-serif" />
         </LinearLayout>
@@ -157,17 +157,17 @@
                 android:layout_height="wrap_content"
                 android:text="Longitude : "
                 android:textColor="@color/colortextdata"
-                android:textSize="50sp"
+                android:textSize="45sp"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/Station_longitude"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Station Longitude"
+                android:text="@string/station_longitude"
                 android:textColor="@color/colortextlabel"
                 android:layout_marginLeft="40dp"
                 android:layout_marginStart="40dp"
-                android:textSize="50sp"
+                android:textSize="45sp"
                 android:textStyle="bold"
                 app:fontFamily="sans-serif"/>
 
@@ -175,18 +175,20 @@
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="379dp"
-            android:layout_height="120dp"
+            android:layout_width="360dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginStart="80dp"
-            android:layout_marginLeft="80dp"
             android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="200dp"
+            android:layout_marginStart="250dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginEnd="100dp"
             android:background="@drawable/global_activity_button"
             android:text="@string/show_station_on_map"
-            android:textColor="@color/colortextlabel"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+            android:textColor="#302828"
+            android:textSize="28sp"
+            android:textStyle="bold"
+             />
 
 
     </LinearLayout>
