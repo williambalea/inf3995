@@ -46,7 +46,7 @@ class IpAddressDialog: AppCompatDialogFragment() {
             input(editTextIpAddress){
                 matches("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$").description("Enter a valid IP Address!")
             }
-            submitWith(okButton) { result ->
+            submitWith(okButton) {
                 ipAddressInput = editTextIpAddress.text.toString()
                 communicationServer(ipAddressInput!!)
             }
@@ -73,7 +73,7 @@ class IpAddressDialog: AppCompatDialogFragment() {
                 else
                     Log.i(TAG,"${response?.body()} --->   code:${response?.code()}    message:${response?.message()}")
                 val builder = AlertDialog.Builder(requireContext())
-                builder.setTitle("Connection Successful!").setMessage("You have connected to the server successfully!")
+                builder.setTitle("Successful Connection !!").setMessage("You are connected to the server successfully!!")
                 builder.show()
                 dismiss()
             }
