@@ -50,6 +50,7 @@ void Server::setupRoutes() {
     Routes::Post(router, "/server/survey", Routes::bind(&Server::sendPoll, this));
     Routes::Get (router, "/server/survey", Routes::bind(&Server::getPolls, this));
     Routes::Get (router, "/server/user/login", Routes::bind(&Server::login, this));
+    Routes::Get (router, "/server/engine/status", Routes::bind(&Server::getEngineStatus, this));
 }
 
 void Server::setSIGINTListener() {
@@ -116,6 +117,12 @@ void Server::getPolls(const Rest::Request& req, Http::ResponseWriter res) {
         log("failed to request surveys. Can't connect to database.");
     }
 
+}
+
+// TODO: ajust or remove
+void Server::getEngineStatus(const Rest::Request& req, Http::ResponseWriter res) {
+    bool status = rand() % 2;
+    res.send(Http::Code::Ok, status ? "true" : "false");
 }
 
 /*---------------------------

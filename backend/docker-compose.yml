@@ -45,6 +45,7 @@ services:
       - "traefik.http.routers.api-secured.tls=true"
       - "traefik.http.routers.api-secured.tls.certresolver=mytls"
       - "traefik.http.routers.api.middlewares=auth"
+      # faire un fichier avec docker secret. ou .env
       - "traefik.http.middlewares.auth.basicauth.users=admin:$$2y$$05$$6GYgD6w3FtmRZeenElS.a.ZHzr1wK.pglk3P5NAGt58LGq6QmYvru"
   server:
     build :
@@ -62,6 +63,7 @@ services:
       - "traefik.http.routers.serverContainer-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
       - "traefik.http.routers.serverContainer-secured.tls.certresolver=mytls" # <== Defining certsresolvers for https
 
+  # les middlewares pas nécessaire. Avoir un global dans traefik
   engine1:
     build:
       context: ./Docker/DataEngine/Engine1

@@ -115,6 +115,15 @@ private:
      */
     void getPolls(const Rest::Request& req, Http::ResponseWriter res);
 
+    /**
+     * Return the status of the engines to the Android app. True when all the 
+     * engines are up and running, False when one of the engine is offline
+     * 
+     * @param req The HTTP request containing headers, body, etc.
+     * @param res The HTTP response containing the http code and server response
+     */
+    void getEngineStatus(const Rest::Request& req, Http::ResponseWriter res);
+
     shared_ptr<Http::Endpoint> httpEndpoint;
     Rest::Router router;
     Address addr;
