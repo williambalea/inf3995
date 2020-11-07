@@ -13,10 +13,10 @@ volatile sig_atomic_t sigint = 0;
 /*---------------------------
     Server Class Functions
 ---------------------------*/
-Server::Server(Address &addr_, MySQL &db_) {
-    httpEndpoint = make_shared<Http::Endpoint>(addr_);
-    addr = addr_;
-    db = db_;
+Server::Server(Address &_addr, MySQL &_db) {
+    httpEndpoint = make_shared<Http::Endpoint>(_addr);
+    addr = _addr;
+    db = _db;
     
     init();
 }
