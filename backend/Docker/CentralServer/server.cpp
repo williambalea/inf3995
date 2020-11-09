@@ -13,11 +13,12 @@ volatile sig_atomic_t sigint = 0;
 /*---------------------------
     Server Class Functions
 ---------------------------*/
-Server::Server(Address &_addr, MySQL &_db) {
-    httpEndpoint = make_shared<Http::Endpoint>(_addr);
-    addr = _addr;
-    db = _db;
-    
+Server::Server(Address &_addr, MySQL &_db) 
+    : ws(enginesStatus)
+    , httpEndpoint(make_shared<Http::Endpoint>(_addr))
+    , addr(_addr)
+    , db(_db) 
+{    
     init();
 }
 
@@ -121,8 +122,11 @@ void Server::getPolls(const Rest::Request& req, Http::ResponseWriter res) {
 
 // TODO: ajust or remove
 void Server::getEngineStatus(const Rest::Request& req, Http::ResponseWriter res) {
-    bool status = rand() % 2;
-    res.send(Http::Code::Ok, status ? "true" : "false");
+    string buffer;
+    for(const auto& it : enginesStatus) {
+        buffer += it ? "true " : "false ";
+    } 
+    res.send(Http::Code::Ok, buffer);
 }
 
 /*---------------------------

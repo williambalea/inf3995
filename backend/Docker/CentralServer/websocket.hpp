@@ -1,33 +1,43 @@
-#ifndef WEBSOCKET
-#define WEBSOCKET
+#ifndef WEBSOCKET_HPP
+#define WEBSOCKET_HPP
 
 #include <websocketpp/config/asio_no_tls_client.hpp>
 #include <websocketpp/client.hpp>
 
-#include <websocketpp/common/thread.hpp>
-#include <websocketpp/common/memory.hpp>
+#include <stdlib.h>
+#include <iostream>
 #include <map>
-#include "WSMeta.hpp"
+#include <string>
+#include "meta.hpp"
+
+#define ENGINE1_ADDR "ws://localhost:3000"
+#define ENGINE2_ADDR "ws://localhost:3000"
+#define ENGINE3_ADDR "ws://localhost:3000"
 
 using namespace std;
+
 typedef websocketpp::client<websocketpp::config::asio_client> client;
 
 class Websocket {
 public:
-    Websocket();
+    Websocket (bool *enginesStatus);
+
     ~Websocket();
 
-    int connect(string const &uri);
-    void close(int id, websocketpp::close::status::value code, string reason);
-    void send(int id, string message);
-    shared_ptr<WSMeta> get_metadata(int id) const;
+    int connect(string const & uri, int id);
+
+    Meta::ptr get_metadata(int id) const;
+
+    void connectToEngines();
+
 private:
-    typedef map<int,shared_ptr<WSMeta>> connList;
+    typedef map<int,Meta::ptr> con_list;
 
     client m_endpoint;
     shared_ptr<thread> m_thread;
-    int m_nextId;
-    connList m_connections;
+
+    con_list m_connection_list;
+    bool *m_enginesStatus;
 };
 
 #endif

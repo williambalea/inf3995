@@ -6,6 +6,7 @@
 #include <pistache/http.h>
 #include <signal.h>
 #include "mysql.hpp"
+#include "websocket.hpp"
 
 using namespace Pistache;
 using namespace std;
@@ -128,6 +129,8 @@ private:
     Rest::Router router;
     Address addr;
     MySQL db;
+    bool enginesStatus[3] = {false, false, false};
+    Websocket ws;
 };
 
 #endif // SERVER_HPP
