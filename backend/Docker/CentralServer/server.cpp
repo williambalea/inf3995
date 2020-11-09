@@ -132,7 +132,7 @@ void Server::getPolls(const Rest::Request& req, Http::ResponseWriter res) {
 
 }
 
-// TODO: ajust or remove
+// TODO: ajust
 void Server::getEngineStatus(const Rest::Request& req, Http::ResponseWriter res) {
     string buffer;
     for(const auto& it : enginesStatus) {

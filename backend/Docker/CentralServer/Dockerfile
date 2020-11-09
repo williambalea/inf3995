@@ -5,7 +5,10 @@ RUN apt-get update
 RUN apt-get install -y build-essential
 RUN apt-get install -y curl
 RUN apt-get install -y git
+RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata
+RUN apt-get install -y libboost-all-dev
 RUN curl -s "https://cmake.org/files/v3.18/cmake-3.18.2-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local
+
 
 #Install mysql cppconn
 RUN apt-get install -y libmysqlcppconn-dev
@@ -17,6 +20,14 @@ WORKDIR /home/pistache
 RUN git submodule update --init
 WORKDIR /home/pistache/build
 RUN cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+RUN make && make install
+
+#Install websocketpp
+WORKDIR /home/websocketpp
+COPY websocketpp-0.8.2 .
+RUN cmake -B out
+WORKDIR /home/websocketpp/out
+RUN ls -a
 RUN make && make install
 
 #Set directory for the server

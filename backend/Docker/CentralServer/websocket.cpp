@@ -5,6 +5,10 @@
 #define ENGINE2_ID 1
 #define ENGINE3_ID 2
 
+#define ENGINE1_ADDR "ws://echo.websocket.org"
+#define ENGINE2_ADDR "ws://localhost:3000"
+#define ENGINE3_ADDR "ws://echo.websocket.org"
+
 Websocket::Websocket (bool *enginesStatus) : m_enginesStatus(enginesStatus) {
     
     m_endpoint.clear_access_channels(websocketpp::log::alevel::all);

@@ -10,10 +10,6 @@
 #include <string>
 #include "meta.hpp"
 
-#define ENGINE1_ADDR "ws://echo.websocket.org"
-#define ENGINE2_ADDR "ws://localhost:3000"
-#define ENGINE3_ADDR "ws://echo.websocket.org"
-
 using namespace std;
 
 typedef websocketpp::client<websocketpp::config::asio_client> client;
