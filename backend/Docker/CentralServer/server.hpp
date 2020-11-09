@@ -71,6 +71,8 @@ private:
     // TODO: to remove
     void createDummies();
 
+    void maintainWsConnection();
+
     /**
      * Gets the time from getTime() then appends the msg before cout
      * 

@@ -10,9 +10,9 @@
 #include <string>
 #include "meta.hpp"
 
-#define ENGINE1_ADDR "ws://localhost:3000"
+#define ENGINE1_ADDR "ws://echo.websocket.org"
 #define ENGINE2_ADDR "ws://localhost:3000"
-#define ENGINE3_ADDR "ws://localhost:3000"
+#define ENGINE3_ADDR "ws://echo.websocket.org"
 
 using namespace std;
 
@@ -28,7 +28,7 @@ public:
 
     Meta::ptr get_metadata(int id) const;
 
-    void connectToEngines();
+    void reconnectEngine(int engine);
 
 private:
     typedef map<int,Meta::ptr> con_list;

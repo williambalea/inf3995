@@ -1,4 +1,9 @@
 #include "websocket.hpp"
+#include "customUtilities.hpp"
+
+#define ENGINE1_ID 0
+#define ENGINE2_ID 1
+#define ENGINE3_ID 2
 
 Websocket::Websocket (bool *enginesStatus) : m_enginesStatus(enginesStatus) {
     
@@ -10,7 +15,9 @@ Websocket::Websocket (bool *enginesStatus) : m_enginesStatus(enginesStatus) {
 
     m_thread = make_shared<thread>(&client::run, &m_endpoint);
 
-    connectToEngines();
+    connect(ENGINE1_ADDR, ENGINE1_ID);
+    connect(ENGINE2_ADDR, ENGINE2_ID);
+    connect(ENGINE3_ADDR, ENGINE3_ID);
 }
 
 Websocket::~Websocket() {
@@ -19,12 +26,12 @@ Websocket::~Websocket() {
     for (const auto& it : m_connection_list) {
         if (it.second->get_status() != "Open") continue;
         
-        cout << "Closing connection " << it.second->get_id() << endl;
+        cout << Custom::getTime() << "Closing connection " << it.second->get_id() << endl;
         
         error_code ec;
         m_endpoint.close(it.second->get_hdl(), websocketpp::close::status::going_away, "", ec);
         if (ec) {
-            cout << "Error closing connection " << it.second->get_id() << ": "  
+            cout << Custom::getTime() << "Error closing connection " << it.second->get_id() << ": "  
                         << ec.message() << endl;
         }
     }
@@ -37,7 +44,7 @@ int Websocket::connect(string const & uri, int id) {
 
     client::connection_ptr con = m_endpoint.get_connection(uri, ec);
     if (ec) {
-        cout << "Connect initialization error: " << ec.message() << endl;
+        cout << Custom::getTime()  << "Connect initialization error: " << ec.message() << endl;
         return -1;
     }
     // TODO: what to do if the user chose an id that is already used
@@ -78,8 +85,21 @@ Meta::ptr Websocket::get_metadata(int id) const {
     }
 }
 
-void Websocket::connectToEngines() {
-    connect(ENGINE1_ADDR, 0);
-    connect(ENGINE2_ADDR, 1);
-    connect(ENGINE3_ADDR, 2);
+void Websocket::reconnectEngine(int engine) {
+    switch (engine) {
+        case 0:
+            cout << Custom::getTime() << "Trying to reconnect to " << ENGINE1_ADDR << endl;
+            connect(ENGINE1_ADDR, ENGINE1_ID);
+            break;
+
+        case 1:
+            cout << Custom::getTime() << "Trying to reconnect to " << ENGINE2_ADDR << endl;
+            connect(ENGINE2_ADDR, ENGINE2_ID);
+            break;     
+  
+        case 2:
+            cout << Custom::getTime() << "Trying to reconnect to " << ENGINE3_ADDR << endl;
+            connect(ENGINE3_ADDR, ENGINE3_ID);
+            break;
+    }
 }

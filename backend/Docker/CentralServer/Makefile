@@ -20,5 +20,6 @@ meta.o: meta.cpp meta.hpp
 websocket.o: websocket.cpp websocket.hpp
 	$(CC) -c $(CFLAGS) websocket.cpp
 
+
 clean:
 	rm *.o server

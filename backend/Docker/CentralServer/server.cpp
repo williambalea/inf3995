@@ -1,8 +1,8 @@
 #include "server.hpp"
 #include <iostream>
 #include <string>
-#include <ctime>
 #include "json.hpp"
+#include "customUtilities.hpp"
 
 using namespace Pistache;
 using namespace std;
@@ -26,16 +26,18 @@ void Server::run() {
     setSIGINTListener();
 
     httpEndpoint->serveThreaded();
-    cout << getTime() << "server is running on " << addr.host() << ":" << addr.port() << endl;
+    cout << Custom::getTime() << "server is running on " << addr.host() << ":" << addr.port() << endl;
     
     // TODO: remove dummies
     //createDummies();
 
     // listening for a ctl+C
-    while (!sigint) {}
+    while (!sigint) {
+        maintainWsConnection();
+    }
 
     httpEndpoint->shutdown();
-    cout << "server closed\n";
+    cout << Custom::getTime() << "server closed\n" << endl;
 }
 
 void Server::init() {
@@ -59,7 +61,17 @@ void Server::setSIGINTListener() {
 }
 
 void Server::log(string msg) {
-    cout << getTime() << msg << endl;
+    cout << Custom::getTime() << msg << endl;
+}
+
+void Server::maintainWsConnection() {
+    sleep(2);
+    if (!enginesStatus[0])
+        ws.reconnectEngine(0);
+    if (!enginesStatus[1])
+        ws.reconnectEngine(1);
+    if (!enginesStatus[2])
+        ws.reconnectEngine(2);
 }
 
 /*---------------------------
@@ -136,28 +148,9 @@ void intHandler(int signum) {
     sigint = 1;
 }
 
-string getTime() {
-    time_t now;
-    struct tm local;
-    now = time(NULL);
-    local = *localtime(&now);
-
-    string h = to_string(local.tm_hour);
-    string m = to_string(local.tm_min);
-    string s = local.tm_sec < 10 ? '0' + to_string(local.tm_sec) : to_string(local.tm_sec);
-    string d = to_string(local.tm_mday);
-    string t = to_string(local.tm_mon + 1);
-    string y = to_string(local.tm_year + 1900);
-
-
-    string buffer = "";
-    buffer += '[' + h + ':' + m + ':' + s + "] " + d + '/' + t + '/' + y + " > ";
-    return buffer;
-}
-
 // TODO: remove
 void Server::createDummies() {
-    cout << getTime() << "creating dummies ";
+    cout << Custom::getTime() << "creating dummies ";
     cout.flush();
     for (int i = 0; i < 20; i++) {
         if (sigint) break;

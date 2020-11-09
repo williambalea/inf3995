@@ -1,4 +1,5 @@
 #include "meta.hpp"
+#include "customUtilities.hpp"
 
 Meta::Meta(int id, websocketpp::connection_hdl hdl, string uri, bool &engineStatus)
     : m_id(id)
@@ -18,8 +19,9 @@ void Meta::on_open(client * c, websocketpp::connection_hdl hdl) {
     *m_engineStatus = true;
 
     cout 
-    << "Connected to engine " << m_id + 1 
-    << " on " << m_server 
+    << Custom::getTime()
+    << "Connected to engine" << m_id + 1 
+    << " on " << m_uri 
     << " with id " << m_id
     << endl;
 
@@ -43,8 +45,9 @@ void Meta::on_close(client * c, websocketpp::connection_hdl hdl) {
     *m_engineStatus = false;
 
     cout 
+    << Custom::getTime()
     << "Disconnected from engine " << m_id + 1 
-    << " on " << m_server 
+    << " on " << m_uri 
     << " with id " << m_id
     << endl;
 }
