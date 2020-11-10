@@ -4,7 +4,7 @@ FROM python:3.8.5
 RUN mkdir /usr/src/engin1/
 WORKDIR /usr/src/engin1/
 RUN pip3 install --upgrade pip
-RUN pip3 install Flask mysql-connector-python matplotlib pandas seaborn easydict numpy
+RUN pip3 install Flask mysql-connector-python matplotlib pandas seaborn easydict numpy flask-socketio
 COPY . .
 
 ENV FLASK_APP=engine1_HTTP.py
