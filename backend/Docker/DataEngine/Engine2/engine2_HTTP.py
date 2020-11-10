@@ -12,6 +12,6 @@ def hello_world():
 def dataUsage(year, time, station):
     return engine2.datatoJSON(year, time, station)
 
-@app.route('/engine2/logs')
-def logs():
-    return  engine2.logsToJSON()
+@app.route('/engine2/logs/<octet>')
+def logs(octet):
+    return engine2.logsToJSON(octet)

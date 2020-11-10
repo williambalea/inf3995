@@ -58,14 +58,11 @@ class Engine1:
         logging.info(query)
         return self.toJson(self.query_db(query))
 
-    def logsToJSON(self):
-        i = 1
+    def logsToJSON(self, octet):
         result = {}
-        with open('engine1.log') as f:
-            lines = f.readlines()
-            for line in lines:
-                r = line.split('\n')
-                result[i] = {'logs': r[0]}
-                i += 1
+        with open('engine2.log') as f:
+            c = f.read(int(octet))
+            r = c.split('\n')
+            result = {'logs': r[0]}
         return json.dumps(result)
         
