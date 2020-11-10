@@ -3,6 +3,13 @@
 #include <string>
 #include <ctime>
 #include "json.hpp"
+#include "HTTPRequest.hpp"
+
+#define ENGINE1_ADDR "http://engine1:5000/engine1"
+#define ENGINE2_ADDR "http://engine2:5000/engine2"
+
+//TODO: Correct address when engine3 will be created
+#define ENGINE3_ADDR "http://engine1:5000/engine1"
 
 using namespace Pistache;
 using namespace std;
@@ -31,7 +38,10 @@ void Server::run() {
     //createDummies();
 
     // listening for a ctl+C
-    while (!sigint) {}
+    while (!sigint) {
+        checkEnginesStatus();
+        sleep(10);
+    }
 
     httpEndpoint->shutdown();
     cout << "server closed\n";
@@ -50,6 +60,7 @@ void Server::setupRoutes() {
     Routes::Post(router, "/server/survey", Routes::bind(&Server::sendPoll, this));
     Routes::Get (router, "/server/survey", Routes::bind(&Server::getPolls, this));
     Routes::Get (router, "/server/user/login", Routes::bind(&Server::login, this));
+    Routes::Get (router, "/server/status", Routes::bind(&Server::getStatus, this));
 }
 
 void Server::setSIGINTListener() {
@@ -58,6 +69,32 @@ void Server::setSIGINTListener() {
 
 void Server::log(string msg) {
     cout << getTime() << msg << endl;
+}
+
+bool Server::checkEngine(string engineAddr) {
+    bool status = false;
+    try {
+        http::Request request(engineAddr);
+        const http::Response response = request.send("GET");
+
+        if (response.status == 200) {
+            status = true;
+        } else {
+            cout << getTime() << "Engine at " << engineAddr << " is offline! "
+            "Trying to reconnect... " << endl;
+        }
+    } catch (const std::exception& e) {
+        cout << getTime() << "Engine at " << engineAddr << " is offline! "
+        "Trying to reconnect... " << endl;    
+    }
+
+    return status;
+}
+
+void Server::checkEnginesStatus() {
+    enginesStatus[0] = checkEngine(ENGINE1_ADDR);
+    enginesStatus[1] = checkEngine(ENGINE2_ADDR);
+    enginesStatus[2] = checkEngine(ENGINE3_ADDR);
 }
 
 /*---------------------------
@@ -116,6 +153,15 @@ void Server::getPolls(const Rest::Request& req, Http::ResponseWriter res) {
         log("failed to request surveys. Can't connect to database.");
     }
 
+}
+
+//TODO: maybe change for a json instead of string
+void Server::getStatus(const Rest::Request& req, Http::ResponseWriter res) {
+    string buffer = "";
+    for(const auto& it : enginesStatus) {
+        buffer += it ? "true " : "false ";
+    }
+    res.send(Http::Code::Ok, buffer);
 }
 
 /*---------------------------

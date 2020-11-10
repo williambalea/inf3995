@@ -70,6 +70,10 @@ private:
     // TODO: to remove
     void createDummies();
 
+    void checkEnginesStatus();
+
+    bool checkEngine(string engineAddr);
+
     /**
      * Gets the time from getTime() then appends the msg before cout
      * 
@@ -115,10 +119,19 @@ private:
      */
     void getPolls(const Rest::Request& req, Http::ResponseWriter res);
 
+    /**
+     * Return the online status of the 3 engines. True means that the engine is online
+     * 
+     * @param req The HTTP request containing headers, body, etc.
+     * @param res The HTTP response containing the http code and server response
+     */
+    void getStatus(const Rest::Request& req, Http::ResponseWriter res);
+
     shared_ptr<Http::Endpoint> httpEndpoint;
     Rest::Router router;
     Address addr;
     MySQL db;
+    bool enginesStatus[3] = {false, false, false};
 };
 
 #endif // SERVER_HPP
