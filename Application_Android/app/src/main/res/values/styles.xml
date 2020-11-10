@@ -53,4 +53,44 @@
     <item name="android:fontFamily" tools:targetApi="jelly_bean">sans-serif-light</item>
 </style>
 
+    <!-- My Button theme -->
+    <style name="MyButton1"
+        parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">
+            @color/yellow</item>
+        <item name="colorButtonNormal">
+            @color/hotPink</item>
+    </style>
+
+
+    <style name="MyButton2"
+        parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">
+            @color/red</item>
+        <item name="colorButtonNormal">
+            @color/teal_300</item>
+    </style>
+
+    <style name="MyButton3"
+        parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">
+            @color/yellow_900</item>
+    </style>
+
+    <style name="MyButton4"
+        parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">
+            @color/yellow_A200</item>
+        <item name="colorButtonNormal">
+            @color/white</item>
+    </style>
+
+    <style name="MyButton5"
+        parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">
+            @color/lime</item>
+        <item name="colorButtonNormal">
+            @color/white</item>
+    </style>
+
 </resources>

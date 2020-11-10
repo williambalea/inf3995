@@ -136,4 +136,8 @@
     <string name="code_attribut">Code :</string>
     <string name="station_usage_statistics">STATION USAGE STATISTICS</string>
     <string name="station_usage_predictions">STATION USAGE PREDICTIONS</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="choose_indicator">Select Indicator</string>
+    <string name="year_of_prediction">Year of prediction</string>
 </resources>

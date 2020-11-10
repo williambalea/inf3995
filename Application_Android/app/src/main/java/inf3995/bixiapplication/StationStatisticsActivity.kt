@@ -29,6 +29,7 @@ class StationStatisticsActivity : AppCompatActivity() {
         Station_code.text = station!!.code.toString()
         Station_name.text = station!!.name
         //val code = station!!.code
+
         val years_List = listOf("","2014", "2015", "2016","2017")
         val years_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, years_List)
         spnTime.adapter = years_adapter
