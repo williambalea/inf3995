@@ -1,7 +1,8 @@
 from flask import Flask
 from engine1 import Engine1
-
+from flask_socketio import SocketIO
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 engine1 = Engine1()
 
@@ -16,3 +17,17 @@ def stationCode(code):
 @app.route('/engine1/station/all')
 def allStation():
     return engine1.getAllStations() 
+
+@app.route('/engine1/logs')
+def logs():
+    return  engine1.logsToJSON()
+
+@socketio.on('connect')
+def connect():
+    socketio.emit('my response', {'data': 'Connected Engine 1'})
+    print("Connected Socket")
+
+@socketio.on('disconnect')
+def disconnected():
+    socketio.emit('my response', {'data': 'Disconnected Engine 1'}, broadcast=True)
+    print("Disconnected Socket")

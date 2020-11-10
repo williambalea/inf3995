@@ -2,8 +2,8 @@ import json
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
 import base64
+import logging
 
 class Engine2:
 
@@ -13,11 +13,13 @@ class Engine2:
     weekDayLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     firstDayMonday = 3
 
+    logging.basicConfig(filename='engine2.log', filemode='w', level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+
     def __init__(self):
         return None 
                       
     def getPerTimeCountStart(self, df, station, time):
-        print('getTimeCountStart()', flush=True)
+        logging.info('Entering getTimeCountStart()')
         dfStart = df[['start_date', 'start_station_code']].copy()
         #filter rows
         if station != 'all':
@@ -36,11 +38,12 @@ class Engine2:
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
             label = self.monthLabel
         timeCount = np.bincount(timeNumber, None, len(label))
-        print('TimeCount Start:', flush=True)
-        print(timeCount)
+        logging.info('TimeCount Start: ')
+        logging.info(timeCount)
         return timeCount
     
     def getPerTimeCountEnd(self, df, station, time):
+        logging.info('Entering getPerTimeCountEnd()')
         dfEnd = df[['end_date', 'end_station_code']].copy()
         #filter rows
         if station != 'all':
@@ -59,12 +62,12 @@ class Engine2:
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
             label = self.monthLabel
         timeCount = np.bincount(timeNumber, None, len(label))
-        print('TimeCount End:', flush=True)
-        print(timeCount)
+        logging.info('TimeCount End: ')
+        logging.info(timeCount)
         return timeCount
     
     def getGraphPerTime(self, countStart, countEnd, station, time):
-        print('entering getGraphPerTime()', flush=True)
+        logging.info('Entering getGraphPerTime()')
         if time == 'perMonth':
             countStart = countStart[3:len(countStart)-1]
             countEnd = countEnd[3:len(countEnd)-1]
@@ -100,25 +103,20 @@ class Engine2:
         # Create legend & Show graphic
         plt.legend()
         plt.savefig('bar.png')
-        # plt.show()
-        print('graph generated', flush=True)
+        logging.info('Graph generated')
         return plt
 
 
     def toBase64(self):
-        print('toBase64()', flush=True)
-        # plt.savefig('bar.png')
+        logging.info('Graph toBase64()')
         with open("bar.png", "rb") as imageFile:
-            strg = base64.b64encode(imageFile.read()).decode('utf-8')
-            while strg[-1] == '=':
-                strg = strg[:-1]
-                
-            # print(strg)
-
-        return strg
+            graphBase64 = base64.b64encode(imageFile.read()).decode('utf-8')
+            while graphBase64[-1] == '=':
+                graphBase64 = graphBase64[:-1]
+        return graphBase64
 
     def datatoJSON(self, year, time, station):
-        print('datatoJSON()', flush=True)
+        logging.info('Entering datatoJSON()')
         ye = int(year)
         ti = str(time)
         if str(station) == 'all':
@@ -128,8 +126,6 @@ class Engine2:
 
         path = "./kaggleData/OD_{}".format(ye)
         path += ".csv"
-        # df = pd.read_csv(path)
-        # print(df.dtypes)
         df = pd.read_csv(path, dtype={
             'start_date':str,
             'start_station_code':int,
@@ -137,9 +133,8 @@ class Engine2:
             'end_station_code':str,
             'duration_sec':int,
             'is_member':int})
-        print(df.dtypes)
-        print('dataframe: ', flush=True)
-        print(df, flush=True)
+        logging.info('dataframe: ')
+        logging.info(df)
         countStart = self.getPerTimeCountStart(df, st, ti)
         countEnd = self.getPerTimeCountEnd(df, st, ti)
         
@@ -161,6 +156,17 @@ class Engine2:
         o["data"]["arrivalValue"] = countEnd[0:len(countStart)].tolist()
         o["graph"] = graphString
         
-        print('Label used: ', flush=True)
-        print(label, flush=True)
+        logging.info('Label used: ')
+        logging.info(label)
         return json.dumps(o)
+    
+    def logsToJSON(self):
+        i = 1
+        result = {}
+        with open('engine2.log') as f:
+            lines = f.readlines()
+            for line in lines:
+                r = line.split('\n')
+                result[i] = {'logs': r[0]}
+                i += 1
+        return json.dumps(result)
