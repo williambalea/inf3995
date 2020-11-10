@@ -30,7 +30,11 @@ class SurveyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.survey)
-        dialog.show(supportFragmentManager, null)
+        if(savedInstanceState == null){
+            dialog.isCancelable = false
+            dialog.show(supportFragmentManager, null)
+
+        }
 
         form{
             input(editTextEmail){
@@ -61,6 +65,8 @@ class SurveyActivity : AppCompatActivity() {
             val intent = Intent(this@SurveyActivity, MainScreenActivity::class.java)
             startActivity(intent)
         }
+
+
     }
 
     private fun sendSurveyData(surveyData: SurveyData) {
