@@ -1,9 +1,9 @@
 from flask import Flask
 from engine1 import Engine1
-from flask_uwsgi_websocket import GeventWebSocket
+from flask_socketio import SocketIO
 import logging
 app = Flask(__name__)
-websocket = GeventWebSocket(app)
+socketio = SocketIO(app)
 
 engine1 = Engine1()
 
@@ -19,18 +19,16 @@ def stationCode(code):
 def allStation():
     return engine1.getAllStations() 
 
-@websocket.route('/log')
+@app.route('/engine1/logs')
 def logs():
-    websocket.send(engine1.logsToJSON(), json=True)
-    logging.info("Send {}".format(engine1.logsToJSON))
+    return  engine1.logsToJSON()
 
-@websocket.route('/connect')
+@socketio.on('connect')
 def connect():
-    websocket.emit('my response', {'data': 'Connected Engine 1'})
-    logging.info("Connected Socket From Engine 1")
-    # logs()
+    socketio.emit('my response', {'data': 'Connected Engine 1'})
+    logging.info("Connected Socket")
 
-@websocket.route('/disconnect')
+@socketio.on('disconnect')
 def disconnected():
-    websocket.emit('my response', {'data': 'Disconnected Engine 1'}, broadcast=True)
-    logging.info("Disconnected Socket From Engine 1")
+    socketio.emit('my response', {'data': 'Disconnected Engine 1'}, broadcast=True)
+    logging.info("Disconnected Socket")
