@@ -6,7 +6,7 @@
 #define ENGINE3_ID 2
 
 #define ENGINE1_ADDR "ws://echo.websocket.org"
-#define ENGINE2_ADDR "ws://localhost:3000"
+#define ENGINE2_ADDR "ws://localhost:5000"
 #define ENGINE3_ADDR "ws://echo.websocket.org"
 
 Websocket::Websocket (bool *enginesStatus) : m_enginesStatus(enginesStatus) {
