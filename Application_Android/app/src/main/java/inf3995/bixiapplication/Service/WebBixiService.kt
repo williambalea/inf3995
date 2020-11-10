@@ -9,6 +9,9 @@ interface WebBixiService {
     @GET("/server/")
     fun getHelloWorld():Call<String>
 
+    @GET("/server/status/")
+    fun getConnectivity():Call<String>
+
     @GET("/engine1/station/all")
     fun getAllStationCode(): Call<String>
 
