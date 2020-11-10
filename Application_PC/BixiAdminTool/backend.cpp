@@ -50,14 +50,14 @@ void BackEnd::refresh()
 {
     connect(man, &QNetworkAccessManager::finished, this, &BackEnd::sqlFinished);
     // TODO: make this request only if admin authentified correctly
-    QNetworkRequest req = makeRequest(QUrl("https://10.0.0.105/server/survey"));
+    QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server/survey"));
     man->get(req);
 }
 
 void BackEnd::login() {
     connect(man, &QNetworkAccessManager::finished, this, &BackEnd::loginFinished);
 
-    QNetworkRequest req = makeRequest(QUrl("https://10.0.0.105/server/user/login"));
+    QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server/user/login"));
     QString auth = m_user + ":" + m_pass;
     QByteArray data = auth.toLocal8Bit().toBase64();
     QString headerData = "Basic " + data;

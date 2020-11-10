@@ -6,6 +6,7 @@ import custom.classes 1.0
 
 Page {
     id: settings
+    Material.accent: "#9b0000"
     Rectangle {
         width: parent.width;
         height: 50;
@@ -53,7 +54,7 @@ Page {
         id: frame
         width: 494
         x: (applicationWindow.width - width)/2
-        height: 182
+        height: 230
         anchors.top: parent.top
         anchors.topMargin: 75
 
@@ -107,15 +108,15 @@ Page {
 
         Rectangle {
             id: rectangle
-            x: 115
-            y: 144
+            x: 110
+            y: 125
             width: 361
             height: 32
             radius: 5
             border.color: "#E1E2E1"
             border.width: 2
             anchors.right: parent.right
-            anchors.bottom: parent.bottom
+            anchors.rightMargin: 0
             clip: true
             TextField {
                 id: retype
@@ -178,14 +179,29 @@ Page {
             clip: true
         }
 
+        Button {
+            id: apply
+            x: 406
+            y: 166
+            height: 40
+            text: qsTr("apply")
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: 0
+            anchors.bottomMargin: 0
+            flat: false
+            highlighted: true
+        }
+
 
     }
 
     Frame {
         id: frame1
         x: (applicationWindow.width - width)/2
+        y: 295
         width: 494
-        height: 105
+        height: 155
         anchors.top: parent.top
         Label {
             id: changeIP
@@ -229,8 +245,24 @@ Page {
                 width: 289
                 height: 55
                 activeFocusOnTab: true
+                validator:RegExpValidator {
+                    regExp:/^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
+                }
             }
             clip: true
+        }
+
+        Button {
+            id: change
+            x: 401
+            y: 82
+            height: 40
+            text: qsTr("change")
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            highlighted: true
+            anchors.rightMargin: 0
+            anchors.bottomMargin: 0
         }
         background: Rectangle {
             color: "#00000000"
@@ -238,8 +270,9 @@ Page {
             border.color: "#7b7b7b"
             border.width: 2
         }
-        anchors.topMargin: 269
+        anchors.topMargin: 315
     }
+
 
 
 
@@ -247,6 +280,6 @@ Page {
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;formeditorZoom:0.33000001311302185;height:600;width:1000}
+    D{i:0;autoSize:true;formeditorZoom:0.5;height:600;width:1000}
 }
 ##^##*/

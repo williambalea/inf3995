@@ -11,6 +11,7 @@ class BackEnd : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool attemps MEMBER attemps NOTIFY attempsChanged)
+    Q_PROPERTY(QString host MEMBER m_host NOTIFY hostChanged)
     Q_PROPERTY(QString sqlData READ sqlData WRITE setSqlData NOTIFY sqlDataChanged)
     Q_PROPERTY(bool isLoggedIn READ isLoggedIn NOTIFY isLoggedInChanged)
     Q_PROPERTY(QString user READ user WRITE setUser NOTIFY userChanged)
@@ -32,6 +33,7 @@ public:
 
 signals:
     void attempsChanged();
+    void hostChanged();
     void sqlDataChanged();
     void isLoggedInChanged();
     void userChanged();
@@ -50,6 +52,7 @@ private:
     QNetworkAccessManager *man;
     bool m_isLoggedIn = false;
     bool attemps = false;
+    QString m_host = "10.0.0.105";
 
 };
 

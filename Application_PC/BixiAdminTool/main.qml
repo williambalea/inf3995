@@ -27,3 +27,9 @@ ApplicationWindow {
 
 
 
+
+/*##^##
+Designer {
+    D{i:0;formeditorZoom:0.33000001311302185}
+}
+##^##*/
