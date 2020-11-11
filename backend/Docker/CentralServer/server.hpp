@@ -82,6 +82,8 @@ private:
 
     bool checkEngine(string engineAddr);
 
+    void updatePass(string user, string pw);
+
     /**
      * Gets the time from getTime() then appends the msg before cout
      * 
@@ -134,6 +136,14 @@ private:
      * @param res The HTTP response containing the http code and server response
      */
     void getStatus(const Rest::Request& req, Http::ResponseWriter res);
+
+    /**
+     * Changes the password of the admin using the PC app.
+     * 
+     * @param req The HTTP request containing headers, body, etc.
+     * @param res The HTTP response containing the http code and server response
+     */
+    void changePass(const Rest::Request& req, Http::ResponseWriter res);
 
     shared_ptr<Http::Endpoint> httpEndpoint;
     Rest::Router router;

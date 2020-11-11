@@ -71,6 +71,20 @@ json MySQL::getUser(std::string user, bool &err) {
     return data;
 }
 
+void MySQL::updatePass(std::string user, std::string salt, std::string newPass) {
+    connect();
+    PreparedStatement* stmt = con->prepareStatement("UPDATE Accounts SET salt=?, pw=? WHERE user=?");
+
+    stmt->setString(1, salt);
+    stmt->setString(2, newPass);
+    stmt->setString(3, user);
+    stmt->execute();
+
+
+    delete stmt;
+    disconnect();
+}
+
 bool MySQL::connect() {
     con = driver->connect(HOST, USER, PASS);
     Statement* stmt = con->createStatement();

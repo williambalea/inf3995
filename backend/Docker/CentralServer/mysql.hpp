@@ -18,6 +18,7 @@ public:
      */
     MySQL();
 
+    //TODO : sendPoll has no err bool for connect()
     /**
      * Sends a completed survey to the database
      * 
@@ -38,6 +39,8 @@ public:
     json getPolls(bool &err);
 
     json getUser(std::string user, bool &err);
+
+    void updatePass(std::string user, std::string salt, std::string newPass);
 
 private:
 

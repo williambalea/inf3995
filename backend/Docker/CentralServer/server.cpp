@@ -36,7 +36,7 @@ void Server::run() {
     cout << getTime() << "server is running on " << addr.host() << ":" << addr.port() << endl;
     
     // TODO: remove dummies
-    //createDummies();
+    createDummies();
 
     // listening for a ctl+C
     while (!sigint) {
@@ -62,6 +62,7 @@ void Server::setupRoutes() {
     Routes::Get (router, "/server/survey", Routes::bind(&Server::getPolls, this));
     Routes::Get (router, "/server/user/login", Routes::bind(&Server::login, this));
     Routes::Get (router, "/server/status", Routes::bind(&Server::getStatus, this));
+    Routes::Put (router, "/server/user/password", Routes::bind(&Server::changePass, this));
 }
 
 void Server::setSIGINTListener() {
@@ -98,6 +99,12 @@ void Server::checkEnginesStatus() {
     enginesStatus[2] = checkEngine(ENGINE3_ADDR);
 }
 
+void Server::updatePass(string user, string pw) {
+    string salt = genRandomString(20);
+    string hashedPass = hash10times(salt, pw);
+    db.updatePass(user, salt, hashedPass);
+}
+
 /*---------------------------
     Routes Fonction
 ---------------------------*/
@@ -116,7 +123,7 @@ void Server::login(const Rest::Request& req, Http::ResponseWriter res) {
         json credential = db.getUser(user, err);
         if (err) {
             res.send(Http::Code::Bad_Request, "server couldn't connect to database.");
-            log("failed to request surveys. Can't connect to database.");
+            log("failed to login user. Can't connect to database.");
             return;
         }
         if (credential.dump() != "null") {
@@ -176,6 +183,46 @@ void Server::getStatus(const Rest::Request& req, Http::ResponseWriter res) {
     }
     res.send(Http::Code::Ok, buffer);
 }
+
+void Server::changePass(const Rest::Request& req, Http::ResponseWriter res) {
+    bool err;
+    auto headers = req.headers();
+    auto auth = headers.tryGet<Http::Header::Authorization>();
+    if (auth != NULL) {
+        string user = auth.get()->getBasicUser();
+        string pass = auth.get()->getBasicPassword();
+        string newPass = "";
+        try {
+            json j = json::parse(req.body());
+            newPass = j["new"].get<string>();
+        } catch (json::exception &e) {
+            res.send(Http::Code::Bad_Request, "Cannot get new password");
+            string msg = e.what();
+            log("failed to changed password " + msg);
+            return;
+        }
+        json credential = db.getUser(user, err);
+        if (err) {
+            res.send(Http::Code::Bad_Request, "server couldn't connect to database.");
+            log("failed to change password. Can't connect to database.");
+            return;
+        }
+        if (credential.dump() != "null") {
+            string hashedPass = hash10times(credential["salt"].get<string>(), pass);
+            bool matchingUsers = user == credential["user"].get<string>();
+            bool matchingPass = hashedPass == credential["pw"].get<string>();
+            if ( matchingUsers && matchingPass) {
+                updatePass(user, newPass);
+                res.send(Http::Code::Ok, "password was changed");
+                log("admin changed password");
+                return;
+            }
+        }
+    }
+    res.send(Http::Code::Unauthorized, "Unauthorized connection!");
+    log("password change attempt failed");
+}
+
 
 /*---------------------------
     Global Functions
