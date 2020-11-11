@@ -33,9 +33,11 @@ class StationStatisticsActivity : AppCompatActivity() {
         val years_List = listOf("","2014", "2015", "2016","2017")
         val years_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, years_List)
         spnTime.adapter = years_adapter
+
         val period_List = listOf("","perMonth", "perWeekDay", "perHour")
         val period_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, period_List)
         spnPeriod.adapter = period_adapter
+
         limitDropDownmenuHeight(spnPeriod)
         limitDropDownmenuHeight(spnTime)
 

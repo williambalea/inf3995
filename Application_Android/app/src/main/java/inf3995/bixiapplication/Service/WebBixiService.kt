@@ -20,7 +20,6 @@ interface WebBixiService {
     fun getAllStationCode(): Call<String>
 
     // Engine 2 methods
-
     @GET("/engine2/data/usage/{year}/{time}/{station}")
     fun getStationStatistics(@Path("year") year:Int, @Path("time") time:String, @Path("station") station: Int): Call<String>
 
@@ -28,10 +27,10 @@ interface WebBixiService {
     fun getStationStatisticsGlobal(@Path("year") year:Int, @Path("time") time:String): Call<String>
 
     // Engine 3 methods
-    @GET("/engine3/data/usage/{year}/{time}/{station}")
+    @GET("/engine2/data/usage/{year}/{time}/{station}")
     fun getStationPrediction(@Path("year") year:Int, @Path("time") time:String, @Path("station") station: Int): Call<String>
 
-    @GET("/engine3/data/usage/{year}/{time}/{station}")
+    @GET("/engine2/data/usage/{year}/{time}/{station}")
     fun getStationErrors(@Path("year") year:Int, @Path("time") time:String, @Path("station") station: Int): Call<String>
 
 }

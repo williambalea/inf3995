@@ -1,4 +1,4 @@
-package inf3995.bixiapplication.StationStatistics
+package inf3995.bixiapplication.StationPredictions
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -19,26 +19,77 @@ import inf3995.bixiapplication.UnsafeOkHttpClient
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
-import kotlinx.android.synthetic.main.activity_hourly_station_statistic.*
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.lllProgressBar
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text102
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text103
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text112
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text113
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text12
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text122
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text123
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text13
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text132
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text133
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text142
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text143
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text152
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text153
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text162
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text163
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text172
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text173
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text182
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text183
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text192
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text193
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text202
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text203
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text212
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text213
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text22
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text222
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text223
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text23
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text232
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text233
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text242
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text243
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text32
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text33
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text42
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text43
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text52
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text53
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text62
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text63
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text72
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text73
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text82
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text83
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text92
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.text93
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction1.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import kotlinx.android.synthetic.main.activity_hourly_station_statistic.statisticYear as statisticYear1
 
-class HourlyStationStatisticActivity : AppCompatActivity() {
+class HourlyStationPredictionActivity1 : AppCompatActivity() {
     var station : Station? = null
     lateinit var temps: String
+    lateinit var indicator: String
+    lateinit var call: Call<String>
     var code: Int = 0
     var annee= 0
     var myImage: ImageView? = null
-    private val TAG = "Hourly Station Statistics"
+    private val TAG = "Hourly Station Predictions Values"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_hourly_station_statistic)
+        setContentView(R.layout.activity_hourly_station_prediction1)
         val tempas = intent.getStringExtra("Temps")
+        val indication = intent.getStringExtra("Indicateur")
         val annas = intent.getStringExtra("Annee")?.toInt()
         station = intent.getSerializableExtra("data") as Station
 
@@ -50,10 +101,23 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
             temps = tempas
         }
 
+        if (indication != null) {
+            indicator = indication
+        }
+
         if (annas != null) {
             annee = annas
         }
-        statisticYear1.text = annee.toString()
+        predictionYear.text = annee.toString()
+
+        /*
+            if(indicator == "Value"){
+                 GraphTitle.text = "Prediction Values of Hourly Departures & Arrivals:"
+            } else {
+                "Prediction Errors of Hourly Departures & Arrivals:"
+            }
+        */
+
         code =  station!!.code
         myImage = findViewById(R.id.image)
         requestToServer(IpAddressDialog.ipAddressInput)
@@ -72,14 +136,23 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         val call: Call<String> = service.getStationStatistics(annee, temps, code)
 
+        /*
+        if(indicator == "Value") {
+            //val call: Call<String> = service.getStationPrediction(annee, temps, code)
+            val call: Call<String> = service.getStationStatistics(annee, temps, code)
+
+        }else{
+            //val call: Call<String> = service.getStationErrors(annee, temps, code)
+            val call: Call<String> = service.getStationStatistics(annee, temps, code)
+
+        }
+        */
+
+
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse des Statistiques du Serveur: ${response?.body()}")
-                Log.i(TAG, "Status de reponse  des Statistiques du Serveur: ${response?.code()}")
-                Log.i(
-                    TAG,
-                    "Message de reponse  des Statistiques du Serveur: ${response?.message()}"
-                )
+                Log.i(TAG, "Réponse des Prédictions par heure du Serveur: ${response?.body()}")
+                Log.i(TAG, "Status de reponse du Serveur: ${response?.code()}")
 
                 val arrayStationType = object : TypeToken<MonthlyStatisticStation>() {}.type
                 val jObj: MonthlyStatisticStation = Gson().fromJson(response?.body(), arrayStationType)
@@ -90,13 +163,15 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
                 Log.i(TAG, "Error when receiving statistic!    cause:${t.cause}     message:${t.message}")
-                val builder = AlertDialog.Builder(this@HourlyStationStatisticActivity)
+                val builder = AlertDialog.Builder(this@HourlyStationPredictionActivity1)
                 builder.setTitle("Error while loading statistic!").setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()
             }
         })
     }
+        /*
 
+ */
     private fun convertString64ToImage(base64String: String): Bitmap {
         val decodedString = Base64.decode(base64String, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
@@ -109,7 +184,6 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
         catch (e: Exception){
             Log.e(TAG,"error")
         }
-        //image1.setImageBitmap(convertString64ToImage(myImageString))
         Log.i(TAG, "affichage du graphique ")
 
         text12.setText(jObj.data.departureValue[0].toString())

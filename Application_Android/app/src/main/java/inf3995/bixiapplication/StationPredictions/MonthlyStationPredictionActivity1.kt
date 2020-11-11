@@ -1,6 +1,5 @@
 package inf3995.bixiapplication.StationPredictions
 
-//import kotlinx.android.synthetic.main.activity_monthly_station_statistic.*
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -25,9 +24,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import kotlinx.android.synthetic.main.activity_daily_station_prediction1.predictionYear as predictionYear1
 
 
-class MonthlyStationPredictionActivity : AppCompatActivity() {
+class MonthlyStationPredictionActivity1 : AppCompatActivity() {
 
     var station : Station? = null
     lateinit var temps: String
@@ -36,11 +36,11 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
     var code: Int = 0
     var year = 0
     var myImage:ImageView? = null
-    private val TAG = "Monthly Station Predictions"
+    private val TAG = "Monthly Station Predictions values"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_monthly_station_prediction)
+        setContentView(R.layout.activity_monthly_station_prediction1)
         val tempas = intent.getStringExtra("Temps")
         val indication = intent.getStringExtra("Indicateur")
         val annas = intent.getStringExtra("Annee")?.toInt()
@@ -60,13 +60,15 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
         if (annas != null) {
             year = annas
         }
-        predictionYear.text = year.toString()
+        predictionYear1.text = year.toString()
 
+        /*
         if(indicator == "Value"){
             GraphTitle.text = "Predictions Values of Monthly Departures & Arrivals:"
         } else {
             "Predictions Errors of Monthly Departures & Arrivals:"
         }
+         */
 
         code =  station!!.code
         myImage = findViewById(R.id.image)
@@ -84,11 +86,19 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        if(indicator == "Value") {
-            val call: Call<String> = service.getStationPrediction(year, temps, code)
-        }else{
-            val call: Call<String> = service.getStationErrors(year, temps, code)
-        }
+        val call: Call<String> = service.getStationStatistics(year, temps, code)
+        /*
+            if(indicator == "Value") {
+              //val call: Call<String> = service.getStationPrediction(year, temps, code)
+                val call: Call<String> = service.getStationStatistics(year, temps, code)
+
+            }else{
+                //val call: Call<String> = service.getStationErrors(year, temps, code)
+                val call: Call<String> = service.getStationStatistics(year, temps, code)
+
+            }
+        */
+
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
@@ -104,7 +114,7 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
                 Log.i(TAG, "Error when receiving prediction values!    cause:${t.cause}     message:${t.message}")
-                val builder = AlertDialog.Builder(this@MonthlyStationPredictionActivity)
+                val builder = AlertDialog.Builder(this@MonthlyStationPredictionActivity1)
                 builder.setTitle("Error while loading prediction values!").setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()
             }

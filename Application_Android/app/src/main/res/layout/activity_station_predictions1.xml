@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background_bg"
-    android:orientation="vertical"
-    android:weightSum="9"
-    tools:context="inf3995.bixiapplication.StationStatisticsActivity"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:background="@drawable/background_bg"
+    android:orientation="vertical" android:weightSum="9"
+    tools:context="inf3995.bixiapplication.StationPredictionsActivity1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://schemas.android.com/tools ">
 
@@ -36,12 +32,13 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_statistic"
                     android:layout_marginStart="0dp" />
+
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="569dp"
+                    android:layout_height="167dp"
                     android:layout_gravity="center_vertical"
-                    android:gravity="center_horizontal"
-                    android:text="@string/station_usage_statistics"
+                    android:gravity="center"
+                    android:text="@string/station_usage_predictions"
                     android:textColor="@color/colorWhite"
                     android:textSize="50sp"
                     android:textStyle="bold" />
@@ -53,69 +50,58 @@
     <LinearLayout
         android:id="@+id/coord_station"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:background="@drawable/recyclerview_bg_2"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/Station_code_Label"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:orientation="horizontal">
+            android:text="Code"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/colortextdata"
+            android:textSize="30sp"
+            android:textStyle="bold"
+             />
 
-            <TextView
-                android:id="@+id/Station_code_Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_place_black_48dp"
-                android:text="@string/code"
-                android:textColor="@color/colortextdata"
-                android:textSize="40sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/Station_code"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
-                android:layout_marginStart="40dp"
-                android:text="@string/station_code"
-                android:textColor="@color/colortextlabel"
-                android:textSize="40sp"
-                android:textStyle="bold"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/Station_code"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:orientation="horizontal">
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="code"
+            android:textColor="@color/colortextlabel"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/Station_name_Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/name"
-                android:textColor="@color/colortextdata"
-                android:textSize="40dp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/Station_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
-                android:layout_marginStart="40dp"
-                android:text="@string/station_name"
-                android:textColor="@color/colortextlabel"
-                android:textSize="40sp"
-                android:textStyle="bold"
-                app:fontFamily="sans-serif"/>
-        </LinearLayout>
+        <TextView
+            android:id="@+id/Station_name_Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:text="Name:"
+            android:textColor="@color/colortextdata"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Station_name"
+            android:layout_width="475dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="@string/station_name"
+            android:textColor="@color/colortextlabel"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:fontFamily="sans-serif" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -129,31 +115,30 @@
         android:padding="5dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="800dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:orientation="vertical"
+                >
 
                 <TextView
-                    android:layout_width="250dp"
+                    android:layout_width="150dp"
                     android:layout_height="40dp"
                     android:layout_margin="0dp"
                     android:gravity="center"
                     android:text="@string/choose_year"
-                    android:textSize="30sp" />
+                    android:textSize="28sp" />
 
                 <Spinner
                     android:id="@+id/spnTime"
-                    android:layout_width="250dp"
+                    android:layout_width="150dp"
                     android:layout_height="80dp"
                     android:layout_margin="10dp"
                     android:background="@drawable/spiner_bg"
@@ -168,19 +153,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="250dp"
+                    android:layout_width="200dp"
                     android:layout_height="40dp"
                     android:layout_margin="0dp"
                     android:gravity="center"
                     android:text="@string/choose_period"
-                    android:textSize="30sp" />
+                    android:textSize="28sp" />
 
                 <Spinner
                     android:id="@+id/spnPeriod"
-                    android:layout_width="250dp"
+                    android:layout_width="210dp"
                     android:layout_height="80dp"
                     android:layout_margin="10dp"
                     android:background="@drawable/spiner_bg"
@@ -191,26 +178,57 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="205dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="250dp"
+                    android:layout_width="200dp"
                     android:layout_height="40dp"
                     android:layout_margin="0dp"
                     android:gravity="center"
+                    android:text="@string/choose_indicator"
+                    android:textSize="28sp" />
+
+                <Spinner
+                    android:id="@+id/spnIndicator"
+                    android:layout_width="200dp"
+                    android:layout_height="80dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/spiner_bg"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/choose_indicator"
+                    android:spinnerMode="dropdown"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="0dp"
+                    android:gravity="center"
+                    android:text=""
                     android:textSize="30sp" />
 
                 <Button
                     android:id="@+id/display_button"
-                    android:layout_width="200dp"
+                    android:layout_width="150dp"
                     android:layout_height="85dp"
-                    android:layout_gravity="center"
                     android:layout_margin="10dp"
+                    android:gravity="center"
                     android:text="@string/display"
-                    android:textSize="30sp"
+                    android:textSize="28sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -220,6 +238,7 @@
                 android:layout_height="match_parent" />
 
         </LinearLayout>
+
 
     </LinearLayout>
 

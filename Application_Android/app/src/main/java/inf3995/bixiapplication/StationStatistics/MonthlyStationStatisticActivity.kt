@@ -12,11 +12,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import inf3995.bixiapplication.*
 import inf3995.bixiapplication.Data.MonthlyStatisticStation
 import inf3995.bixiapplication.Data.Station
 import inf3995.bixiapplication.Dialog.IpAddressDialog
 import inf3995.bixiapplication.Service.WebBixiService
+import inf3995.bixiapplication.UnsafeOkHttpClient
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
@@ -26,7 +26,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.lang.Exception
 
 
 class MonthlyStationStatisticActivity : AppCompatActivity() {

@@ -5,17 +5,18 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Filter
+import android.widget.Filterable
+import android.widget.PopupMenu
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.recyclerview.widget.RecyclerView
 import inf3995.bixiapplication.Data.Station
-import inf3995.test.bixiapplication.*
+import inf3995.test.bixiapplication.R
+import kotlinx.android.synthetic.main.station_items.view.*
 import kotlinx.android.synthetic.main.station_items_with_button.view.*
 import kotlinx.android.synthetic.main.station_items_with_button.view.code
 import kotlinx.android.synthetic.main.station_items_with_button.view.imageView
 import kotlinx.android.synthetic.main.station_items_with_button.view.name
-import kotlinx.android.synthetic.main.station_items.view.*
-import kotlin.collections.ArrayList
 
 class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHolder>(), //var clickedItem: ClickedItem
     Filterable {
