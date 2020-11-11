@@ -8,18 +8,42 @@ Page {
     id: engine1Page
     width: applicationWindow.width
     height: applicationWindow.height - 86
+
+    BackEnd {
+        function createRect() {
+            var component = Qt.createComponent("MyComponent.qml");
+            var rect = component.createObject(iiii);
+            if(rect !== null ) {
+                rect.name = "Test";
+                rect.x =  Math.floor(Math.random() * 3000 );
+                rect.y = Math.floor(Math.random() * 1000 );
+            }
+        }
+
+        onLog1Changed: {
+            createRect()
+        }
+    }
     
-    TextArea {
-        id: textArea
+    ScrollView {
+        id: scrollView
         x: 30
         y: 30
         width: parent.width - 60
         height: parent.height - 60
-        verticalAlignment: Text.AlignBottom
-        placeholderText: qsTr("Text Area")
-        background: Rectangle {
-            color: "#F5F5F6"
+        clip: true
+        Item {
+            id: iiii
         }
+
+        Text {
+            id: ab
+            text: qsTr("absdfgsdfgfsfdgsgrg")
+            font.pointSize: 400
+
+        }
+
+
     }
     
     background: Rectangle {
@@ -29,6 +53,6 @@ Page {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:1.25;height:720;width:1280}
+    D{i:0;formeditorZoom:0.20000000298023224;height:720;width:1280}
 }
 ##^##*/

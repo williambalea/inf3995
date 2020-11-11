@@ -127,10 +127,8 @@ Page{
                 antialiasing: true
                 focus: false
                 function activate() {
-                    backend.user = user.text;
-                    backend.pass = pw.text;
                     backend.host = ip.text;
-                    backend.login();
+                    backend.login(user.text, pw.text);
                     backend.attemps = false;
 
                 }

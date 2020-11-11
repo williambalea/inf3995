@@ -265,7 +265,6 @@ Page {
             anchors.bottomMargin: 0
             onClicked: function() {
                 backend.host = changeNewIP.text;
-                console.log("CHANGE!!!!!");
                 changeNewIP.text = "";
             }
         }
