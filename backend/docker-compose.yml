@@ -66,8 +66,8 @@ services:
   # les middlewares pas nécessaire. Avoir un global dans traefik
   engine1:
     build:
-      context: ./Docker/DataEngine/Engine1
-      dockerfile: ./Dockerfile
+      context: ./Docker/DataEngine/
+      dockerfile: ./Engine1/Dockerfile
     restart: always
     container_name: engine1
     labels: 
