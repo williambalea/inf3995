@@ -37,6 +37,8 @@ public:
      */
     json getPolls(bool &err);
 
+    json getUser(std::string user, bool &err);
+
 private:
 
     /**

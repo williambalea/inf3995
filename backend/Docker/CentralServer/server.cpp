@@ -4,6 +4,7 @@
 #include <ctime>
 #include "json.hpp"
 #include "HTTPRequest.hpp"
+#include "sha512.h"
 
 #define ENGINE1_ADDR "http://engine1:5000/engine1"
 #define ENGINE2_ADDR "http://engine2:5000/engine2"
@@ -106,15 +107,27 @@ void Server::newConn(const Rest::Request& req, Http::ResponseWriter res) {
 }
 
 void Server::login(const Rest::Request& req, Http::ResponseWriter res) {
+    bool err;
     auto headers = req.headers();
     auto auth = headers.tryGet<Http::Header::Authorization>();
     if (auth != NULL) {
         string user = auth.get()->getBasicUser();
         string pass = auth.get()->getBasicPassword();
-        if (user == "admin" && pass == "admin") {
-            res.send(Http::Code::Ok, "authentified");
-            log("admin authentified");
+        json credential = db.getUser(user, err);
+        if (err) {
+            res.send(Http::Code::Bad_Request, "server couldn't connect to database.");
+            log("failed to request surveys. Can't connect to database.");
             return;
+        }
+        if (credential.dump() != "null") {
+            string hashedPass = hash10times(credential["salt"].get<string>(), pass);
+            bool matchingUsers = user == credential["user"].get<string>();
+            bool matchingPass = hashedPass == credential["pw"].get<string>();
+            if ( matchingUsers && matchingPass) {
+                res.send(Http::Code::Ok, "authentified");
+                log("admin authentified");
+                return;
+            }
         }
     }
     res.send(Http::Code::Unauthorized, "Unauthorized connection!");
@@ -188,6 +201,26 @@ string getTime() {
     string buffer = "";
     buffer += '[' + h + ':' + m + ':' + s + "] " + d + '/' + t + '/' + y + " > ";
     return buffer;
+}
+
+string genRandomString(int len) {
+    
+    string tmp_s;    
+    srand(time(NULL));
+    
+    for (int i = 0; i < len; ++i) 
+        tmp_s += characters[rand() % (sizeof(characters) - 1)];
+    
+    
+    return tmp_s;
+}
+
+string hash10times(string salt, string pass) {
+    string hashed = salt + pass;
+    for (int i = 0; i < 10; i++ ) {
+        hashed = sha512(hashed);
+    }
+    return hashed;
 }
 
 // TODO: remove

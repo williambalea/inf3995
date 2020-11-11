@@ -15,6 +15,12 @@ using namespace std;
  */
 extern volatile sig_atomic_t sigint;
 
+static const char characters[] =
+    "0123456789"
+    "!@#$%^&*"
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "abcdefghijklmnopqrstuvwxyz";
+
 /**
  * Handler when ctl+C in command line. Sets the signum to 1 to end the 
  * while loop in run()
@@ -30,7 +36,9 @@ void intHandler(int signum);
  */
 string getTime();
 
+string genRandomString(int len);
 
+string hash10times(string salt, string pass);
 
 class Server {
 public :

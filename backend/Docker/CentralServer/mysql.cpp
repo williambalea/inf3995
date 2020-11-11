@@ -54,6 +54,23 @@ json MySQL::getPolls(bool &err) {
     return allData;
 }
 
+json MySQL::getUser(std::string user, bool &err) {
+    err = !connect();
+    Statement *stmt = con->createStatement();
+    ResultSet *res = stmt->executeQuery("SELECT * FROM Accounts WHERE user='" + user + "'");
+    json data;
+    while (res->next()) {
+        data["user"] = res->getString("user");
+        data["salt"] = res->getString("salt");
+        data["pw"]   = res->getString("pw");
+    }
+
+    delete res;
+    delete stmt;
+    disconnect();
+    return data;
+}
+
 bool MySQL::connect() {
     con = driver->connect(HOST, USER, PASS);
     Statement* stmt = con->createStatement();
@@ -70,8 +87,6 @@ void MySQL::setup() {
     con = driver->connect(HOST, USER, PASS);
     Statement* stmt = con->createStatement();
 
-    stmt->execute("DROP DATABASE IF EXISTS Server");
-    stmt->execute("CREATE DATABASE Server");
     stmt->execute("USE Server");
     stmt->execute("DROP TABLE IF EXISTS Polls");
     stmt->execute(
