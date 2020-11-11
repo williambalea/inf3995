@@ -6,7 +6,7 @@ import custom.classes 1.0
 
 Page {
     id: settings
-    Material.accent: "#9b0000"
+    //Material.accent: "#9b0000"
     Rectangle {
         width: parent.width;
         height: 50;
@@ -239,7 +239,7 @@ Page {
             anchors.right: parent.right
             anchors.horizontalCenter: rectangle3.horizontalCenter
             TextField {
-                id: current1
+                id: changeNewIP
                 x: 9
                 y: -7
                 width: 289
@@ -263,6 +263,11 @@ Page {
             highlighted: true
             anchors.rightMargin: 0
             anchors.bottomMargin: 0
+            onClicked: function() {
+                backend.host = changeNewIP.text;
+                console.log("CHANGE!!!!!");
+                changeNewIP.text = "";
+            }
         }
         background: Rectangle {
             color: "#00000000"

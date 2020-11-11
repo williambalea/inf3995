@@ -36,7 +36,7 @@ Item {
             }
 
             TabButton {
-                id: tab1
+                id: tab1labe
                 x: 155
                 y: 0
                 text: qsTr("Data Engine 1")
@@ -44,6 +44,21 @@ Item {
                 background: Rectangle {
                     color: "#D52B1E"
                 }
+                Rectangle {
+                    visible: parent.width > 150
+                    color: backend.engine1Status ?  "#00f715" : "#808080";
+                    x: (parent.width / 2) - 70
+                    y: 15
+                    width: 13
+                    height: width
+                    radius: 100
+                    border.color: "#ffffff"
+                    border.width: 1
+                }
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr(backend.engine1Status ? "Online" : "Offline")
+                ToolTip.delay: 500
+                ToolTip.timeout: 2000
             }
 
             TabButton {
@@ -55,6 +70,21 @@ Item {
                 background: Rectangle {
                     color: "#D52B1E"
                 }
+                Rectangle {
+                    visible: parent.width > 150
+                    color: backend.engine2Status ?  "#00f715" : "#808080";
+                    x: (parent.width / 2) - 70
+                    y: 15
+                    width: 13
+                    height: width
+                    radius: 100
+                    border.color: "#ffffff"
+                    border.width: 1
+                }
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr(backend.engine2Status ? "Online" : "Offline")
+                ToolTip.delay: 500
+                ToolTip.timeout: 2000
             }
 
             TabButton {
@@ -66,6 +96,21 @@ Item {
                 background: Rectangle {
                     color: "#D52B1E"
                 }
+                Rectangle {
+                    visible: parent.width > 150
+                    color: backend.engine3Status ?  "#00f715" : "#808080";
+                    x: (parent.width / 2) - 70
+                    y: 15
+                    width: 13
+                    height: width
+                    radius: 100
+                    border.color: "#ffffff"
+                    border.width: 1
+                }
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr(backend.engine3Status ? "Online" : "Offline")
+                ToolTip.delay: 500
+                ToolTip.timeout: 2000
             }
 
 
@@ -169,6 +214,6 @@ Item {
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;height:480;width:640}
+    D{i:0;autoSize:true;formeditorZoom:1.75;height:480;width:640}
 }
 ##^##*/

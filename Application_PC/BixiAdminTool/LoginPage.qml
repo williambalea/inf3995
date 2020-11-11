@@ -129,6 +129,7 @@ Page{
                 function activate() {
                     backend.user = user.text;
                     backend.pass = pw.text;
+                    backend.host = ip.text;
                     backend.login();
                     backend.attemps = false;
 

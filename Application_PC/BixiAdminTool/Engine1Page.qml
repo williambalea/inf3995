@@ -29,6 +29,6 @@ Page {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.33000001311302185;height:720;width:1280}
+    D{i:0;formeditorZoom:1.25;height:720;width:1280}
 }
 ##^##*/
