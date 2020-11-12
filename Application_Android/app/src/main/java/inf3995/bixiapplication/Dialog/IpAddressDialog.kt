@@ -1,17 +1,12 @@
 package inf3995.bixiapplication.Dialog
 
-import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.drawable.DrawableCompat
 import com.afollestad.vvalidator.form
 import inf3995.bixiapplication.Service.WebBixiService
 import inf3995.bixiapplication.UnsafeOkHttpClient
@@ -21,9 +16,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import rx.Observable
-import rx.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
 
@@ -35,8 +27,6 @@ class IpAddressDialog: AppCompatDialogFragment() {
     companion object {
         lateinit var ipAddressInput :String
     }
-    lateinit var contextt :Context
-    lateinit var icon: ImageView;
 
     override fun onCreateView(
         inflater: LayoutInflater,

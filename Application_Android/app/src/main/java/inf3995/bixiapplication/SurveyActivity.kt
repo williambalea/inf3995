@@ -36,7 +36,6 @@ class SurveyActivity : AppCompatActivity() {
         setContentView(R.layout.survey)
         if(savedInstanceState == null){
             dialog.isCancelable = false
-            dialog.contextt = applicationContext
             dialog.show(supportFragmentManager, null)
         }
 

@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import inf3995.bixiapplication.Dialog.EngineConnectivityStatusDialog
 import inf3995.bixiapplication.Dialog.IpAddressDialog
 import inf3995.bixiapplication.GlobalPredictionsActivity
 import inf3995.bixiapplication.GlobalStatisticsActivity
@@ -17,6 +18,7 @@ import inf3995.bixiapplication.ListStationActivity
 import inf3995.bixiapplication.Service.WebBixiService
 import inf3995.bixiapplication.UnsafeOkHttpClient
 import inf3995.test.bixiapplication.R
+import kotlinx.android.synthetic.main.engine_connectivity_status.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,7 +34,8 @@ class MainScreenActivity : AppCompatActivity() {
     private lateinit var btn2: Button
     private lateinit var btn3: Button
     private lateinit var btn4: Button
-    val dialog = IpAddressDialog()
+    val dialog1 = IpAddressDialog()
+    val dialog2 = EngineConnectivityStatusDialog()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +75,10 @@ class MainScreenActivity : AppCompatActivity() {
 
             when(item.itemId) {
                 R.id.changeIpAddress -> {
-                    dialog.show(supportFragmentManager, null)
+                    dialog1.show(supportFragmentManager, null)
+                }
+                R.id.connectivity -> {
+                    dialog2.show(supportFragmentManager, null)
                 }
             }
 
@@ -86,11 +92,6 @@ class MainScreenActivity : AppCompatActivity() {
         )
             .observeOn(Schedulers.io())
             .subscribe {
-                val upArrow = ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.ic_baseline_directions_bike_24,
-                    null
-                )
                 val retrofit4 = Retrofit.Builder()
                     .baseUrl("https://$ipAddress")
                     .addConverterFactory(ScalarsConverterFactory.create())
@@ -108,11 +109,15 @@ class MainScreenActivity : AppCompatActivity() {
                         )
                         val connectivity = response?.body()?.split(" ")?.toTypedArray()
 
-                        if (connectivity?.get(0) == "true" && connectivity[1] == "true" && connectivity[2] == "true") {
+                        if (connectivity?.get(0) == "UP" && connectivity[1] == "UP" && connectivity[2] == "UP") {
                             item?.setTint(Color.argb(255, 0, 255, 0))
-                        } else {
+                        } else{
                             item?.setTint(Color.argb(255, 255, 255, 0))
                         }
+                        EngineConnectivityStatusDialog.status1 = connectivity?.get(0).toString()
+                        EngineConnectivityStatusDialog.status2 = connectivity?.get(1).toString()
+                        EngineConnectivityStatusDialog.status3 = connectivity?.get(2).toString()
+
                     }
 
                     override fun onFailure(call: Call<String>?, t: Throwable) {
