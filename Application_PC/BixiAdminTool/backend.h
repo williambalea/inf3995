@@ -29,6 +29,7 @@ public:
 
     Q_INVOKABLE void refresh();
     Q_INVOKABLE void login(QString user, QString pass);
+    Q_INVOKABLE void changePw(QString old, QString newPass);
 
 signals:
     void attempsChanged();
@@ -37,11 +38,13 @@ signals:
     void isLoggedInChanged();
     void enginesStatusChanged();
     void log1Changed(QString log);
+    void passwordChanged(bool isSuccessful);
 
 private slots:
     void sqlFinished(QNetworkReply *reply);
     void loginFinished(QNetworkReply *reply);
     void checkEnginesFinished(QNetworkReply *reply);
+    void changePwFinished(QNetworkReply *reply);
     void periodicFn();
 
 private:
@@ -54,6 +57,7 @@ private:
     QNetworkAccessManager *manSqlData;
     QNetworkAccessManager *manLogin;
     QNetworkAccessManager *manEnginesStatus;
+    QNetworkAccessManager *manChangePw;
     QTimer *timer;
     bool m_isLoggedIn = false;
     bool attemps = false;
@@ -62,6 +66,8 @@ private:
     bool m_engine2Status = false;
     bool m_engine3Status = false;
     QString m_engine1Logs = "";
+    //TODO: link to qml
+    QString m_user = "admin";
 
 };
 

@@ -1,6 +1,8 @@
 #include "backend.h"
 #include <iostream>
 #include <QTimer>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 BackEnd::BackEnd(QObject *parent) : QObject(parent)
 {
@@ -10,6 +12,8 @@ BackEnd::BackEnd(QObject *parent) : QObject(parent)
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(periodicFn()));
     timer->start(100);
+
+
 }
 
 BackEnd::~BackEnd()
@@ -30,6 +34,8 @@ void BackEnd::setupNetworkManagers() {
     manEnginesStatus = new QNetworkAccessManager(this);
     connect(manEnginesStatus, &QNetworkAccessManager::finished, this, &BackEnd::checkEnginesFinished);
 
+    manChangePw = new QNetworkAccessManager(this);
+    connect(manChangePw, &QNetworkAccessManager::finished, this, &BackEnd::changePwFinished);
 }
 
 
@@ -104,6 +110,12 @@ void BackEnd::checkEnginesFinished(QNetworkReply *reply) {
     emit enginesStatusChanged();
 }
 
+void BackEnd::changePwFinished(QNetworkReply *reply) {
+    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    bool isSuccessful = code == "200";
+    emit passwordChanged(isSuccessful);
+}
+
 QNetworkRequest BackEnd::makeRequest(const QUrl &url) {
     QNetworkRequest req;
     QSslConfiguration sslconf;
@@ -122,8 +134,20 @@ void BackEnd::sendFakeLogs() {
     emit log1Changed("super long text to be displayed sdflksn lkjsdf ljk sadf \n");
 }
 
+void BackEnd::changePw(QString old, QString newPass) {
+    QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server/user/password"));
+    QString auth = m_user + ":" + old;
+    QByteArray data = auth.toLocal8Bit().toBase64();
+    QString headerData = "Basic " + data;
+    req.setRawHeader("Authorization", headerData.toLocal8Bit());
+    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QJsonObject obj;
+    obj["new"] = newPass;
+    manChangePw->put(req, QJsonDocument(obj).toJson());
+}
+
 void BackEnd::periodicFn() {
     checkEngines();
     //TODO: check les logs
-    sendFakeLogs();
+    //sendFakeLogs();
 }

@@ -6,11 +6,20 @@ import custom.classes 1.0
 
 Page {
     id: settings
-    //Material.accent: "#9b0000"
     Rectangle {
         width: parent.width;
         height: 50;
         color: "#9b0000"
+    }
+
+    Item {
+        Connections {
+            target: backend
+            onPasswordChanged: {
+                busyIndicator.visible = false;
+                successLabel.visible = isSuccessful;
+            }
+        }
     }
 
     RoundButton {
@@ -126,6 +135,7 @@ Page {
                 height: 55
                 activeFocusOnTab: true
                 echoMode: TextInput.Password
+                placeholderText: "Confirm new password"
             }
         }
 
@@ -151,6 +161,7 @@ Page {
                 height: 55
                 echoMode: TextInput.Password
                 activeFocusOnTab: true
+                placeholderText: "Enter new password"
             }
             clip: true
         }
@@ -174,6 +185,7 @@ Page {
                 height: 55
                 echoMode: TextInput.Password
                 activeFocusOnTab: true
+                placeholderText: "Enter current password"
             }
             anchors.horizontalCenter: rectangle.horizontalCenter
             clip: true
@@ -191,6 +203,40 @@ Page {
             anchors.bottomMargin: 0
             flat: false
             highlighted: true
+            function activate() {
+                successLabel.visible = false;
+                busyIndicator.visible = true;
+                backend.changePw(current.text, newPass.text);
+            }
+            onClicked: activate()
+        }
+
+        Label {
+            visible: false
+            id: successLabel
+            x: 200
+            y: 173
+            width: 70
+            height: 26
+            color: "#dd007b22"
+            text: qsTr("✔ Success")
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.bold: true
+            font.pointSize: 12
+        }
+
+        BusyIndicator {
+            id: busyIndicator
+            visible: false
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: 69
+            anchors.bottomMargin: 0
+            x: 361
+            y: 166
+            width: 40
+            height: 40
         }
 
 
@@ -235,9 +281,7 @@ Page {
             radius: 5
             border.color: "#e1e2e1"
             border.width: 2
-            anchors.left: rectangle3.left
             anchors.right: parent.right
-            anchors.horizontalCenter: rectangle3.horizontalCenter
             TextField {
                 id: changeNewIP
                 x: 9
@@ -248,6 +292,7 @@ Page {
                 validator:RegExpValidator {
                     regExp:/^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
                 }
+                placeholderText: "e.g. 10.0.0.0"
             }
             clip: true
         }
@@ -280,10 +325,11 @@ Page {
 
 
 
+
 }
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;formeditorZoom:0.5;height:600;width:1000}
+    D{i:0;autoSize:true;formeditorZoom:0.6600000262260437;height:600;width:1000}
 }
 ##^##*/
