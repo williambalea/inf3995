@@ -7,11 +7,11 @@ import custom.classes 1.0
 
 Item {
     LoginPage {
-        visible: !backend.isLoggedIn
+        visible: backend.isLoggedIn
     }
 
     Item {
-        visible: backend.isLoggedIn
+        visible: !backend.isLoggedIn
 
         TabBar {
             id: tabBar

@@ -10,40 +10,42 @@ Page {
     height: applicationWindow.height - 86
 
     BackEnd {
-        function createRect() {
-            var component = Qt.createComponent("MyComponent.qml");
-            var rect = component.createObject(iiii);
-            if(rect !== null ) {
-                rect.name = "Test";
-                rect.x =  Math.floor(Math.random() * 3000 );
-                rect.y = Math.floor(Math.random() * 1000 );
-            }
-        }
 
         onLog1Changed: {
-            createRect()
+            elements.insert(0, {logText: log + log + log + log + log});
         }
     }
     
-    ScrollView {
-        id: scrollView
+    Rectangle {
         x: 30
         y: 30
         width: parent.width - 60
         height: parent.height - 60
-        clip: true
-        Item {
-            id: iiii
+        transformOrigin: Rectangle.Center
+
+
+        ListView {
+            id: listView
+            anchors.fill: parent
+            spacing: 2
+            boundsBehavior: Flickable.StopAtBounds
+            clip: true
+            ScrollBar.vertical: ScrollBar {}
+            model: ListModel {
+                id: elements
+
+            }
+
+            delegate: Text{
+                height: 20
+                text: logText
+                verticalAlignment: Text.AlignVCenter
+                wrapMode: Text.WordWrap
+                clip: true
+
+
+            }
         }
-
-        Text {
-            id: ab
-            text: qsTr("absdfgsdfgfsfdgsgrg")
-            font.pointSize: 400
-
-        }
-
-
     }
     
     background: Rectangle {
@@ -53,6 +55,6 @@ Page {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.20000000298023224;height:720;width:1280}
+    D{i:0;formeditorZoom:0.33000001311302185;height:720;width:1280}
 }
 ##^##*/
