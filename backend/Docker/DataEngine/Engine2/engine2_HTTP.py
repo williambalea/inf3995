@@ -13,6 +13,6 @@ def hello_world():
 def dataUsage(year, time, station):
     return engine2.datatoJSON(year, time, station)
 
-@app.route('/engine2/logs/<octet>')
-def logs(octet):
-    return engine2.logsToJSON(octet)
+@app.route('/engine2/logs/<octect>')
+def logs(octect):
+    return engine2.logsToJSON(octect)

@@ -6,7 +6,6 @@ class Engine1:
 
     logging.basicConfig(filename='engine1.log', filemode='w', level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
     PATH = "./kaggleData/Stations_2017.csv"
-    new_list = []
 
     def __init__(self):
         return None 
@@ -23,29 +22,12 @@ class Engine1:
         data = self.toJson([row for row in csvReader])
         return data
 
-    def octectList(self, octect):
-        list = []
-        list.append(int(octect))
-        j = 0
-        for i in range(0, len(list)):
-            j+=list[i]
-            self.new_list.append(j)
-        return self.cumlativeList(self.new_list)
-
-    def cumlativeList(self, list):
-        cum_list = []
-        length = len(list)
-        cum_list = [sum(list[0:x:1]) for x in range(0, length+1)]
-        return cum_list[1:]
-
     def logsToJSON(self, octect):
         logs = {}
-        list = self.octectList(octect)
-        lenght = len(list)
-        with open('engine1.log') as f:
-            c = f.read()[list[lenght-1]:]
-            r = c.split('\n')
-            logs = {'logs': r[0]}
+        f= open('engine1.log', 'r')
+        c = f.read()[int(octect):].splitlines()
+        f.close()
+        logs = {'logs': c[0]}
         return logs
 
         

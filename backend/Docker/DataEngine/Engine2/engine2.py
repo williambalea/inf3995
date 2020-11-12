@@ -161,27 +161,10 @@ class Engine2:
         logging.info(label)
         return json.dumps(o)
     
-    def octectList(self, octect):
-        list = []
-        list.append(int(octect))
-        j = 0
-        for i in range(0, len(list)):
-            j+=list[i]
-            self.new_list.append(j)
-        return self.cumlativeList(self.new_list)
-
-    def cumlativeList(self, list):
-        cum_list = []
-        length = len(list)
-        cum_list = [sum(list[0:x:1]) for x in range(0, length+1)]
-        return cum_list[1:]
-
     def logsToJSON(self, octect):
         logs = {}
-        list = self.octectList(octect)
-        lenght = len(list)
-        with open('engine1.log') as f:
-            c = f.read()[list[lenght-1]:]
-            r = c.split('\n')
-            logs = {'logs': r[0]}
+        f= open('engine2.log', 'r')
+        c = f.read()[int(octect):].splitlines()
+        f.close()
+        logs = {'logs': c[0]}
         return logs
