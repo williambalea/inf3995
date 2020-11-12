@@ -13,6 +13,6 @@ def hello_world():
 def allStation():
     return engine1.getAllStations() 
 
-@app.route('/engine1/logs/<octet>')
-def logs(octet):
-    return engine1.logsToJSON(octet)
+@app.route('/engine1/logs/<octect>')
+def logs(octect):
+    return engine1.logsToJSON(octect)
