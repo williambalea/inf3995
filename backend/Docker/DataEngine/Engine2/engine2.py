@@ -12,6 +12,7 @@ class Engine2:
     monthLabel2 = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov']
     weekDayLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     firstDayMonday = 3
+    new_list = []
 
     logging.basicConfig(filename='engine2.log', filemode='w', level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
 
@@ -160,10 +161,27 @@ class Engine2:
         logging.info(label)
         return json.dumps(o)
     
-    def logsToJSON(self, octet):
-        result = {}
-        with open('engine2.log') as f:
-            c = f.read(int(octet))
+    def octectList(self, octect):
+        list = []
+        list.append(int(octect))
+        j = 0
+        for i in range(0, len(list)):
+            j+=list[i]
+            self.new_list.append(j)
+        return self.cumlativeList(self.new_list)
+
+    def cumlativeList(self, list):
+        cum_list = []
+        length = len(list)
+        cum_list = [sum(list[0:x:1]) for x in range(0, length+1)]
+        return cum_list[1:]
+
+    def logsToJSON(self, octect):
+        logs = {}
+        list = self.octectList(octect)
+        lenght = len(list)
+        with open('engine1.log') as f:
+            c = f.read()[list[lenght-1]:]
             r = c.split('\n')
-            result = {'logs': r[0]}
-        return json.dumps(result)
+            logs = {'logs': r[0]}
+        return logs

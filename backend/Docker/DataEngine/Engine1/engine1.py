@@ -25,7 +25,6 @@ class Engine1:
 
     def octectList(self, octect):
         list = []
-        list.append(0)
         list.append(int(octect))
         j = 0
         for i in range(0, len(list)):
@@ -44,7 +43,7 @@ class Engine1:
         list = self.octectList(octect)
         lenght = len(list)
         with open('engine1.log') as f:
-            c = f.read()[list[lenght-2]:list[lenght-1]]
+            c = f.read()[list[lenght-1]:]
             r = c.split('\n')
             logs = {'logs': r[0]}
         return logs
