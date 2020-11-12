@@ -107,43 +107,4 @@ class IpAddressDialog: AppCompatDialogFragment() {
         })
 
     }
-    /*fun connectivityCheck(ipAddress: String){
-
-        Observable.interval(
-            1, 5,
-            TimeUnit.SECONDS
-        )
-            .observeOn(Schedulers.io())
-            .subscribe {
-                val retrofit4 = Retrofit.Builder()
-                    .baseUrl("https://$ipAddress")
-                    .addConverterFactory(ScalarsConverterFactory.create())
-                    .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
-                    .build()
-
-                val service4: WebBixiService = retrofit4.create(WebBixiService::class.java)
-                val call4: Call<String> = service4.getConnectivity()
-
-                call4.enqueue(object : Callback<String> {
-                    override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                        Log.i(TAG, "Réponse Connectivity: ${response?.body()}")
-
-                        val unwrappedDrawable =
-                            AppCompatResources.getDrawable(contextt, inf3995.test.bixiapplication.R.drawable.ic_baseline_directions_bike_24)
-                        val wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable!!)
-                        DrawableCompat.setTint(wrappedDrawable, Color.GREEN)
-
-                    }
-
-                    override fun onFailure(call: Call<String>?, t: Throwable) {
-                        Log.i(
-                            TAG,
-                            "Error when getting message from server!    cause: ${t.cause}     message: ${t.message}"
-                        )
-                    }
-                })
-            }
-
-
-    }*/
 }

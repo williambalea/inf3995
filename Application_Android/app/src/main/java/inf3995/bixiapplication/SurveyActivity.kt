@@ -39,9 +39,6 @@ class SurveyActivity : AppCompatActivity() {
             dialog.contextt = applicationContext
             dialog.show(supportFragmentManager, null)
         }
-        /*val upArrow = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_directions_bike_24, null)
-        upArrow?.setTint(Color.argb(255, 0, 0, 255))
-        supportActionBar!!.setHomeAsUpIndicator(upArrow)*/
 
         form{
             input(editTextEmail){
