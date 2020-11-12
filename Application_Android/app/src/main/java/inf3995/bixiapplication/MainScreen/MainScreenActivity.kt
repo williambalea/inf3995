@@ -1,5 +1,8 @@
 package inf3995.bixiapplication.MainScreen
 
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
@@ -9,7 +12,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
 import inf3995.bixiapplication.Dialog.EngineConnectivityStatusDialog
 import inf3995.bixiapplication.Dialog.IpAddressDialog
 import inf3995.bixiapplication.GlobalPredictionsActivity
@@ -18,7 +20,6 @@ import inf3995.bixiapplication.ListStationActivity
 import inf3995.bixiapplication.Service.WebBixiService
 import inf3995.bixiapplication.UnsafeOkHttpClient
 import inf3995.test.bixiapplication.R
-import kotlinx.android.synthetic.main.engine_connectivity_status.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,6 +28,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
+
 
 class MainScreenActivity : AppCompatActivity() {
 
@@ -85,7 +87,18 @@ class MainScreenActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun connectivityCheck(ipAddress: String, item: Drawable? ){
+    fun connectivityCheck(ipAddress: String, item: Drawable?){
+        val engineProblemNotification = ObjectAnimator.ofInt(
+            item,
+            "Tint",
+            Color.YELLOW,
+            Color.WHITE
+        ) //you can change colors
+
+        engineProblemNotification.setEvaluator(ArgbEvaluator())
+        engineProblemNotification.repeatCount = ValueAnimator.INFINITE
+        engineProblemNotification.repeatMode = ValueAnimator.REVERSE
+
         Observable.interval(
             1, 10,
             TimeUnit.SECONDS
@@ -111,8 +124,8 @@ class MainScreenActivity : AppCompatActivity() {
 
                         if (connectivity?.get(0) == "UP" && connectivity[1] == "UP" && connectivity[2] == "UP") {
                             item?.setTint(Color.argb(255, 0, 255, 0))
-                        } else{
-                            item?.setTint(Color.argb(255, 255, 255, 0))
+                        } else {
+                            engineProblemNotification.start()
                         }
                         EngineConnectivityStatusDialog.status1 = connectivity?.get(0).toString()
                         EngineConnectivityStatusDialog.status2 = connectivity?.get(1).toString()
