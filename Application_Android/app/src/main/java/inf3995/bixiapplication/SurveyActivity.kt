@@ -1,9 +1,13 @@
 package inf3995.bixiapplication
+
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import com.afollestad.vvalidator.form
 import com.google.gson.Gson
 import inf3995.bixiapplication.Data.SurveyData
@@ -32,9 +36,12 @@ class SurveyActivity : AppCompatActivity() {
         setContentView(R.layout.survey)
         if(savedInstanceState == null){
             dialog.isCancelable = false
+            dialog.contextt = applicationContext
             dialog.show(supportFragmentManager, null)
-
         }
+        /*val upArrow = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_directions_bike_24, null)
+        upArrow?.setTint(Color.argb(255, 0, 0, 255))
+        supportActionBar!!.setHomeAsUpIndicator(upArrow)*/
 
         form{
             input(editTextEmail){
@@ -56,7 +63,15 @@ class SurveyActivity : AppCompatActivity() {
                 isNumber().lessThan(130)
             }
             submitWith(buttonSend) { result ->
-                surveyData = SurveyData(editTextEmail.text.toString(), editTextFirstName.text.toString(), editTextLastName.text.toString(), Integer.parseInt(editTextAge.text.toString()),checkBoxYesSurvey.isChecked)
+                surveyData = SurveyData(
+                    editTextEmail.text.toString(),
+                    editTextFirstName.text.toString(),
+                    editTextLastName.text.toString(),
+                    Integer.parseInt(
+                        editTextAge.text.toString()
+                    ),
+                    checkBoxYesSurvey.isChecked
+                )
                 sendSurveyData(surveyData)
             }
         }
@@ -85,19 +100,27 @@ class SurveyActivity : AppCompatActivity() {
         val service5: WebBixiService = retrofit5.create(WebBixiService::class.java)
         val call5: Call<String> = service5.sendServerSurveyData(jsonString)
 
-        call5.enqueue(object: Callback<String> {
+        call5.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                if(!response?.body().isNullOrBlank())
-                    Log.i(TAG,"Réponse 2 du Serveur: ${response?.body()}")
+                if (!response?.body().isNullOrBlank())
+                    Log.i(TAG, "Réponse 2 du Serveur: ${response?.body()}")
                 else
-                    Log.i(TAG,"${response?.body()} --->   code:${response?.code()}    message:${response?.message()}")
+                    Log.i(
+                        TAG,
+                        "${response?.body()} --->   code:${response?.code()}    message:${response?.message()}"
+                    )
                 val intent = Intent(this@SurveyActivity, MainScreenActivity::class.java)
                 startActivity(intent)
             }
+
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG,"Erreur when sending survey!    cause: ${t.cause}    message: ${t.message}")
+                Log.i(
+                    TAG,
+                    "Erreur when sending survey!    cause: ${t.cause}    message: ${t.message}"
+                )
                 val builder = AlertDialog.Builder(this@SurveyActivity)
-                builder.setTitle("Error while sending survey to server!").setMessage("cause: ${t.cause} \n message: ${t.message}")
+                builder.setTitle("Error while sending survey to server!")
+                    .setMessage("cause: ${t.cause} \n message: ${t.message}")
                 builder.show()
             }
         })

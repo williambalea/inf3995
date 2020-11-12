@@ -1,5 +1,7 @@
 package inf3995.bixiapplication.Dialog
 
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,27 +10,20 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.core.graphics.green
-import androidx.core.graphics.toColor
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.DrawableCompat
 import com.afollestad.vvalidator.form
 import inf3995.bixiapplication.Service.WebBixiService
 import inf3995.bixiapplication.UnsafeOkHttpClient
-import inf3995.test.bixiapplication.R
-import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.setting_ip_address_dialog.*
-import okhttp3.internal.platform.android.AndroidSocketAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import rx.Observable
-import rx.Scheduler
-import rx.Subscription
-import rx.functions.Action1
 import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
-import kotlin.math.log
 import kotlin.system.exitProcess
 
 
@@ -40,7 +35,7 @@ class IpAddressDialog: AppCompatDialogFragment() {
     companion object {
         lateinit var ipAddressInput :String
     }
-
+    lateinit var contextt :Context
     lateinit var icon: ImageView;
 
     override fun onCreateView(
@@ -49,7 +44,7 @@ class IpAddressDialog: AppCompatDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         Log.d(TAG, "onCreateView: called")
-        return inflater.inflate(R.layout.setting_ip_address_dialog, container, false)
+        return inflater.inflate(inf3995.test.bixiapplication.R.layout.setting_ip_address_dialog, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,8 +59,8 @@ class IpAddressDialog: AppCompatDialogFragment() {
             }
             submitWith(okButton) { result ->
                 ipAddressInput = editTextIpAddress.text.toString()
-                communicationServer(ipAddressInput!!)
-                connectivityCheck(ipAddressInput!!)
+                communicationServer(ipAddressInput)
+                //connectivityCheck(ipAddressInput)
             }
         }
         cancelButton.setOnClickListener{ exitProcess(0);}
@@ -112,7 +107,7 @@ class IpAddressDialog: AppCompatDialogFragment() {
         })
 
     }
-    fun connectivityCheck(ipAddress: String){
+    /*fun connectivityCheck(ipAddress: String){
 
         Observable.interval(
             1, 5,
@@ -132,9 +127,14 @@ class IpAddressDialog: AppCompatDialogFragment() {
                 call4.enqueue(object : Callback<String> {
                     override fun onResponse(call: Call<String>?, response: Response<String>?) {
                         Log.i(TAG, "Réponse Connectivity: ${response?.body()}")
-                        //R.id.connectivity.
+
+                        val unwrappedDrawable =
+                            AppCompatResources.getDrawable(contextt, inf3995.test.bixiapplication.R.drawable.ic_baseline_directions_bike_24)
+                        val wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable!!)
+                        DrawableCompat.setTint(wrappedDrawable, Color.GREEN)
 
                     }
+
                     override fun onFailure(call: Call<String>?, t: Throwable) {
                         Log.i(
                             TAG,
@@ -145,5 +145,5 @@ class IpAddressDialog: AppCompatDialogFragment() {
             }
 
 
-    }
+    }*/
 }
