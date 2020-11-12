@@ -40,77 +40,67 @@ timeMonth = "perMonth"
 
 
 
-print('reading Stations_2015')
-# Stations_2014 = pd.read_csv('../kaggleData/Stations_2014.csv', low_memory = False)
-Stations_2015 = pd.read_csv('../kaggleData/Stations_2015.csv', low_memory = False)
-Stations_2016 = pd.read_csv('../kaggleData/Stations_2016.csv', low_memory = False)
-# Stations_2017 = pd.read_csv('../kaggleData/Stations_2017.csv', low_memory = False)
+# print('reading Stations_2015')
+# Stations_2015 = pd.read_csv('../kaggleData/Stations_2015.csv', low_memory = False)
 
-print('reading od2015')
-#Import Data
-# OD_2014 = pd.read_csv('../kaggleData/OD_2014.csv', low_memory=False, index_col=0)
-# OD_2015 = pd.read_csv('../kaggleData/OD_2015.csv',  dtype={'start_date':str,'start_station_code':int,'end_date':str,
-#                                                            'end_station_code':str,'duration_sec':int,'is_member':int})
-# OD_2016 = pd.read_csv('../kaggleData/OD_2016.csv',  dtype={'start_date':str,'start_station_code':int,'end_date':str,
-#                                                            'end_station_code':str,'duration_sec':int,'is_member':int})
-# OD_2017 = pd.read_csv('../kaggleData/OD_2017.csv', low_memory=False, index_col=0)
+# print('reading od2015')
 
 
-csv_file_list = ["../kaggleData/OD_2014.csv", "../kaggleData/OD_2015.csv","../kaggleData/OD_2016.csv"]
+
+# #Import Data
+print('importing bixi csv data')
+# csv_file_list = ["../kaggleData/OD_2014.csv", "../kaggleData/OD_2015.csv","../kaggleData/OD_2016.csv"]
 csv_file_list = ["../kaggleData/OD_2014.csv"]
 list_of_dataframes = []
 for filename in csv_file_list:
     list_of_dataframes.append(pd.read_csv(filename, dtype={'start_date':str,'start_station_code':int,'end_date':str,
+ 
                                                            'end_station_code':str,'duration_sec':int,'is_member':int})  )
+print('concatenation bixi data')
 merged_df = pd.concat(list_of_dataframes)
-print('shape')
-print(merged_df.shape)
+# print('shape of merge')
+# print(merged_df.shape)
 
-#import weather data
-print('reading temperature')
+print('importing weather data')
+weather_description = pd.read_csv('../kaggleData/historical-hourly-weather-data/weather_description.csv', low_memory=False)
 temperature = pd.read_csv('../kaggleData/historical-hourly-weather-data/temperature.csv', low_memory=False)
 pressure = pd.read_csv('../kaggleData/historical-hourly-weather-data/pressure.csv', low_memory=False)
-weather_description = pd.read_csv('../kaggleData/historical-hourly-weather-data/weather_description.csv', low_memory=False)
 wind_speed = pd.read_csv('../kaggleData/historical-hourly-weather-data/wind_speed.csv', low_memory=False)
 
-# print(OD_2015.shape)
-# print(temperature.shape)
-# print(pressure.shape)
-
-# #Changer type to Datetime
+# convert bixi data dateTime
+print('converting bixi data to datetiime')
 merged_df['start_date'] = pd.to_datetime(merged_df['start_date'])
 merged_df['end_date'] = pd.to_datetime(merged_df['end_date'])
-# OD_2016['start_date'] = pd.to_datetime(OD_2016['start_date'])
-# OD_2016['end_date'] = pd.to_datetime(OD_2016['end_date'])
-# print(OD_2015[['start_date', 'end_date']].dtypes)
+merged_df[['start_date', 'end_date']].dtypes
+print('bixiData to Pandas OK')
+
 
 #filter and manipulate weather
-print(weather_description.head())
+print('filter only montreal')
 weather_description = weather_description.filter(items=['datetime','Montreal'])
-print('after weather filter')
-print(weather_description.head())
-temperature = temperature.filter(items=['datetime','Montreal'])
+temperature = temperature.filter(items=['datetime','Montreal']) #temp in  Kelvin
 pressure = pressure.filter(items=['datetime','Montreal'])
 wind_speed = wind_speed.filter(items=['datetime','Montreal'])
-#weather dataframe merge
+print(weather_description.shape)
+
+#merge data by datetime
+print('merging all weather data')
 weather = (weather_description.merge(temperature, on='datetime').
                               merge(pressure, on='datetime').
                               merge(wind_speed, on='datetime'))
 weather.columns = ['Datetime','Description', 'Temperature', 'Pressure', 'Wind_speed']
-weather['Temperature_C'] = weather['Temperature'] - 273.15 
-#weather datetime Type
+weather['Temperature_C'] = weather['Temperature'] - 273.15 #to adjust to Celcius
+
+print('convert weather to datetime')
 weather['Datetime'] = pd.to_datetime(weather['Datetime'])
-print('weather head')
-print(weather.head())
 
-
-print('types')
-print(weather.dtypes)
-print(merged_df.dtypes)
-#include weather data in the bike usage data
-print('merging df complete')
+#now include weather data with bixi data based on datetime
+print('df_complete 1 sorting values by startdate')
 df_complete = merged_df.sort_values(by = ['start_date'])
-print('first sort')
-df_complete = pd.merge_asof(df_complete, weather, left_on = 'start_date', right_on = 'Datetime', direction = 'nearest').drop('Datetime',  axis=1)
-print('done')
-print(df_complete.head())
+print('df_complete 2 adding merging of weather')
+df_complete = pd.merge_asof(df_complete, weather, left_on = 'start_date', 
+                            right_on = 'Datetime', direction = 'nearest').drop('Datetime',  axis=1)
+# print(df_complete.info())
+print('all done gg')
+
+
