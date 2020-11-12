@@ -14,6 +14,6 @@ def hello_world():
 def allStation():
     return engine1.getAllStations() 
 
-@app.route('/engine1/logs/<octect>')
-def logs(octect):
-    return engine1.logsToJSON(octect)
+@app.route('/engine1/logs/<byte>')
+def logs(byte):
+    return engine1.logsToJSON(byte)

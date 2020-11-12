@@ -22,12 +22,11 @@ class Engine1:
         data = self.toJson([row for row in csvReader])
         return data
 
-    def logsToJSON(self, octect):
+    def logsToJSON(self, byte):
         logs = {}
-        f= open('engine1.log', 'r')
-        c = f.read()[int(octect):].splitlines()
-        f.close()
-        logs = {'logs': c[0]}
-        return logs
-
+        logsFile= open('engine1.log', 'r')
+        logs= logsFile.read()[int(byte):].splitlines()
+        logsFile.close()
+        logs = {'logs': logs}
+        return self.toJson(logs)
         

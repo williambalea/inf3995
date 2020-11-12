@@ -12,7 +12,6 @@ class Engine2:
     monthLabel2 = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov']
     weekDayLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     firstDayMonday = 3
-    new_list = []
 
     logging.basicConfig(filename='engine2.log', filemode='w', level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
 
@@ -161,10 +160,10 @@ class Engine2:
         logging.info(label)
         return json.dumps(o)
     
-    def logsToJSON(self, octect):
+    def logsToJSON(self, byte):
         logs = {}
-        f= open('engine2.log', 'r')
-        c = f.read()[int(octect):].splitlines()
-        f.close()
-        logs = {'logs': c[0]}
-        return logs
+        logsFile= open('engine2.log', 'r')
+        logs= logsFile.read()[int(byte):].splitlines()
+        logsFile.close()
+        logs = {'logs': logs}
+        return json.dumps(logs)
