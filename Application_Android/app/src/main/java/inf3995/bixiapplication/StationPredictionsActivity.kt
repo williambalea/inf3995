@@ -6,14 +6,13 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import inf3995.bixiapplication.Data.Station
-import inf3995.bixiapplication.StationStatistics.DailyStationPredictionActivity
-import inf3995.bixiapplication.StationStatistics.HourlyStationPredictionActivity
-import inf3995.bixiapplication.StationStatistics.MonthlyStationPredictionActivity
+import inf3995.bixiapplication.StationPredictions.DailyStationPredictionActivity
+import inf3995.bixiapplication.StationPredictions.HourlyStationPredictionActivity
+import inf3995.bixiapplication.StationPredictions.MonthlyStationPredictionActivity
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
 import kotlinx.android.synthetic.main.activity_station_predictions.*
-import kotlinx.android.synthetic.main.activity_station_statistics.*
 import kotlinx.android.synthetic.main.activity_station_statistics.display_button
 
 class StationPredictionsActivity : AppCompatActivity() {

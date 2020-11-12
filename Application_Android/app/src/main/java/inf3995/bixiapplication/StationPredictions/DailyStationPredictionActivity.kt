@@ -17,79 +17,59 @@ import inf3995.bixiapplication.Dialog.IpAddressDialog
 import inf3995.bixiapplication.Service.WebBixiService
 import inf3995.bixiapplication.UnsafeOkHttpClient
 import inf3995.test.bixiapplication.R
-import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
-import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.lllProgressBar
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.text12
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.text13
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.text22
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.text23
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.text32
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.text33
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.text42
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.text43
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.text52
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.text53
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.text62
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.text63
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.text72
-import kotlinx.android.synthetic.main.activity_daily_station_prediction.text73
-import kotlinx.android.synthetic.main.activity_daily_station_prediction1.*
+import kotlinx.android.synthetic.main.activity_daily_station_prediction.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
-class DailyStationPredictionActivity1 : AppCompatActivity() {
+class DailyStationPredictionActivity : AppCompatActivity() {
 
     var station : Station? = null
     lateinit var temps: String
-    lateinit var indicator: String
-    lateinit var call: Call<String>
+    lateinit var indicator:String
     var code: Int = 0
     var annee= 0
-    var myImage:ImageView? = null
-    private val TAG = "Daily Station Predictions values"
+    var myImage: ImageView? = null
+    private val TAG = "Daily Station Prediction "
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_daily_station_prediction1)
+        setContentView(R.layout.activity_daily_station_prediction)
         val tempas = intent.getStringExtra("Temps")
-        val indication = intent.getStringExtra("Indicateur")
+        val indicat = intent.getStringExtra("Indicateur")
         val annas = intent.getStringExtra("Annee")?.toInt()
         station = intent.getSerializableExtra("data") as Station
 
-        Station_code.text = station!!.code.toString()
-        Station_name.text = station!!.name
+        Station_codeD.text = station!!.code.toString()
+        Station_nameD.text = station!!.name
 
         if (tempas != null) {
             temps = tempas
         }
 
-        if (indication != null) {
-            indicator = indication
+        if (indicat != null) {
+            indicator = indicat
         }
 
         if (annas != null) {
             annee = annas
         }
-        predictionYear.text = annee.toString()
 
-        /*
         if(indicator == "Value"){
-            GraphTitle.text = "Prediction Values of Daily Departures & Arrivals:"
+            predictTitleD.text = getString(R.string.Daily_Prediction_Title)
         } else {
-            "Prediction Errors of Daily Departures & Arrivals:"
+            predictTitleD.text = getString(R.string.Daily_Error_Title)
         }
-         */
 
+        predictionYearD.text = annee.toString()
         code =  station!!.code
         myImage = findViewById(R.id.image)
+
         requestToServer(IpAddressDialog.ipAddressInput)
 
     }
-
 
     private fun requestToServer(ipAddress: String?) {
 
@@ -100,39 +80,32 @@ class DailyStationPredictionActivity1 : AppCompatActivity() {
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        // val call: Call<String> = service.getStationPrediction(annee, temps, code)
-        //val call: Call<String> = service.getStationErrors(annee, temps, code)
-        val call: Call<String> = service.getStationStatistics(annee, temps, code)
+        //val call: Call<String> = service.getStationStatistics(annee, temps, code)
+        val call: Call<String>
+        if(indicator == "Value") {
+            //val call: Call<String> = service.getStationPrediction(annee, temps, code)
+            call = service.getStationStatistics(annee, temps, code)
 
-        /*
-    if(indicator == "Value") {
-         //   val call: Call<String> = service.getStationPrediction(annee, temps, code)
-            val call: Call<String> = service.getStationStatistics(annee, temps, code)
-
-        }else{
+        }else {
             //val call: Call<String> = service.getStationErrors(annee, temps, code)
-            val call: Call<String> = service.getStationStatistics(annee, temps, code)
-
+            call = service.getStationStatistics(annee, temps, code)
         }
- */
-
-
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse des Prédictions par jour du Serveur: ${response?.body()}")
-                Log.i(TAG, "Status de reponse du Serveur: ${response?.code()}")
+                Log.i(TAG, "Réponse des predictions du Serveur: ${response?.body()}")
+                Log.i(TAG, "Status de reponse  des predictions du Serveur: ${response?.code()}")
 
                 val arrayStationType = object : TypeToken<MonthlyStatisticStation>() {}.type
                 val jObj: MonthlyStatisticStation = Gson().fromJson(response?.body(), arrayStationType)
                 Log.i(TAG, "L'objet : $jObj")
                 fillData(jObj)
-                lllProgressBar.visibility = View.GONE
+                lllProgressBarD.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Error when receiving statistic!    cause:${t.cause}     message:${t.message}")
-                val builder = AlertDialog.Builder(this@DailyStationPredictionActivity1)
-                builder.setTitle("Error while loading statistic!").setMessage("cause:${t.cause} \n message:${t.message}")
+                Log.i(TAG, "Error when receiving prediction!    cause:${t.cause}     message:${t.message}")
+                val builder = AlertDialog.Builder(this@DailyStationPredictionActivity)
+                builder.setTitle("Error while loading prediction!").setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()
             }
         })

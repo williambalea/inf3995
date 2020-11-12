@@ -21,9 +21,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="inf3995.bixiapplication.StationStatistics.HourlyStationPredictionActivity"/>
-        <activity android:name="inf3995.bixiapplication.StationStatistics.DailyStationPredictionActivity" />
-        <activity android:name="inf3995.bixiapplication.StationStatistics.MonthlyStationPredictionActivity" />
+        <activity android:name="inf3995.bixiapplication.StationPredictions.HourlyStationPredictionActivity"/>
+        <activity android:name="inf3995.bixiapplication.StationPredictions.DailyStationPredictionActivity" />
+        <activity android:name="inf3995.bixiapplication.StationPredictions.MonthlyStationPredictionActivity" />
         <activity android:name="inf3995.bixiapplication.StationPredictionsActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

@@ -1,4 +1,4 @@
-package inf3995.bixiapplication.StationStatistics
+package inf3995.bixiapplication.StationPredictions
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
 import kotlinx.android.synthetic.main.activity_monthly_station_prediction.*
 import kotlinx.android.synthetic.main.activity_monthly_station_statistic.*
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.lllProgressBar
 import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text102
 import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text103
 import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text112
@@ -86,7 +85,13 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
             year = annas
         }
 
-        predictionYear.text = year.toString()
+        if(indicator == "Value"){
+            PredictTitle.text = getString(R.string.Monthly_Prediction_Title)
+        } else {
+            PredictTitle.text = getString(R.string.Monthly_Error_Title)
+        }
+
+        predictionYearM.text = year.toString()
         code =  station!!.code
         myImage = findViewById(R.id.image)
 
@@ -102,7 +107,16 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        val call: Call<String> = service.getStationStatistics(year, temps, code)
+       // val call: Call<String> = service.getStationStatistics(year, temps, code)
+        val call: Call<String>
+        if(indicator == "Value") {
+            //val call: Call<String> = service.getStationPrediction(year, temps, code)
+            call = service.getStationStatistics(year, temps, code)
+
+        }else {
+            //val call: Call<String> = service.getStationErrors(year, temps, code)
+            call = service.getStationStatistics(year, temps, code)
+        }
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
@@ -117,7 +131,7 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
                 val jObj: MonthlyStatisticStation = Gson().fromJson(response?.body(), arrayStationType)
                 Log.i(TAG, "L'objet : $jObj")
                 fillData(jObj)
-                lllProgressBar.visibility = View.GONE
+                lllProgressBarM.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {

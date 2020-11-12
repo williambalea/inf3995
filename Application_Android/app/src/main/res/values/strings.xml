@@ -140,4 +140,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="choose_indicator">Select Indicator</string>
     <string name="year_of_prediction">Year of prediction</string>
+    <string name="select_indicator">Select Indicator</string>
+    <string name="Daily_Prediction_Title"><![CDATA[Prediction Values of Daily Departures & Arrivals for:]]></string>
+    <string name="Daily_Error_Title"><![CDATA[Prediction Errors of Daily Departures & Arrivals for:]]></string>
+    <string name="Hourly_Prediction_Title"><![CDATA[Prediction Values of Hourly Departures & Arrivals for:]]></string>
+    <string name="Hourly_Error_Title"><![CDATA[Prediction Errors of Hourly Departures & Arrivals for:]]></string>
+    <string name="Monthly_Prediction_Title"><![CDATA[Prediction Values of Monthly Departures & Arrivals for:]]></string>
+    <string name="Monthly_Error_Title"><![CDATA[Prediction Errors of Monthly Departures & Arrivals for:]]></string>
 </resources>

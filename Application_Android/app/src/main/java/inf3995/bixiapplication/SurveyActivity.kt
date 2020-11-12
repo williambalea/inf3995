@@ -51,7 +51,7 @@ class SurveyActivity : AppCompatActivity() {
                 isNumber().atLeast(1)
                 isNumber().lessThan(130)
             }
-            submitWith(buttonSend) { result ->
+            submitWith(buttonSend) {
                 surveyData = SurveyData(editTextEmail.text.toString(), editTextFirstName.text.toString(), editTextLastName.text.toString(), Integer.parseInt(editTextAge.text.toString()),checkBoxYesSurvey.isChecked)
                 sendSurveyData(surveyData)
             }

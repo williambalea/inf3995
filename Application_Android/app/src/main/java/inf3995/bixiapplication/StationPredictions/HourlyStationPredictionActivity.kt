@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
-import android.util.Base64.decode
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -18,64 +17,56 @@ import inf3995.bixiapplication.Dialog.IpAddressDialog
 import inf3995.bixiapplication.Service.WebBixiService
 import inf3995.bixiapplication.UnsafeOkHttpClient
 import inf3995.test.bixiapplication.R
-import kotlinx.android.synthetic.main.activity_monthly_station_prediction.*
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import kotlinx.android.synthetic.main.activity_daily_station_prediction1.predictionYear as predictionYear1
 
 
-class MonthlyStationPredictionActivity1 : AppCompatActivity() {
+class HourlyStationPredictionActivity : AppCompatActivity() {
 
     var station : Station? = null
     lateinit var temps: String
-    lateinit var indicator: String
-    lateinit var call: Call<String>
+    lateinit var indicator:String
     var code: Int = 0
-    var year = 0
-    var myImage:ImageView? = null
-    private val TAG = "Monthly Station Predictions values"
+    var annee= 0
+    var myImage: ImageView? = null
+    private val TAG = "Hourly Station Prediction"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_monthly_station_prediction1)
+        setContentView(R.layout.activity_hourly_station_prediction)
+        station = intent.getSerializableExtra("data") as Station
         val tempas = intent.getStringExtra("Temps")
-        val indication = intent.getStringExtra("Indicateur")
+        val indicat = intent.getStringExtra("Indicateur")
         val annas = intent.getStringExtra("Annee")?.toInt()
-       station = intent.getSerializableExtra("data") as Station
 
-       Station_code.text = station!!.code.toString()
-       Station_name.text = station!!.name
+        Station_codeH.text = station!!.code.toString()
+        Station_nameH.text = station!!.name
+
 
         if (tempas != null) {
             temps = tempas
         }
-
-        if (indication != null) {
-            indicator = indication
+        if (indicat != null) {
+            indicator = indicat
         }
-
         if (annas != null) {
-            year = annas
+            annee = annas
         }
-        predictionYear1.text = year.toString()
 
-        /*
         if(indicator == "Value"){
-            GraphTitle.text = "Predictions Values of Monthly Departures & Arrivals:"
+            predictTitleH.text = getString(R.string.Hourly_Prediction_Title)
         } else {
-            "Predictions Errors of Monthly Departures & Arrivals:"
+            predictTitleH.text = getString(R.string.Hourly_Error_Title)
         }
-         */
-
+        predictionYearH.text = annee.toString()
         code =  station!!.code
         myImage = findViewById(R.id.image)
         requestToServer(IpAddressDialog.ipAddressInput)
-
     }
-
 
     private fun requestToServer(ipAddress: String?) {
 
@@ -86,49 +77,54 @@ class MonthlyStationPredictionActivity1 : AppCompatActivity() {
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        val call: Call<String> = service.getStationStatistics(year, temps, code)
-        /*
-            if(indicator == "Value") {
-              //val call: Call<String> = service.getStationPrediction(year, temps, code)
-                val call: Call<String> = service.getStationStatistics(year, temps, code)
+        //val call: Call<String> = service.getStationStatistics(annee, temps, code)
+        val call: Call<String>
+        if(indicator == "Value") {
+            //val call: Call<String> = service.getStationPrediction(annee, temps, code)
+            call = service.getStationStatistics(annee, temps, code)
 
-            }else{
-                //val call: Call<String> = service.getStationErrors(year, temps, code)
-                val call: Call<String> = service.getStationStatistics(year, temps, code)
-
-            }
-        */
-
-
+        }else {
+            //val call: Call<String> = service.getStationErrors(annee, temps, code)
+            call = service.getStationStatistics(annee, temps, code)
+        }
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse des Prédictions par mois du Serveur: ${response?.body()}")
-                Log.i(TAG, "Status de reponse du Serveur: ${response?.code()}")
+                Log.i(TAG, "Réponse des predictions du Serveur: ${response?.body()}")
+                Log.i(TAG, "Status de reponse  des predictions du Serveur: ${response?.code()}")
+                Log.i(
+                    TAG,
+                    "Message de reponse  des predictions du Serveur: ${response?.message()}"
+                )
 
                 val arrayStationType = object : TypeToken<MonthlyStatisticStation>() {}.type
                 val jObj: MonthlyStatisticStation = Gson().fromJson(response?.body(), arrayStationType)
                 Log.i(TAG, "L'objet : $jObj")
                 fillData(jObj)
-                lllProgressBar.visibility = View.GONE
+                lllProgressBarH.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Error when receiving prediction values!    cause:${t.cause}     message:${t.message}")
-                val builder = AlertDialog.Builder(this@MonthlyStationPredictionActivity1)
-                builder.setTitle("Error while loading prediction values!").setMessage("cause:${t.cause} \n message:${t.message}")
+                Log.i(TAG, "Error when receiving predictions!    cause:${t.cause}     message:${t.message}")
+                val builder = AlertDialog.Builder(this@HourlyStationPredictionActivity)
+                builder.setTitle("Error while loading predictions!").setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()
             }
         })
     }
 
+    private fun convertString64ToImage(base64String: String): Bitmap {
+        val decodedString = Base64.decode(base64String, Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+    }
+
     private fun fillData(jObj: MonthlyStatisticStation) {
         val myImageString = jObj.graph
         val image1 = findViewById(R.id.image) as ImageView
-       try{image1.setImageBitmap(convertString64ToImage(myImageString))}
-        catch (e:Exception){
+        try{image1.setImageBitmap(convertString64ToImage(myImageString))}
+        catch (e: Exception){
             Log.e(TAG,"error")
         }
-
+        //image1.setImageBitmap(convertString64ToImage(myImageString))
         Log.i(TAG, "affichage du graphique ")
 
         text12.setText(jObj.data.departureValue[0].toString())
@@ -147,7 +143,6 @@ class MonthlyStationPredictionActivity1 : AppCompatActivity() {
         text73.setText(jObj.data.arrivalValue[6].toString())
         text82.setText(jObj.data.departureValue[7].toString())
         text83.setText(jObj.data.arrivalValue[7].toString())
-
         text92.setText(jObj.data.departureValue[8].toString())
         text93.setText(jObj.data.arrivalValue[8].toString())
         text102.setText(jObj.data.departureValue[9].toString())
@@ -156,12 +151,31 @@ class MonthlyStationPredictionActivity1 : AppCompatActivity() {
         text113.setText(jObj.data.arrivalValue[10].toString())
         text122.setText(jObj.data.departureValue[11].toString())
         text123.setText(jObj.data.arrivalValue[11].toString())
+        text132.setText(jObj.data.departureValue[12].toString())
+        text133.setText(jObj.data.arrivalValue[12].toString())
+        text142.setText(jObj.data.departureValue[13].toString())
+        text143.setText(jObj.data.arrivalValue[13].toString())
+        text152.setText(jObj.data.departureValue[14].toString())
+        text153.setText(jObj.data.arrivalValue[14].toString())
+        text162.setText(jObj.data.departureValue[15].toString())
+        text163.setText(jObj.data.arrivalValue[15].toString())
+        text172.setText(jObj.data.departureValue[16].toString())
+        text173.setText(jObj.data.arrivalValue[16].toString())
+        text182.setText(jObj.data.departureValue[17].toString())
+        text183.setText(jObj.data.arrivalValue[17].toString())
+        text192.setText(jObj.data.departureValue[18].toString())
+        text193.setText(jObj.data.arrivalValue[18].toString())
+        text202.setText(jObj.data.departureValue[19].toString())
+        text203.setText(jObj.data.arrivalValue[19].toString())
+        text212.setText(jObj.data.departureValue[20].toString())
+        text213.setText(jObj.data.arrivalValue[20].toString())
+        text222.setText(jObj.data.departureValue[21].toString())
+        text223.setText(jObj.data.arrivalValue[21].toString())
+        text232.setText(jObj.data.departureValue[22].toString())
+        text233.setText(jObj.data.arrivalValue[22].toString())
+        text242.setText(jObj.data.departureValue[23].toString())
+        text243.setText(jObj.data.arrivalValue[23].toString())
 
-    }
-
-    private fun convertString64ToImage(base64String: String): Bitmap {
-        val decodedString = decode(base64String, Base64.NO_WRAP)
-        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
     }
 
 }
