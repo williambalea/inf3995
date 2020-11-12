@@ -112,6 +112,7 @@ void BackEnd::checkEnginesFinished(QNetworkReply *reply) {
 
 void BackEnd::changePwFinished(QNetworkReply *reply) {
     QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    qDebug() << code;
     bool isSuccessful = code == "200";
     emit passwordChanged(isSuccessful);
 }
@@ -149,5 +150,5 @@ void BackEnd::changePw(QString old, QString newPass) {
 void BackEnd::periodicFn() {
     checkEngines();
     //TODO: check les logs
-    //sendFakeLogs();
+    sendFakeLogs();
 }

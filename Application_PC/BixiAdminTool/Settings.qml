@@ -18,6 +18,7 @@ Page {
             onPasswordChanged: {
                 busyIndicator.visible = false;
                 successLabel.visible = isSuccessful;
+                wrongCurrent.visible = !isSuccessful;
             }
         }
     }
@@ -85,74 +86,43 @@ Page {
             font.bold: true
         }
 
-        Label {
-            id: currentLab
-            x: 0
-            y: 55
-            text: qsTr("Current")
-            anchors.verticalCenter: rectangle2.verticalCenter
-            anchors.left: parent.left
-            font.pointSize: 12
-        }
-
-        Label {
-            id: newPassLab
-            x: 0
-            y: 103
-            text: qsTr("New")
-            anchors.verticalCenter: rectangle1.verticalCenter
-            anchors.left: parent.left
-            font.pointSize: 12
-        }
-
-        Label {
-            id: retypeLab
-            x: 0
-            y: 150
-            text: qsTr("Retype new")
-            anchors.verticalCenter: rectangle.verticalCenter
-            anchors.left: parent.left
-            font.pointSize: 12
-        }
-
         Rectangle {
-            id: rectangle
-            x: 110
-            y: 125
-            width: 361
-            height: 32
-            radius: 5
-            border.color: "#E1E2E1"
-            border.width: 2
-            anchors.right: parent.right
-            anchors.rightMargin: 0
-            clip: true
-            TextField {
-                id: retype
-                x: 9
-                y: -7
-                width: 289
-                height: 55
-                activeFocusOnTab: true
-                echoMode: TextInput.Password
-                placeholderText: "Confirm new password"
-            }
-        }
-
-        Rectangle {
-            id: rectangle1
+            id: rectangle2
             x: 115
-            y: 87
+            y: 55
             width: 361
             height: 32
             radius: 5
             border.color: "#E1E2E1"
             border.width: 2
             anchors.left: rectangle.left
-            anchors.right: parent.right
-            anchors.rightMargin: 0
+            anchors.horizontalCenter: parent.horizontalCenter
+            clip: true
+            TextField {
+                id: current
+                x: 9
+                y: -7
+                width: 289
+                height: 55
+                echoMode: TextInput.Password
+                activeFocusOnTab: true
+                placeholderText: "Enter current password"
+
+            }
+        }
+
+        Rectangle {
+            id: rectangle1
+            x: 115
+            y: 93
+            width: 361
+            height: 32
+            radius: 5
+            border.color: "#E1E2E1"
+            border.width: 2
+            anchors.left: rectangle.left
+            anchors.horizontalCenter: parent.horizontalCenter
             anchors.leftMargin: 0
-            anchors.horizontalCenter: rectangle.horizontalCenter
             TextField {
                 id: newPass
                 x: 9
@@ -167,29 +137,29 @@ Page {
         }
 
         Rectangle {
-            id: rectangle2
-            x: 115
-            y: 49
+            id: rectangle
+            x: 110
+            y: 131
             width: 361
             height: 32
             radius: 5
             border.color: "#E1E2E1"
             border.width: 2
-            anchors.left: rectangle.left
-            anchors.right: parent.right
+            anchors.horizontalCenter: parent.horizontalCenter
+            clip: true
             TextField {
-                id: current
+                id: retype
                 x: 9
                 y: -7
                 width: 289
                 height: 55
-                echoMode: TextInput.Password
                 activeFocusOnTab: true
-                placeholderText: "Enter current password"
+                echoMode: TextInput.Password
+                placeholderText: "Confirm new password"
             }
-            anchors.horizontalCenter: rectangle.horizontalCenter
-            clip: true
         }
+
+
 
         Button {
             id: apply
@@ -205,8 +175,15 @@ Page {
             highlighted: true
             function activate() {
                 successLabel.visible = false;
-                busyIndicator.visible = true;
-                backend.changePw(current.text, newPass.text);
+                twoPwMatch.visible = false;
+                wrongCurrent.visible = false;
+
+                if (newPass.text == retype.text) {
+                    busyIndicator.visible = true;
+                    backend.changePw(current.text, newPass.text);
+                } else {
+                    twoPwMatch.visible = true;
+                }
             }
             onClicked: activate()
         }
@@ -239,6 +216,36 @@ Page {
             height: 40
         }
 
+        Label {
+            id: twoPwMatch
+            visible: false
+            x: 107
+            y: 176
+            color: "#d52b1e"
+            text: qsTr("The two passwords don't match")
+            anchors.bottom: parent.bottom
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            anchors.bottomMargin: 10
+            font.pointSize: 12
+            font.bold: true
+        }
+
+        Label {
+            id: wrongCurrent
+            visible: false;
+            x: 93
+            y: 176
+            color: "#d52b1e"
+            text: qsTr("Current password entered is wrong")
+            anchors.bottom: parent.bottom
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            anchors.bottomMargin: 10
+            font.pointSize: 12
+            font.bold: true
+        }
+
 
     }
 
@@ -260,35 +267,24 @@ Page {
             font.pointSize: 12
         }
 
-        Label {
-            id: ipLab
-            x: 0
-            y: 55
-            text: qsTr("New Address")
-            anchors.verticalCenter: rectangle5.verticalCenter
-            anchors.left: parent.left
-            font.pointSize: 12
-        }
-
 
 
         Rectangle {
             id: rectangle5
-            x: 115
-            y: 49
+            x: 0
+            y: 50
             width: 361
             height: 32
             radius: 5
             border.color: "#e1e2e1"
             border.width: 2
-            anchors.right: parent.right
+            anchors.horizontalCenter: parent.horizontalCenter
             TextField {
                 id: changeNewIP
                 x: 9
                 y: -7
                 width: 289
                 height: 55
-                activeFocusOnTab: true
                 validator:RegExpValidator {
                     regExp:/^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
                 }
@@ -330,6 +326,6 @@ Page {
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;formeditorZoom:0.6600000262260437;height:600;width:1000}
+    D{i:0;autoSize:true;formeditorZoom:0.6600000262260437;height:600;width:1000}D{i:22}
 }
 ##^##*/

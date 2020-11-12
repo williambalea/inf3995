@@ -12,10 +12,21 @@ Page{
         color: "#d52b1e"
     }
 
+    Item {
+        Connections {
+            target: backend
+
+            onAttempsChanged: {
+                progressBar.visible = false;
+            }
+        }
+    }
+
     Pane {
         id: pane
         width: 700
         height: 400
+        clip: true
         x: (applicationWindow.width - width)/2
         y: (applicationWindow.height - height)/2
         Material.elevation: 4
@@ -127,10 +138,10 @@ Page{
                 antialiasing: true
                 focus: false
                 function activate() {
+                    progressBar.visible = true;
                     backend.host = ip.text;
                     backend.login(user.text, pw.text);
                     backend.attemps = false;
-
                 }
 
                 onClicked: activate()
@@ -148,6 +159,17 @@ Page{
             x: (parent.width - width)/2
             y: (parent.height - height)/2 + 130
         }
+
+        ProgressBar {
+            id: progressBar
+            visible: false
+            x: -12
+            width: parent.width + 24
+            anchors.bottom: parent.bottom
+            indeterminate: true
+            anchors.bottomMargin: -12
+            Material.accent: "#9b0000"
+        }
     }
 
 }
@@ -156,6 +178,6 @@ Page{
 
 /*##^##
 Designer {
-    D{i:0;height:600;width:1000}
+    D{i:0;formeditorZoom:0.6600000262260437;height:600;width:1000}
 }
 ##^##*/
