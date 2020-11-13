@@ -33,6 +33,8 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
     var code: Int = 0
     var annee= 0
     var myImage: ImageView? = null
+    var dateStart : String? = null
+    var dateEnd : String? = null
     private val TAG = "Hourly Station Prediction"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +44,8 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
         val tempas = intent.getStringExtra("Temps")
         val indicat = intent.getStringExtra("Indicateur")
         val annas = intent.getStringExtra("Annee")?.toInt()
+        val dataStart = intent.getStringExtra("DateStart")
+        val dataEnd = intent.getStringExtra("DateEnd")
 
         Station_codeH.text = station!!.code.toString()
         Station_nameH.text = station!!.name
@@ -55,6 +59,13 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
         }
         if (annas != null) {
             annee = annas
+        }
+        if (dataStart != null) {
+            dateStart = dataStart
+        }
+
+        if (dataEnd != null) {
+            dateEnd = dataStart
         }
 
         if(indicator == "Value"){
@@ -77,14 +88,14 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        //val call: Call<String> = service.getStationStatistics(annee, temps, code)
+        //val call: Call<String> = service.getStationStatistics(annee, temps, code, dateStart, dateEnd)
         val call: Call<String>
         if(indicator == "Value") {
-            //val call: Call<String> = service.getStationPrediction(annee, temps, code)
+            //val call: Call<String> = service.getStationPrediction(annee, temps, code, dateStart, dateEnd)
             call = service.getStationStatistics(annee, temps, code)
 
         }else {
-            //val call: Call<String> = service.getStationErrors(annee, temps, code)
+            //val call: Call<String> = service.getStationErrors(annee, temps, code, dateStart, dateEnd)
             call = service.getStationStatistics(annee, temps, code)
         }
         call.enqueue(object : Callback<String> {

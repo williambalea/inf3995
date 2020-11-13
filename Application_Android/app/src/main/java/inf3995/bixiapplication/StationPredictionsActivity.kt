@@ -1,5 +1,6 @@
 package inf3995.bixiapplication
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -14,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
 import kotlinx.android.synthetic.main.activity_station_predictions.*
 import kotlinx.android.synthetic.main.activity_station_statistics.display_button
+import java.util.*
 
 class StationPredictionsActivity : AppCompatActivity() {
 
@@ -21,6 +23,8 @@ class StationPredictionsActivity : AppCompatActivity() {
     var time: String? = null
     var indicator:String? = null
     var year: String? = null
+    var dateStart : String? = null
+    var dateEnd : String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +34,35 @@ class StationPredictionsActivity : AppCompatActivity() {
         station = intent.getSerializableExtra("data") as Station
         Station_code.text = station!!.code.toString()
         Station_name.text = station!!.name
+
+        // calendar
+        val c1 = Calendar.getInstance()
+        val yearDate1 = c1.get(Calendar.YEAR)
+        val monthDate1 = c1.get(Calendar.MONTH)
+        val dayDate1 = c1.get(Calendar.DAY_OF_MONTH)
+
+        val c2 = Calendar.getInstance()
+        val yearDate2 = c2.get(Calendar.YEAR)
+        val monthDate2 = c2.get(Calendar.MONTH)
+        val dayDate2 = c2.get(Calendar.DAY_OF_MONTH)
+
+
+        // button click to show date picker
+        startDateButton.setOnClickListener {
+            val dpd = DatePickerDialog(this,DatePickerDialog.OnDateSetListener{view,mYear,mMonth, mDay ->
+                startDate.setText(""+ mDay+"/" + mMonth + "/"+mYear)}, yearDate1,monthDate1,dayDate1)
+            dpd.show()
+            dateStart = dpd.toString()
+        }
+        endDateButton.setOnClickListener {
+            val dpd = DatePickerDialog(this,DatePickerDialog.OnDateSetListener{view,mYear,mMonth, mDay ->
+                endDate.setText(""+ mDay+"/" + mMonth + "/"+mYear)}, yearDate2,monthDate2,dayDate2)
+            dpd.show()
+            dateEnd = dpd.toString()
+
+        }
+
+        // Differents dropdownmenu
 
         val years_List = listOf("2017")
         val years_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, years_List)
@@ -89,6 +122,8 @@ class StationPredictionsActivity : AppCompatActivity() {
                             intent.putExtra("Annee", annee)
                             intent.putExtra("Temps", temps)
                             intent.putExtra("Indicateur", indicateur)
+                            intent.putExtra("DateStart", dateStart)
+                            intent.putExtra("DateEnd", dateEnd)
                             startActivity(intent)
 
                         }
@@ -98,6 +133,8 @@ class StationPredictionsActivity : AppCompatActivity() {
                             intent.putExtra("Annee", annee)
                             intent.putExtra("Temps", temps)
                             intent.putExtra("Indicateur", indicateur)
+                            intent.putExtra("DateStart", dateStart)
+                            intent.putExtra("DateEnd", dateEnd)
                             startActivity(intent)
                         }
                         "perHour"-> {
@@ -106,6 +143,8 @@ class StationPredictionsActivity : AppCompatActivity() {
                             intent.putExtra("Annee", annee)
                             intent.putExtra("Temps", temps)
                             intent.putExtra("Indicateur", indicateur)
+                            intent.putExtra("DateStart", dateStart)
+                            intent.putExtra("DateEnd", dateEnd)
                             startActivity(intent)
                         }
                     }
@@ -118,6 +157,8 @@ class StationPredictionsActivity : AppCompatActivity() {
                             intent.putExtra("Annee", annee)
                             intent.putExtra("Temps", temps)
                             intent.putExtra("Indicateur", indicateur)
+                            intent.putExtra("DateStart", dateStart)
+                            intent.putExtra("DateEnd", dateEnd)
                             startActivity(intent)
 
                         }
@@ -127,6 +168,8 @@ class StationPredictionsActivity : AppCompatActivity() {
                             intent.putExtra("Annee", annee)
                             intent.putExtra("Temps", temps)
                             intent.putExtra("Indicateur", indicateur)
+                            intent.putExtra("DateStart", dateStart)
+                            intent.putExtra("DateEnd", dateEnd)
                             startActivity(intent)
                         }
                         "perHour"-> {
@@ -135,6 +178,8 @@ class StationPredictionsActivity : AppCompatActivity() {
                             intent.putExtra("Annee", annee)
                             intent.putExtra("Temps", temps)
                             intent.putExtra("Indicateur", indicateur)
+                            intent.putExtra("DateStart", dateStart)
+                            intent.putExtra("DateEnd", dateEnd)
                             startActivity(intent)
                         }
                     }

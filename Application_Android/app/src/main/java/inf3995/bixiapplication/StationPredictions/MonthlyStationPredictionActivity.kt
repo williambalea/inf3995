@@ -60,6 +60,10 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
     var code: Int = 0
     var year = 0
     var myImage: ImageView? = null
+
+    var dateStart : String? = null
+    var dateEnd : String? = null
+
     private val TAG = "Monthly Station Predictions values"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +74,8 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
         val tempas = intent.getStringExtra("Temps")
         val annas = intent.getStringExtra("Annee")?.toInt()
         val indicat = intent.getStringExtra("Indicateur")
+        val dataStart = intent.getStringExtra("DateStart")
+        val dataEnd = intent.getStringExtra("DateEnd")
 
         Station_code.text = station!!.code.toString()
         Station_name.text = station!!.name
@@ -83,6 +89,14 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
 
         if (annas != null) {
             year = annas
+        }
+
+        if (dataStart != null) {
+            dateStart = dataStart
+        }
+
+        if (dataEnd != null) {
+            dateEnd = dataStart
         }
 
         if(indicator == "Value"){
@@ -107,14 +121,14 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-       // val call: Call<String> = service.getStationStatistics(year, temps, code)
+       // val call: Call<String> = service.getStationStatistics(year, temps, code, dateStart, dateEnd)
         val call: Call<String>
         if(indicator == "Value") {
-            //val call: Call<String> = service.getStationPrediction(year, temps, code)
+            //val call: Call<String> = service.getStationPrediction(year, temps, code, dateStart, dateEnd)
             call = service.getStationStatistics(year, temps, code)
 
         }else {
-            //val call: Call<String> = service.getStationErrors(year, temps, code)
+            //val call: Call<String> = service.getStationErrors(year, temps, code, dateStart, dateEnd)
             call = service.getStationStatistics(year, temps, code)
         }
 
