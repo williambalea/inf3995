@@ -11,7 +11,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/connectivity"
-        android:icon="@drawable/ic_baseline_directions_bike_24"
+        android:icon="@drawable/ic_baseline_directions_bike_48"
         android:orderInCategory="100"
         android:title="Engin connectivity"
         app:showAsAction="always" />

@@ -93,7 +93,7 @@ class MainScreenActivity : AppCompatActivity() {
             "Tint",
             Color.YELLOW,
             Color.WHITE
-        ) //you can change colors
+        )
 
         engineProblemNotification.setEvaluator(ArgbEvaluator())
         engineProblemNotification.repeatCount = ValueAnimator.INFINITE
