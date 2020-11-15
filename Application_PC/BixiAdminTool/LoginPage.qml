@@ -12,10 +12,21 @@ Page{
         color: "#d52b1e"
     }
 
+    Item {
+        Connections {
+            target: backend
+
+            onAttempsChanged: {
+                progressBar.visible = false;
+            }
+        }
+    }
+
     Pane {
         id: pane
         width: 700
         height: 400
+        clip: true
         x: (applicationWindow.width - width)/2
         y: (applicationWindow.height - height)/2
         Material.elevation: 4
@@ -23,16 +34,45 @@ Page{
 
         ColumnLayout {
             x: parent.height/2
-            y: 50
+            y: 20
+            height: 282
 
             Image {
                 id: image
+                x: 52
+                y: 3
                 source: "logo.png"
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.preferredHeight: 100
                 Layout.preferredWidth: 203
                 mipmap: true
                 fillMode: Image.PreserveAspectFit
+            }
+
+            Rectangle {
+                radius: 5
+                border.color: "#7b7b7b"
+                border.width: 2
+                TextField {
+                    id: ip
+                    x: 9
+                    y: -4
+                    width: 289
+                    height: 55
+                    focus: true
+                    hoverEnabled: false
+                    activeFocusOnTab: true
+                    clip: false
+                    placeholderText: qsTr("IP address")
+                    text: backend.host
+                    validator:RegExpValidator {
+                        regExp:/^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
+                    }
+                }
+                clip: true
+                Layout.preferredWidth: 306
+                Layout.preferredHeight: 40
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             }
 
             Rectangle {
@@ -98,17 +138,17 @@ Page{
                 antialiasing: true
                 focus: false
                 function activate() {
-                    backend.user = user.text;
-                    backend.pass = pw.text;
-                    backend.login();
+                    progressBar.visible = true;
+                    backend.host = ip.text;
+                    backend.login(user.text, pw.text);
                     backend.attemps = false;
-
                 }
 
                 onClicked: activate()
                 Keys.onReturnPressed: activate()
 
             }
+
         }
         Text {
             id: error
@@ -119,6 +159,17 @@ Page{
             x: (parent.width - width)/2
             y: (parent.height - height)/2 + 130
         }
+
+        ProgressBar {
+            id: progressBar
+            visible: false
+            x: -12
+            width: parent.width + 24
+            anchors.bottom: parent.bottom
+            indeterminate: true
+            anchors.bottomMargin: -12
+            Material.accent: "#9b0000"
+        }
     }
 
 }
@@ -127,6 +178,6 @@ Page{
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.5;height:600;width:1000}
+    D{i:0;formeditorZoom:0.6600000262260437;height:600;width:1000}
 }
 ##^##*/
