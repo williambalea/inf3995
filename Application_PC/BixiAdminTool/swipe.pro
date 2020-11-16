@@ -20,6 +20,7 @@ RESOURCES += logoW.png
 RESOURCES += settings-24px.svg
 RESOURCES += back.svg
 
+RC_ICONS = AppIcon.ico
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH = ./

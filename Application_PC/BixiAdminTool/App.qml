@@ -6,6 +6,12 @@ import custom.classes 1.0
 
 
 Item {
+    Connections{
+        target: backend
+
+        onSqlDataChanged: sqlProgBar.visible = false
+    }
+
     TabBar {
         id: tabBar
         x: 0
@@ -137,14 +143,9 @@ Item {
                 transformOrigin: Item.Center
                 Material.background: "#d52b1e"
                 Material.foreground: "#ffffff"
-
-                Connections {
-                    target: refreshButton
-                    onClicked: function () {
-                        print("from qml");
-                        backend.refresh();
-                        print(backend.sqlData);
-                    }
+                onClicked: {
+                    sqlProgBar.visible = true;
+                    backend.refresh()
                 }
             }
 
@@ -201,6 +202,16 @@ Item {
         icon.width: width/1.5
         icon.height: height/1.5
         onClicked: stackView.push("Settings.qml")
+    }
+
+    ProgressBar {
+        id: sqlProgBar
+        x: -12
+        width: parent.width + 24
+        visible: false
+        anchors.bottom: parent.bottom
+        indeterminate: true
+        Material.accent: "#9b0000"
     }
 }
 
