@@ -8,17 +8,43 @@ Page {
     id: engine1Page
     width: applicationWindow.width
     height: applicationWindow.height - 86
+
+    BackEnd {
+
+        onLog1Changed: {
+            elements.insert(0, {logText: log + log + log + log + log});
+        }
+    }
     
-    TextArea {
-        id: textArea
+    Rectangle {
         x: 30
         y: 30
         width: parent.width - 60
         height: parent.height - 60
-        verticalAlignment: Text.AlignBottom
-        placeholderText: qsTr("Text Area")
-        background: Rectangle {
-            color: "#F5F5F6"
+        transformOrigin: Rectangle.Center
+
+
+        ListView {
+            id: listView
+            anchors.fill: parent
+            spacing: 2
+            boundsBehavior: Flickable.StopAtBounds
+            clip: true
+            ScrollBar.vertical: ScrollBar {}
+            model: ListModel {
+                id: elements
+
+            }
+
+            delegate: Text{
+                height: 20
+                text: logText
+                verticalAlignment: Text.AlignVCenter
+                wrapMode: Text.WordWrap
+                clip: true
+
+
+            }
         }
     }
     
