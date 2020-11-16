@@ -19,4 +19,4 @@ def allStation():
 
 @app.route('/engine1/logs/<byte>')
 def logs(byte):
-    return engine1.authentify(byte)
+    return engine1.authorizationLogs(byte)

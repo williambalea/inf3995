@@ -44,14 +44,15 @@ class Engine1:
         row = myCursor.fetchone()
         return row
 
-    def authentify(self, byte):
+    def authorizationLogs(self, byte):
         row = self.account_db()
         auth = request.authorization
         authPW = self.secureHashPW(row[1], auth.password).hexdigest()
         if auth and auth.username == row[0] and authPW == row[2] :
+            logging.info("Successful Authentication")
             return self.logsToJSON(byte)
         else:
-            return "No"
+            logging.info("The user name or password is incorrect")
     
     def secureHashPW(self, salt, password):
         hashPW = hashlib.sha512((str(salt) + str(password)).encode('utf-8'))
@@ -82,4 +83,6 @@ class Engine1:
     def toJson(self, data):
         logging.info("Data to JSON")
         return json.dumps(data)
+
+
 
