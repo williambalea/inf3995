@@ -36,7 +36,6 @@ class Engine1:
             logging.info(f"The error '{e}' occurred")
         return self.connection
 
-    #query db then to kind of json with ' instead of "
     def account_db(self):
         myCursor = self.connection.cursor(buffered=True)
         myCursor.execute(self.ACCOUNTS)

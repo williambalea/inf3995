@@ -15,6 +15,12 @@ using namespace std;
  */
 extern volatile sig_atomic_t sigint;
 
+static const char characters[] =
+    "0123456789"
+    "!@#$%^&*"
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "abcdefghijklmnopqrstuvwxyz";
+
 /**
  * Handler when ctl+C in command line. Sets the signum to 1 to end the 
  * while loop in run()
@@ -30,7 +36,9 @@ void intHandler(int signum);
  */
 string getTime();
 
+string genRandomString(int len);
 
+string hash10times(string salt, string pass);
 
 class Server {
 public :
@@ -69,6 +77,12 @@ private:
 
     // TODO: to remove
     void createDummies();
+
+    void checkEnginesStatus();
+
+    bool checkEngine(string engineAddr);
+
+    void updatePass(string user, string pw);
 
     /**
      * Gets the time from getTime() then appends the msg before cout
@@ -115,10 +129,27 @@ private:
      */
     void getPolls(const Rest::Request& req, Http::ResponseWriter res);
 
+    /**
+     * Return the online status of the 3 engines. True means that the engine is online
+     * 
+     * @param req The HTTP request containing headers, body, etc.
+     * @param res The HTTP response containing the http code and server response
+     */
+    void getStatus(const Rest::Request& req, Http::ResponseWriter res);
+
+    /**
+     * Changes the password of the admin using the PC app.
+     * 
+     * @param req The HTTP request containing headers, body, etc.
+     * @param res The HTTP response containing the http code and server response
+     */
+    void changePass(const Rest::Request& req, Http::ResponseWriter res);
+
     shared_ptr<Http::Endpoint> httpEndpoint;
     Rest::Router router;
     Address addr;
     MySQL db;
+    bool enginesStatus[3] = {false, false, false};
 };
 
 #endif // SERVER_HPP

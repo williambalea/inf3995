@@ -3,6 +3,14 @@
 #include <string>
 #include <ctime>
 #include "json.hpp"
+#include "HTTPRequest.hpp"
+#include "sha512.h"
+
+#define ENGINE1_ADDR "http://engine1:5000/engine1"
+#define ENGINE2_ADDR "http://engine2:5000/engine2"
+
+//TODO: Correct address when engine3 will be created
+#define ENGINE3_ADDR "http://engine1:5000/engine1"
 
 using namespace Pistache;
 using namespace std;
@@ -28,10 +36,13 @@ void Server::run() {
     cout << getTime() << "server is running on " << addr.host() << ":" << addr.port() << endl;
     
     // TODO: remove dummies
-    //createDummies();
+    createDummies();
 
     // listening for a ctl+C
-    while (!sigint) {}
+    while (!sigint) {
+        checkEnginesStatus();
+        sleep(10);
+    }
 
     httpEndpoint->shutdown();
     cout << "server closed\n";
@@ -50,6 +61,8 @@ void Server::setupRoutes() {
     Routes::Post(router, "/server/survey", Routes::bind(&Server::sendPoll, this));
     Routes::Get (router, "/server/survey", Routes::bind(&Server::getPolls, this));
     Routes::Get (router, "/server/user/login", Routes::bind(&Server::login, this));
+    Routes::Get (router, "/server/status", Routes::bind(&Server::getStatus, this));
+    Routes::Put (router, "/server/user/password", Routes::bind(&Server::changePass, this));
 }
 
 void Server::setSIGINTListener() {
@@ -58,6 +71,38 @@ void Server::setSIGINTListener() {
 
 void Server::log(string msg) {
     cout << getTime() << msg << endl;
+}
+
+bool Server::checkEngine(string engineAddr) {
+    bool status = false;
+    try {
+        http::Request request(engineAddr);
+        const http::Response response = request.send("GET");
+
+        if (response.status == 200) {
+            status = true;
+        } else {
+            cout << getTime() << "Engine at " << engineAddr << " is offline! "
+            "Trying to reconnect... " << endl;
+        }
+    } catch (const std::exception& e) {
+        cout << getTime() << "Engine at " << engineAddr << " is offline! "
+        "Trying to reconnect... " << endl;    
+    }
+
+    return status;
+}
+
+void Server::checkEnginesStatus() {
+    enginesStatus[0] = checkEngine(ENGINE1_ADDR);
+    enginesStatus[1] = checkEngine(ENGINE2_ADDR);
+    enginesStatus[2] = checkEngine(ENGINE3_ADDR);
+}
+
+void Server::updatePass(string user, string pw) {
+    string salt = genRandomString(20);
+    string hashedPass = hash10times(salt, pw);
+    db.updatePass(user, salt, hashedPass);
 }
 
 /*---------------------------
@@ -69,15 +114,27 @@ void Server::newConn(const Rest::Request& req, Http::ResponseWriter res) {
 }
 
 void Server::login(const Rest::Request& req, Http::ResponseWriter res) {
+    bool err;
     auto headers = req.headers();
     auto auth = headers.tryGet<Http::Header::Authorization>();
     if (auth != NULL) {
         string user = auth.get()->getBasicUser();
         string pass = auth.get()->getBasicPassword();
-        if (user == "admin" && pass == "admin") {
-            res.send(Http::Code::Ok, "authentified");
-            log("admin authentified");
+        json credential = db.getUser(user, err);
+        if (err) {
+            res.send(Http::Code::Bad_Request, "server couldn't connect to database.");
+            log("failed to login user. Can't connect to database.");
             return;
+        }
+        if (credential.dump() != "null") {
+            string hashedPass = hash10times(credential["salt"].get<string>(), pass);
+            bool matchingUsers = user == credential["user"].get<string>();
+            bool matchingPass = hashedPass == credential["pw"].get<string>();
+            if ( matchingUsers && matchingPass) {
+                res.send(Http::Code::Ok, "authentified");
+                log("admin authentified");
+                return;
+            }
         }
     }
     res.send(Http::Code::Unauthorized, "Unauthorized connection!");
@@ -118,6 +175,55 @@ void Server::getPolls(const Rest::Request& req, Http::ResponseWriter res) {
 
 }
 
+//TODO: maybe change for a json instead of string
+void Server::getStatus(const Rest::Request& req, Http::ResponseWriter res) {
+    string buffer = "";
+    for(const auto& it : enginesStatus) {
+        buffer += it ? "UP " : "DOWN ";
+    }
+    res.send(Http::Code::Ok, buffer);
+}
+
+void Server::changePass(const Rest::Request& req, Http::ResponseWriter res) {
+    bool err;
+    auto headers = req.headers();
+    auto auth = headers.tryGet<Http::Header::Authorization>();
+    if (auth != NULL) {
+        string user = auth.get()->getBasicUser();
+        string pass = auth.get()->getBasicPassword();
+        string newPass = "";
+        try {
+            json j = json::parse(req.body());
+            newPass = j["new"].get<string>();
+        } catch (json::exception &e) {
+            res.send(Http::Code::Bad_Request, "Cannot get new password");
+            string msg = e.what();
+            log("failed to changed password " + msg);
+            return;
+        }
+        json credential = db.getUser(user, err);
+        if (err) {
+            res.send(Http::Code::Bad_Request, "server couldn't connect to database.");
+            log("failed to change password. Can't connect to database.");
+            return;
+        }
+        if (credential.dump() != "null") {
+            string hashedPass = hash10times(credential["salt"].get<string>(), pass);
+            bool matchingUsers = user == credential["user"].get<string>();
+            bool matchingPass = hashedPass == credential["pw"].get<string>();
+            if ( matchingUsers && matchingPass) {
+                updatePass(user, newPass);
+                res.send(Http::Code::Ok, "password was changed");
+                log("admin changed password");
+                return;
+            }
+        }
+    }
+    res.send(Http::Code::Unauthorized, "Unauthorized connection!");
+    log("password change attempt failed");
+}
+
+
 /*---------------------------
     Global Functions
 ---------------------------*/
@@ -142,6 +248,26 @@ string getTime() {
     string buffer = "";
     buffer += '[' + h + ':' + m + ':' + s + "] " + d + '/' + t + '/' + y + " > ";
     return buffer;
+}
+
+string genRandomString(int len) {
+    
+    string tmp_s;    
+    srand(time(NULL));
+    
+    for (int i = 0; i < len; ++i) 
+        tmp_s += characters[rand() % (sizeof(characters) - 1)];
+    
+    
+    return tmp_s;
+}
+
+string hash10times(string salt, string pass) {
+    string hashed = salt + pass;
+    for (int i = 0; i < 10; i++ ) {
+        hashed = sha512(hashed);
+    }
+    return hashed;
 }
 
 // TODO: remove
