@@ -49,7 +49,7 @@ class Engine1:
         auth = request.authorization
         authPW = self.secureHashPW(row[1], auth.password).hexdigest()
         if auth and auth.username == row[0] and authPW == row[2] :
-            logsToJSON(byte)
+            return self.logsToJSON(byte)
         else:
             return "No"
     

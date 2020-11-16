@@ -9,10 +9,6 @@ engine1 = Engine1()
 def hello_world():
     return 'Hello World from Engin 1', status.HTTP_200_OK
 
-@app.route('/engine1/test')
-def test():
-    return engine1.authentify()
-
 @app.route('/engine1/station/<code>')
 def stationCode(code):
     return engine1.getStationCode(code)
@@ -23,4 +19,4 @@ def allStation():
 
 @app.route('/engine1/logs/<byte>')
 def logs(byte):
-    return engine1.logsToJSON(byte)
+    return engine1.authentify(byte)
