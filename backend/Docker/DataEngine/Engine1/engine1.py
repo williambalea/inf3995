@@ -2,6 +2,7 @@ import json
 import logging
 import csv
 import re
+from mysql import MySqlDB
 # from flask_mysqldb import MySQL
 # import MySQLdb.cursors
 # import requests as rq
@@ -17,7 +18,6 @@ class Engine1:
     # DB_PASSWORD = "jerome"
     # DB_NAMEOFBD = "Bixi"
     # connection = None
-    
     #constructor
     def __init__(self):
         return None
@@ -47,7 +47,9 @@ class Engine1:
         ansi_espace = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]')
         return ansi_espace.sub(" ", line)
 
-    # def login(self):
+    def login(self):
+        mysql = MySqlDB()
+        return mysql
         # r = rq.get('https://70.80.27.156/server/user/login', auth=('dapak', 'ordinateur'))
 
         # session = r.Session()
