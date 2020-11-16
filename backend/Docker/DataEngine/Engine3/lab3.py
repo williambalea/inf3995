@@ -66,15 +66,15 @@ engine3 = Engine3()
 #get all data
 
 
-# bigPandas = engine3.merge_bixi_weather_df(bigBixidf, weather_df)
-# training_set = engine3.prep_training_data(bigPandas)
+print('traning---------------------')
 training_df = engine3.get_traning_df()
 print(training_df)
 print(training_df.columns)
 
-# testing_df = engine3.get_testing_df()
-# print(testing_df)
-# print(testing_df.columns)
+print('testing------------------')
+testing_df = engine3.get_testing_df()
+print(testing_df)
+print(testing_df.columns)
 
 
 # print(training_set.info)
