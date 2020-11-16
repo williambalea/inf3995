@@ -18,6 +18,7 @@ BackEnd::BackEnd(QObject *parent) : QObject(parent)
 
 BackEnd::~BackEnd()
 {
+    delete manServerConn;
     delete manSqlData;
     delete manLogin;
     delete manEnginesStatus;
@@ -36,6 +37,9 @@ void BackEnd::setupNetworkManagers() {
 
     manChangePw = new QNetworkAccessManager(this);
     connect(manChangePw, &QNetworkAccessManager::finished, this, &BackEnd::changePwFinished);
+
+    manServerConn = new QNetworkAccessManager(this);
+    connect(manServerConn, &QNetworkAccessManager::finished, this, &BackEnd::serverConnFinished);
 }
 
 
@@ -45,11 +49,6 @@ QString BackEnd::sqlData()
         return m_sqlData;
     else
         return "{}";
-}
-
-bool BackEnd::isLoggedIn()
-{
-    return m_isLoggedIn;
 }
 
 void BackEnd::setSqlData(const QString &data)
@@ -83,14 +82,12 @@ void BackEnd::sqlFinished(QNetworkReply *reply)
 
 void BackEnd::loginFinished(QNetworkReply *reply) {
     QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    emit loginChanged(code == "200");
+}
 
-    if (code == "200") {
-        m_isLoggedIn = true;
-        emit isLoggedInChanged();
-    } else {
-        attemps = true;
-        emit attempsChanged();
-    }
+void BackEnd::serverConnFinished(QNetworkReply *reply) {
+    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    emit serverConnChanged(code == "200");
 }
 
 void BackEnd::checkEnginesFinished(QNetworkReply *reply) {
@@ -145,6 +142,11 @@ void BackEnd::changePw(QString old, QString newPass) {
     QJsonObject obj;
     obj["new"] = newPass;
     manChangePw->put(req, QJsonDocument(obj).toJson());
+}
+
+void BackEnd::serverConn() {
+    QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server"));
+    manServerConn->get(req);
 }
 
 void BackEnd::periodicFn() {

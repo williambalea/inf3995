@@ -16,7 +16,23 @@ Page{
         Connections {
             target: backend
 
-            onAttempsChanged: {
+            onServerConnChanged: {
+                if (isSuccessful) {
+                    backend.login(user.text, pw.text);
+                } else {
+                    errorServerConn.visible = true;
+                    progressBar.visible = false;
+                }
+            }
+
+            onLoginChanged: {
+                if (isSuccessful) {
+                    backend.m_user = user.text;
+                    backend.m_pass = pw.text;
+                    stackView.push("App.qml", StackView.Immediate);
+                } else {
+                    errorLogin.visible = true;
+                }
                 progressBar.visible = false;
             }
         }
@@ -139,9 +155,10 @@ Page{
                 focus: false
                 function activate() {
                     progressBar.visible = true;
+                    errorServerConn.visible = false;
+                    errorLogin.visible = false;
                     backend.host = ip.text;
-                    backend.login(user.text, pw.text);
-                    backend.attemps = false;
+                    backend.serverConn();
                 }
 
                 onClicked: activate()
@@ -151,13 +168,13 @@ Page{
 
         }
         Text {
-            id: error
-            visible: backend.attemps
+            id: errorLogin
             color: "#d52b1e"
             text: qsTr("Wrong user and/or password")
             font.pixelSize: 16
             x: (parent.width - width)/2
             y: (parent.height - height)/2 + 130
+            visible: false
         }
 
         ProgressBar {
@@ -169,6 +186,16 @@ Page{
             indeterminate: true
             anchors.bottomMargin: -12
             Material.accent: "#9b0000"
+        }
+
+        Text {
+            id: errorServerConn
+            x: (parent.width - width)/2
+            y: (parent.height - height)/2 + 130
+            visible: false
+            color: "#d52b1e"
+            text: qsTr("Can't connect to server")
+            font.pixelSize: 16
         }
     }
 
