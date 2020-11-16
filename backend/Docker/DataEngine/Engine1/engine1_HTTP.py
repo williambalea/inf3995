@@ -3,16 +3,15 @@ from engine1 import Engine1
 from flask_api import status
 
 app = Flask(__name__)
-
 engine1 = Engine1()
 
 @app.route('/engine1')
 def hello_world():
     return 'Hello World from Engin 1', status.HTTP_200_OK
 
-@app.route('/engine1/db')
+@app.route('/engine1/test')
 def test():
-    return engine1.account_db()
+    return engine1.authentify()
 
 @app.route('/engine1/station/<code>')
 def stationCode(code):

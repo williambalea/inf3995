@@ -4,7 +4,8 @@ import json
 import logging
 import csv
 import re
-
+from flask import request
+import hashlib
 class Engine1:
 
     DB_HOSTNAME = "34.70.117.28"
@@ -37,11 +38,25 @@ class Engine1:
         return self.connection
 
     def account_db(self):
+        row = []
         myCursor = self.connection.cursor(buffered=True)
         myCursor.execute(self.ACCOUNTS)
         row = myCursor.fetchone()
-        print (row)
-        return self.toJson(row)
+        return row
+
+    def authentify(self, byte):
+        row = self.account_db()
+        auth = request.authorization
+        authPW = self.secureHashPW(row[1], auth.password).hexdigest()
+        if auth and auth.username == row[0] and authPW == row[2] :
+            logsToJSON(byte)
+        else:
+            return "No"
+    
+    def secureHashPW(self, salt, password):
+        hashPW = hashlib.sha512((str(salt) + str(password)).encode('utf-8'))
+        return hashPW
+
     
     def getAllStations(self):
         logging.info("Getting all stations")
@@ -67,5 +82,4 @@ class Engine1:
     def toJson(self, data):
         logging.info("Data to JSON")
         return json.dumps(data)
-
 
