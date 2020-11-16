@@ -179,7 +179,7 @@ void Server::getPolls(const Rest::Request& req, Http::ResponseWriter res) {
 void Server::getStatus(const Rest::Request& req, Http::ResponseWriter res) {
     string buffer = "";
     for(const auto& it : enginesStatus) {
-        buffer += it ? "true " : "false ";
+        buffer += it ? "UP " : "DOWN ";
     }
     res.send(Http::Code::Ok, buffer);
 }
