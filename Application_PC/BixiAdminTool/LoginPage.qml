@@ -18,6 +18,7 @@ Page{
 
             onServerConnChanged: {
                 if (isSuccessful) {
+                    backend.host = ip.text;
                     backend.login(user.text, pw.text);
                 } else {
                     errorServerConn.visible = true;
@@ -157,8 +158,7 @@ Page{
                     progressBar.visible = true;
                     errorServerConn.visible = false;
                     errorLogin.visible = false;
-                    backend.host = ip.text;
-                    backend.serverConn();
+                    backend.serverConn(ip.text);
                 }
 
                 onClicked: activate()

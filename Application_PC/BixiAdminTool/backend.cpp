@@ -144,8 +144,8 @@ void BackEnd::changePw(QString old, QString newPass) {
     manChangePw->put(req, QJsonDocument(obj).toJson());
 }
 
-void BackEnd::serverConn() {
-    QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server"));
+void BackEnd::serverConn(QString host) {
+    QNetworkRequest req = makeRequest(QUrl("https://" + host + "/server"));
     manServerConn->get(req);
 }
 

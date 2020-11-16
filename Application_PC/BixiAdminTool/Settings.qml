@@ -20,6 +20,17 @@ Page {
                 successLabel.visible = isSuccessful;
                 wrongCurrent.visible = !isSuccessful;
             }
+
+            onServerConnChanged: {
+                if (isSuccessful) {
+                    successChangeIP.visible = true;
+                    backend.host = changeNewIP.text;
+                    changeNewIP.text = "";
+                } else {
+                    errorChangeIP.visible = true;
+                }
+                busyIndicatorIP.visible = false;
+            }
         }
     }
 
@@ -275,6 +286,7 @@ Page {
             y: 99
             width: 128
             height: 32
+            visible: false
             color: "#d52b1e"
             text: qsTr("Can't connect to server")
             horizontalAlignment: Text.AlignHCenter
@@ -303,6 +315,8 @@ Page {
                     regExp:/^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
                 }
                 placeholderText: "e.g. 10.0.0.0"
+                Keys.onReturnPressed: change.activate()
+
             }
             clip: true
         }
@@ -318,10 +332,41 @@ Page {
             highlighted: true
             anchors.rightMargin: 0
             anchors.bottomMargin: 0
-            onClicked: function() {
-                backend.host = changeNewIP.text;
-                changeNewIP.text = "";
+            function activate() {
+                busyIndicatorIP.visible = true;
+                errorChangeIP.visible = false;
+                successChangeIP.visible = false;
+                backend.serverConn(changeNewIP.text);
             }
+            onClicked: activate()
+        }
+
+        Label {
+            id: successChangeIP
+            x: 171
+            y: 99
+            width: 128
+            height: 32
+            visible: false
+            color: "#dd007b22"
+            text: qsTr("✔ Success")
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.pointSize: 12
+            font.bold: true
+        }
+
+        BusyIndicator {
+            id: busyIndicatorIP
+            x: 355
+            y: 91
+            width: 40
+            height: 40
+            visible: false
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 0
+            anchors.rightMargin: 75
         }
 
         background: Rectangle {
