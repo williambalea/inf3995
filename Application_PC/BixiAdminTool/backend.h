@@ -11,6 +11,8 @@ class BackEnd : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString host MEMBER m_host NOTIFY hostChanged)
+    Q_PROPERTY(QString user MEMBER m_user)
+    Q_PROPERTY(QString pass MEMBER m_pass)
     Q_PROPERTY(QString engine1Logs MEMBER m_engine1Logs)
     Q_PROPERTY(bool engine1Status MEMBER m_engine1Status NOTIFY enginesStatusChanged)
     Q_PROPERTY(bool engine2Status MEMBER m_engine2Status NOTIFY enginesStatusChanged)

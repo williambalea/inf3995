@@ -27,8 +27,8 @@ Page{
 
             onLoginChanged: {
                 if (isSuccessful) {
-                    backend.m_user = user.text;
-                    backend.m_pass = pw.text;
+                    backend.user = user.text;
+                    backend.pass = pw.text;
                     stackView.push("App.qml", StackView.Immediate);
                 } else {
                     errorLogin.visible = true;

@@ -269,6 +269,20 @@ Page {
 
 
 
+        Label {
+            id: errorChangeIP
+            x: 171
+            y: 99
+            width: 128
+            height: 32
+            color: "#d52b1e"
+            text: qsTr("Can't connect to server")
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.bold: true
+            font.pointSize: 12
+        }
+
         Rectangle {
             id: rectangle5
             x: 0
@@ -309,6 +323,7 @@ Page {
                 changeNewIP.text = "";
             }
         }
+
         background: Rectangle {
             color: "#00000000"
             radius: 5
@@ -326,6 +341,6 @@ Page {
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;formeditorZoom:0.6600000262260437;height:600;width:1000}D{i:22}
+    D{i:0;autoSize:true;formeditorZoom:0.6600000262260437;height:600;width:1000}
 }
 ##^##*/
