@@ -73,7 +73,7 @@ Page {
 
     Frame {
         id: frame
-        width: 494
+        width: 430
         x: (applicationWindow.width - width)/2
         height: 230
         anchors.top: parent.top
@@ -93,6 +93,8 @@ Page {
             text: qsTr("Change Password")
             anchors.left: parent.left
             anchors.top: parent.top
+            anchors.leftMargin: 22
+            anchors.topMargin: 11
             font.pointSize: 12
             font.bold: true
         }
@@ -174,14 +176,14 @@ Page {
 
         Button {
             id: apply
-            x: 406
-            y: 166
+            x: 320
+            y: 169
             height: 40
             text: qsTr("apply")
             anchors.right: parent.right
             anchors.bottom: parent.bottom
-            anchors.rightMargin: 0
-            anchors.bottomMargin: 0
+            anchors.rightMargin: 22
+            anchors.bottomMargin: -3
             flat: false
             highlighted: true
             function activate() {
@@ -202,14 +204,18 @@ Page {
         Label {
             visible: false
             id: successLabel
-            x: 200
-            y: 173
+            x: 168
+            y: 177
             width: 70
             height: 26
             color: "#dd007b22"
             text: qsTr("✔ Success")
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            anchors.bottomMargin: 3
+            anchors.rightMargin: 168
             font.bold: true
             font.pointSize: 12
         }
@@ -219,10 +225,10 @@ Page {
             visible: false
             anchors.right: parent.right
             anchors.bottom: parent.bottom
-            anchors.rightMargin: 69
-            anchors.bottomMargin: 0
-            x: 361
-            y: 166
+            anchors.rightMargin: 93
+            anchors.bottomMargin: -3
+            x: 273
+            y: 169
             width: 40
             height: 40
         }
@@ -230,29 +236,29 @@ Page {
         Label {
             id: twoPwMatch
             visible: false
-            x: 107
-            y: 176
+            x: 109
+            y: 179
             color: "#d52b1e"
-            text: qsTr("The two passwords don't match")
+            text: qsTr("Passwords don't match")
             anchors.bottom: parent.bottom
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            anchors.bottomMargin: 10
+            anchors.bottomMargin: 7
             font.pointSize: 12
             font.bold: true
         }
 
         Label {
             id: wrongCurrent
-            visible: false;
+            visible: false
             x: 93
-            y: 176
+            y: 179
             color: "#d52b1e"
-            text: qsTr("Current password entered is wrong")
+            text: qsTr("Wrong current password")
             anchors.bottom: parent.bottom
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            anchors.bottomMargin: 10
+            anchors.bottomMargin: 7
             font.pointSize: 12
             font.bold: true
         }
@@ -260,122 +266,16 @@ Page {
 
     }
 
-    Frame {
-        id: frame1
-        x: (applicationWindow.width - width)/2
-        y: 295
-        width: 494
-        height: 155
+    Button {
+        id: logoutBtn
+        x: (parent.width - width) / 2
+        width: 162
+        height: 48
+        text: qsTr("Logout")
         anchors.top: parent.top
-        Label {
-            id: changeIP
-            x: 0
-            y: 0
-            text: qsTr("Change IP Address")
-            anchors.left: parent.left
-            anchors.top: parent.top
-            font.bold: true
-            font.pointSize: 12
-        }
-
-
-
-        Label {
-            id: errorChangeIP
-            x: 171
-            y: 99
-            width: 128
-            height: 32
-            visible: false
-            color: "#d52b1e"
-            text: qsTr("Can't connect to server")
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            font.bold: true
-            font.pointSize: 12
-        }
-
-        Rectangle {
-            id: rectangle5
-            x: 0
-            y: 50
-            width: 361
-            height: 32
-            radius: 5
-            border.color: "#e1e2e1"
-            border.width: 2
-            anchors.horizontalCenter: parent.horizontalCenter
-            TextField {
-                id: changeNewIP
-                x: 9
-                y: -7
-                width: 289
-                height: 55
-                validator:RegExpValidator {
-                    regExp:/^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
-                }
-                placeholderText: "e.g. 10.0.0.0"
-                Keys.onReturnPressed: change.activate()
-
-            }
-            clip: true
-        }
-
-        Button {
-            id: change
-            x: 401
-            y: 82
-            height: 40
-            text: qsTr("change")
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            highlighted: true
-            anchors.rightMargin: 0
-            anchors.bottomMargin: 0
-            function activate() {
-                busyIndicatorIP.visible = true;
-                errorChangeIP.visible = false;
-                successChangeIP.visible = false;
-                backend.serverConn(changeNewIP.text);
-            }
-            onClicked: activate()
-        }
-
-        Label {
-            id: successChangeIP
-            x: 171
-            y: 99
-            width: 128
-            height: 32
-            visible: false
-            color: "#dd007b22"
-            text: qsTr("✔ Success")
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            font.pointSize: 12
-            font.bold: true
-        }
-
-        BusyIndicator {
-            id: busyIndicatorIP
-            x: 355
-            y: 91
-            width: 40
-            height: 40
-            visible: false
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 0
-            anchors.rightMargin: 75
-        }
-
-        background: Rectangle {
-            color: "#00000000"
-            radius: 5
-            border.color: "#7b7b7b"
-            border.width: 2
-        }
-        anchors.topMargin: 315
+        highlighted: true
+        anchors.topMargin: 311
+        onClicked: stackView.pop(null)
     }
 
 
@@ -386,6 +286,6 @@ Page {
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;formeditorZoom:0.6600000262260437;height:600;width:1000}
+    D{i:0;autoSize:true;formeditorZoom:0.6600000262260437;height:600;width:1000}D{i:20}
 }
 ##^##*/
