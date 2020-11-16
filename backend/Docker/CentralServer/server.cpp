@@ -36,7 +36,8 @@ void Server::run() {
     cout << getTime() << "server is running on " << addr.host() << ":" << addr.port() << endl;
     
     // TODO: remove dummies
-    createDummies();
+    //createDummies();
+    //updatePass("admin", "admin");
 
     // listening for a ctl+C
     while (!sigint) {
@@ -101,7 +102,7 @@ void Server::checkEnginesStatus() {
 
 void Server::updatePass(string user, string pw) {
     string salt = genRandomString(20);
-    string hashedPass = hash10times(salt, pw);
+    string hashedPass = sha512(salt + pw);
     db.updatePass(user, salt, hashedPass);
 }
 
@@ -127,7 +128,7 @@ void Server::login(const Rest::Request& req, Http::ResponseWriter res) {
             return;
         }
         if (credential.dump() != "null") {
-            string hashedPass = hash10times(credential["salt"].get<string>(), pass);
+            string hashedPass = sha512(credential["salt"].get<string>() + pass);
             bool matchingUsers = user == credential["user"].get<string>();
             bool matchingPass = hashedPass == credential["pw"].get<string>();
             if ( matchingUsers && matchingPass) {
@@ -162,6 +163,7 @@ void Server::sendPoll(const Rest::Request& req, Http::ResponseWriter res) {
     
 }
 
+// TODO: autorization header
 void Server::getPolls(const Rest::Request& req, Http::ResponseWriter res) {
     bool err;
     json data = db.getPolls(err);
@@ -208,7 +210,7 @@ void Server::changePass(const Rest::Request& req, Http::ResponseWriter res) {
             return;
         }
         if (credential.dump() != "null") {
-            string hashedPass = hash10times(credential["salt"].get<string>(), pass);
+            string hashedPass = sha512(credential["salt"].get<string>() + pass);
             bool matchingUsers = user == credential["user"].get<string>();
             bool matchingPass = hashedPass == credential["pw"].get<string>();
             if ( matchingUsers && matchingPass) {
@@ -260,14 +262,6 @@ string genRandomString(int len) {
     
     
     return tmp_s;
-}
-
-string hash10times(string salt, string pass) {
-    string hashed = salt + pass;
-    for (int i = 0; i < 10; i++ ) {
-        hashed = sha512(hashed);
-    }
-    return hashed;
 }
 
 // TODO: remove

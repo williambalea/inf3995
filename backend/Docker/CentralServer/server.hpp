@@ -38,8 +38,6 @@ string getTime();
 
 string genRandomString(int len);
 
-string hash10times(string salt, string pass);
-
 class Server {
 public :
     /**
