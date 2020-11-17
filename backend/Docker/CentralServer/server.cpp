@@ -11,6 +11,7 @@
 
 //TODO: Correct address when engine3 will be created
 #define ENGINE3_ADDR "http://engine1:5000/engine1"
+#define CHECK_ENGINE_INTERVALL 10
 
 using namespace Pistache;
 using namespace std;
@@ -38,7 +39,7 @@ void Server::run() {
     // listening for a ctl+C
     while (!sigint) {
         checkEnginesStatus();
-        sleep(10);
+        sleep(CHECK_ENGINE_INTERVALL);
     }
 
     httpEndpoint->shutdown();
@@ -72,20 +73,17 @@ void Server::log(string msg) {
 
 bool Server::checkEngine(string engineAddr) {
     bool status = false;
+    http::Response res;
     try {
         http::Request request(engineAddr);
-        const http::Response response = request.send("GET");
-
-        if (response.status == 200) {
-            status = true;
-        } else {
-            cout << getTime() << "Engine at " << engineAddr << " is offline! "
-            "Trying to reconnect... " << endl;
-        }
+        res = request.send("GET");
     } catch (const std::exception& e) {
         cout << getTime() << "Engine at " << engineAddr << " is offline! "
         "Trying to reconnect... " << endl;    
     }
+
+    if (res.status == http::Response::Ok)
+        status = true;
 
     return status;
 }
@@ -254,7 +252,6 @@ string genRandomString(int len) {
     
     for (int i = 0; i < len; ++i) 
         tmp_s += characters[rand() % (sizeof(characters) - 1)];
-    
     
     return tmp_s;
 }
