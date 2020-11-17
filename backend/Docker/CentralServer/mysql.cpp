@@ -12,31 +12,30 @@ using json = nlohmann::json;
 
 MySQL::MySQL() {
     driver = get_mysql_driver_instance();
-    setup();
 }
 
-void MySQL::sendPoll(std::string email, std::string firstName, std::string lastName, int age, bool interest) {
-    connect();
+void MySQL::sendSurvey(json survey) {
+    con = driver->connect(HOST, USER, PASS);
     
     PreparedStatement* stmt = con->prepareStatement(
-        "INSERT INTO Polls (email, firstName, lastName, age, interest) VALUES (?, ?, ?, ?, ?)"
+        "INSERT INTO Survey.Polls (email, firstName, lastName, age, interest) VALUES (?, ?, ?, ?, ?)"
     );
 
-    stmt->setString(1, email);
-    stmt->setString(2, firstName);
-    stmt->setString(3, lastName);
-    stmt->setInt(4, age);
-    stmt->setBoolean(5, interest);
+    stmt->setString(1, survey["email"].get<string>());
+    stmt->setString(2, survey["firstName"].get<string>());
+    stmt->setString(3, survey["lastName"].get<string>());
+    stmt->setInt(4, survey["age"].get<int>());
+    stmt->setBoolean(5, survey["interest"].get<bool>());
     stmt->execute();
 
     delete stmt;
-    disconnect();
+    delete con;
 }
 
-json MySQL::getPolls(bool &err) {
-    err = !connect();
+json MySQL::getSurvey() {
+    con = driver->connect(HOST, USER, PASS);
     Statement *stmt = con->createStatement();
-    ResultSet *res  = stmt->executeQuery("SELECT * FROM Polls");
+    ResultSet *res  = stmt->executeQuery("SELECT * FROM Server.Polls");
     json allData;
     while (res->next()) {
         json data;
@@ -50,14 +49,14 @@ json MySQL::getPolls(bool &err) {
 
     delete res;
     delete stmt;
-    disconnect();
+    delete con;
     return allData;
 }
 
-json MySQL::getUser(std::string user, bool &err) {
-    err = !connect();
+json MySQL::getUser(string user) {
+    con = driver->connect(HOST, USER, PASS);
     Statement *stmt = con->createStatement();
-    ResultSet *res = stmt->executeQuery("SELECT * FROM Accounts WHERE user='" + user + "'");
+    ResultSet *res = stmt->executeQuery("SELECT * FROM Server.Accounts WHERE user='" + user + "'");
     json data;
     while (res->next()) {
         data["user"] = res->getString("user");
@@ -67,50 +66,19 @@ json MySQL::getUser(std::string user, bool &err) {
 
     delete res;
     delete stmt;
-    disconnect();
+    delete con;
     return data;
 }
 
-void MySQL::updatePass(std::string user, std::string salt, std::string newPass) {
-    connect();
-    PreparedStatement* stmt = con->prepareStatement("UPDATE Accounts SET salt=?, pw=? WHERE user=?");
+void MySQL::updatePass(string user, string salt, string newPass) {
+    con = driver->connect(HOST, USER, PASS);
+    PreparedStatement* stmt = con->prepareStatement("UPDATE Server.Accounts SET salt=?, pw=? WHERE user=?");
 
     stmt->setString(1, salt);
     stmt->setString(2, newPass);
     stmt->setString(3, user);
     stmt->execute();
 
-
-    delete stmt;
-    disconnect();
-}
-
-bool MySQL::connect() {
-    con = driver->connect(HOST, USER, PASS);
-    Statement* stmt = con->createStatement();
-    stmt->execute("USE Server");
-    delete stmt;
-    return con->isValid();
-}
-
-void MySQL::disconnect() {
-    delete con;
-}
-
-void MySQL::setup() {
-    con = driver->connect(HOST, USER, PASS);
-    Statement* stmt = con->createStatement();
-
-    stmt->execute("USE Server");
-    stmt->execute("DROP TABLE IF EXISTS Polls");
-    stmt->execute(
-        "CREATE TABLE Polls ("
-        "email VARCHAR(40), "
-        "firstName VARCHAR(40), "
-        "lastName VARCHAR(40), "
-        "age TINYINT, "
-        "interest BOOL)"
-    );
 
     delete stmt;
     delete con;
