@@ -13,7 +13,7 @@ class Engine2:
     weekDayLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     firstDayMonday = 3
 
-    logging.basicConfig(filename='engine2.log', filemode='w', level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+    logging.basicConfig(filename='engine.log', filemode='w', level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
 
     def __init__(self):
         return None 
@@ -159,11 +159,3 @@ class Engine2:
         logging.info('Label used: ')
         logging.info(label)
         return json.dumps(o)
-    
-    def logsToJSON(self, byte):
-        logs = {}
-        logsFile= open('engine2.log', 'r')
-        logs= logsFile.read()[int(byte):].splitlines()
-        logsFile.close()
-        logs = {'logs': logs}
-        return json.dumps(logs)
