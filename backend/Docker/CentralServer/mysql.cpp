@@ -12,14 +12,13 @@ using json = nlohmann::json;
 
 MySQL::MySQL() {
     driver = get_mysql_driver_instance();
-    setup();
 }
 
 void MySQL::sendSurvey(json survey) {
-    connect();
+    con = driver->connect(HOST, USER, PASS);
     
     PreparedStatement* stmt = con->prepareStatement(
-        "INSERT INTO Polls (email, firstName, lastName, age, interest) VALUES (?, ?, ?, ?, ?)"
+        "INSERT INTO Survey.Polls (email, firstName, lastName, age, interest) VALUES (?, ?, ?, ?, ?)"
     );
 
     stmt->setString(1, survey["email"].get<string>());
@@ -30,13 +29,13 @@ void MySQL::sendSurvey(json survey) {
     stmt->execute();
 
     delete stmt;
-    disconnect();
+    delete con;
 }
 
 json MySQL::getSurvey() {
-    connect();
+    con = driver->connect(HOST, USER, PASS);
     Statement *stmt = con->createStatement();
-    ResultSet *res  = stmt->executeQuery("SELECT * FROM Polls");
+    ResultSet *res  = stmt->executeQuery("SELECT * FROM Server.Polls");
     json allData;
     while (res->next()) {
         json data;
@@ -50,14 +49,14 @@ json MySQL::getSurvey() {
 
     delete res;
     delete stmt;
-    disconnect();
+    delete con;
     return allData;
 }
 
 json MySQL::getUser(string user) {
-    connect();
+    con = driver->connect(HOST, USER, PASS);
     Statement *stmt = con->createStatement();
-    ResultSet *res = stmt->executeQuery("SELECT * FROM Accounts WHERE user='" + user + "'");
+    ResultSet *res = stmt->executeQuery("SELECT * FROM Server.Accounts WHERE user='" + user + "'");
     json data;
     while (res->next()) {
         data["user"] = res->getString("user");
@@ -67,49 +66,19 @@ json MySQL::getUser(string user) {
 
     delete res;
     delete stmt;
-    disconnect();
+    delete con;
     return data;
 }
 
 void MySQL::updatePass(string user, string salt, string newPass) {
-    connect();
-    PreparedStatement* stmt = con->prepareStatement("UPDATE Accounts SET salt=?, pw=? WHERE user=?");
+    con = driver->connect(HOST, USER, PASS);
+    PreparedStatement* stmt = con->prepareStatement("UPDATE Server.Accounts SET salt=?, pw=? WHERE user=?");
 
     stmt->setString(1, salt);
     stmt->setString(2, newPass);
     stmt->setString(3, user);
     stmt->execute();
 
-
-    delete stmt;
-    disconnect();
-}
-
-void MySQL::connect() {
-    con = driver->connect(HOST, USER, PASS);
-    Statement* stmt = con->createStatement();
-    stmt->execute("USE Server");
-    delete stmt;
-}
-
-void MySQL::disconnect() {
-    delete con;
-}
-
-void MySQL::setup() {
-    con = driver->connect(HOST, USER, PASS);
-    Statement* stmt = con->createStatement();
-
-    stmt->execute("USE Server");
-    stmt->execute("DROP TABLE IF EXISTS Polls");
-    stmt->execute(
-        "CREATE TABLE Polls ("
-        "email VARCHAR(40), "
-        "firstName VARCHAR(40), "
-        "lastName VARCHAR(40), "
-        "age TINYINT, "
-        "interest BOOL)"
-    );
 
     delete stmt;
     delete con;

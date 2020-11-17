@@ -62,12 +62,12 @@ void Server::init() {
 
 void Server::setupRoutes() {
     using namespace Rest;
-    Routes::Get (router, "/server/", Routes::bind(&Server::newConn, this));
-    Routes::Post(router, "/server/survey", Routes::bind(&Server::sendSurvey, this));
-    Routes::Get (router, "/server/survey", Routes::bind(&Server::getSurvey, this));
-    Routes::Get (router, "/server/user/login", Routes::bind(&Server::login, this));
-    Routes::Get (router, "/server/status", Routes::bind(&Server::getStatus, this));
-    Routes::Put (router, "/server/user/password", Routes::bind(&Server::changePass, this));
+    Routes::Get(router, "/server/", Routes::bind(&Server::newConn, this));
+    Routes::Put(router, "/server/survey", Routes::bind(&Server::sendSurvey, this));
+    Routes::Get(router, "/server/survey", Routes::bind(&Server::getSurvey, this));
+    Routes::Get(router, "/server/user/login", Routes::bind(&Server::login, this));
+    Routes::Get(router, "/server/status", Routes::bind(&Server::getStatus, this));
+    Routes::Put(router, "/server/user/password", Routes::bind(&Server::changePass, this));
 }
 
 void Server::log(string msg) {
@@ -182,10 +182,22 @@ void Server::getSurvey(const Rest::Request& req, Http::ResponseWriter res) {
 //TODO: maybe change for a json instead of string
 void Server::getStatus(const Rest::Request& req, Http::ResponseWriter res) {
     string buffer = "";
-    for(const auto& it : enginesStatus) {
-        buffer += it ? "true " : "false ";
+    json body;
+    bool problemFlag = false;
+    for(const auto& status : enginesStatus) {
+        if (status) {
+            buffer += "UP ";
+        } else {
+            buffer += "DOWN ";
+            problemFlag = true;
+        }
     }
-    res.send(Http::Code::Ok, buffer);
+    body["message"] = buffer;
+
+    if (!problemFlag)
+        res.send(Http::Code::Ok, body.dump());
+    else
+        res.send(Http::Code::Internal_Server_Error, body.dump());
 }
 
 void Server::changePass(const Rest::Request& req, Http::ResponseWriter res) {

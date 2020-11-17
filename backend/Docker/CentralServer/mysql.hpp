@@ -20,10 +20,6 @@ public:
 
 private:
 
-    void connect();
-    void disconnect();
-    void setup();
-
     MySQL_Driver *driver;
     Connection *con;
 };
