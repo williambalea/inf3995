@@ -18,7 +18,8 @@ class MySqlDB:
     ACCOUNTS = "SELECT * FROM Accounts"
     ENGINE1_LOGS = "../Engine1/engine.log"
     ENGINE2_LOGS = "../Engine2/engine.log"
-    REGEX = r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]'
+    ANSI_COLOR = r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]'
+    ANSI_ESPACE = r'\\x1b[^m]*m'
 
     def __init__(self):
         return None
@@ -74,8 +75,9 @@ class MySqlDB:
         return self.toJson(logs)
         
     def espace_ansi(self, line):
-        ansi_espace = re.compile(self.REGEX)
-        return ansi_espace.sub(" ", line)
+        ansi_espace = re.sub(self.ANSI_COLOR, '', line)
+        ansi_espace = re.sub(self.ANSI_ESPACE, "", ansi_espace)
+        return ansi_espace
 
     def toJson(self, data):
         logging.info("Data to JSON")

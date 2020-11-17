@@ -4,7 +4,7 @@ FROM python:3.8.5
 RUN mkdir /usr/src/engine2/
 WORKDIR /usr/src/engine2/
 RUN pip3 install --upgrade pip
-RUN pip3 install Flask Flask-API matplotlib pandas numpy easydict 
+RUN pip3 install Flask Flask-API matplotlib pandas numpy easydict mysql-connector-python 
 COPY ./Engine2 .
 COPY ./kaggleData ./kaggleData
 
