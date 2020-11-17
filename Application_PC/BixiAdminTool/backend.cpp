@@ -86,9 +86,9 @@ void BackEnd::checkEnginesFinished(QNetworkReply *reply) {
     int httpCode = code.toInt();
     QStringList status = data.split(QLatin1Char(' '));
     if (httpCode == 200) {
-        m_engine1Status = (status[0] == "true");
-        m_engine2Status = (status[1] == "true");
-        m_engine3Status = (status[2] == "true");
+        m_engine1Status = (status[0] == "UP");
+        m_engine2Status = (status[1] == "UP");
+        m_engine3Status = (status[2] == "UP");
     } else {
         m_engine1Status = false;
         m_engine2Status = false;
