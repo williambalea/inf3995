@@ -64,14 +64,16 @@ class MySqlDB:
 
     def logsToJSON(self, engine, byte):
         logs = {}
+        removeAnsi = []
         if (engine == "engine1"):
             logsFile= open(self.ENGINE1_LOGS, 'r')
         else:
             logsFile= open(self.ENGINE2_LOGS, 'r')
         logs = logsFile.read()[int(byte):].splitlines()
         logsFile.close()
-        logs = self.espace_ansi(str(logs))
-        logs = {'logs': logs}
+        for i in range(0, len(logs)):
+            removeAnsi.append(self.espace_ansi(logs[i]))
+        logs = {'logs': removeAnsi}
         return self.toJson(logs)
         
     def espace_ansi(self, line):
