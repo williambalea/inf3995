@@ -124,6 +124,7 @@ Page {
                 height: 55
                 echoMode: TextInput.Password
                 activeFocusOnTab: true
+                selectByMouse: true
                 placeholderText: "Enter current password"
 
             }
@@ -149,6 +150,7 @@ Page {
                 height: 55
                 echoMode: TextInput.Password
                 activeFocusOnTab: true
+                selectByMouse: true
                 placeholderText: "Enter new password"
             }
             clip: true
@@ -173,6 +175,7 @@ Page {
                 height: 55
                 activeFocusOnTab: true
                 echoMode: TextInput.Password
+                selectByMouse: true
                 placeholderText: "Confirm new password"
             }
         }
@@ -291,6 +294,6 @@ Page {
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;formeditorZoom:0.6600000262260437;height:600;width:1000}D{i:20}
+    D{i:0;autoSize:true;formeditorZoom:0.6600000262260437;height:600;width:1000}
 }
 ##^##*/
