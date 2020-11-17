@@ -28,9 +28,9 @@ class Engine3:
     def get_weather_df(self):
         print('importing weather data')
         weather_description = pd.read_csv('../kaggleData/historical-hourly-weather-data/weather_description.csv', low_memory=False)
-        temperature = pd.read_csv('../kaggleData/historical-hourly-weather-data/temperature.csv', low_memory=False)
-        pressure = pd.read_csv('../kaggleData/historical-hourly-weather-data/pressure.csv', low_memory=False)
-        wind_speed = pd.read_csv('../kaggleData/historical-hourly-weather-data/wind_speed.csv', low_memory=False)
+        temperature = pd.read_csv('../kaggleData/historical-hourly-weather-data/temperature.csv', low_memory=False, dtype={'Montreal':np.float32})
+        pressure = pd.read_csv('../kaggleData/historical-hourly-weather-data/pressure.csv', low_memory=False, dtype={'Montreal':np.float32})
+        wind_speed = pd.read_csv('../kaggleData/historical-hourly-weather-data/wind_speed.csv', low_memory=False, dtype={'Montreal':np.float32})
 
         print(weather_description.shape)
         print('filter only montreal')
@@ -47,8 +47,12 @@ class Engine3:
         weather = weather.drop( ['Temperature'], axis=1)
 
         weather['Datetime'] = pd.to_datetime(weather['Datetime'])
+        
+        # weather['Temparature'] = weather['Temperature_C'].astype(int)
         weather = weather.sort_values(by = ['Datetime'])
+
         print('Weather_df done')
+
         print(weather.shape)
         return weather
 
@@ -75,42 +79,22 @@ class Engine3:
         list_of_pandas.append(bixi2016)
         list_of_pandas.append(bixi2015)
         list_of_pandas.append(bixi2014)
-
         big_bixi_df = pd.concat(list_of_pandas)
- 
-        print('merging bixi and weather')
-        df = self.merge_bixi_weather_df(big_bixi_df, weather_df)
-
-        print(df.columns)
-        print('cleaning columns train')
-        df.insert(1, "year", df['start_date'].dt.year)
-        df.insert(2, "month", df['start_date'].dt.month)
-        df.insert(3, "day", df['start_date'].dt.day)
-        df.insert(4, "hour", df['start_date'].dt.hour)
-        df.insert(5, "weekday", df['start_date'].dt.weekday)
-        df.insert(6, "weekofyear", df['start_date'].dt.isocalendar().week)
-        df = df.drop( ['start_date',
-                        'end_date',
-                        'end_station_code',
-                        'duration_sec',
-                        'is_member', 
-                        'Unnamed: 0', 'Pressure', 'Wind_speed', 'Temperature_C'], axis=1)
-        # Group by hour
-        df_grouped = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).agg('first')
-        column = df.groupby(['year','month', 'day', 'hour']).count()['Description']
         
-        df_grouped['num_trips']= column
-        df_grouped = df_grouped.reset_index()
-        print('training df col: ', df_grouped.columns)
-        return df_grouped
+        return self.prep_df_for_rf(big_bixi_df, weather_df)
+        
 
     def get_testing_df(self):
         print('fetching csv data')
         bixi2017 = self.get_bixi_data_year(2017)
         weather = self.get_weather_df()
+        return self.prep_df_for_rf(bixi2017, weather)
 
+  
+
+    def prep_df_for_rf(self, bixi_df, weather_df):
         print('merging bixi and weather')
-        df = self.merge_bixi_weather_df(bixi2017, weather)
+        df = self.merge_bixi_weather_df(bixi_df, weather_df)
 
         print('cleaning columns test')
         df.insert(1, "year", df['start_date'].dt.year)
@@ -125,15 +109,32 @@ class Engine3:
                         'duration_sec',
                         'is_member', 
                         'Unnamed: 0', 'Pressure', 'Wind_speed', 'Temperature_C'], axis=1)
-        # Group by hour
-        df_grouped = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).agg('first')
-        column = df.groupby(['year','month', 'day', 'hour']).count()['Description']
+        print('look here --------------------------------------------------------------')
         
-
+        # Group by hour
+        # df_grouped = df.groupby(['year','month', 'day', 'hour']).agg('first')
+        # column = df.groupby(['year','month', 'day', 'hour']).count()['Description']
+        df_grouped = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).agg('first')
+        column = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).count()['Description']
+        
         df_grouped['num_trips']= column
         df_grouped = df_grouped.reset_index()
-        print('testing df col: ', df_grouped.columns)
+        print('testing 1 df col: ', df_grouped.dtypes)
+
+        df_grouped['year'] = df_grouped['year'].astype(np.int16)
+        df_grouped['month'] = df_grouped['month'].astype(np.int16)
+        df_grouped['day'] = df_grouped['day'].astype(np.int16)
+        df_grouped['hour'] = df_grouped['hour'].astype(np.int16)
+        df_grouped['start_station_code'] = df_grouped['start_station_code'].astype(np.int16)
+        df_grouped['weekday'] = df_grouped['weekday'].astype(np.int16)
+        df_grouped['weekofyear'] = df_grouped['weekofyear'].astype(np.int16)
+        df_grouped['num_trips'] = df_grouped['num_trips'].astype(np.int16)
+
+        # df['year'] = df['year'].astype(np.int32)
+        print('testing 2 df col: ', df_grouped.dtypes)
+
         return df_grouped
+
 
     def random_forest_algo(self):
         print('testing---------------------') 
@@ -154,10 +155,8 @@ class Engine3:
         train_labels = np.array(train_features['num_trips'])
 
 
-        print('testing df col after : ', test_features.columns)
         test_features = test_features.drop(['num_trips'], axis=1)
         train_features = train_features.drop(['num_trips'], axis=1)
-        print('testing df col after drop : ', test_features.columns)
 
         print('Training Features Shape:', train_features.shape)
         print('Training Labels Shape:', train_labels.shape)
@@ -175,7 +174,8 @@ class Engine3:
 
 
         #instantiate model with 1000 decision trees
-        rf = RandomForestRegressor(n_estimators = 100, random_state = 42)
+        rf = RandomForestRegressor(n_estimators = 20, random_state = 42, n_jobs=-1)
+
 
         print(train_features.dtypes)
         # train_features.dropna()
@@ -184,4 +184,16 @@ class Engine3:
         print('Fit calculating...')
         rf.fit(train_features, train_labels)
         print('Fit DONE')
+
+
+        print('test_features col before : ', test_features.columns)
+        print('train_features col before : ', train_features.columns)
+
+        # Use the forest's predict method on the test data
+        print('prediction...')
+        predictions = rf.predict(test_features)
+        # Calculate the absolute errors
+        errors = abs(predictions - test_labels)
+        # Print out the mean absolute error (mae)
+        print('Mean Absolute Error:', round(np.mean(errors), 2), 'degrees.')
         return 0
