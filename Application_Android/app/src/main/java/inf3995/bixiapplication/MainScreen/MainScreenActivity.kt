@@ -12,6 +12,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import inf3995.bixiapplication.Data.ConnectivityData
+import inf3995.bixiapplication.Data.Station
 import inf3995.bixiapplication.Dialog.EngineConnectivityStatusDialog
 import inf3995.bixiapplication.Dialog.IpAddressDialog
 import inf3995.bixiapplication.GlobalPredictionsActivity
@@ -120,16 +124,19 @@ class MainScreenActivity : AppCompatActivity() {
                             inf3995.bixiapplication.Dialog.TAG,
                             "Réponse Connectivity: ${response?.body()}"
                         )
-                        val connectivity = response?.body()?.split(" ")?.toTypedArray()
+                        val connectivityStatus = object : TypeToken<ConnectivityData>() {}.type
+                        val jObj: ConnectivityData = Gson().fromJson(response?.body(), connectivityStatus)
 
-                        if (connectivity?.get(0) == "UP" && connectivity[1] == "UP" && connectivity[2] == "UP") {
+                        val connectivity = jObj.message.split(" ").toTypedArray()
+
+                        if (connectivity[0] == "UP" && connectivity[1] == "UP" && connectivity[2] == "UP") {
                             item?.setTint(Color.argb(255, 0, 255, 0))
                         } else {
                             engineProblemNotification.start()
                         }
-                        EngineConnectivityStatusDialog.status1 = connectivity?.get(0).toString()
-                        EngineConnectivityStatusDialog.status2 = connectivity?.get(1).toString()
-                        EngineConnectivityStatusDialog.status3 = connectivity?.get(2).toString()
+                        EngineConnectivityStatusDialog.status1 = connectivity[0]
+                        EngineConnectivityStatusDialog.status2 = connectivity[1]
+                        EngineConnectivityStatusDialog.status3 = connectivity[2]
 
                     }
 
