@@ -17,7 +17,14 @@ using namespace Pistache;
 using namespace std;
 using json = nlohmann::json;
 
-volatile sig_atomic_t sigint = 0;
+
+static const char characters[] =
+    "0123456789"
+    "!@#$%^&*"
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "abcdefghijklmnopqrstuvwxyz";
+
+static volatile bool keepRunning = true;
 
 /*---------------------------
     Server Class Functions
@@ -31,13 +38,13 @@ Server::Server(Address &addr_, MySQL &db_) {
 }
 
 void Server::run() {
-    setSIGINTListener();
+    signal(SIGINT, interruptHandler);
 
     httpEndpoint->serveThreaded();
     cout << getTime() << "server is running on " << addr.host() << ":" << addr.port() << endl;
 
     // listening for a ctl+C
-    while (!sigint) {
+    while (keepRunning) {
         checkEnginesStatus();
         sleep(CHECK_ENGINE_INTERVALL);
     }
@@ -61,10 +68,6 @@ void Server::setupRoutes() {
     Routes::Get (router, "/server/user/login", Routes::bind(&Server::login, this));
     Routes::Get (router, "/server/status", Routes::bind(&Server::getStatus, this));
     Routes::Put (router, "/server/user/password", Routes::bind(&Server::changePass, this));
-}
-
-void Server::setSIGINTListener() {
-    signal(SIGINT, intHandler);
 }
 
 void Server::log(string msg) {
@@ -95,7 +98,7 @@ void Server::checkEnginesStatus() {
 }
 
 void Server::updatePass(string user, string pw) {
-    string salt = genRandomString(20);
+    string salt = generateSalt(20);
     string hashedPass = sha512(salt + pw);
     db.updatePass(user, salt, hashedPass);
 }
@@ -219,14 +222,7 @@ void Server::changePass(const Rest::Request& req, Http::ResponseWriter res) {
     }
 }
 
-/*---------------------------
-    Global Functions
----------------------------*/
-void intHandler(int signum) {
-    sigint = 1;
-}
-
-string getTime() {
+string Server::getTime() {
     time_t now;
     struct tm local;
     now = time(NULL);
@@ -245,7 +241,7 @@ string getTime() {
     return buffer;
 }
 
-string genRandomString(int len) {
+string Server::generateSalt(int len) {
     
     string tmp_s;    
     srand(time(NULL));
@@ -254,4 +250,11 @@ string genRandomString(int len) {
         tmp_s += characters[rand() % (sizeof(characters) - 1)];
     
     return tmp_s;
+}
+
+/*---------------------------
+    Global Functions
+---------------------------*/
+void interruptHandler(int signum) {
+    keepRunning = false;
 }

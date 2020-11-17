@@ -10,16 +10,7 @@
 using namespace Pistache;
 using namespace std;
 
-extern volatile sig_atomic_t sigint;
-static const char characters[] =
-    "0123456789"
-    "!@#$%^&*"
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    "abcdefghijklmnopqrstuvwxyz";
-
-void intHandler(int signum);
-string getTime();
-string genRandomString(int len);
+void interruptHandler(int signum);
 
 class Server {
 public :
@@ -29,13 +20,14 @@ public :
 private:
     void init();
     void setupRoutes();
-    void setSIGINTListener();
     void checkEnginesStatus();
     bool checkEngine(string engineAddr);
     void updatePass(string user, string pw);
     void log(string msg);
     bool auth(shared_ptr<Http::Header::Authorization> authHeader);
     bool expectedJSON(int keyCount, string keyList[], json j);
+    string generateSalt(int len);
+    string getTime();
 
     void newConn(const Rest::Request& req, Http::ResponseWriter res);
     void login(const Rest::Request& req, Http::ResponseWriter res);
