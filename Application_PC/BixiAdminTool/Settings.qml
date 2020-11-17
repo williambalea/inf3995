@@ -19,6 +19,11 @@ Page {
                 busyIndicator.visible = false;
                 successLabel.visible = isSuccessful;
                 wrongCurrent.visible = !isSuccessful;
+                if (successLabel.visible) {
+                    current.text = "";
+                    newPass.text = "";
+                    retype.text  = "";
+                }
             }
 
             onServerConnChanged: {

@@ -4,20 +4,20 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
-BackEnd::BackEnd(QObject *parent) : QObject(parent)
-{
+#define CHECK_ENGINE_INTERVALL 1000
+
+BackEnd::BackEnd(QObject *parent) : QObject(parent) {
     setupNetworkManagers();
     checkEngines();
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(periodicFn()));
-    timer->start(1000);
+    timer->start(CHECK_ENGINE_INTERVALL);
 
 
 }
 
-BackEnd::~BackEnd()
-{
+BackEnd::~BackEnd() {
     delete manServerConn;
     delete manSqlData;
     delete manLogin;
@@ -43,39 +43,29 @@ void BackEnd::setupNetworkManagers() {
 }
 
 
-QString BackEnd::sqlData()
-{
-    if (m_sqlData.size() > 4)
-        return m_sqlData;
-    else
-        return "{}";
+QString BackEnd::sqlData() {
+    return (m_sqlData.size() > 4) ? m_sqlData : "{}";
 }
 
-void BackEnd::setSqlData(const QString &data)
-{
+void BackEnd::setSqlData(const QString &data) {
     m_sqlData = data;
     emit sqlDataChanged();
 }
 
-void BackEnd::refresh()
-{
-    // TODO: make this request only if admin authentified correctly
+void BackEnd::refresh() {
     QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server/survey"));
+    setAuthHeader(req, m_user, m_pass);
     manSqlData->get(req);
 }
 
 void BackEnd::login(QString user, QString pass) {
     QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server/user/login"));
-    QString auth = user + ":" + pass;
-    QByteArray data = auth.toLocal8Bit().toBase64();
-    QString headerData = "Basic " + data;
-    req.setRawHeader("Authorization", headerData.toLocal8Bit());
+    setAuthHeader(req, user, pass);
     manLogin->get(req);
 }
 
 
-void BackEnd::sqlFinished(QNetworkReply *reply)
-{
+void BackEnd::sqlFinished(QNetworkReply *reply) {
     QString data = QString::fromStdString(reply->readAll().toStdString());
     setSqlData(data);
 }
@@ -109,7 +99,6 @@ void BackEnd::checkEnginesFinished(QNetworkReply *reply) {
 
 void BackEnd::changePwFinished(QNetworkReply *reply) {
     QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    qDebug() << code;
     bool isSuccessful = code == "200";
     emit passwordChanged(isSuccessful);
 }
@@ -134,11 +123,7 @@ void BackEnd::sendFakeLogs() {
 
 void BackEnd::changePw(QString old, QString newPass) {
     QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server/user/password"));
-    QString auth = m_user + ":" + old;
-    QByteArray data = auth.toLocal8Bit().toBase64();
-    QString headerData = "Basic " + data;
-    req.setRawHeader("Authorization", headerData.toLocal8Bit());
-    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    setAuthHeader(req, m_user, old);
     QJsonObject obj;
     obj["new"] = newPass;
     manChangePw->put(req, QJsonDocument(obj).toJson());
@@ -151,6 +136,13 @@ void BackEnd::serverConn(QString host) {
 
 void BackEnd::periodicFn() {
     checkEngines();
-    //TODO: check les logs
     sendFakeLogs();
+}
+
+void BackEnd::setAuthHeader(QNetworkRequest &req, QString user, QString pass) {
+    QString auth = user + ":" + pass;
+    QByteArray data = auth.toLocal8Bit().toBase64();
+    QString headerData = "Basic " + data;
+    req.setRawHeader("Authorization", headerData.toLocal8Bit());
+    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 }
