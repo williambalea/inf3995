@@ -66,16 +66,16 @@ engine3 = Engine3()
 #get all data
 
 
-print('traning---------------------')
-training_df = engine3.get_traning_df()
-print(training_df)
-print(training_df.columns)
+# print('traning---------------------')
+# training_df = engine3.get_traning_df()
+# print(training_df)
+# print(training_df.columns)
 
-print('testing------------------')
-testing_df = engine3.get_testing_df()
-print(testing_df)
-print(testing_df.columns)
-
+# print('testing------------------')
+# testing_df = engine3.get_testing_df()
+# print(testing_df)
+# print(testing_df.columns)
+engine3.random_forest_algo()
 
 # print(training_set.info)
 # print(training_set.dtypes)

@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import base64
+from sklearn.ensemble import RandomForestRegressor
 
 class Engine3:
 
@@ -81,7 +82,7 @@ class Engine3:
         df = self.merge_bixi_weather_df(big_bixi_df, weather_df)
 
         print(df.columns)
-        print('cleaning columns')
+        print('cleaning columns train')
         df.insert(1, "year", df['start_date'].dt.year)
         df.insert(2, "month", df['start_date'].dt.month)
         df.insert(3, "day", df['start_date'].dt.day)
@@ -93,13 +94,14 @@ class Engine3:
                         'end_station_code',
                         'duration_sec',
                         'is_member', 
-                        'Unnamed: 0'], axis=1)
+                        'Unnamed: 0', 'Pressure', 'Wind_speed', 'Temperature_C'], axis=1)
         # Group by hour
         df_grouped = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).agg('first')
         column = df.groupby(['year','month', 'day', 'hour']).count()['Description']
         
         df_grouped['num_trips']= column
         df_grouped = df_grouped.reset_index()
+        print('training df col: ', df_grouped.columns)
         return df_grouped
 
     def get_testing_df(self):
@@ -110,7 +112,7 @@ class Engine3:
         print('merging bixi and weather')
         df = self.merge_bixi_weather_df(bixi2017, weather)
 
-        print('cleaning columns')
+        print('cleaning columns test')
         df.insert(1, "year", df['start_date'].dt.year)
         df.insert(2, "month", df['start_date'].dt.month)
         df.insert(3, "day", df['start_date'].dt.day)
@@ -122,24 +124,64 @@ class Engine3:
                         'end_station_code',
                         'duration_sec',
                         'is_member', 
-                        'Unnamed: 0'], axis=1)
+                        'Unnamed: 0', 'Pressure', 'Wind_speed', 'Temperature_C'], axis=1)
         # Group by hour
         df_grouped = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).agg('first')
         column = df.groupby(['year','month', 'day', 'hour']).count()['Description']
         
+
         df_grouped['num_trips']= column
         df_grouped = df_grouped.reset_index()
+        print('testing df col: ', df_grouped.columns)
         return df_grouped
 
     def random_forest_algo(self):
+        print('testing---------------------') 
         test_features = self.get_testing_df()
+
+        #one-hot encoding weather description
+        test_features = pd.get_dummies(test_features)
+
+        print('traning------------------')
         train_features = self.get_traning_df()
 
+        print(train_features)
+        #one-hot encoding weather description
+        train_features = pd.get_dummies(train_features)
+
+        print('testing df col before : ', test_features.columns)
         test_labels = np.array(test_features['num_trips'])
         train_labels = np.array(train_features['num_trips'])
 
-        test_features = test_features.drop('num_trips')
-        train_features = train_features.drop('num_trips')
+
+        print('testing df col after : ', test_features.columns)
+        test_features = test_features.drop(['num_trips'], axis=1)
+        train_features = train_features.drop(['num_trips'], axis=1)
+        print('testing df col after drop : ', test_features.columns)
+
+        print('Training Features Shape:', train_features.shape)
+        print('Training Labels Shape:', train_labels.shape)
+        print('Testing Features Shape:', test_features.shape)
+        print('Testing Labels Shape:', test_labels.shape)
 
         feature_list = list(test_features.columns)
+        
+        ## not gonna do for now
+        # # The baseline predictions are the historical averages
+        # baseline_preds = test_features[:, feature_list.index('num_trips')]
+        # # Baseline errors, and display average baseline error
+        # baseline_errors = abs(baseline_preds - test_labels)
+        # print('Average baseline error: ', round(np.mean(baseline_errors), 2))
 
+
+        #instantiate model with 1000 decision trees
+        rf = RandomForestRegressor(n_estimators = 100, random_state = 42)
+
+        print(train_features.dtypes)
+        # train_features.dropna()
+        # print(train_features)
+        #Train the model on training data
+        print('Fit calculating...')
+        rf.fit(train_features, train_labels)
+        print('Fit DONE')
+        return 0
