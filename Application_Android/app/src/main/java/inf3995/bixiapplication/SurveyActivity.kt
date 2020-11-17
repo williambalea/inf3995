@@ -68,6 +68,7 @@ class SurveyActivity : AppCompatActivity() {
                     ),
                     checkBoxYesSurvey.isChecked
                 )
+
                 sendSurveyData(surveyData)
             }
         }

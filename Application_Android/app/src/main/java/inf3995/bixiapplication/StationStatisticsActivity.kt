@@ -28,13 +28,16 @@ class StationStatisticsActivity : AppCompatActivity() {
         station = intent.getSerializableExtra("data") as Station
         Station_code.text = station!!.code.toString()
         Station_name.text = station!!.name
-       //val code = station!!.code
+        //val code = station!!.code
+
         val years_List = listOf("","2014", "2015", "2016","2017")
         val years_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, years_List)
         spnTime.adapter = years_adapter
+
         val period_List = listOf("","perMonth", "perWeekDay", "perHour")
         val period_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, period_List)
         spnPeriod.adapter = period_adapter
+
         limitDropDownmenuHeight(spnPeriod)
         limitDropDownmenuHeight(spnTime)
 
@@ -58,10 +61,10 @@ class StationStatisticsActivity : AppCompatActivity() {
 
         display_button.setOnClickListener{
             Toast.makeText(this," $station.name station Statistics", Toast.LENGTH_SHORT).show()
-            val code = station!!.code
+            //val code = station!!.code
             val annee = year
             val temps = time
-            val name = station!!.name
+            //val name = station!!.name
             when (temps){
                 "perMonth"-> {
                     val intent = Intent(this@StationStatisticsActivity, MonthlyStationStatisticActivity::class.java)

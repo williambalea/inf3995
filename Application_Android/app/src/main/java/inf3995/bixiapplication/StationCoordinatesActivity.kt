@@ -1,7 +1,9 @@
 package inf3995.bixiapplication
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import inf3995.bixiapplication.Data.Station
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.*
@@ -10,6 +12,7 @@ import kotlinx.android.synthetic.main.activity_coordinates_station.*
 class StationCoordinatesActivity : AppCompatActivity() {
 
     var station : Station?=null
+    private lateinit var btn3: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,5 +23,11 @@ class StationCoordinatesActivity : AppCompatActivity() {
         Station_latitude.text = station!!.latitude.toString()
         Station_longitude.text = station!!.longitude.toString()
 
+        btn3 = findViewById(R.id.button3)
+
+        btn3.setOnClickListener{
+            val intent = Intent(this, StationMapsActivity::class.java).putExtra("data", station)
+            startActivity(intent)
+        }
     }
 }
