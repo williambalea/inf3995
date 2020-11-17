@@ -34,10 +34,6 @@ void Server::run() {
 
     httpEndpoint->serveThreaded();
     cout << getTime() << "server is running on " << addr.host() << ":" << addr.port() << endl;
-    
-    // TODO: remove dummies
-    //createDummies();
-    //updatePass("admin", "admin");
 
     // listening for a ctl+C
     while (!sigint) {
@@ -59,8 +55,8 @@ void Server::init() {
 void Server::setupRoutes() {
     using namespace Rest;
     Routes::Get (router, "/server/", Routes::bind(&Server::newConn, this));
-    Routes::Post(router, "/server/survey", Routes::bind(&Server::sendPoll, this));
-    Routes::Get (router, "/server/survey", Routes::bind(&Server::getPolls, this));
+    Routes::Post(router, "/server/survey", Routes::bind(&Server::sendSurvey, this));
+    Routes::Get (router, "/server/survey", Routes::bind(&Server::getSurvey, this));
     Routes::Get (router, "/server/user/login", Routes::bind(&Server::login, this));
     Routes::Get (router, "/server/status", Routes::bind(&Server::getStatus, this));
     Routes::Put (router, "/server/user/password", Routes::bind(&Server::changePass, this));
@@ -106,6 +102,36 @@ void Server::updatePass(string user, string pw) {
     db.updatePass(user, salt, hashedPass);
 }
 
+bool Server::auth(shared_ptr<Http::Header::Authorization> authHeader) {
+    bool authorized = false;
+    string user = "";
+    json credentials;
+
+    if (authHeader != NULL) {
+        user = authHeader.get()->getBasicUser();
+        credentials = db.getUser(user);
+    }
+
+    if (!credentials.is_null()) {
+        string userPass = authHeader.get()->getBasicPassword();
+        string salt = credentials["salt"].get<string>();
+        string dbPass = credentials["pw"].get<string>();
+        string hashedPass = sha512(salt + userPass);
+        authorized = (hashedPass == dbPass);
+    }
+
+    return authorized;
+
+}
+
+bool Server::expectedJSON(int keyCount, string keyList[], json j) {
+    bool hasAllArgs = true;
+    for (int i = 0; i < keyCount; i++) {
+        hasAllArgs = hasAllArgs && j.contains(keyList[i]);
+    }
+    return hasAllArgs;
+}
+
 /*---------------------------
     Routes Fonction
 ---------------------------*/
@@ -115,66 +141,41 @@ void Server::newConn(const Rest::Request& req, Http::ResponseWriter res) {
 }
 
 void Server::login(const Rest::Request& req, Http::ResponseWriter res) {
-    bool err;
     auto headers = req.headers();
-    auto auth = headers.tryGet<Http::Header::Authorization>();
-    if (auth != NULL) {
-        string user = auth.get()->getBasicUser();
-        string pass = auth.get()->getBasicPassword();
-        json credential = db.getUser(user, err);
-        if (err) {
-            res.send(Http::Code::Bad_Request, "server couldn't connect to database.");
-            log("failed to login user. Can't connect to database.");
-            return;
-        }
-        if (credential.dump() != "null") {
-            string hashedPass = sha512(credential["salt"].get<string>() + pass);
-            bool matchingUsers = user == credential["user"].get<string>();
-            bool matchingPass = hashedPass == credential["pw"].get<string>();
-            if ( matchingUsers && matchingPass) {
-                res.send(Http::Code::Ok, "authentified");
-                log("admin authentified");
-                return;
-            }
-        }
+    auto authHeader = headers.tryGet<Http::Header::Authorization>();
+    if (auth(authHeader)) {
+        res.send(Http::Code::Ok, "authentified");
+        log("admin authentified");
+    } else {
+        res.send(Http::Code::Forbidden, "Unauthorized connection!");
+        log("authentification attempt failed when loging in");
     }
-    res.send(Http::Code::Unauthorized, "Unauthorized connection!");
-    log("authentification attempt failed");
 }
 
-void Server::sendPoll(const Rest::Request& req, Http::ResponseWriter res) {
-    try {
-        json j = json::parse(req.body());
-        db.sendPoll(
-            j["email"].get<string>(),
-            j["firstName"].get<string>(),
-            j["lastName"].get<string>(),
-            j["age"].get<int>(),
-            j["interest"].get<bool>()
-        );
+void Server::sendSurvey(const Rest::Request& req, Http::ResponseWriter res) {
+    string keys[] = {"email", "firstName", "lastName", "age", "interest"};
+    json body = json::parse(req.body());
+    if (expectedJSON(5, keys, body)) {
+        db.sendSurvey(body);
         res.send(Http::Code::Ok, "Server got your survey!");
         log("sent a survey");
-
-    } catch (json::exception &e) {
-        res.send(Http::Code::Bad_Request, e.what());
-        string msg = e.what();
-        log("failed to send survey " + msg);
+    } else {
+        res.send(Http::Code::Bad_Request, "Survey json format is wrong!");
+        log("failed to send survey : json is wrong");
     }
-    
 }
 
-// TODO: autorization header
-void Server::getPolls(const Rest::Request& req, Http::ResponseWriter res) {
-    bool err;
-    json data = db.getPolls(err);
-    if (!err) {
+void Server::getSurvey(const Rest::Request& req, Http::ResponseWriter res) {
+    auto headers = req.headers();
+    auto authHeader = headers.tryGet<Http::Header::Authorization>();
+    if (auth(authHeader)) {
+        json data = db.getSurvey();
         res.send(Http::Code::Ok, data.dump());
-        log("requested surveys");
+        log("sending surveys");
     } else {
-        res.send(Http::Code::Bad_Request, "server couldn't connect to database.");
-        log("failed to request surveys. Can't connect to database.");
+        res.send(Http::Code::Bad_Request, "Unauthorized connection!");
+        log("authentification attempt failed when getting surveys");
     }
-
 }
 
 //TODO: maybe change for a json instead of string
@@ -187,44 +188,38 @@ void Server::getStatus(const Rest::Request& req, Http::ResponseWriter res) {
 }
 
 void Server::changePass(const Rest::Request& req, Http::ResponseWriter res) {
-    bool err;
     auto headers = req.headers();
-    auto auth = headers.tryGet<Http::Header::Authorization>();
-    if (auth != NULL) {
-        string user = auth.get()->getBasicUser();
-        string pass = auth.get()->getBasicPassword();
-        string newPass = "";
-        try {
-            json j = json::parse(req.body());
-            newPass = j["new"].get<string>();
-        } catch (json::exception &e) {
-            res.send(Http::Code::Bad_Request, "Cannot get new password");
-            string msg = e.what();
-            log("failed to changed password " + msg);
-            return;
-        }
-        json credential = db.getUser(user, err);
-        if (err) {
-            res.send(Http::Code::Bad_Request, "server couldn't connect to database.");
-            log("failed to change password. Can't connect to database.");
-            return;
-        }
-        if (credential.dump() != "null") {
-            string hashedPass = sha512(credential["salt"].get<string>() + pass);
-            bool matchingUsers = user == credential["user"].get<string>();
-            bool matchingPass = hashedPass == credential["pw"].get<string>();
-            if ( matchingUsers && matchingPass) {
-                updatePass(user, newPass);
-                res.send(Http::Code::Ok, "password was changed");
-                log("admin changed password");
-                return;
-            }
-        }
-    }
-    res.send(Http::Code::Unauthorized, "Unauthorized connection!");
-    log("password change attempt failed");
-}
+    auto authHeader = headers.tryGet<Http::Header::Authorization>();
+    json body;
+    string newPass = "";
 
+    if (auth(authHeader)) {
+        body = json::parse(req.body());
+    } else {
+        res.send(Http::Code::Unauthorized, "Unauthorized connection!");
+        log("password change attempt failed");
+        return;
+    }
+
+    string keys[] = {"new"};
+    if (expectedJSON(1, keys, body)) {
+        newPass = body["new"].get<string>();
+    } else {
+        res.send(Http::Code::Bad_Request, "Cannot get new password");
+        log("failed to change password : wrong JSON");
+        return;
+    }
+
+    if (!newPass.empty()) {
+        string user = authHeader.get()->getBasicUser();
+        updatePass(user, newPass);
+        res.send(Http::Code::Ok, "Password was changed");
+        log("admin changed password");
+    } else {
+        res.send(Http::Code::Bad_Request, "New password is blank!");
+        log("failed to change password : new password is blank");
+    }
+}
 
 /*---------------------------
     Global Functions
@@ -263,28 +258,3 @@ string genRandomString(int len) {
     
     return tmp_s;
 }
-
-// TODO: remove
-void Server::createDummies() {
-    cout << getTime() << "creating dummies ";
-    cout.flush();
-    for (int i = 0; i < 20; i++) {
-        if (sigint) break;
-        json j;
-        j["email"] = to_string(i) + "@poly.ca";
-        j["firstName"] = to_string('a' + i);
-        j["lastName"] = to_string('A' + i);
-        j["age"] = i + 100;
-        j["interest"] = (i % 2) ? true : false;
-        db.sendPoll(
-            j.at("email"),
-            j.at("firstName"),
-            j.at("lastName"),
-            j.at("age"),
-            j.at("interest")
-        );
-        cout << ".";
-        cout.flush();
-    }
-    cout << " Done!\n";
-} // createDummies

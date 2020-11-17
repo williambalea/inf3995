@@ -15,26 +15,26 @@ MySQL::MySQL() {
     setup();
 }
 
-void MySQL::sendPoll(std::string email, std::string firstName, std::string lastName, int age, bool interest) {
+void MySQL::sendSurvey(json survey) {
     connect();
     
     PreparedStatement* stmt = con->prepareStatement(
         "INSERT INTO Polls (email, firstName, lastName, age, interest) VALUES (?, ?, ?, ?, ?)"
     );
 
-    stmt->setString(1, email);
-    stmt->setString(2, firstName);
-    stmt->setString(3, lastName);
-    stmt->setInt(4, age);
-    stmt->setBoolean(5, interest);
+    stmt->setString(1, survey["email"].get<string>());
+    stmt->setString(2, survey["firstName"].get<string>());
+    stmt->setString(3, survey["lastName"].get<string>());
+    stmt->setInt(4, survey["age"].get<int>());
+    stmt->setBoolean(5, survey["interest"].get<bool>());
     stmt->execute();
 
     delete stmt;
     disconnect();
 }
 
-json MySQL::getPolls(bool &err) {
-    err = !connect();
+json MySQL::getSurvey() {
+    connect();
     Statement *stmt = con->createStatement();
     ResultSet *res  = stmt->executeQuery("SELECT * FROM Polls");
     json allData;
@@ -54,8 +54,8 @@ json MySQL::getPolls(bool &err) {
     return allData;
 }
 
-json MySQL::getUser(std::string user, bool &err) {
-    err = !connect();
+json MySQL::getUser(string user) {
+    connect();
     Statement *stmt = con->createStatement();
     ResultSet *res = stmt->executeQuery("SELECT * FROM Accounts WHERE user='" + user + "'");
     json data;
@@ -71,7 +71,7 @@ json MySQL::getUser(std::string user, bool &err) {
     return data;
 }
 
-void MySQL::updatePass(std::string user, std::string salt, std::string newPass) {
+void MySQL::updatePass(string user, string salt, string newPass) {
     connect();
     PreparedStatement* stmt = con->prepareStatement("UPDATE Accounts SET salt=?, pw=? WHERE user=?");
 
@@ -85,12 +85,11 @@ void MySQL::updatePass(std::string user, std::string salt, std::string newPass) 
     disconnect();
 }
 
-bool MySQL::connect() {
+void MySQL::connect() {
     con = driver->connect(HOST, USER, PASS);
     Statement* stmt = con->createStatement();
     stmt->execute("USE Server");
     delete stmt;
-    return con->isValid();
 }
 
 void MySQL::disconnect() {
