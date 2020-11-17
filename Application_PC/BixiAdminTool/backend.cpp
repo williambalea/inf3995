@@ -81,11 +81,13 @@ void BackEnd::serverConnFinished(QNetworkReply *reply) {
 }
 
 void BackEnd::checkEnginesFinished(QNetworkReply *reply) {
-    QString data = QString::fromStdString(reply->readAll().toStdString());
+    QByteArray result = reply->readAll();
+    QJsonDocument jsonResponse = QJsonDocument::fromJson(result);
+    QJsonObject body = jsonResponse.object();
     QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    int httpCode = code.toInt();
-    QStringList status = data.split(QLatin1Char(' '));
-    if (httpCode == 200) {
+    QStringList status = body["message"].toString().split(QLatin1Char(' '));
+
+    if (code == "200") {
         m_engine1Status = (status[0] == "UP");
         m_engine2Status = (status[1] == "UP");
         m_engine3Status = (status[2] == "UP");
