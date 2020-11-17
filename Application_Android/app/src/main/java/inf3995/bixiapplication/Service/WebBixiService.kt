@@ -13,6 +13,9 @@ interface WebBixiService {
     @GET("engine1/station/code")
     fun getStationCode(@Field("body") code: Int):Call<Station>
 
+    @GET("/server/status/")
+    fun getConnectivity():Call<String>
+
     @GET("/engine1/station/all")
     fun getAllStationCode(): Call<String>
 

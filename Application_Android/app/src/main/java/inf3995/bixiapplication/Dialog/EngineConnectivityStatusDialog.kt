@@ -49,7 +49,7 @@ class EngineConnectivityStatusDialog: AppCompatDialogFragment() {
         val engineProblemNotification = ObjectAnimator.ofInt(
             animation,
             "colorFilter",
-            Color.YELLOW,
+            Color.rgb(255,69,0),
             Color.WHITE
         )
         engineProblemNotification.setEvaluator(ArgbEvaluator())
