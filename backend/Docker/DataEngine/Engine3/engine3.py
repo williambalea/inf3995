@@ -5,6 +5,7 @@ import numpy as np
 import seaborn as sns
 import base64
 from sklearn.ensemble import RandomForestRegressor
+import scipy as sps
 
 class Engine3:
 
@@ -108,8 +109,9 @@ class Engine3:
                         'end_station_code',
                         'duration_sec',
                         'is_member', 
-                        'Unnamed: 0', 'Pressure', 'Wind_speed', 'Temperature_C'], axis=1)
-        
+                        'Unnamed: 0','Pressure'], axis=1)
+                        # 'Pressure', 'Temperature_C'
+
         # Group by hour
         # df_grouped = df.groupby(['year','month', 'day', 'hour']).agg('first')
         # column = df.groupby(['year','month', 'day', 'hour']).count()['Description']
@@ -168,7 +170,6 @@ class Engine3:
 
 
         # Now add the missing different columns to each dataframe
-        print('look here --------------------------------------------------------------')
         col_list = (test_features.append([train_features])).columns.tolist()
         test_features = test_features.reindex(columns = col_list,  fill_value=0)
         train_features = train_features.reindex(columns = col_list,  fill_value=0)
@@ -210,6 +211,14 @@ class Engine3:
         # print(train_features)
         #Train the model on training data
         print('Fit calculating...')
+
+        print('look here --------------------------------------------------------------')
+        # dense_df = sps.sparse.csr_matrix(train_features.values)
+        # dense_df = sps.coo_matrix((train_features.freq, (train_features.index.labels[0], train_features.index.labels[1])))
+        # print(dense_df)
+        # sps.sparse.csr_matrix(train_features.values)
+        print('look here --------------------------------------------------------------')
+
         rf.fit(train_features, train_labels)
         print('Fit DONE')
 
