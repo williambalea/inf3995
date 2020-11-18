@@ -109,7 +109,6 @@ class Engine3:
                         'duration_sec',
                         'is_member', 
                         'Unnamed: 0', 'Pressure', 'Wind_speed', 'Temperature_C'], axis=1)
-        print('look here --------------------------------------------------------------')
         
         # Group by hour
         # df_grouped = df.groupby(['year','month', 'day', 'hour']).agg('first')
@@ -142,6 +141,23 @@ class Engine3:
 
         #one-hot encoding weather description
         test_features = pd.get_dummies(test_features)
+        # , columns=[ 'Description_broken clouds',
+        #                                                     'Description_few clouds', 'Description_fog', 'Description_haze',
+        #                                                     'Description_heavy intensity rain',
+        #                                                     'Description_heavy intensity shower rain',
+        #                                                     'Description_light intensity drizzle',
+        #                                                     'Description_light intensity shower rain', 'Description_light rain',
+        #                                                     'Description_light shower snow', 'Description_light snow',
+        #                                                     'Description_mist', 'Description_moderate rain',
+        #                                                     'Description_overcast clouds', 'Description_proximity shower rain',
+        #                                                     'Description_proximity thunderstorm', 'Description_scattered clouds',
+        #                                                     'Description_shower rain', 'Description_sky is clear',
+        #                                                     'Description_smoke', 'Description_thunderstorm',
+        #                                                     'Description_thunderstorm with heavy rain',
+        #                                                     'Description_thunderstorm with light rain',
+        #                                                     'Description_thunderstorm with rain', 'Description_very heavy rain',
+        #                                                     'Description_light intensity drizzle rain' ])
+
 
         print('traning------------------')
         train_features = self.get_traning_df()
@@ -149,6 +165,18 @@ class Engine3:
         print(train_features)
         #one-hot encoding weather description
         train_features = pd.get_dummies(train_features)
+
+
+        # Now add the missing different columns to each dataframe
+        print('look here --------------------------------------------------------------')
+        col_list = (test_features.append([train_features])).columns.tolist()
+        test_features = test_features.reindex(columns = col_list,  fill_value=0)
+        train_features = train_features.reindex(columns = col_list,  fill_value=0)
+
+        # col_list = list(set().union(dfA.columns, dfB.columns, dfC.columns))
+
+        print(test_features)
+        print(train_features)
 
         print('testing df col before : ', test_features.columns)
         test_labels = np.array(test_features['num_trips'])
