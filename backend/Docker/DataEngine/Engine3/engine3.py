@@ -30,25 +30,26 @@ class Engine3:
         print('importing weather data')
         weather_description = pd.read_csv('../kaggleData/historical-hourly-weather-data/weather_description.csv', low_memory=False)
         temperature = pd.read_csv('../kaggleData/historical-hourly-weather-data/temperature.csv', low_memory=False, dtype={'Montreal':np.float32})
-        pressure = pd.read_csv('../kaggleData/historical-hourly-weather-data/pressure.csv', low_memory=False, dtype={'Montreal':np.float32})
         wind_speed = pd.read_csv('../kaggleData/historical-hourly-weather-data/wind_speed.csv', low_memory=False, dtype={'Montreal':np.float32})
 
         print(weather_description.shape)
         print('filter only montreal')
         weather_description = weather_description.filter(items=['datetime','Montreal'])
         temperature = temperature.filter(items=['datetime','Montreal']) #temp in  Kelvin
-        pressure = pressure.filter(items=['datetime','Montreal'])
+
         wind_speed = wind_speed.filter(items=['datetime','Montreal'])
 
         weather = (weather_description.merge(temperature, on='datetime').
-                                    merge(pressure, on='datetime').
                                     merge(wind_speed, on='datetime'))
-        weather.columns = ['Datetime','Description', 'Temperature', 'Pressure', 'Wind_speed']
+        weather.columns = ['Datetime','Description', 'Temperature', 'Wind_speed']
         weather['Temperature_C'] = weather['Temperature'] - 273.15 #temp in celcius
         weather = weather.drop( ['Temperature'], axis=1)
 
         weather['Datetime'] = pd.to_datetime(weather['Datetime'])
-        
+        print('here -----------------------------')
+        print(weather.head())
+
+
         # weather['Temparature'] = weather['Temperature_C'].astype(int)
         weather = weather.sort_values(by = ['Datetime'])
 
@@ -109,14 +110,13 @@ class Engine3:
                         'end_station_code',
                         'duration_sec',
                         'is_member', 
-                        'Unnamed: 0','Pressure'], axis=1)
-                        # 'Pressure', 'Temperature_C'
+                        'Unnamed: 0'], axis=1)
 
         # Group by hour
-        # df_grouped = df.groupby(['year','month', 'day', 'hour']).agg('first')
-        # column = df.groupby(['year','month', 'day', 'hour']).count()['Description']
-        df_grouped = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).agg('first')
-        column = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).count()['Description']
+        df_grouped = df.groupby(['year','month', 'day', 'hour']).agg('first')
+        column = df.groupby(['year','month', 'day', 'hour']).count()['Description']
+        # df_grouped = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).agg('first')
+        # column = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).count()['Description']
         
         df_grouped['num_trips']= column
         df_grouped = df_grouped.reset_index()
@@ -232,5 +232,9 @@ class Engine3:
         # Calculate the absolute errors
         errors = abs(predictions - test_labels)
         # Print out the mean absolute error (mae)
+        print('Prediction:')
+        print(predictions)
+        print('errors:')
+        print(errors)
         print('Mean Absolute Error:', round(np.mean(errors), 2), 'degrees.')
         return 0
