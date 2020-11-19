@@ -6,6 +6,7 @@ import seaborn as sns
 import base64
 from sklearn.ensemble import RandomForestRegressor
 import scipy as sps
+import pickle
 
 class Engine3:
 
@@ -113,10 +114,10 @@ class Engine3:
                         'Unnamed: 0'], axis=1)
 
         # Group by hour
-        df_grouped = df.groupby(['year','month', 'day', 'hour']).agg('first')
-        column = df.groupby(['year','month', 'day', 'hour']).count()['Description']
-        # df_grouped = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).agg('first')
-        # column = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).count()['Description']
+        # df_grouped = df.groupby(['year','month', 'day', 'hour']).agg('first')
+        # column = df.groupby(['year','month', 'day', 'hour']).count()['Description']
+        df_grouped = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).agg('first')
+        column = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).count()['Description']
         
         df_grouped['num_trips']= column
         df_grouped = df_grouped.reset_index()
@@ -176,6 +177,9 @@ class Engine3:
 
         # col_list = list(set().union(dfA.columns, dfB.columns, dfC.columns))
 
+        # test_features = self.filter_prediction(test_features)
+
+
         print(test_features)
         print(train_features)
 
@@ -222,13 +226,18 @@ class Engine3:
         rf.fit(train_features, train_labels)
         print('Fit DONE')
 
+        print('saving model')
+        # save the model to disk
+        filename = 'finalized_model.sav'
+        pickle.dump(rf, open(filename, 'wb'))
 
-        print('test_features col before : ', test_features.columns)
-        print('train_features col before : ', train_features.columns)
+        print('loading model')
+        # load the model from disk
+        loaded_rf = pickle.load(open(filename, 'rb'))
 
         # Use the forest's predict method on the test data
         print('prediction...')
-        predictions = rf.predict(test_features)
+        predictions = loaded_rf.predict(test_features)
         # Calculate the absolute errors
         errors = abs(predictions - test_labels)
         # Print out the mean absolute error (mae)
@@ -236,5 +245,23 @@ class Engine3:
         print(predictions)
         print('errors:')
         print(errors)
-        print('Mean Absolute Error:', round(np.mean(errors), 2), 'degrees.')
+        print('Mean Absolute Error:', round(np.mean(errors), 2), 'departs.')
+
+        # Calculate mean absolute percentage error (MAPE)
+        mape = 100 * (errors / test_labels)# Calculate and display accuracy
+        accuracy = 100 - np.mean(mape)
+        print('Accuracy:', round(accuracy, 2), '%.')
         return 0
+
+    #not useful yet
+    def filter_prediction(self, df_grouped):
+        # Group by hour
+        df_grouped = df_grouped.groupby(['month']).agg('first')
+        column = df_grouped.groupby(['month']).count()['start_station_code']
+        # df_grouped = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).agg('first')
+        # column = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).count()['Description']
+        
+        df_grouped['num_trips']= column
+        df_grouped = df_grouped.reset_index()
+        print('testing 1 df col: ', df_grouped.dtypes)
+        return df_grouped
