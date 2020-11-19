@@ -13,7 +13,7 @@ def hello_world():
 
 @app.route('/engine2/data/usage/<year>/<time>/<station>')
 def dataUsage(year, time, station):
-    return engine2.datatoJSON(year, time, station)
+    return engine2.dataToSend(year, time, station)
 
 @app.route('/<engine2>/logs/<byte>')
 def logs(engine2, byte):

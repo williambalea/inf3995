@@ -124,7 +124,7 @@ class Engine2:
         else:
             st = station
 
-        path = "./kaggleData/OD_{}".format(ye)
+        path = "../kaggleData/OD_{}".format(ye)
         path += ".csv"
         df = pd.read_csv(path, dtype={
             'start_date':str,
@@ -158,4 +158,13 @@ class Engine2:
         
         logging.info('Label used: ')
         logging.info(label)
-        return json.dumps(o)
+        return o
+
+    def dataToSend(self, year, time, station):
+        return json.dumps(self.datatoJSON(year, time, station))
+
+    def isGraph(self, json):
+        if "graph" in json:
+            return "True"
+        else:
+            return "False"

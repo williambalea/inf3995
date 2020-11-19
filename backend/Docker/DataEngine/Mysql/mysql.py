@@ -54,7 +54,7 @@ class MySqlDB:
         authPW = self.secureHashPW(row[1], auth.password).hexdigest()
         if auth and auth.username == row[0] and authPW == row[2] :
             logging.info("Successful Authentication")
-            return self.logsToJSON(engine, byte)
+            return self.engineLogs(engine, byte)
         else:
             logging.info("The user name or password is incorrect")
     
@@ -65,23 +65,36 @@ class MySqlDB:
     def logsToJSON(self, engine, byte):
         logs = {}
         removeAnsi = []
+        lenght = 0
         if (engine == "engine1"):
-            logsFile= open(self.ENGINE1_LOGS, 'r')
+            logsFile= open(self.ENGINE1_LOGS, "r")
         else:
-            logsFile= open(self.ENGINE2_LOGS, 'r')
+            logsFile= open(self.ENGINE2_LOGS, "r")
         logs = logsFile.read()[int(byte):].splitlines()
         logsFile.close()
         for i in range(0, len(logs)):
+            lenght += len(logs[i])
             removeAnsi.append(self.espace_ansi(logs[i]))
-        logs = {'logs': removeAnsi}
-        return self.toJson(logs)
+        logs = {"logs": removeAnsi}
+        return logs, lenght
         
     def espace_ansi(self, line):
-        ansi_espace = re.sub(self.ANSI_COLOR, '', line)
+        ansi_espace = re.sub(self.ANSI_COLOR, "", line)
         ansi_espace = re.sub(self.ANSI_ESPACE, "", ansi_espace)
         return ansi_espace
 
     def toJson(self, data):
         logging.info("Data to JSON")
         return json.dumps(data)
-        
+    
+    def engineLogs(self, engine, byte):
+        logs, lenght = self.logsToJSON(engine, byte)
+        myJson =  '{ "byte": [], "engine": { "text": [], "logs": [] } }'
+        sendJson = json.loads(myJson)
+        sendJson["byte"] = lenght
+        sendJson["engine"]["text"] = True
+        sendJson["engine"]["logs"] = logs
+        return json.dumps(sendJson)
+
+
+    
