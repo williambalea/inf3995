@@ -84,18 +84,12 @@ void BackEnd::checkEnginesFinished(QNetworkReply *reply) {
     QByteArray result = reply->readAll();
     QJsonDocument jsonResponse = QJsonDocument::fromJson(result);
     QJsonObject body = jsonResponse.object();
-    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
     QStringList status = body["message"].toString().split(QLatin1Char(' '));
 
-    if (code == "200") {
-        m_engine1Status = (status[0] == "UP");
-        m_engine2Status = (status[1] == "UP");
-        m_engine3Status = (status[2] == "UP");
-    } else {
-        m_engine1Status = false;
-        m_engine2Status = false;
-        m_engine3Status = false;
-    }
+    m_engine1Status = (status[0] == "UP");
+    m_engine2Status = (status[1] == "UP");
+    m_engine3Status = (status[2] == "UP");
+
     emit enginesStatusChanged();
 }
 
@@ -120,7 +114,10 @@ void BackEnd::checkEngines() {
 }
 
 void BackEnd::sendFakeLogs() {
-    emit log1Changed("super long text to be displayed sdflksn lkjsdf ljk sadf \n");
+    QString buffer = "";
+    for (int i = 0; i < 10; i ++)
+        buffer += "super long text to be displayed sdflksn lkjsdf ljk sadf";
+    emit log1Changed(buffer);
 }
 
 void BackEnd::changePw(QString old, QString newPass) {

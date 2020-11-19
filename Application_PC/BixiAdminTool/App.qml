@@ -132,32 +132,45 @@ Item {
                 color: "#E1E2E1"
             }
 
-            Button {
-                id: refreshButton
-                width: 191
-                height: 48
-                x: applicationWindow.width/2 - width/2
-                y: applicationWindow.height - 155
+            Page3 {
+                id: page3
+                anchors.fill: parent
+                anchors.margins: 6
+                anchors.bottomMargin: 10
+                model: JSON.parse(backend.sqlData)
+                Component.onCompleted: backend.refresh()
 
-                text: qsTr("Refresh")
-                transformOrigin: Item.Center
+            }
+
+            Rectangle {
+                z: 1
+                anchors.fill: parent
+                anchors.margins: 5
+                anchors.bottomMargin: 9
+                radius: 5
+                border.width: 2
+                border.color: "#7b7b7b"
+                color: "transparent"
+            }
+            RoundButton {
+                id: refreshButton
+                x: parent.width - 75
+                y: parent.height - 75
+                z: 2
+                width: 55
+                height: 55
+                font.pointSize: 40
+                display: AbstractButton.IconOnly
+                icon.source: "refresh.svg"
+                icon.color: "#ffffff"
+                icon.width: width/1.5
+                icon.height: height/1.5
                 Material.background: "#d52b1e"
                 Material.foreground: "#ffffff"
                 onClicked: {
                     sqlProgBar.visible = true;
                     backend.refresh()
                 }
-            }
-
-            Page3 {
-                id: page3
-                anchors.bottomMargin: 80
-                anchors.leftMargin: 30
-                anchors.rightMargin: 30
-                anchors.topMargin: 30
-                model: JSON.parse(backend.sqlData)
-                Component.onCompleted: backend.refresh()
-
             }
         }
 
@@ -213,10 +226,11 @@ Item {
         indeterminate: true
         Material.accent: "#9b0000"
     }
+
 }
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;formeditorZoom:1.75;height:480;width:640}
+    D{i:0;autoSize:true;formeditorZoom:0.25;height:480;width:640}
 }
 ##^##*/

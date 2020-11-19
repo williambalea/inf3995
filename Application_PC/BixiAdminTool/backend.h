@@ -67,8 +67,9 @@ private:
     bool m_engine2Status = false;
     bool m_engine3Status = false;
     QString m_host = "10.0.0.105";
-    QString m_user = "";
-    QString m_pass = "";
+    //TODO: empty string
+    QString m_user = "admin";
+    QString m_pass = "admin";
 
 };
 
