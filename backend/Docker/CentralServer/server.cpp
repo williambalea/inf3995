@@ -193,11 +193,12 @@ void Server::getStatus(const Rest::Request& req, Http::ResponseWriter res) {
         }
     }
     body["message"] = buffer;
+    auto mime = Http::Mime::MediaType::fromString("application/json");
 
     if (!problemFlag)
-        res.send(Http::Code::Ok, body.dump());
+        res.send(Http::Code::Ok, body.dump(), mime);
     else
-        res.send(Http::Code::Internal_Server_Error, body.dump());
+        res.send(Http::Code::Internal_Server_Error, body.dump(), mime);
 }
 
 void Server::changePass(const Rest::Request& req, Http::ResponseWriter res) {
