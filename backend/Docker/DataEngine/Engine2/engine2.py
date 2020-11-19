@@ -110,8 +110,7 @@ class Engine2:
             graphBase64 = base64.b64encode(imageFile.read()).decode('utf-8')
             while graphBase64[-1] == '=':
                 graphBase64 = graphBase64[:-1]
-        logging.info('Graph toBase64():')
-        logging.info(graphBase64)
+        logging.info('Graph toBase64(): {}'.format(graphBase64))
         return graphBase64
 
     def datatoJSON(self, year, time, station):
@@ -138,7 +137,6 @@ class Engine2:
         
         self.getGraphPerTime(countStart, countEnd, st, ti)
         graphString = self.toBase64()
-        # graphString = self.getGraphPerTime(countStart, countEnd, st, ti)
         if time == "perHour":
             label = self.hourLabel
         elif time == "perWeekDay":
@@ -148,20 +146,20 @@ class Engine2:
 
         myJson =  '{  "data":{ "time":[], "departureValue":[], "arrivalValue":[] }, "graph":[] }'
 
-        o = json.loads(myJson)
-        o["data"]["time"] = label
-        o["data"]["departureValue"] = countStart[0:len(countStart)].tolist()
-        o["data"]["arrivalValue"] = countEnd[0:len(countStart)].tolist()
-        o["graph"] = graphString
+        sendJson = json.loads(myJson)
+        sendJson["data"]["time"] = label
+        sendJson["data"]["departureValue"] = countStart[0:len(countStart)].tolist()
+        sendJson["data"]["arrivalValue"] = countEnd[0:len(countStart)].tolist()
+        sendJson["graph"] = graphString
         
         logging.info('Label used: {}'.format(label))
-        return o
+        return sendJson
 
     def dataToSend(self, year, time, station):
         return json.dumps(self.datatoJSON(year, time, station))
 
     def isGraph(self, json):
         if "graph" in json:
-            return "True"
-        else:
             return "False"
+        else:
+            return "True"

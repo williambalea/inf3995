@@ -41,7 +41,7 @@ class MySqlDB:
             )
             logging.info("Connection to MySQL DB successful")
         except Error as e:
-            logging.info(f"The error '{e}' occurred")
+            logging.error(f"The error '{e}' occurred")
         return self.CONNECTION
 
     def account_db(self):
@@ -54,14 +54,14 @@ class MySqlDB:
         return row
 
     def authorizationLogs(self, engine, byte):
-        # row = self.account_db()
-        # auth = request.authorization
-        # authPW = self.secureHashPW(row[1], auth.password).hexdigest()
-        # if auth and auth.username == row[0] and authPW == row[2] :
-        #     logging.info("Successful Authentication")
-        return self.engineLogs(engine, byte)
-        # else:
-        #     logging.info("The user name or password is incorrect")
+        row = self.account_db()
+        auth = request.authorization
+        authPW = self.secureHashPW(row[1], auth.password).hexdigest()
+        if auth and auth.username == row[0] and authPW == row[2] :
+            logging.info("Successful Authentication")
+            return self.engineLogs(engine, byte)
+        else:
+            logging.error("The user name or password is incorrect")
     
     def secureHashPW(self, salt, password):
         hashPW = hashlib.sha512((str(salt) + str(password)).encode('utf-8'))
@@ -93,25 +93,19 @@ class MySqlDB:
         return json.dumps(data)
     
     def engineLogs(self, engine, byte):
-        logs, lenght = self.logsToJSON(engine, byte)
         logsList = []
-        myJson =  '{ "byte": [] }'
+        logs, lenght = self.logsToJSON(engine, byte)
+        myJson =  '{"byte": []}'
         sendJson = json.loads(myJson)
         sendJson["byte"] = lenght
         logsList.append(sendJson)
         for i in range(0, len(logs["logs"])):
-            myJson =  '{ "engine": { "text": [], "logs": [] } }'
+            myJson =  '{ "text": [], "logs": [] }'
             sendJson = json.loads(myJson)
-            sendJson["engine"]["text"] = engine2.isGraph(logs["logs"][i])
-            sendJson["engine"]["logs"] = logs["logs"]
+            sendJson["text"] = engine2.isGraph(logs["logs"][i])
+            sendJson["logs"] = logs["logs"][i]
             logsList.append(sendJson)
         return json.dumps(logsList)
-
-    # def isGraph(self, json):
-    #     if "graph" in json:
-    #         return "True"
-    #     else:
-    #         return "False"
 
 
     
