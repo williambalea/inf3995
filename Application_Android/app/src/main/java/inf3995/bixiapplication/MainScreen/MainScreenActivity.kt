@@ -40,6 +40,7 @@ class MainScreenActivity : AppCompatActivity() {
     private lateinit var btn2: Button
     private lateinit var btn3: Button
     private lateinit var btn4: Button
+    private lateinit var jObj: ConnectivityData
     val dialog1 = IpAddressDialog()
     val dialog2 = EngineConnectivityStatusDialog()
 
@@ -91,7 +92,7 @@ class MainScreenActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun connectivityCheck(ipAddress: String, item: Drawable?){
+    private fun connectivityCheck(ipAddress: String, item: Drawable?){
         val engineProblemNotification = ObjectAnimator.ofInt(
             item,
             "Tint",
@@ -122,10 +123,11 @@ class MainScreenActivity : AppCompatActivity() {
                     override fun onResponse(call: Call<String>?, response: Response<String>?) {
                         Log.i(
                             inf3995.bixiapplication.Dialog.TAG,
-                            "Réponse Connectivity: ${response?.body()}"
+                            "Réponse Connectivity: ${response?.errorBody()} ${response?.code()}"
                         )
                         val connectivityStatus = object : TypeToken<ConnectivityData>() {}.type
-                        val jObj: ConnectivityData = Gson().fromJson(response?.body(), connectivityStatus)
+
+                        jObj = if(response?.isSuccessful!!) Gson().fromJson(response.body(), connectivityStatus)  else Gson().fromJson(response.errorBody()?.charStream(), connectivityStatus)
 
                         val connectivity = jObj.message.split(" ").toTypedArray()
 

@@ -46,7 +46,7 @@ class EngineConnectivityStatusDialog: AppCompatDialogFragment() {
     }
 
     private fun imageStatusBehaviour(animation: ImageView, connectivityStatus: TextView){
-        val engineProblemNotification = ObjectAnimator.ofInt(
+        /*val engineProblemNotification = ObjectAnimator.ofInt(
             animation,
             "colorFilter",
             Color.rgb(255,69,0),
@@ -54,12 +54,12 @@ class EngineConnectivityStatusDialog: AppCompatDialogFragment() {
         )
         engineProblemNotification.setEvaluator(ArgbEvaluator())
         engineProblemNotification.repeatCount = ValueAnimator.INFINITE
-        engineProblemNotification.repeatMode = ValueAnimator.REVERSE
+        engineProblemNotification.repeatMode = ValueAnimator.REVERSE*/
 
         if(connectivityStatus.text == "UP")
             animation.setColorFilter(Color.GREEN)
         else
-            engineProblemNotification.start()
+            animation.setColorFilter(Color.rgb(255,69,0))
     }
 
 }
