@@ -8,7 +8,6 @@
 
 BackEnd::BackEnd(QObject *parent) : QObject(parent) {
     setupNetworkManagers();
-    checkEngines();
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(periodicFn()));
@@ -81,14 +80,21 @@ void BackEnd::serverConnFinished(QNetworkReply *reply) {
 }
 
 void BackEnd::checkEnginesFinished(QNetworkReply *reply) {
-    QByteArray result = reply->readAll();
-    QJsonDocument jsonResponse = QJsonDocument::fromJson(result);
-    QJsonObject body = jsonResponse.object();
-    QStringList status = body["message"].toString().split(QLatin1Char(' '));
+    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    if (code == "200" || code == "500") {
+        QByteArray result = reply->readAll();
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(result);
+        QJsonObject body = jsonResponse.object();
+        QStringList status = body["message"].toString().split(QLatin1Char(' '));
 
-    m_engine1Status = (status[0] == "UP");
-    m_engine2Status = (status[1] == "UP");
-    m_engine3Status = (status[2] == "UP");
+        m_engine1Status = (status[0] == "UP");
+        m_engine2Status = (status[1] == "UP");
+        m_engine3Status = (status[2] == "UP");
+    } else {
+        m_engine1Status = false;
+        m_engine2Status = false;
+        m_engine3Status = false;
+    }
 
     emit enginesStatusChanged();
 }

@@ -13,7 +13,6 @@ Page {
 
         onLog1Changed: {
             var type = Math.floor(Math.random() * 2);
-            console.log(type)
             var t = "";
             var i = "";
             if(type === 0) {
