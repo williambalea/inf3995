@@ -38,8 +38,7 @@ class Engine2:
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
             label = self.monthLabel
         timeCount = np.bincount(timeNumber, None, len(label))
-        logging.info('TimeCount Start: ')
-        logging.info(timeCount)
+        logging.info('TimeCount Start: {}'.format(timeCount))
         return timeCount
     
     def getPerTimeCountEnd(self, df, station, time):
@@ -62,8 +61,7 @@ class Engine2:
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
             label = self.monthLabel
         timeCount = np.bincount(timeNumber, None, len(label))
-        logging.info('TimeCount End: ')
-        logging.info(timeCount)
+        logging.info('TimeCount End: {}'.format(timeCount))
         return timeCount
     
     def getGraphPerTime(self, countStart, countEnd, station, time):
@@ -103,16 +101,17 @@ class Engine2:
         # Create legend & Show graphic
         plt.legend()
         plt.savefig('bar.png')
-        logging.info('Graph generated')
+        logging.info('Graph generated in PNG')
         return plt
 
 
     def toBase64(self):
-        logging.info('Graph toBase64()')
         with open("bar.png", "rb") as imageFile:
             graphBase64 = base64.b64encode(imageFile.read()).decode('utf-8')
             while graphBase64[-1] == '=':
                 graphBase64 = graphBase64[:-1]
+        logging.info('Graph toBase64():')
+        logging.info(graphBase64)
         return graphBase64
 
     def datatoJSON(self, year, time, station):
@@ -133,8 +132,7 @@ class Engine2:
             'end_station_code':str,
             'duration_sec':int,
             'is_member':int})
-        logging.info('dataframe: ')
-        logging.info(df)
+        logging.info('dataframe: {}'.format(df))
         countStart = self.getPerTimeCountStart(df, st, ti)
         countEnd = self.getPerTimeCountEnd(df, st, ti)
         
@@ -156,8 +154,7 @@ class Engine2:
         o["data"]["arrivalValue"] = countEnd[0:len(countStart)].tolist()
         o["graph"] = graphString
         
-        logging.info('Label used: ')
-        logging.info(label)
+        logging.info('Label used: {}'.format(label))
         return o
 
     def dataToSend(self, year, time, station):

@@ -7,8 +7,13 @@ import re
 from flask import request
 import hashlib
 from unittest import case
+from DataEngine.Engine2.engine2 import Engine2
+
+
+engine2 = Engine2()
 
 class MySqlDB:
+
 
     DB_HOSTNAME = "34.70.117.28"
     DB_USERNAME = "root"
@@ -49,14 +54,14 @@ class MySqlDB:
         return row
 
     def authorizationLogs(self, engine, byte):
-        row = self.account_db()
-        auth = request.authorization
-        authPW = self.secureHashPW(row[1], auth.password).hexdigest()
-        if auth and auth.username == row[0] and authPW == row[2] :
-            logging.info("Successful Authentication")
-            return self.engineLogs(engine, byte)
-        else:
-            logging.info("The user name or password is incorrect")
+        # row = self.account_db()
+        # auth = request.authorization
+        # authPW = self.secureHashPW(row[1], auth.password).hexdigest()
+        # if auth and auth.username == row[0] and authPW == row[2] :
+        #     logging.info("Successful Authentication")
+        return self.engineLogs(engine, byte)
+        # else:
+        #     logging.info("The user name or password is incorrect")
     
     def secureHashPW(self, salt, password):
         hashPW = hashlib.sha512((str(salt) + str(password)).encode('utf-8'))
@@ -89,12 +94,24 @@ class MySqlDB:
     
     def engineLogs(self, engine, byte):
         logs, lenght = self.logsToJSON(engine, byte)
-        myJson =  '{ "byte": [], "engine": { "text": [], "logs": [] } }'
+        logsList = []
+        myJson =  '{ "byte": [] }'
         sendJson = json.loads(myJson)
         sendJson["byte"] = lenght
-        sendJson["engine"]["text"] = True
-        sendJson["engine"]["logs"] = logs
-        return json.dumps(sendJson)
+        logsList.append(sendJson)
+        for i in range(0, len(logs["logs"])):
+            myJson =  '{ "engine": { "text": [], "logs": [] } }'
+            sendJson = json.loads(myJson)
+            sendJson["engine"]["text"] = engine2.isGraph(logs["logs"][i])
+            sendJson["engine"]["logs"] = logs["logs"]
+            logsList.append(sendJson)
+        return json.dumps(logsList)
+
+    # def isGraph(self, json):
+    #     if "graph" in json:
+    #         return "True"
+    #     else:
+    #         return "False"
 
 
     
