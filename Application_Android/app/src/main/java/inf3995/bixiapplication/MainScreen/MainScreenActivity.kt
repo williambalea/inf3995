@@ -132,6 +132,7 @@ class MainScreenActivity : AppCompatActivity() {
                         val connectivity = jObj.message.split(" ").toTypedArray()
 
                         if (connectivity[0] == "UP" && connectivity[1] == "UP" && connectivity[2] == "UP") {
+                            engineProblemNotification.cancel()
                             item?.setTint(Color.argb(255, 0, 255, 0))
                         } else {
                             engineProblemNotification.start()
