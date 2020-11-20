@@ -12,7 +12,7 @@ class Engine1:
         return None
     
     def getAllStations(self):
-        logging.info("Getting all stations")
+        logging.info("Getting all stations for Android App")
         data = []
         csvFile = open(self.PATH, 'r', encoding='ISO-8859-1')
         csvReader = csv.DictReader(csvFile)
@@ -20,7 +20,6 @@ class Engine1:
         return data
 
     def toJson(self, data):
-        logging.info("Data to JSON")
         return json.dumps(data)
 
 

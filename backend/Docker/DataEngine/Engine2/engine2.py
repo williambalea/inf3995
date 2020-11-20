@@ -19,7 +19,6 @@ class Engine2:
         return None 
                       
     def getPerTimeCountStart(self, df, station, time):
-        logging.info('Entering getTimeCountStart()')
         dfStart = df[['start_date', 'start_station_code']].copy()
         #filter rows
         if station != 'all':
@@ -42,7 +41,6 @@ class Engine2:
         return timeCount
     
     def getPerTimeCountEnd(self, df, station, time):
-        logging.info('Entering getPerTimeCountEnd()')
         dfEnd = df[['end_date', 'end_station_code']].copy()
         #filter rows
         if station != 'all':
@@ -65,7 +63,6 @@ class Engine2:
         return timeCount
     
     def getGraphPerTime(self, countStart, countEnd, station, time):
-        logging.info('Entering getGraphPerTime()')
         if time == 'perMonth':
             countStart = countStart[3:len(countStart)-1]
             countEnd = countEnd[3:len(countEnd)-1]
@@ -114,7 +111,6 @@ class Engine2:
         return graphBase64
 
     def datatoJSON(self, year, time, station):
-        logging.info('Entering datatoJSON()')
         ye = int(year)
         ti = str(time)
         if str(station) == 'all':
@@ -153,13 +149,4 @@ class Engine2:
         sendJson["graph"] = graphString
         
         logging.info('Label used: {}'.format(label))
-        return sendJson
-
-    def dataToSend(self, year, time, station):
-        return json.dumps(self.datatoJSON(year, time, station))
-
-    def isGraph(self, json):
-        if "graph" in json:
-            return "False"
-        else:
-            return "True"
+        return json.dumps(sendJson)

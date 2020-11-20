@@ -21,6 +21,7 @@ class MySqlDB:
     ENGINE2_LOGS = "../Engine2/engine.log"
     ANSI_COLOR = r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]'
     ANSI_ESPACE = r'\\x1b[^m]*m'
+    ENGINE1 = "engine1"
 
     def __init__(self):
         return None
@@ -35,9 +36,8 @@ class MySqlDB:
                 passwd=user_password,
                 database=db_name
             )
-            logging.info("Connection to MySQL DB successful")
-        except Error as e:
-            logging.error(f"The error '{e}' occurred")
+        except:
+            logging.error("Failed to connect to MYSQL DB")
         return self.CONNECTION
 
     def account_db(self):
@@ -54,10 +54,9 @@ class MySqlDB:
         auth = request.authorization
         authPW = self.secureHashPW(row[1], auth.password).hexdigest()
         if auth and auth.username == row[0] and authPW == row[2] :
-            logging.info("Successful Authentication")
             return self.engineLogs(engine, byte)
         else:
-            logging.error("The user name or password is incorrect")
+            logging.info("The user name or password is incorrect")
     
     def secureHashPW(self, salt, password):
         hashPW = hashlib.sha512((str(salt) + str(password)).encode('utf-8'))
@@ -67,7 +66,7 @@ class MySqlDB:
         logs = {}
         removeAnsi = []
         lenght = 0
-        if (engine == "engine1"):
+        if (engine == self.ENGINE1):
             logsFile= open(self.ENGINE1_LOGS, "r")
         else:
             logsFile= open(self.ENGINE2_LOGS, "r")
@@ -83,10 +82,6 @@ class MySqlDB:
         ansi_espace = re.sub(self.ANSI_COLOR, "", line)
         ansi_espace = re.sub(self.ANSI_ESPACE, "", ansi_espace)
         return ansi_espace
-
-    def toJson(self, data):
-        logging.info("Data to JSON")
-        return json.dumps(data)
     
     def engineLogs(self, engine, byte):
         logsList = []
