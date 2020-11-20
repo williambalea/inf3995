@@ -221,7 +221,7 @@ class Engine3:
         return loaded_rf
 
     #not useful yet
-    def filter_prediction(self):
+    def filter_prediction(self, station, groupby:
         my_file = Path("./all_pred.pkl")
         if my_file.is_file():
             print('loading Pred_df')
@@ -237,4 +237,19 @@ class Engine3:
         print('this is the pred df:')
         print(df)
         print('READY TO FILTER!!')
+
+        #Filter wanted station
+        if str(station) != 'all':
+            df = df[df.start_station_code == station]
+
+        #filter groupby
+        if(groupby == "perHour"):
+        elif(groupby == "perWeekDay"):
+        elif(groupby == "perMonth"):
+        elif(groupby == "perDate"):
+
+    
+        print('AFTER FILTER')
+        print(df)
+        
         return 0

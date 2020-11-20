@@ -34,52 +34,14 @@ year2014 = 2014
 year2015 = 2015
 year2016 = 2016
 year2017 = 2017
-timeHour = "perHour"
-timeWeek = "perWeekDay"
-timeMonth = "perMonth"
+perHour = "perHour"
+perWeekDay = "perWeekDay"
+perMonth = "perMonth"
+perDate = "perDate"
 
 
-
-# print('reading Stations_2015')
-# Stations_2015 = pd.read_csv('../kaggleData/Stations_2015.csv', low_memory = False)
-
-# print('reading od2015')
 
 print('constructing engine3')
 engine3 = Engine3()
 
-# #Import Data
-# print('importing bixi csv data')
-# csv_file_list = ["../kaggleData/OD_2014.csv","../kaggleData/OD_2015.csv", "../kaggleData/OD_2016.csv"]
-# list_of_dataframes = []
-# for filename in csv_file_list:
-#     list_of_dataframes.append(pd.read_csv(filename, dtype={'start_date':str,'start_station_code':int,'end_date':str,
-#                                                          'end_station_code':str,'duration_sec':int,'is_member':int})  )
-# list_of_dataframes = []
-# list_of_dataframes = engine3.importBixiData()
-
-
-
-#################start here#################
-
-#get all data
-
-
-# print('traning---------------------')
-# training_df = engine3.get_traning_df()
-# print(training_df)
-# print(training_df.columns)
-
-# print('testing------------------')
-# testing_df = engine3.get_testing_df()
-# print(testing_df)
-# print(testing_df.columns)
-
-predictions_df = engine3.filter_prediction()
-
-# print(training_set.info)
-# print(training_set.dtypes)
-# print(training_set.shape)
-
-# # print(df_complete.info())
-# print('all done gg')
+predictions_df = engine3.filter_prediction(6043)
