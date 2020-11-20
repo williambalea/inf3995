@@ -75,7 +75,7 @@ engine3 = Engine3()
 # print(testing_df)
 # print(testing_df.columns)
 
-engine3.get_prediction()
+predictions_df = engine3.filter_prediction()
 
 # print(training_set.info)
 # print(training_set.dtypes)

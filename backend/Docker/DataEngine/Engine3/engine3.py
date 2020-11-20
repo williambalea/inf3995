@@ -170,10 +170,9 @@ class Engine3:
         #not used yet... prbly to delete
         feature_list = list(test_features.columns)
         
-        ##Actual RFregressor
-        
-        
+        #get Random forest model        
         loaded_rf = self.get_random_forest_model(train_labels, train_features)
+
 
         # Use the forest's predict method on the test data
         print('prediction...')
@@ -192,11 +191,18 @@ class Engine3:
         accuracy = 100 - np.mean(mape)
         print('Accuracy:', round(accuracy, 2), '%.')
 
+        #concat test_features to predictions
+        test_features.insert(len(test_features.columns), 'predictions', predictions)
+        test_features.insert(len(test_features.columns), 'test_labels', test_labels)
+        test_features.drop(test_features.columns.difference(['year', 'month', 'day', 'hour', 'start_station_code',
+                                       'weekday', 'weekofyear', 'predictions', 'test_labels'
+                                       ]), 1, inplace=True)
+        print(test_features)
 
-        return 0
+        return test_features
 
     def get_random_forest_model(self, train_l, train_f):
-        my_file = Path("finalized_model.sav")
+        my_file = Path("./finalized_model.sav")
         if my_file.is_file():
             print('loading model')
             # load the model from disk
@@ -215,6 +221,20 @@ class Engine3:
         return loaded_rf
 
     #not useful yet
-    def filter_prediction(self, train_l, test_l, train_f, test_f):
-        test_df = self.get_testing_df
-        return df_grouped
+    def filter_prediction(self):
+        my_file = Path("./all_pred.pkl")
+        if my_file.is_file():
+            print('loading Pred_df')
+            # load the pred_df from disk
+            df = pd.read_pickle(my_file)
+        else:
+            print('getting pred_df')
+            df = self.get_prediction()
+            print('this is the pred df:', df)
+            print('saving pred_df')
+            df.to_pickle(my_file)
+
+        print('this is the pred df:')
+        print(df)
+        print('READY TO FILTER!!')
+        return 0
