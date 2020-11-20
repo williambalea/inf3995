@@ -29,6 +29,8 @@ public:
     Q_INVOKABLE void login(QString user, QString pass);
     Q_INVOKABLE void changePw(QString old, QString newPass);
     Q_INVOKABLE void serverConn(QString host);
+    Q_INVOKABLE void startTimer();
+
 
 signals:
     void hostChanged();
@@ -36,7 +38,7 @@ signals:
     void passChanged();
     void sqlDataChanged();
     void enginesStatusChanged();
-    void log1Changed(QString log);
+    void log1Changed(QString log, bool isText);
     void loginChanged(bool isSuccessful);
     void passwordChanged(bool isSuccessful);
     void serverConnChanged(bool isSuccessful);
@@ -47,6 +49,7 @@ private slots:
     void checkEnginesFinished(QNetworkReply *reply);
     void changePwFinished(QNetworkReply *reply);
     void serverConnFinished(QNetworkReply *reply);
+    void logs1Finished(QNetworkReply *reply);
     void periodicFn();
 
 private:
@@ -55,6 +58,7 @@ private:
     void checkEngines();
     void sendFakeLogs();
     void setAuthHeader(QNetworkRequest &req, QString user, QString pass);
+    void getLogs1();
 
     QString m_sqlData = "";
     QNetworkAccessManager *manSqlData;
@@ -62,6 +66,7 @@ private:
     QNetworkAccessManager *manEnginesStatus;
     QNetworkAccessManager *manChangePw;
     QNetworkAccessManager *manServerConn;
+    QNetworkAccessManager *manLogs1;
     QTimer *timer;
     bool m_engine1Status = false;
     bool m_engine2Status = false;
@@ -70,6 +75,7 @@ private:
     //TODO: empty string
     QString m_user = "";
     QString m_pass = "";
+    int engineBytesReceived[3] = {0, 0, 0};
 
 };
 

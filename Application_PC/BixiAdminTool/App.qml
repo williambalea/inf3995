@@ -6,9 +6,13 @@ import custom.classes 1.0
 
 
 Item {
+
+    Component.onCompleted: {
+        backend.startTimer();
+    }
+
     Connections{
         target: backend
-
         onSqlDataChanged: sqlProgBar.visible = false
     }
 
@@ -178,13 +182,15 @@ Item {
             id: engine1Page
         }
 
-        Engine1Page {
-            id: engine1Page1
+        Engine2Page {
+            id: engine2Page
         }
 
-        Engine1Page {
-            id: engine1Page2
+        Engine3Page {
+            id: engine3Page
         }
+
+
     }
 
     Image {

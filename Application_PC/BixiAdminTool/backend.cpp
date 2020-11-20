@@ -3,24 +3,26 @@
 #include <QTimer>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonArray>
 
-#define CHECK_ENGINE_INTERVALL 1000
+#define CHECK_ENGINE_INTERVALL 5000
 
 BackEnd::BackEnd(QObject *parent) : QObject(parent) {
     setupNetworkManagers();
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(periodicFn()));
-    timer->start(CHECK_ENGINE_INTERVALL);
-
-
+//    timer->start(CHECK_ENGINE_INTERVALL);
 }
 
 BackEnd::~BackEnd() {
+    delete manSqlData;
+    delete manChangePw;
     delete manServerConn;
     delete manSqlData;
     delete manLogin;
     delete manEnginesStatus;
+    delete manLogs1;
     delete timer;
 }
 
@@ -39,6 +41,9 @@ void BackEnd::setupNetworkManagers() {
 
     manServerConn = new QNetworkAccessManager(this);
     connect(manServerConn, &QNetworkAccessManager::finished, this, &BackEnd::serverConnFinished);
+
+    manLogs1 = new QNetworkAccessManager(this);
+    connect(manLogs1, &QNetworkAccessManager::finished, this, &BackEnd::logs1Finished);
 }
 
 
@@ -105,6 +110,20 @@ void BackEnd::changePwFinished(QNetworkReply *reply) {
     emit passwordChanged(isSuccessful);
 }
 
+void BackEnd::logs1Finished(QNetworkReply *reply) {
+    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    if (code == "200") {
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(reply->readAll());
+        QJsonArray body = jsonResponse.array();
+        engineBytesReceived[0] += body.at(0).toObject().value("byte").toInt();
+        int max = body.size();
+        for (int i = 1; i < max; i++) {
+            QString data = body.at(i).toObject().value("logs").toString();
+            emit log1Changed(data, true);
+        }
+    }
+}
+
 QNetworkRequest BackEnd::makeRequest(const QUrl &url) {
     QNetworkRequest req;
     QSslConfiguration sslconf;
@@ -123,7 +142,7 @@ void BackEnd::sendFakeLogs() {
     QString buffer = "";
     for (int i = 0; i < 10; i ++)
         buffer += "super long text to be displayed sdflksn lkjsdf ljk sadf";
-    emit log1Changed(buffer);
+    //emit log1Changed(buffer);
 }
 
 void BackEnd::changePw(QString old, QString newPass) {
@@ -142,6 +161,7 @@ void BackEnd::serverConn(QString host) {
 void BackEnd::periodicFn() {
     checkEngines();
     sendFakeLogs();
+    getLogs1();
 }
 
 void BackEnd::setAuthHeader(QNetworkRequest &req, QString user, QString pass) {
@@ -150,4 +170,18 @@ void BackEnd::setAuthHeader(QNetworkRequest &req, QString user, QString pass) {
     QString headerData = "Basic " + data;
     req.setRawHeader("Authorization", headerData.toLocal8Bit());
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+}
+
+void BackEnd::getLogs1() {
+    QString bytesToAsk = QString::number(engineBytesReceived[0]);
+    QUrl url = QUrl("https://" + m_host + "/engine1/logs/" + bytesToAsk);
+    QNetworkRequest req = makeRequest(url);
+    setAuthHeader(req, m_user, m_pass);
+    manLogs1->get(req);
+}
+
+void BackEnd::startTimer() {
+    periodicFn();
+    timer->start(CHECK_ENGINE_INTERVALL);
+
 }
