@@ -263,20 +263,49 @@ class Engine3:
         elif(groupby == "perDate"):
             print('filtering perDate')
             df = df.groupby(['month', 'day']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+            
 
         # df.reset_index()    
         print('AFTER FILTER')
         print(df)
 
-        xAxis = df.index.values
-        print(xAxis)
-        
-        # Make the plot
+        return df
 
+    def get_prediction_graph(self, df, groupby):
+        arrMonth = []
+        arrDay = []
+        print('alloooooooooooo3')
+        print(len(df.index.values))
+        # print(len(df.index.values))
+        for i in range(len(df.index.values)-1):
+            arrMonth.append(df.index.values[i][0])
+            arrDay.append(df.index.values[i][1])
+        ####################GOT 2 ARRAYS. NOW NEED TO PUT THEM TOGHETER AND MAKE 1 ARRAY TO GIVE TO XAXIS
+        print(arrDay)
+        print(arrMonth)
+
+        if groupby == "perDate":
+            # df["date"] = df["month"].astype(str) + df["day"]
+            # print(df["date"])
+            # print(xAxis.dtype)
+            print('alloooooooooooo')
+            temp_df = pd.Series(xAxis)
+            # print('alloooooooooooo1')
+            # # print(temp_df)
+            # # xAxis = temp_df.month + ", " + temp_df.month
+            # print('alloooooooooooo2')
+            # print(xAxis)
+        else:
+            xAxis = df.index.values
+            print(xAxis)
+
+
+
+        # Make the plot
         # set width of bar
         barWidth = 0.25
         plt.clf()
-        plt.bar(xAxis, df['predictions'], color='#0A6BF3', width=barWidth, edgecolor='white', label='Predictions')
+        plt.bar(temp_df, df['predictions'], color='#D52B1E', width=barWidth, edgecolor='white', label='Predictions')
         # Add xticks on the middle of the group bars
         ('adding xticks')
         plt.xlabel('GroupBy', fontweight='bold')
@@ -288,5 +317,4 @@ class Engine3:
         # plt.show()
         print('graph generated', flush=True)
         plt.show()
-        # return plt
-        return df
+        return plt
