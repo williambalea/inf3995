@@ -43,7 +43,7 @@ json MySQL::getSurvey() {
         data["firstName"] = res->getString("firstName");
         data["lastName"]  = res->getString("lastName");
         data["age"]       = res->getInt("age");
-        data["interest"]  = res->getBoolean("interest");
+        data["interest"]  = res->getBoolean("interest") ? "Yes" : "No";
         allData.push_back(data);
     }
 
