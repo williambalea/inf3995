@@ -7,6 +7,7 @@
         <file>Engine1Page.qml</file>
         <file>Settings.qml</file>
         <file>App.qml</file>
-        <file>MyComponent.qml</file>
+        <file>Engine2Page.qml</file>
+        <file>Engine3Page.qml</file>
     </qresource>
 </RCC>

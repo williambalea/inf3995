@@ -3,25 +3,26 @@
 #include <QTimer>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonArray>
 
-BackEnd::BackEnd(QObject *parent) : QObject(parent)
-{
+#define CHECK_ENGINE_INTERVALL 5000
+
+BackEnd::BackEnd(QObject *parent) : QObject(parent) {
     setupNetworkManagers();
-    checkEngines();
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(periodicFn()));
-    timer->start(1000);
-
-
+//    timer->start(CHECK_ENGINE_INTERVALL);
 }
 
-BackEnd::~BackEnd()
-{
+BackEnd::~BackEnd() {
+    delete manSqlData;
+    delete manChangePw;
     delete manServerConn;
     delete manSqlData;
     delete manLogin;
     delete manEnginesStatus;
+    delete manLogs1;
     delete timer;
 }
 
@@ -40,42 +41,35 @@ void BackEnd::setupNetworkManagers() {
 
     manServerConn = new QNetworkAccessManager(this);
     connect(manServerConn, &QNetworkAccessManager::finished, this, &BackEnd::serverConnFinished);
+
+    manLogs1 = new QNetworkAccessManager(this);
+    connect(manLogs1, &QNetworkAccessManager::finished, this, &BackEnd::logs1Finished);
 }
 
 
-QString BackEnd::sqlData()
-{
-    if (m_sqlData.size() > 4)
-        return m_sqlData;
-    else
-        return "{}";
+QString BackEnd::sqlData() {
+    return (m_sqlData.size() > 4) ? m_sqlData : "{}";
 }
 
-void BackEnd::setSqlData(const QString &data)
-{
+void BackEnd::setSqlData(const QString &data) {
     m_sqlData = data;
     emit sqlDataChanged();
 }
 
-void BackEnd::refresh()
-{
-    // TODO: make this request only if admin authentified correctly
+void BackEnd::refresh() {
     QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server/survey"));
+    setAuthHeader(req, m_user, m_pass);
     manSqlData->get(req);
 }
 
 void BackEnd::login(QString user, QString pass) {
     QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server/user/login"));
-    QString auth = user + ":" + pass;
-    QByteArray data = auth.toLocal8Bit().toBase64();
-    QString headerData = "Basic " + data;
-    req.setRawHeader("Authorization", headerData.toLocal8Bit());
+    setAuthHeader(req, user, pass);
     manLogin->get(req);
 }
 
 
-void BackEnd::sqlFinished(QNetworkReply *reply)
-{
+void BackEnd::sqlFinished(QNetworkReply *reply) {
     QString data = QString::fromStdString(reply->readAll().toStdString());
     setSqlData(data);
 }
@@ -91,27 +85,43 @@ void BackEnd::serverConnFinished(QNetworkReply *reply) {
 }
 
 void BackEnd::checkEnginesFinished(QNetworkReply *reply) {
-    QString data = QString::fromStdString(reply->readAll().toStdString());
     QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    int httpCode = code.toInt();
-    QStringList status = data.split(QLatin1Char(' '));
-    if (httpCode == 200) {
-        m_engine1Status = (status[0] == "true");
-        m_engine2Status = (status[1] == "true");
-        m_engine3Status = (status[2] == "true");
+    if (code == "200" || code == "500") {
+        QByteArray result = reply->readAll();
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(result);
+        QJsonObject body = jsonResponse.object();
+        QStringList status = body["message"].toString().split(QLatin1Char(' '));
+
+        m_engine1Status = (status[0] == "UP");
+        m_engine2Status = (status[1] == "UP");
+        m_engine3Status = (status[2] == "UP");
     } else {
         m_engine1Status = false;
         m_engine2Status = false;
         m_engine3Status = false;
     }
+
     emit enginesStatusChanged();
 }
 
 void BackEnd::changePwFinished(QNetworkReply *reply) {
     QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    qDebug() << code;
     bool isSuccessful = code == "200";
     emit passwordChanged(isSuccessful);
+}
+
+void BackEnd::logs1Finished(QNetworkReply *reply) {
+    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    if (code == "200") {
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(reply->readAll());
+        QJsonArray body = jsonResponse.array();
+        engineBytesReceived[0] += body.at(0).toObject().value("byte").toInt();
+        int max = body.size();
+        for (int i = 1; i < max; i++) {
+            QString data = body.at(i).toObject().value("logs").toString();
+            emit log1Changed(data, true);
+        }
+    }
 }
 
 QNetworkRequest BackEnd::makeRequest(const QUrl &url) {
@@ -129,16 +139,15 @@ void BackEnd::checkEngines() {
 }
 
 void BackEnd::sendFakeLogs() {
-    emit log1Changed("super long text to be displayed sdflksn lkjsdf ljk sadf \n");
+    QString buffer = "";
+    for (int i = 0; i < 10; i ++)
+        buffer += "super long text to be displayed sdflksn lkjsdf ljk sadf";
+    //emit log1Changed(buffer);
 }
 
 void BackEnd::changePw(QString old, QString newPass) {
     QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server/user/password"));
-    QString auth = m_user + ":" + old;
-    QByteArray data = auth.toLocal8Bit().toBase64();
-    QString headerData = "Basic " + data;
-    req.setRawHeader("Authorization", headerData.toLocal8Bit());
-    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    setAuthHeader(req, m_user, old);
     QJsonObject obj;
     obj["new"] = newPass;
     manChangePw->put(req, QJsonDocument(obj).toJson());
@@ -151,6 +160,28 @@ void BackEnd::serverConn(QString host) {
 
 void BackEnd::periodicFn() {
     checkEngines();
-    //TODO: check les logs
     sendFakeLogs();
+    getLogs1();
+}
+
+void BackEnd::setAuthHeader(QNetworkRequest &req, QString user, QString pass) {
+    QString auth = user + ":" + pass;
+    QByteArray data = auth.toLocal8Bit().toBase64();
+    QString headerData = "Basic " + data;
+    req.setRawHeader("Authorization", headerData.toLocal8Bit());
+    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+}
+
+void BackEnd::getLogs1() {
+    QString bytesToAsk = QString::number(engineBytesReceived[0]);
+    QUrl url = QUrl("https://" + m_host + "/engine1/logs/" + bytesToAsk);
+    QNetworkRequest req = makeRequest(url);
+    setAuthHeader(req, m_user, m_pass);
+    manLogs1->get(req);
+}
+
+void BackEnd::startTimer() {
+    periodicFn();
+    timer->start(CHECK_ENGINE_INTERVALL);
+
 }

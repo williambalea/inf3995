@@ -11,9 +11,8 @@ class BackEnd : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString host MEMBER m_host NOTIFY hostChanged)
-    Q_PROPERTY(QString user MEMBER m_user)
-    Q_PROPERTY(QString pass MEMBER m_pass)
-    Q_PROPERTY(QString engine1Logs MEMBER m_engine1Logs)
+    Q_PROPERTY(QString user MEMBER m_user NOTIFY userChanged)
+    Q_PROPERTY(QString pass MEMBER m_pass NOTIFY passChanged)
     Q_PROPERTY(bool engine1Status MEMBER m_engine1Status NOTIFY enginesStatusChanged)
     Q_PROPERTY(bool engine2Status MEMBER m_engine2Status NOTIFY enginesStatusChanged)
     Q_PROPERTY(bool engine3Status MEMBER m_engine3Status NOTIFY enginesStatusChanged)
@@ -30,12 +29,16 @@ public:
     Q_INVOKABLE void login(QString user, QString pass);
     Q_INVOKABLE void changePw(QString old, QString newPass);
     Q_INVOKABLE void serverConn(QString host);
+    Q_INVOKABLE void startTimer();
+
 
 signals:
     void hostChanged();
+    void userChanged();
+    void passChanged();
     void sqlDataChanged();
     void enginesStatusChanged();
-    void log1Changed(QString log);
+    void log1Changed(QString log, bool isText);
     void loginChanged(bool isSuccessful);
     void passwordChanged(bool isSuccessful);
     void serverConnChanged(bool isSuccessful);
@@ -46,6 +49,7 @@ private slots:
     void checkEnginesFinished(QNetworkReply *reply);
     void changePwFinished(QNetworkReply *reply);
     void serverConnFinished(QNetworkReply *reply);
+    void logs1Finished(QNetworkReply *reply);
     void periodicFn();
 
 private:
@@ -53,6 +57,8 @@ private:
     QNetworkRequest makeRequest(const QUrl &url);
     void checkEngines();
     void sendFakeLogs();
+    void setAuthHeader(QNetworkRequest &req, QString user, QString pass);
+    void getLogs1();
 
     QString m_sqlData = "";
     QNetworkAccessManager *manSqlData;
@@ -60,14 +66,16 @@ private:
     QNetworkAccessManager *manEnginesStatus;
     QNetworkAccessManager *manChangePw;
     QNetworkAccessManager *manServerConn;
+    QNetworkAccessManager *manLogs1;
     QTimer *timer;
     bool m_engine1Status = false;
     bool m_engine2Status = false;
     bool m_engine3Status = false;
-    QString m_engine1Logs = "";
-    QString m_host = "10.0.0.105";
+    QString m_host = "";
+    //TODO: empty string
     QString m_user = "";
     QString m_pass = "";
+    int engineBytesReceived[3] = {0, 0, 0};
 
 };
 

@@ -82,6 +82,7 @@ Page{
                     clip: false
                     placeholderText: qsTr("IP address")
                     text: backend.host
+                    selectByMouse: true
                     validator:RegExpValidator {
                         regExp:/^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))$/
                     }
@@ -112,6 +113,7 @@ Page{
                     placeholderText: qsTr("User")
                     focus: true
                     activeFocusOnTab: true
+                    selectByMouse: true
                     Keys.onReturnPressed: loginButton.activate()
                 }
 
@@ -136,6 +138,7 @@ Page{
                     activeFocusOnTab: true
                     clip: false
                     echoMode: TextInput.Password
+                    selectByMouse: true
                     Keys.onReturnPressed: loginButton.activate()
                 }
             }

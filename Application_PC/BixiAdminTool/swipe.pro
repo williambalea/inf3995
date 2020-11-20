@@ -19,6 +19,7 @@ RESOURCES += logo.png
 RESOURCES += logoW.png
 RESOURCES += settings-24px.svg
 RESOURCES += back.svg
+RESOURCES += refresh.svg
 
 RC_ICONS = AppIcon.ico
 
@@ -40,4 +41,5 @@ DISTFILES += \
     back.svg \
     logo.png \
     logoW.png \
-    settings-24px.svg
+    settings-24px.svg \
+    refresh.svg
