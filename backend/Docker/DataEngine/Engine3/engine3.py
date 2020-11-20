@@ -221,7 +221,7 @@ class Engine3:
         return loaded_rf
 
     #not useful yet
-    def filter_prediction(self, station, groupby:
+    def filter_prediction(self, station, groupby):
         my_file = Path("./all_pred.pkl")
         if my_file.is_file():
             print('loading Pred_df')
@@ -235,21 +235,58 @@ class Engine3:
             df.to_pickle(my_file)
 
         print('this is the pred df:')
-        print(df)
+        # print(df)
         print('READY TO FILTER!!')
 
         #Filter wanted station
         if str(station) != 'all':
             df = df[df.start_station_code == station]
 
+        df.to_csv('tempPD.csv')
+
+        print('before groupby filter')
+        # print(df)
+
         #filter groupby
         if(groupby == "perHour"):
-        elif(groupby == "perWeekDay"):
-        elif(groupby == "perMonth"):
-        elif(groupby == "perDate"):
+            print('filtering perHour')
+            df = df.groupby(['hour']).agg({'predictions': 'sum', 'test_labels': 'sum'})
 
-    
+        elif(groupby == "perWeekDay"):
+            print('filtering perWeekDay')
+            df = df.groupby(['weekday']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+
+        elif(groupby == "perMonth"):
+            print('filtering perMonth')
+            df = df.groupby(['month']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+
+        elif(groupby == "perDate"):
+            print('filtering perDate')
+            df = df.groupby(['month', 'day']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+
+        # df.reset_index()    
         print('AFTER FILTER')
         print(df)
+
+        xAxis = df.index.values
+        print(xAxis)
         
-        return 0
+        # Make the plot
+
+        # set width of bar
+        barWidth = 0.25
+        plt.clf()
+        plt.bar(xAxis, df['predictions'], color='#0A6BF3', width=barWidth, edgecolor='white', label='Predictions')
+        # Add xticks on the middle of the group bars
+        ('adding xticks')
+        plt.xlabel('GroupBy', fontweight='bold')
+        plt.ylabel('Predictions', fontweight='bold')
+        plt.tight_layout()
+        # Create legend & Show graphic
+        plt.legend()
+        plt.savefig('bar.png')
+        # plt.show()
+        print('graph generated', flush=True)
+        plt.show()
+        # return plt
+        return df

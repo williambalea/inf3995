@@ -44,4 +44,11 @@ perDate = "perDate"
 print('constructing engine3')
 engine3 = Engine3()
 
-predictions_df = engine3.filter_prediction(6043)
+# print('MONTH ******************************8')
+# predictions_df = engine3.filter_prediction(6043, perMonth)
+print('HOUR ******************************8')
+predictions_df = engine3.filter_prediction(6043, perHour)
+# print('WEEKDAY ******************************8')
+# predictions_df = engine3.filter_prediction(6043, perWeekDay)
+# print('DATE ******************************8')
+# predictions_df = engine3.filter_prediction(6043, perDate)
