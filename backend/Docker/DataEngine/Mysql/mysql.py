@@ -7,10 +7,6 @@ import re
 from flask import request
 import hashlib
 from unittest import case
-from DataEngine.Engine2.engine2 import Engine2
-
-
-engine2 = Engine2()
 
 class MySqlDB:
 
@@ -102,7 +98,7 @@ class MySqlDB:
         for i in range(0, len(logs["logs"])):
             myJson =  '{ "text": [], "logs": [] }'
             sendJson = json.loads(myJson)
-            sendJson["text"] = engine2.isGraph(logs["logs"][i])
+            sendJson["text"] = (len(logs["logs"][i]) < 200)
             sendJson["logs"] = logs["logs"][i]
             logsList.append(sendJson)
         return json.dumps(logsList)

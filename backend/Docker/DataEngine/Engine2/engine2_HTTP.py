@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_api import status
-from DataEngine.Engine2.engine2 import Engine2
-from DataEngine.Mysql.mysql import MySqlDB
+from Engine2.engine2 import Engine2
+from Mysql.mysql import MySqlDB
 
 app = Flask(__name__)
 engine2 = Engine2()

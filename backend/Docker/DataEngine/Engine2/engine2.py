@@ -122,7 +122,7 @@ class Engine2:
         else:
             st = station
 
-        path = "../kaggleData/OD_{}".format(ye)
+        path = "./kaggleData/OD_{}".format(ye)
         path += ".csv"
         df = pd.read_csv(path, dtype={
             'start_date':str,
