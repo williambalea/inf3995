@@ -8,9 +8,8 @@
 
 #define ENGINE1_ADDR "http://engine1:5000/engine1"
 #define ENGINE2_ADDR "http://engine2:5000/engine2"
-
 //TODO: Correct address when engine3 will be created
-#define ENGINE3_ADDR "http://engine1:5000/engine1"
+
 #define CHECK_ENGINE_INTERVALL 10
 
 using namespace Pistache;
@@ -94,7 +93,9 @@ bool Server::checkEngine(string engineAddr) {
 void Server::checkEnginesStatus() {
     enginesStatus[0] = checkEngine(ENGINE1_ADDR);
     enginesStatus[1] = checkEngine(ENGINE2_ADDR);
+#if ENGINE3_ADDR
     enginesStatus[2] = checkEngine(ENGINE3_ADDR);
+#endif
 }
 
 void Server::updatePass(string user, string pw) {

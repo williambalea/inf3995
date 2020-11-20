@@ -18,7 +18,7 @@ void MySQL::sendSurvey(json survey) {
     con = driver->connect(HOST, USER, PASS);
     
     PreparedStatement* stmt = con->prepareStatement(
-        "INSERT INTO Survey.Polls (email, firstName, lastName, age, interest) VALUES (?, ?, ?, ?, ?)"
+        "INSERT INTO " + surveys_t + " (email, firstName, lastName, age, interest) VALUES (?, ?, ?, ?, ?)"
     );
 
     stmt->setString(1, survey["email"].get<string>());
@@ -35,7 +35,7 @@ void MySQL::sendSurvey(json survey) {
 json MySQL::getSurvey() {
     con = driver->connect(HOST, USER, PASS);
     Statement *stmt = con->createStatement();
-    ResultSet *res  = stmt->executeQuery("SELECT * FROM Server.Polls");
+    ResultSet *res  = stmt->executeQuery("SELECT * FROM " + surveys_t);
     json allData;
     while (res->next()) {
         json data;
@@ -56,7 +56,7 @@ json MySQL::getSurvey() {
 json MySQL::getUser(string user) {
     con = driver->connect(HOST, USER, PASS);
     Statement *stmt = con->createStatement();
-    ResultSet *res = stmt->executeQuery("SELECT * FROM Server.Accounts WHERE user='" + user + "'");
+    ResultSet *res = stmt->executeQuery("SELECT * FROM " + accounts_t + " WHERE user='" + user + "'");
     json data;
     while (res->next()) {
         data["user"] = res->getString("user");
@@ -72,7 +72,7 @@ json MySQL::getUser(string user) {
 
 void MySQL::updatePass(string user, string salt, string newPass) {
     con = driver->connect(HOST, USER, PASS);
-    PreparedStatement* stmt = con->prepareStatement("UPDATE Server.Accounts SET salt=?, pw=? WHERE user=?");
+    PreparedStatement* stmt = con->prepareStatement("UPDATE " + accounts_t + " SET salt=?, pw=? WHERE user=?");
 
     stmt->setString(1, salt);
     stmt->setString(2, newPass);

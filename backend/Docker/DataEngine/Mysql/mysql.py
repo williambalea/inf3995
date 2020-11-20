@@ -14,9 +14,9 @@ class MySqlDB:
     DB_HOSTNAME = "34.70.117.28"
     DB_USERNAME = "root"
     DB_PASSWORD = "jerome"
-    DB_NAMEOFBD = "Server"
+    DB_NAMEOFBD = "CentralServer"
     CONNECTION = None
-    ACCOUNTS = "SELECT * FROM Accounts"
+    ACCOUNTS = "SELECT * FROM CentralServer.Accounts"
     ENGINE1_LOGS = "../Engine1/engine.log"
     ENGINE2_LOGS = "../Engine2/engine.log"
     ANSI_COLOR = r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]'
