@@ -8,7 +8,7 @@
     android:background="@drawable/background_bg"
     android:orientation="vertical"
     android:weightSum="9"
-    tools:context="inf3995.bixiapplication.StationPredictionsActivity"
+    tools:context="inf3995.bixiapplication.StationView.StationPredictions.StationPredictionsActivity"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://schemas.android.com/tools ">
 
@@ -131,62 +131,7 @@
         android:orientation="vertical"
         android:padding="5dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="0dp"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="0dp"
-            android:layout_marginStart="0dp"
-            android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/startDateButton"
-                android:layout_width="180dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:text="Start Date"
-                android:textColor="@color/colortextdata"
-                android:textSize="23sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/startDate"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"
-                android:text="Date"
-                android:textColor="@color/colortextlabel"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                />
-
-            <Button
-                android:id="@+id/endDateButton"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"
-                android:text="End Date"
-                android:textColor="@color/colortextdata"
-                android:textSize="23sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/endDate"
-                android:layout_width="180dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"
-                android:text="Date"
-                android:textColor="@color/colortextlabel"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -210,6 +155,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -218,13 +165,13 @@
                         android:layout_margin="0dp"
                         android:gravity="center"
                         android:text="@string/choose_year"
-                        android:textSize="20sp" />
+                        android:textSize="30sp" />
 
                     <Spinner
                         android:id="@+id/spnTimes"
-                        android:layout_width="180dp"
+                        android:layout_width="200dp"
                         android:layout_height="80dp"
-                        android:layout_margin="10dp"
+                        android:layout_margin="0dp"
                         android:background="@drawable/spiner_bg"
                         android:gravity="center_horizontal"
                         android:hint="@string/choose_year"
@@ -236,6 +183,8 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -245,22 +194,26 @@
                         android:layout_margin="0dp"
                         android:gravity="center"
                         android:text="@string/choose_period"
-                        android:textSize="20sp" />
+                        android:textSize="30sp" />
 
                     <Spinner
                         android:id="@+id/spnPeriode"
-                        android:layout_width="180dp"
+                        android:layout_width="200dp"
                         android:layout_height="80dp"
-                        android:layout_margin="10dp"
+                        android:layout_margin="0dp"
                         android:background="@drawable/spiner_bg"
                         android:gravity="center_horizontal"
                         android:hint="@string/choose_period"
                         android:spinnerMode="dropdown"
                         android:textAlignment="center" />
                 </LinearLayout>
+
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -269,47 +222,77 @@
                         android:layout_height="40dp"
                         android:layout_margin="0dp"
                         android:gravity="center"
-                        android:text="@string/select_indicator"
-                        android:textSize="20sp" />
-
-                    <Spinner
-                        android:id="@+id/spnIndicator"
-                        android:layout_width="180dp"
-                        android:layout_height="80dp"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/spiner_bg"
-                        android:gravity="center_horizontal"
-                        android:hint="@string/choose_period"
-                        android:spinnerMode="dropdown"
-                        android:textAlignment="center" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="180dp"
-                        android:layout_height="40dp"
-                        android:layout_margin="0dp"
-                        android:gravity="center"
                         android:textSize="30sp" />
 
                     <Button
                         android:id="@+id/display_button"
-                        android:layout_width="180dp"
-                        android:layout_height="85dp"
+                        android:layout_width="200dp"
+                        android:layout_height="87dp"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:layout_margin="0dp"
                         android:text="@string/display"
                         android:textSize="30sp"
                         android:textStyle="bold" />
                 </LinearLayout>
+
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="0dp"
+                android:layout_marginStart="0dp"
+                android:orientation="horizontal">
 
+                <Button
+                    android:id="@+id/startDateButton"
+                    android:layout_width="180dp"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:text="Start Date"
+                    android:textColor="@color/colortextdata"
+                    android:textSize="23sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/startDate"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:text="Date"
+                    android:textColor="@color/colortextlabel"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    />
+
+                <Button
+                    android:id="@+id/endDateButton"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:text="End Date"
+                    android:textColor="@color/colortextdata"
+                    android:textSize="23sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/endDate"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:text="Date"
+                    android:textColor="@color/colortextlabel"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    />
+            </LinearLayout>
 
             <FrameLayout
                 android:id="@+id/global_data_fragment_holder"

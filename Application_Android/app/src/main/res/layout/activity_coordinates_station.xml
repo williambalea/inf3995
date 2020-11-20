@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:background="@drawable/background_bg"
     android:orientation="vertical" android:weightSum="9"
-    tools:context="inf3995.bixiapplication.StationCoordinatesActivity"
+    tools:context="inf3995.bixiapplication.StationView.StationList.StationCoordinatesActivity"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://schemas.android.com/tools ">
 <LinearLayout

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="@drawable/background_bg"
     android:layout_height="match_parent"
-    tools:context="inf3995.bixiapplication.ListStationActivity">
+    tools:context="inf3995.bixiapplication.StationView.StationList.ListStationActivity">
 
     <!---progress bar-->
     <include

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="inf3995.bixiapplication.MainActivity">
+    tools:context="inf3995.bixiapplication.StationView.MainActivity">
 
     <TextView
         android:id="@+id/welcomeToApp"
