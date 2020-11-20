@@ -39,6 +39,8 @@ signals:
     void sqlDataChanged();
     void enginesStatusChanged();
     void log1Changed(QString log, bool isText);
+    void log2Changed(QString log, bool isText);
+    void log3Changed(QString log, bool isText);
     void loginChanged(bool isSuccessful);
     void passwordChanged(bool isSuccessful);
     void serverConnChanged(bool isSuccessful);
@@ -50,15 +52,18 @@ private slots:
     void changePwFinished(QNetworkReply *reply);
     void serverConnFinished(QNetworkReply *reply);
     void logs1Finished(QNetworkReply *reply);
+    void logs2Finished(QNetworkReply *reply);
     void periodicFn();
 
 private:
     void setupNetworkManagers();
     QNetworkRequest makeRequest(const QUrl &url);
     void checkEngines();
-    void sendFakeLogs();
     void setAuthHeader(QNetworkRequest &req, QString user, QString pass);
     void getLogs1();
+    void getLogs2();
+    void logsReplyHandler(int engineNumber, QVariant code, QByteArray replyRead);
+    void emitToEnginePage(int engineNumber, QString data, bool isText);
 
     QString m_sqlData = "";
     QNetworkAccessManager *manSqlData;
@@ -67,6 +72,7 @@ private:
     QNetworkAccessManager *manChangePw;
     QNetworkAccessManager *manServerConn;
     QNetworkAccessManager *manLogs1;
+    QNetworkAccessManager *manLogs2;
     QTimer *timer;
     bool m_engine1Status = false;
     bool m_engine2Status = false;

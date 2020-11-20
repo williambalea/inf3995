@@ -12,7 +12,6 @@ Page {
     Connections {
         target: backend
         onLog1Changed: {
-            console.log(log);
             var t = "";
             var i = "";
             if(isText) {

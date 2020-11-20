@@ -4,11 +4,34 @@ import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.0
 import custom.classes 1.0
 
-
 Page {
     id: engine2Page
     width: applicationWindow.width
     height: applicationWindow.height - 86
+
+    Connections {
+        target: backend
+        onLog2Changed: {
+            var t = "";
+            var i = "";
+            if(isText) {
+                t = log;
+            } else {
+                var logParts = log.split(" ");
+                for (i = 0; i < logParts.length - 1; i++) {
+                    t += logParts[i] + " ";
+                }
+
+                i = "data:image/png;base64," + logParts[logParts.length - 1];
+            }
+
+            elements.insert(0, {
+                logText: t,
+                image: i,
+                typ: isText
+            });
+        }
+    }
     
     Rectangle {
         id: listViewContenant
@@ -46,17 +69,17 @@ Page {
                 }
                 Rectangle {
                     id: rectangle1
-                    visible: (typ === 1)
-                    width: (typ === 0) ? 0 : 500
-                    height: (typ === 0) ? 0 : 500
+                    visible: !typ
+                    width: typ ? 0 : 500
+                    height: typ ? 0 : 500
                     color: "transparent"
                     Image {
                         source: image
-                        anchors.leftMargin: 5
-                        anchors.bottomMargin: 5
-                        anchors.topMargin: 5
+                        anchors.leftMargin: 10
+                        anchors.bottomMargin: 0
+                        anchors.topMargin: 0
                         fillMode: Image.PreserveAspectFit
-                        width: 490
+                        width: 498
                         anchors.left: parent.left
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom

@@ -44,6 +44,9 @@ void BackEnd::setupNetworkManagers() {
 
     manLogs1 = new QNetworkAccessManager(this);
     connect(manLogs1, &QNetworkAccessManager::finished, this, &BackEnd::logs1Finished);
+
+    manLogs2 = new QNetworkAccessManager(this);
+    connect(manLogs2, &QNetworkAccessManager::finished, this, &BackEnd::logs2Finished);
 }
 
 
@@ -112,15 +115,39 @@ void BackEnd::changePwFinished(QNetworkReply *reply) {
 
 void BackEnd::logs1Finished(QNetworkReply *reply) {
     QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    if (code == "200") {
-        QJsonDocument jsonResponse = QJsonDocument::fromJson(reply->readAll());
-        QJsonArray body = jsonResponse.array();
-        engineBytesReceived[0] += body.at(0).toObject().value("byte").toInt();
-        int max = body.size();
-        for (int i = 1; i < max; i++) {
-            QString data = body.at(i).toObject().value("logs").toString();
-            emit log1Changed(data, true);
-        }
+    QByteArray body = reply->readAll();
+    logsReplyHandler(1, code, body);
+}
+
+void BackEnd::logs2Finished(QNetworkReply *reply) {
+    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    QByteArray body = reply->readAll();
+    logsReplyHandler(2, code, body);
+}
+
+void BackEnd::logsReplyHandler(int engineNumber, QVariant code, QByteArray replyRead) {
+    if (code != "200") return;
+    QJsonDocument jsonResponse = QJsonDocument::fromJson(replyRead);
+    QJsonArray body = jsonResponse.array();
+    engineBytesReceived[engineNumber - 1] = body.at(0).toObject().value("byte").toInt();
+    int max = body.size();
+    for (int i = 1; i < max; i++) {
+        QString data = body.at(i).toObject().value("logs").toString();
+        bool isText = data.size() < 200;
+        emitToEnginePage(engineNumber, data, isText);
+    }
+}
+void BackEnd::emitToEnginePage(int engineNumber, QString data, bool isText) {
+    switch(engineNumber) {
+    case 1:
+        emit log1Changed(data, isText);
+        break;
+    case 2:
+        emit log2Changed(data, isText);
+        break;
+    case 3:
+        //TODO : emit log3Changed(data, isText);
+        break;
     }
 }
 
@@ -138,13 +165,6 @@ void BackEnd::checkEngines() {
     manEnginesStatus->get(req);
 }
 
-void BackEnd::sendFakeLogs() {
-    QString buffer = "";
-    for (int i = 0; i < 10; i ++)
-        buffer += "super long text to be displayed sdflksn lkjsdf ljk sadf";
-    //emit log1Changed(buffer);
-}
-
 void BackEnd::changePw(QString old, QString newPass) {
     QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server/user/password"));
     setAuthHeader(req, m_user, old);
@@ -160,8 +180,8 @@ void BackEnd::serverConn(QString host) {
 
 void BackEnd::periodicFn() {
     checkEngines();
-    sendFakeLogs();
     getLogs1();
+    getLogs2();
 }
 
 void BackEnd::setAuthHeader(QNetworkRequest &req, QString user, QString pass) {
@@ -178,6 +198,14 @@ void BackEnd::getLogs1() {
     QNetworkRequest req = makeRequest(url);
     setAuthHeader(req, m_user, m_pass);
     manLogs1->get(req);
+}
+
+void BackEnd::getLogs2() {
+    QString bytesToAsk = QString::number(engineBytesReceived[1]);
+    QUrl url = QUrl("https://" + m_host + "/engine2/logs/" + bytesToAsk);
+    QNetworkRequest req = makeRequest(url);
+    setAuthHeader(req, m_user, m_pass);
+    manLogs2->get(req);
 }
 
 void BackEnd::startTimer() {

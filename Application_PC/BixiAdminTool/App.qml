@@ -7,9 +7,9 @@ import custom.classes 1.0
 
 Item {
 
-    Component.onCompleted: {
-        backend.startTimer();
-    }
+//    Component.onCompleted: {
+//        backend.startTimer();
+//    }
 
     Connections{
         target: backend
@@ -227,7 +227,7 @@ Item {
         id: sqlProgBar
         x: -12
         width: parent.width + 24
-        visible: false
+        visible: true
         anchors.bottom: parent.bottom
         indeterminate: true
         Material.accent: "#9b0000"

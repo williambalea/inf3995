@@ -31,6 +31,7 @@ Page{
                     backend.user = user.text;
                     backend.pass = pw.text;
                     stackView.push("App.qml", StackView.Immediate);
+                    backend.startTimer();
                 } else {
                     errorLogin.visible = true;
                 }
