@@ -7,6 +7,7 @@ import base64
 from sklearn.ensemble import RandomForestRegressor
 import scipy as sps
 import pickle
+from pathlib import Path
 
 class Engine3:
 
@@ -132,62 +133,33 @@ class Engine3:
         df_grouped['weekofyear'] = df_grouped['weekofyear'].astype(np.int16)
         df_grouped['num_trips'] = df_grouped['num_trips'].astype(np.int16)
 
+        #one-hot encoding weather description
+        df_grouped = pd.get_dummies(df_grouped)
+
         # df['year'] = df['year'].astype(np.int32)
         print('testing 2 df col: ', df_grouped.dtypes)
 
         return df_grouped
 
 
-    def random_forest_algo(self):
+    def get_prediction(self):
         print('testing---------------------') 
         test_features = self.get_testing_df()
-
-        #one-hot encoding weather description
-        test_features = pd.get_dummies(test_features)
-        # , columns=[ 'Description_broken clouds',
-        #                                                     'Description_few clouds', 'Description_fog', 'Description_haze',
-        #                                                     'Description_heavy intensity rain',
-        #                                                     'Description_heavy intensity shower rain',
-        #                                                     'Description_light intensity drizzle',
-        #                                                     'Description_light intensity shower rain', 'Description_light rain',
-        #                                                     'Description_light shower snow', 'Description_light snow',
-        #                                                     'Description_mist', 'Description_moderate rain',
-        #                                                     'Description_overcast clouds', 'Description_proximity shower rain',
-        #                                                     'Description_proximity thunderstorm', 'Description_scattered clouds',
-        #                                                     'Description_shower rain', 'Description_sky is clear',
-        #                                                     'Description_smoke', 'Description_thunderstorm',
-        #                                                     'Description_thunderstorm with heavy rain',
-        #                                                     'Description_thunderstorm with light rain',
-        #                                                     'Description_thunderstorm with rain', 'Description_very heavy rain',
-        #                                                     'Description_light intensity drizzle rain' ])
-
 
         print('traning------------------')
         train_features = self.get_traning_df()
 
-        print(train_features)
-        #one-hot encoding weather description
-        train_features = pd.get_dummies(train_features)
-
-
-        # Now add the missing different columns to each dataframe
+        # Add missing  columns from/to each dataframe
         col_list = (test_features.append([train_features])).columns.tolist()
         test_features = test_features.reindex(columns = col_list,  fill_value=0)
         train_features = train_features.reindex(columns = col_list,  fill_value=0)
 
-        # col_list = list(set().union(dfA.columns, dfB.columns, dfC.columns))
+        print('test_feature: ', test_features)
+        print('train_feature: ', train_features)
 
-        # test_features = self.filter_prediction(test_features)
-
-
-        print(test_features)
-        print(train_features)
-
-        print('testing df col before : ', test_features.columns)
+        print('getting train/test labels')
         test_labels = np.array(test_features['num_trips'])
         train_labels = np.array(train_features['num_trips'])
-
-
         test_features = test_features.drop(['num_trips'], axis=1)
         train_features = train_features.drop(['num_trips'], axis=1)
 
@@ -195,45 +167,13 @@ class Engine3:
         print('Training Labels Shape:', train_labels.shape)
         print('Testing Features Shape:', test_features.shape)
         print('Testing Labels Shape:', test_labels.shape)
-
+        #not used yet... prbly to delete
         feature_list = list(test_features.columns)
         
-        ## not gonna do for now
-        # # The baseline predictions are the historical averages
-        # baseline_preds = test_features[:, feature_list.index('num_trips')]
-        # # Baseline errors, and display average baseline error
-        # baseline_errors = abs(baseline_preds - test_labels)
-        # print('Average baseline error: ', round(np.mean(baseline_errors), 2))
-
-
-        #instantiate model with 1000 decision trees
-        rf = RandomForestRegressor(n_estimators = 20, random_state = 42, n_jobs=-1)
-
-
-        print(train_features.dtypes)
-        # train_features.dropna()
-        # print(train_features)
-        #Train the model on training data
-        print('Fit calculating...')
-
-        print('look here --------------------------------------------------------------')
-        # dense_df = sps.sparse.csr_matrix(train_features.values)
-        # dense_df = sps.coo_matrix((train_features.freq, (train_features.index.labels[0], train_features.index.labels[1])))
-        # print(dense_df)
-        # sps.sparse.csr_matrix(train_features.values)
-        print('look here --------------------------------------------------------------')
-
-        rf.fit(train_features, train_labels)
-        print('Fit DONE')
-
-        print('saving model')
-        # save the model to disk
-        filename = 'finalized_model.sav'
-        pickle.dump(rf, open(filename, 'wb'))
-
-        print('loading model')
-        # load the model from disk
-        loaded_rf = pickle.load(open(filename, 'rb'))
+        ##Actual RFregressor
+        
+        
+        loaded_rf = self.get_random_forest_model(train_labels, train_features)
 
         # Use the forest's predict method on the test data
         print('prediction...')
@@ -251,17 +191,30 @@ class Engine3:
         mape = 100 * (errors / test_labels)# Calculate and display accuracy
         accuracy = 100 - np.mean(mape)
         print('Accuracy:', round(accuracy, 2), '%.')
+
+
         return 0
 
+    def get_random_forest_model(self, train_l, train_f):
+        my_file = Path("finalized_model.sav")
+        if my_file.is_file():
+            print('loading model')
+            # load the model from disk
+            loaded_rf = pickle.load(open(my_file, 'rb'))
+        else:
+            #instantiate model with 1000 decision trees
+            loaded_rf = RandomForestRegressor(n_estimators = 20, random_state = 42, n_jobs=-1)
+            print('Fit calculating...')
+            loaded_rf.fit(train_features, train_labels)
+            print('Fit DONE')
+
+            print('saving model')
+            # save the model to disk
+            pickle.dump(loaded_rf, open(filename, 'wb'))
+
+        return loaded_rf
+
     #not useful yet
-    def filter_prediction(self, df_grouped):
-        # Group by hour
-        df_grouped = df_grouped.groupby(['month']).agg('first')
-        column = df_grouped.groupby(['month']).count()['start_station_code']
-        # df_grouped = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).agg('first')
-        # column = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).count()['Description']
-        
-        df_grouped['num_trips']= column
-        df_grouped = df_grouped.reset_index()
-        print('testing 1 df col: ', df_grouped.dtypes)
+    def filter_prediction(self, train_l, test_l, train_f, test_f):
+        test_df = self.get_testing_df
         return df_grouped

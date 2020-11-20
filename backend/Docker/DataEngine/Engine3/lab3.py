@@ -11,7 +11,6 @@ import numpy as np
 import seaborn as sns
 import base64
 from easydict import EasyDict as edict
-import dask.dataframe as dd
 
 HOST_NAME = "34.70.117.28"
 USER_NAME = "root"
@@ -76,7 +75,7 @@ engine3 = Engine3()
 # print(testing_df)
 # print(testing_df.columns)
 
-engine3.random_forest_algo()
+engine3.get_prediction()
 
 # print(training_set.info)
 # print(training_set.dtypes)
