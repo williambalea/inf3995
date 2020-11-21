@@ -8,6 +8,7 @@ from sklearn.ensemble import RandomForestRegressor
 import scipy as sps
 import pickle
 from pathlib import Path
+import datetime
 
 class Engine3:
 
@@ -221,7 +222,9 @@ class Engine3:
         return loaded_rf
 
     #not useful yet
-    def filter_prediction(self, station, groupby):
+    def filter_prediction(self, station, groupby, startDate, endDate):
+        
+        #load dataframe from file or generate it if desn't exist
         my_file = Path("./all_pred.pkl")
         if my_file.is_file():
             print('loading Pred_df')
@@ -241,6 +244,40 @@ class Engine3:
         #Filter wanted station
         if str(station) != 'all':
             df = df[df.start_station_code == station]
+
+        print('Dataframe before Period Filter')
+        print(df)
+
+        print('StdartDate: ', startDate, ' an EndDate: ', endDate)
+        #Dates to variables
+        startDateObj = datetime.datetime.strptime(startDate, '%d/%m/%Y')
+        endDateObj = datetime.datetime.strptime(endDate, '%d/%m/%Y')
+        startYear = startDateObj.year
+        startMonth = startDateObj.month
+        startDay = startDateObj.day
+        endYear = endDateObj.year
+        endMonth = endDateObj.month
+        endDay = endDateObj.day
+
+        
+        # Get names of indexes for which column Age has value 30
+        indexNames = df[ df['month'] < startMonth ].index
+        df.drop(indexNames , inplace=True)
+        # print('indexNames: ', indexNames)
+        indexNames = (df[ (df['month'] == startMonth) & (df['day'] < startDay)].index)
+        df.drop(indexNames , inplace=True)
+        indexNames = df[ df['month'] > endMonth ].index
+        df.drop(indexNames , inplace=True)
+        # print('indexNames: ', indexNames)
+        indexNames = (df[ (df['month'] == endMonth) & (df['day'] > endDay)].index)
+        df.drop(indexNames , inplace=True)
+        print('indexNames: ', indexNames)
+        # indexNames.append(df[ df['day'] < startDay & df['day'] < startDay ].index)
+        # print('indexNames: ', indexNames)
+        # Delete these row indexes from dataFrame
+
+        print('Dataframe after Period Filter')
+        print(df)
 
         df.to_csv('tempPD.csv')
 
@@ -272,49 +309,51 @@ class Engine3:
         return df
 
     def get_prediction_graph(self, df, groupby):
-        arrMonth = []
-        arrDay = []
-        print('alloooooooooooo3')
-        print(len(df.index.values))
-        # print(len(df.index.values))
-        for i in range(len(df.index.values)-1):
-            arrMonth.append(df.index.values[i][0])
-            arrDay.append(df.index.values[i][1])
-        ####################GOT 2 ARRAYS. NOW NEED TO PUT THEM TOGHETER AND MAKE 1 ARRAY TO GIVE TO XAXIS
-        print(arrDay)
-        print(arrMonth)
+        
+        xAxisDate = []
+        print('groupby')
+        print(groupby)
 
         if groupby == "perDate":
-            # df["date"] = df["month"].astype(str) + df["day"]
-            # print(df["date"])
-            # print(xAxis.dtype)
-            print('alloooooooooooo')
-            temp_df = pd.Series(xAxis)
-            # print('alloooooooooooo1')
-            # # print(temp_df)
-            # # xAxis = temp_df.month + ", " + temp_df.month
-            # print('alloooooooooooo2')
-            # print(xAxis)
+            for i in range(len(df.index.values)):
+                xAxisDate.append(str(df.index.values[i][0]) + "-" + str(df.index.values[i][1]))
+                xAxis = pd.Series(xAxisDate)
         else:
             xAxis = df.index.values
             print(xAxis)
 
-
-
+        print('Dates: ', xAxis)
         # Make the plot
         # set width of bar
-        barWidth = 0.25
-        plt.clf()
-        plt.bar(temp_df, df['predictions'], color='#D52B1E', width=barWidth, edgecolor='white', label='Predictions')
-        # Add xticks on the middle of the group bars
-        ('adding xticks')
-        plt.xlabel('GroupBy', fontweight='bold')
-        plt.ylabel('Predictions', fontweight='bold')
-        plt.tight_layout()
-        # Create legend & Show graphic
-        plt.legend()
-        plt.savefig('bar.png')
-        # plt.show()
-        print('graph generated', flush=True)
-        plt.show()
+        if groupby == "perDate":
+            barWidth = 0.25
+            plt.clf()
+            plt.scatter(xAxis, df['predictions'], color='#D52B1E',  edgecolor='white', label='Predictions')
+            # Add xticks on the middle of the group bars
+            ('adding xticks')
+            plt.xlabel('GroupBy')
+            plt.ylabel('Predictions')
+            # plt.xaxis.set_minor_locator(MultipleLocator(5))
+            # Create legend & Show graphic
+            plt.legend()
+            plt.savefig('bar.png')
+            # plt.show()
+            print('graph generated', flush=True)
+            plt.show()
+        elif groupby != "perDate":
+            barWidth = 0.25
+            plt.clf()
+            plt.bar(xAxis, df['predictions'], color='#D52B1E', width=barWidth, edgecolor='white', label='Predictions')
+            # Add xticks on the middle of the group bars
+            ('adding xticks')
+            plt.xlabel('GroupBy', fontweight='bold')
+            plt.ylabel('Predictions', fontweight='bold')
+            plt.tight_layout()
+            # Create legend & Show graphic
+            plt.legend()
+            plt.savefig('bar.png')
+            # plt.show()
+            print('graph generated', flush=True)
+            # plt.show()
+            
         return plt

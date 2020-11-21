@@ -38,21 +38,21 @@ perHour = "perHour"
 perWeekDay = "perWeekDay"
 perMonth = "perMonth"
 perDate = "perDate"
-startDate = '13/05/2017'
-endDate = '03/09/2017'
+startDate = '27/05/2017'
+endDate = '27/09/2017'
 
 
 print('constructing engine3')
 engine3 = Engine3()
 
-# print('MONTH ******************************8')
-# predictions_df = engine3.filter_prediction(6043, perMonth)
+print('MONTH ******************************8')
+predictions_df = engine3.filter_prediction(6043, perDate, startDate, endDate)
 # print('HOUR ******************************8')
 # predictions_df = engine3.filter_prediction(6043, perHour)
 # print('WEEKDAY ******************************8')
 # predictions_df = engine3.filter_prediction(6043, perWeekDay)
-print('DATE ******************************8')
-predictions_df = engine3.filter_prediction(6043, perDate)
+# print('DATE ******************************8')
+# predictions_df = engine3.filter_prediction(6043, perDate, startDate, endDate)
 
 
 engine3.get_prediction_graph(predictions_df, perDate).show()
