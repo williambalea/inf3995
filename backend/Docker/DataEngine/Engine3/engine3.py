@@ -245,6 +245,7 @@ class Engine3:
         if str(station) != 'all':
             df = df[df.start_station_code == station]
 
+
         print('Dataframe before Period Filter')
         print(df)
 
@@ -252,6 +253,13 @@ class Engine3:
         #Dates to variables
         startDateObj = datetime.datetime.strptime(startDate, '%d/%m/%Y')
         endDateObj = datetime.datetime.strptime(endDate, '%d/%m/%Y')
+
+        minDate = datetime.datetime(2017, 4, 15)
+        maxDate = datetime.datetime(2017, 9, 30)
+        if startDateObj < minDate:
+            startDateObj = minDate
+        if endDateObj > maxDate:
+            endDateObj = maxDate
         startYear = startDateObj.year
         startMonth = startDateObj.month
         startDay = startDateObj.day
@@ -272,9 +280,7 @@ class Engine3:
         indexNames = (df[ (df['month'] == endMonth) & (df['day'] > endDay)].index)
         df.drop(indexNames , inplace=True)
         print('indexNames: ', indexNames)
-        # indexNames.append(df[ df['day'] < startDay & df['day'] < startDay ].index)
-        # print('indexNames: ', indexNames)
-        # Delete these row indexes from dataFrame
+        
 
         print('Dataframe after Period Filter')
         print(df)
