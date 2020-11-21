@@ -221,10 +221,7 @@ class Engine3:
 
         return loaded_rf
 
-    #not useful yet
-    def filter_prediction(self, station, groupby, startDate, endDate):
-        
-        #load dataframe from file or generate it if desn't exist
+    def load_prediction_df(self):#load dataframe from file or generate it if desn't exist
         my_file = Path("./all_pred.pkl")
         if my_file.is_file():
             print('loading Pred_df')
@@ -236,44 +233,34 @@ class Engine3:
             print('this is the pred df:', df)
             print('saving pred_df')
             df.to_pickle(my_file)
+        return df
+        
 
+    def filter_prediction(self, df,  station, groupby, startDate, endDate):
         print('filtering...')
 
-        #Filter wanted station
+        #Filter station
         if str(station) != 'all':
             df = df[df.start_station_code == station]
-
+        #Filter Period
         df = self.period_filter(df, startDate, endDate)
-      
-        df.to_csv('tempPD.csv')
-
+        #Filter groupby      
         df = self.groupby_filter(df, groupby)
 
         print('filtering DONE')
-
         return df
 
-    def get_prediction_graph(self, df, groupby):
+    def get_prediction_graph(self, groupby, x, y):
         
-        xAxisDate = []
-        print('groupby')
-        print(groupby)
+        print('x: ', x)
+        print('y: ', y)
 
-        if groupby == "perDate":
-            for i in range(len(df.index.values)):
-                xAxisDate.append(str(df.index.values[i][0]) + "-" + str(df.index.values[i][1]))
-                xAxis = pd.Series(xAxisDate)
-        else:
-            xAxis = df.index.values
-            print(xAxis)
-
-        print('Dates: ', xAxis)
         # Make the plot
         # set width of bar
         if groupby == "perDate":
             barWidth = 0.25
             plt.clf()
-            plt.scatter(xAxis, df['predictions'], color='#D52B1E',  edgecolor='white', label='Predictions')
+            plt.scatter(x, y, color='#D52B1E',  edgecolor='white', label='Predictions')
             # Add xticks on the middle of the group bars
             ('adding xticks')
             plt.xlabel('GroupBy')
@@ -288,7 +275,7 @@ class Engine3:
         elif groupby != "perDate":
             barWidth = 0.25
             plt.clf()
-            plt.bar(xAxis, df['predictions'], color='#D52B1E', width=barWidth, edgecolor='white', label='Predictions')
+            plt.bar(x, y, color='#D52B1E', width=barWidth, edgecolor='white', label='Predictions')
             # Add xticks on the middle of the group bars
             ('adding xticks')
             plt.xlabel('GroupBy', fontweight='bold')
@@ -296,13 +283,28 @@ class Engine3:
             plt.tight_layout()
             # Create legend & Show graphic
             plt.legend()
-            plt.savefig('bar.png')
+            plt.savefig('bar3.png')
             # plt.show()
             print('graph generated', flush=True)
             # plt.show()
             
         return plt
     
+    def get_graph_X(self, df, groupby):
+        xAxisDate = []
+        if groupby == "perDate":
+            for i in range(len(df.index.values)):
+                xAxisDate.append(str(df.index.values[i][0]) + "-" + str(df.index.values[i][1]))
+                xAxis = pd.Series(xAxisDate)
+        else:
+            xAxis = df.index.values
+            print(xAxis)
+        return xAxis
+
+    def get_graph_Y(self, df):
+        return df['predictions']
+
+
     def period_filter(self, df, startDate, endDate):
         startDateObj = datetime.datetime.strptime(startDate, '%d/%m/%Y')
         endDateObj = datetime.datetime.strptime(endDate, '%d/%m/%Y')
@@ -354,3 +356,44 @@ class Engine3:
             df = df.groupby(['month', 'day']).agg({'predictions': 'sum', 'test_labels': 'sum'})
             
         return df
+
+    def toBase64(self):
+        print('toBase64()', flush=True)
+        # plt.savefig('bar.png')
+        with open("bar3.png", "rb") as imageFile:
+            strg = base64.b64encode(imageFile.read()).decode('utf-8')
+            while strg[-1] == '=':
+                strg = strg[:-1]
+                
+            # print(strg)
+
+        return strg
+
+    def datatoJSON(self, graph, x, y):
+        print('datatoJSON()', flush=True)
+
+        
+        countStart = self.getPerTimeCountStart(df, st, ti)
+        countEnd = self.getPerTimeCountEnd(df, st, ti)
+        
+        self.getGraphPerTime(countStart, countEnd, st, ti)
+        graphString = self.toBase64()
+        # graphString = self.getGraphPerTime(countStart, countEnd, st, ti)
+        if time == "perHour":
+            label = self.hourLabel
+        elif time == "perWeekDay":
+            label = self.weekDayLabel
+        elif time == "perMonth":
+            label = self.monthLabel
+
+        myJson =  '{  "data":{ "time":[], "departureValue":[], "arrivalValue":[] }, "graph":[] }'
+
+        o = json.loads(myJson)
+        o["data"]["time"] = label
+        o["data"]["departureValue"] = countStart[0:len(countStart)].tolist()
+        o["data"]["arrivalValue"] = countEnd[0:len(countStart)].tolist()
+        o["graph"] = graphString
+        
+        print('Label used: ', flush=True)
+        print(label, flush=True)
+        return json.dumps(o)

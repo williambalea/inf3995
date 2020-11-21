@@ -46,7 +46,8 @@ print('constructing engine3')
 engine3 = Engine3()
 
 print('MONTH ******************************8')
-predictions_df = engine3.filter_prediction(6043, perDate, startDate, endDate)
+predictions_df = engine3.load_prediction_df()
+filtered_pred_df = engine3.filter_prediction(predictions_df, 6043, perDate, startDate, endDate)
 # print('HOUR ******************************8')
 # predictions_df = engine3.filter_prediction(6043, perHour)
 # print('WEEKDAY ******************************8')
@@ -54,5 +55,6 @@ predictions_df = engine3.filter_prediction(6043, perDate, startDate, endDate)
 # print('DATE ******************************8')
 # predictions_df = engine3.filter_prediction(6043, perDate, startDate, endDate)
 
-
-engine3.get_prediction_graph(predictions_df, perDate).show()
+x = engine3.get_graph_X(filtered_pred_df, perDate)
+y = engine3.get_graph_Y(filtered_pred_df)
+pred_graph = engine3.get_prediction_graph( perDate, x, y).show()
