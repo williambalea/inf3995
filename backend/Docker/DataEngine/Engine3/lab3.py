@@ -38,8 +38,8 @@ perHour = "perHour"
 perWeekDay = "perWeekDay"
 perMonth = "perMonth"
 perDate = "perDate"
-startDate = '02/03/2017'
-endDate = '27/11/2017'
+startDate = '27/05/2017'
+endDate = '27/08/2017'
 
 
 print('constructing engine3')

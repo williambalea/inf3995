@@ -237,80 +237,19 @@ class Engine3:
             print('saving pred_df')
             df.to_pickle(my_file)
 
-        print('this is the pred df:')
-        # print(df)
-        print('READY TO FILTER!!')
+        print('filtering...')
 
         #Filter wanted station
         if str(station) != 'all':
             df = df[df.start_station_code == station]
 
-
-        print('Dataframe before Period Filter')
-        print(df)
-
-        print('StdartDate: ', startDate, ' an EndDate: ', endDate)
-        #Dates to variables
-        startDateObj = datetime.datetime.strptime(startDate, '%d/%m/%Y')
-        endDateObj = datetime.datetime.strptime(endDate, '%d/%m/%Y')
-
-        minDate = datetime.datetime(2017, 4, 15)
-        maxDate = datetime.datetime(2017, 9, 30)
-        if startDateObj < minDate:
-            startDateObj = minDate
-        if endDateObj > maxDate:
-            endDateObj = maxDate
-        startYear = startDateObj.year
-        startMonth = startDateObj.month
-        startDay = startDateObj.day
-        endYear = endDateObj.year
-        endMonth = endDateObj.month
-        endDay = endDateObj.day
-
-        
-        # Get names of indexes for which column Age has value 30
-        indexNames = df[ df['month'] < startMonth ].index
-        df.drop(indexNames , inplace=True)
-        # print('indexNames: ', indexNames)
-        indexNames = (df[ (df['month'] == startMonth) & (df['day'] < startDay)].index)
-        df.drop(indexNames , inplace=True)
-        indexNames = df[ df['month'] > endMonth ].index
-        df.drop(indexNames , inplace=True)
-        # print('indexNames: ', indexNames)
-        indexNames = (df[ (df['month'] == endMonth) & (df['day'] > endDay)].index)
-        df.drop(indexNames , inplace=True)
-        print('indexNames: ', indexNames)
-        
-
-        print('Dataframe after Period Filter')
-        print(df)
-
+        df = self.period_filter(df, startDate, endDate)
+      
         df.to_csv('tempPD.csv')
 
-        print('before groupby filter')
-        # print(df)
+        df = self.groupby_filter(df, groupby)
 
-        #filter groupby
-        if(groupby == "perHour"):
-            print('filtering perHour')
-            df = df.groupby(['hour']).agg({'predictions': 'sum', 'test_labels': 'sum'})
-
-        elif(groupby == "perWeekDay"):
-            print('filtering perWeekDay')
-            df = df.groupby(['weekday']).agg({'predictions': 'sum', 'test_labels': 'sum'})
-
-        elif(groupby == "perMonth"):
-            print('filtering perMonth')
-            df = df.groupby(['month']).agg({'predictions': 'sum', 'test_labels': 'sum'})
-
-        elif(groupby == "perDate"):
-            print('filtering perDate')
-            df = df.groupby(['month', 'day']).agg({'predictions': 'sum', 'test_labels': 'sum'})
-            
-
-        # df.reset_index()    
-        print('AFTER FILTER')
-        print(df)
+        print('filtering DONE')
 
         return df
 
@@ -363,3 +302,55 @@ class Engine3:
             # plt.show()
             
         return plt
+    
+    def period_filter(self, df, startDate, endDate):
+        startDateObj = datetime.datetime.strptime(startDate, '%d/%m/%Y')
+        endDateObj = datetime.datetime.strptime(endDate, '%d/%m/%Y')
+
+        minDate = datetime.datetime(2017, 4, 15)
+        maxDate = datetime.datetime(2017, 9, 30)
+        if startDateObj < minDate:
+            startDateObj = minDate
+        if endDateObj > maxDate:
+            endDateObj = maxDate
+
+        startYear = startDateObj.year
+        startMonth = startDateObj.month
+        startDay = startDateObj.day
+        endYear = endDateObj.year
+        endMonth = endDateObj.month
+        endDay = endDateObj.day
+
+        # Get names of indexes for which column Age has value 30
+        indexNames = df[ df['month'] < startMonth ].index
+        df.drop(indexNames , inplace=True)
+        # print('indexNames: ', indexNames)
+        indexNames = (df[ (df['month'] == startMonth) & (df['day'] < startDay)].index)
+        df.drop(indexNames , inplace=True)
+        indexNames = df[ df['month'] > endMonth ].index
+        df.drop(indexNames , inplace=True)
+        # print('indexNames: ', indexNames)
+        indexNames = (df[ (df['month'] == endMonth) & (df['day'] > endDay)].index)
+        df.drop(indexNames , inplace=True)
+        return df
+
+    def groupby_filter(self, df, groupby):
+        
+        #filter groupby
+        if(groupby == "perHour"):
+            print('filtering perHour')
+            df = df.groupby(['hour']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+
+        elif(groupby == "perWeekDay"):
+            print('filtering perWeekDay')
+            df = df.groupby(['weekday']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+
+        elif(groupby == "perMonth"):
+            print('filtering perMonth')
+            df = df.groupby(['month']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+
+        elif(groupby == "perDate"):
+            print('filtering perDate')
+            df = df.groupby(['month', 'day']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+            
+        return df
