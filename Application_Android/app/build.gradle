@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "inf3995.bixiapplication"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 2
         versionName "29-10-20"

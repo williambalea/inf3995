@@ -6,8 +6,6 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import inf3995.test.bixiapplication.R
-import kotlinx.android.synthetic.main.activity_global_predictions.spnPeriod
-import kotlinx.android.synthetic.main.activity_global_predictions.spnTime
 import kotlinx.android.synthetic.main.activity_global_statistics.*
 
 class GlobalStatisticsActivity : AppCompatActivity() {

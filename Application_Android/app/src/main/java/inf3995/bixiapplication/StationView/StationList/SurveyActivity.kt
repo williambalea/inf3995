@@ -1,9 +1,12 @@
 package inf3995.bixiapplication.StationView.StationList
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import com.afollestad.vvalidator.form
 import com.google.gson.Gson
 import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
@@ -31,7 +34,10 @@ class SurveyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.survey)
-        dialog.show(supportFragmentManager, null)
+        if(savedInstanceState == null){
+            dialog.isCancelable = false
+            dialog.show(supportFragmentManager, null)
+        }
 
         form{
             input(editTextEmail){
@@ -52,8 +58,17 @@ class SurveyActivity : AppCompatActivity() {
                 isNumber().atLeast(1)
                 isNumber().lessThan(130)
             }
-            submitWith(buttonSend) {
-                surveyData = SurveyData(editTextEmail.text.toString(), editTextFirstName.text.toString(), editTextLastName.text.toString(), Integer.parseInt(editTextAge.text.toString()),checkBoxYesSurvey.isChecked)
+            submitWith(buttonSend) { result ->
+                surveyData = SurveyData(
+                    editTextEmail.text.toString(),
+                    editTextFirstName.text.toString(),
+                    editTextLastName.text.toString(),
+                    Integer.parseInt(
+                        editTextAge.text.toString()
+                    ),
+                    checkBoxYesSurvey.isChecked
+                )
+
                 sendSurveyData(surveyData)
             }
         }
@@ -62,6 +77,8 @@ class SurveyActivity : AppCompatActivity() {
             val intent = Intent(this@SurveyActivity, MainScreenActivity::class.java)
             startActivity(intent)
         }
+
+
     }
 
     private fun sendSurveyData(surveyData: SurveyData) {
@@ -80,19 +97,27 @@ class SurveyActivity : AppCompatActivity() {
         val service5: WebBixiService = retrofit5.create(WebBixiService::class.java)
         val call5: Call<String> = service5.sendServerSurveyData(jsonString)
 
-        call5.enqueue(object: Callback<String> {
+        call5.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                if(!response?.body().isNullOrBlank())
-                    Log.i(TAG,"Réponse 2 du Serveur: ${response?.body()}")
+                if (!response?.body().isNullOrBlank())
+                    Log.i(TAG, "Réponse 2 du Serveur: ${response?.body()}")
                 else
-                    Log.i(TAG,"${response?.body()} --->   code:${response?.code()}    message:${response?.message()}")
+                    Log.i(
+                        TAG,
+                        "${response?.body()} --->   code:${response?.code()}    message:${response?.message()}"
+                    )
                 val intent = Intent(this@SurveyActivity, MainScreenActivity::class.java)
                 startActivity(intent)
             }
+
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG,"Erreur when sending survey!    cause: ${t.cause}    message: ${t.message}")
+                Log.i(
+                    TAG,
+                    "Erreur when sending survey!    cause: ${t.cause}    message: ${t.message}"
+                )
                 val builder = AlertDialog.Builder(this@SurveyActivity)
-                builder.setTitle("Error while sending survey to server!").setMessage("cause: ${t.cause} \n message: ${t.message}")
+                builder.setTitle("Error while sending survey to server!")
+                    .setMessage("cause: ${t.cause} \n message: ${t.message}")
                 builder.show()
             }
         })

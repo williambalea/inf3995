@@ -9,12 +9,12 @@ interface WebBixiService {
     @GET("/server/")
     fun getHelloWorld():Call<String>
 
-    @POST("/server/survey")
-    fun sendServerSurveyData(@Body survey: String):Call<String>
-
     // Engine 1 methods
     @GET("engine1/station/code")
     fun getStationCode(@Field("body") code: Int):Call<Station>
+
+    @GET("/server/status/")
+    fun getConnectivity():Call<String>
 
     @GET("/engine1/station/all")
     fun getAllStationCode(): Call<String>
@@ -25,6 +25,9 @@ interface WebBixiService {
 
     @GET("/engine2/data/usage/{year}/{time}/all")
     fun getStationStatisticsGlobal(@Path("year") year:Int, @Path("time") time:String): Call<String>
+
+    @PUT("/server/survey")
+    fun sendServerSurveyData(@Body survey: String):Call<String>
 
     // Engine 3 methods , dateStart, dateEnd
     //@GET("/engine3/prediction/usage/{groupBy}/{station}/dateStart/dateEnd")

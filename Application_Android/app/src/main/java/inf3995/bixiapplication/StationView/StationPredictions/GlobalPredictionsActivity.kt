@@ -1,46 +1,179 @@
 package inf3995.bixiapplication.StationView.StationPredictions
 
+import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import inf3995.bixiapplication.Data.Station
+import inf3995.bixiapplication.StationPredictions.DailyStationGlobalPredictionActivity
+import inf3995.bixiapplication.StationPredictions.HourlyStationGlobalPredictionActivity
+import inf3995.bixiapplication.StationPredictions.MonthlyStationGlobalPredictionActivity
 import inf3995.test.bixiapplication.R
+import kotlinx.android.synthetic.main.activity_coordinates_station.*
 import kotlinx.android.synthetic.main.activity_global_predictions.*
+import java.util.*
 
 class GlobalPredictionsActivity : AppCompatActivity() {
 
-    var temps: String? = null
-    var annee: String? = null
-    val manager = supportFragmentManager
+    var station : Station?=null
+    var time: String? = null
+    var indicator:String? = null
+    var year: String? = null
+    var dateStart : String? = null
+    var dateEnd : String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_global_predictions)
 
-        val years_List = listOf("","2014", "2015", "2016")
-        val years_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, years_List)
-        spnTime.adapter=years_adapter
-        val period_List = listOf("","Monthly", "Daily", "Per Hour")
-        val period_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, period_List)
-        spnPeriod.adapter = period_adapter
-        limitDropDownmenuHeight(spnPeriod)
-        limitDropDownmenuHeight(spnTime)
+        // calendar
+        val c1 = Calendar.getInstance()
+        val yearDate1 = c1.get(Calendar.YEAR)
+        val monthDate1 = c1.get(Calendar.MONTH)
+        val dayDate1 = c1.get(Calendar.DAY_OF_MONTH)
 
-        spnTime.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        val c2 = Calendar.getInstance()
+        val yearDate2 = c2.get(Calendar.YEAR)
+        val monthDate2 = c2.get(Calendar.MONTH)
+        val dayDate2 = c2.get(Calendar.DAY_OF_MONTH)
+
+
+        // button click to show date picker
+        startDateButton.setOnClickListener {
+            val dpd = DatePickerDialog(this,
+                DatePickerDialog.OnDateSetListener{ view, mYear, mMonth, mDay ->
+                startDate.setText(""+ mDay+"/" + mMonth + "/"+mYear)}, yearDate1,monthDate1,dayDate1)
+            dpd.show()
+            dateStart = dpd.toString()
+        }
+        endDateButton.setOnClickListener {
+            val dpd = DatePickerDialog(this,
+                DatePickerDialog.OnDateSetListener{ view, mYear, mMonth, mDay ->
+                endDate.setText(""+ mDay+"/" + mMonth + "/"+mYear)}, yearDate2,monthDate2,dayDate2)
+            dpd.show()
+            dateEnd = dpd.toString()
+
+        }
+
+        // Differents dropdownmenu
+
+        val years_List = listOf("2017")
+        val years_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, years_List)
+        spnTimes.adapter = years_adapter
+
+        val period_List = listOf("","perMonth", "perWeekDay", "perHour")
+        val period_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, period_List)
+        spnPeriode.adapter = period_adapter
+
+        val indicator_List = listOf("","Value", "Error")
+        val indicator_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, indicator_List)
+        spnIndicator.adapter = indicator_adapter
+
+        limitDropDownmenuHeight(spnPeriode)
+        limitDropDownmenuHeight(spnTimes)
+        limitDropDownmenuHeight(spnIndicator)
+
+        spnTimes.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val item:String = years_List[position]
                 Toast.makeText(this@GlobalPredictionsActivity, "Year $item selected", Toast.LENGTH_SHORT).show()
-                annee = item
+                year = item
             }
         }
 
-        spnPeriod.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        spnPeriode.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val item:String = period_List[position]
                 Toast.makeText(this@GlobalPredictionsActivity, "Period $item selected", Toast.LENGTH_SHORT).show()
-                temps = item
+                time = item
+            }
+        }
+
+        spnIndicator.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val item:String = indicator_List[position]
+                Toast.makeText(this@GlobalPredictionsActivity, "Indicator $item selected", Toast.LENGTH_SHORT).show()
+                indicator = item
+            }
+        }
+
+        display_button.setOnClickListener{
+            Toast.makeText(this," $station.name station Predictions", Toast.LENGTH_SHORT).show()
+            //val code = station!!.code
+            val annee = year
+            val temps = time
+            val indicateur = indicator
+            when(indicateur){
+                "Value"->{
+                    when (temps){
+                        "perMonth"-> {
+                            val intent = Intent(this@GlobalPredictionsActivity, MonthlyStationGlobalPredictionActivity::class.java)
+                            intent.putExtra("Annee", annee)
+                            intent.putExtra("Temps", temps)
+                            intent.putExtra("Indicateur", indicateur)
+                            intent.putExtra("DateStart", dateStart)
+                            intent.putExtra("DateEnd", dateEnd)
+                            startActivity(intent)
+
+                        }
+                        "perWeekDay"-> {
+                            val intent = Intent(this@GlobalPredictionsActivity, DailyStationGlobalPredictionActivity::class.java)
+                            intent.putExtra("Annee", annee)
+                            intent.putExtra("Temps", temps)
+                            intent.putExtra("Indicateur", indicateur)
+                            intent.putExtra("DateStart", dateStart)
+                            intent.putExtra("DateEnd", dateEnd)
+                            startActivity(intent)
+                        }
+                        "perHour"-> {
+                            val intent = Intent(this@GlobalPredictionsActivity, HourlyStationGlobalPredictionActivity::class.java)
+                            intent.putExtra("Annee", annee)
+                            intent.putExtra("Temps", temps)
+                            intent.putExtra("Indicateur", indicateur)
+                            intent.putExtra("DateStart", dateStart)
+                            intent.putExtra("DateEnd", dateEnd)
+                            startActivity(intent)
+                        }
+                    }
+                }
+                "Error"->{
+                    when (temps){
+                        "perMonth"-> {
+                            val intent = Intent(this@GlobalPredictionsActivity, MonthlyStationGlobalPredictionActivity::class.java)
+                            intent.putExtra("Annee", annee)
+                            intent.putExtra("Temps", temps)
+                            intent.putExtra("Indicateur", indicateur)
+                            intent.putExtra("DateStart", dateStart)
+                            intent.putExtra("DateEnd", dateEnd)
+                            startActivity(intent)
+
+                        }
+                        "perWeekDay"-> {
+                            val intent = Intent(this@GlobalPredictionsActivity, DailyStationGlobalPredictionActivity::class.java)
+                            intent.putExtra("Annee", annee)
+                            intent.putExtra("Temps", temps)
+                            intent.putExtra("Indicateur", indicateur)
+                            intent.putExtra("DateStart", dateStart)
+                            intent.putExtra("DateEnd", dateEnd)
+                            startActivity(intent)
+                        }
+                        "perHour"-> {
+                            val intent = Intent(this@GlobalPredictionsActivity, HourlyStationGlobalPredictionActivity::class.java)
+                            intent.putExtra("Annee", annee)
+                            intent.putExtra("Temps", temps)
+                            intent.putExtra("Indicateur", indicateur)
+                            intent.putExtra("DateStart", dateStart)
+                            intent.putExtra("DateEnd", dateEnd)
+                            startActivity(intent)
+                        }
+                    }
+                }
             }
         }
     }

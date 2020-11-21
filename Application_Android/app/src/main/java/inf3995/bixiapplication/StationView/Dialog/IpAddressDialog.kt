@@ -25,7 +25,7 @@ const val TAG = "SettingsDialog"
 class IpAddressDialog: AppCompatDialogFragment() {
 
     companion object {
-        var ipAddressInput :String? = null
+        lateinit var ipAddressInput :String
     }
 
     override fun onCreateView(
@@ -33,27 +33,30 @@ class IpAddressDialog: AppCompatDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG,"onCreateView: called")
-        return inflater.inflate(R.layout.setting_ip_address_dialog,container,false)
+        Log.d(TAG, "onCreateView: called")
+        return inflater.inflate(inf3995.test.bixiapplication.R.layout.setting_ip_address_dialog, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d(TAG,"onViewCreated: called")
+        Log.d(TAG, "onViewCreated: called")
         super.onViewCreated(view, savedInstanceState)
 
         form{
             input(editTextIpAddress){
-                matches("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$").description("Enter a valid IP Address!")
+                matches("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$").description(
+                    "Enter a valid IP Address!"
+                )
             }
             submitWith(okButton) {
                 ipAddressInput = editTextIpAddress.text.toString()
-                communicationServer(ipAddressInput!!)
+                communicationServer(ipAddressInput)
+                //connectivityCheck(ipAddressInput)
             }
         }
         cancelButton.setOnClickListener{ exitProcess(0);}
     }
 
-    private fun communicationServer (ipAddress:String ){
+    private fun communicationServer(ipAddress: String){
 
         // Get Hello World
         val retrofit4 = Retrofit.Builder()
@@ -67,19 +70,28 @@ class IpAddressDialog: AppCompatDialogFragment() {
 
         call4.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                if(!response?.body().isNullOrBlank())
+                if (!response?.body().isNullOrBlank())
                     Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
                 else
-                    Log.i(TAG,"${response?.body()} --->   code:${response?.code()}    message:${response?.message()}")
+                    Log.i(
+                        TAG,
+                        "${response?.body()} --->   code:${response?.code()}    message:${response?.message()}"
+                    )
                 val builder = AlertDialog.Builder(requireContext())
-                builder.setTitle("Successful Connection !!").setMessage("You are connected to the server successfully!!")
+                builder.setTitle("Connection Successful!")
+                    .setMessage("You have connected to the server successfully!")
                 builder.show()
                 dismiss()
             }
+
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG,"Error when getting message from server!    cause: ${t.cause}     message: ${t.message}")
+                Log.i(
+                    TAG,
+                    "Error when getting message from server!    cause: ${t.cause}     message: ${t.message}"
+                )
                 val builder = AlertDialog.Builder(requireContext())
-                builder.setTitle("Connection to server failed!").setMessage("cause: ${t.cause} \n message: ${t.message}")
+                builder.setTitle("Connection to server failed!")
+                    .setMessage("cause: ${t.cause} \n message: ${t.message}")
                 builder.show()
             }
         })

@@ -9,8 +9,6 @@ import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
-import kotlinx.android.synthetic.main.activity_global_predictions.spnPeriod
-import kotlinx.android.synthetic.main.activity_global_predictions.spnTime
 import kotlinx.android.synthetic.main.activity_station_statistics.*
 
 class StationStatisticsActivity : AppCompatActivity() {
