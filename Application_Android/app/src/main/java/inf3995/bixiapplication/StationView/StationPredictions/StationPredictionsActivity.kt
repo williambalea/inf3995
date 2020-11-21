@@ -18,12 +18,12 @@ class StationPredictionsActivity : AppCompatActivity() {
 
     var station : Station?=null
     var time: String? = null
-    var indicator:String? = null
+    //var indicator:String? = null
     var year: String? = null
     var dateStart : String? = null
     var dateEnd : String? = null
-    var yearDate1 = 2017
-    var yearDate2 = 2017
+   // var yearDate1 = 2017
+    //var yearDate2 = 2017
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,12 +35,12 @@ class StationPredictionsActivity : AppCompatActivity() {
 
         // calendar
         var c1 = Calendar.getInstance()
-        //var yearDate1 = c1.get(Calendar.YEAR)
+        var yearDate1 = c1.get(Calendar.YEAR)
         val monthDate1 = c1.get(Calendar.MONTH)
         val dayDate1 = c1.get(Calendar.DAY_OF_MONTH)
 
         var c2 = Calendar.getInstance()
-        //var yearDate2 = c2.get(Calendar.YEAR)
+        var yearDate2 = c2.get(Calendar.YEAR)
         val monthDate2 = c2.get(Calendar.MONTH)
         val dayDate2 = c2.get(Calendar.DAY_OF_MONTH)
 
@@ -79,8 +79,8 @@ class StationPredictionsActivity : AppCompatActivity() {
                 val item:String = years_List[position]
                 Toast.makeText(this@StationPredictionsActivity, "Year $item selected", Toast.LENGTH_SHORT).show()
                 year = item
-                yearDate1 = item.toInt()
-                yearDate2 = item.toInt()
+               // yearDate1 = item.toInt()
+               // yearDate2 = item.toInt()
             }
         }
 
