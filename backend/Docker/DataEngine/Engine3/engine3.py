@@ -369,31 +369,19 @@ class Engine3:
 
         return strg
 
-    def datatoJSON(self, graph, x, y):
-        print('datatoJSON()', flush=True)
-
+    # def datatoJSON(self, graph, x, y):
+    #     print('datatoJSON()', flush=True)
         
-        countStart = self.getPerTimeCountStart(df, st, ti)
-        countEnd = self.getPerTimeCountEnd(df, st, ti)
+    #     graphString = self.toBase64()
         
-        self.getGraphPerTime(countStart, countEnd, st, ti)
-        graphString = self.toBase64()
-        # graphString = self.getGraphPerTime(countStart, countEnd, st, ti)
-        if time == "perHour":
-            label = self.hourLabel
-        elif time == "perWeekDay":
-            label = self.weekDayLabel
-        elif time == "perMonth":
-            label = self.monthLabel
 
-        myJson =  '{  "data":{ "time":[], "departureValue":[], "arrivalValue":[] }, "graph":[] }'
+    #     myJson =  '{  "data":{ "time":[], "predictions":[] }, "graph":[] }'
 
-        o = json.loads(myJson)
-        o["data"]["time"] = label
-        o["data"]["departureValue"] = countStart[0:len(countStart)].tolist()
-        o["data"]["arrivalValue"] = countEnd[0:len(countStart)].tolist()
-        o["graph"] = graphString
+    #     o = json.loads(myJson)
+    #     o["data"]["time"] = y
+    #     o["data"]["predictions"] = x[0:len(x)].tolist()
+    #     o["graph"] = graphString
         
-        print('Label used: ', flush=True)
-        print(label, flush=True)
-        return json.dumps(o)
+    #     print('Label used: ', flush=True)
+    #     print(y, flush=True)
+    #     return json.dumps(o)
