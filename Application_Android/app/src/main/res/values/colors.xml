@@ -2,10 +2,12 @@
 <resources>
     <color name="colorPrimary">#3d95d0</color>
     <color name="colorPrimaryDark">#489855</color>
-    <color name="colorAccent">#EB483C</color>
-    <color name="colorBIXI">#EB483C</color>
+    <color name="colorAccent">#D52B1E</color>
+    <color name="colorBIXI2">#EB483C</color>
+    <color name="colorBIXI">#D52B1E</color>
     <color name="colorWhite">#fff</color>
     <color name="colorbutton">#AA00FF</color>
+    <color name="colorAccent3">#CB2C24</color>
 
     <color name="colorPrimary1">#6200EE</color>
     <color name="colorPrimaryDark1">#3700B3</color>
