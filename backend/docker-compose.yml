@@ -93,3 +93,19 @@ services:
         - "traefik.http.routers.engine2-secured.rule=PathPrefix(`/engine2`)" # <== Your Domain Name for the https rule 
         - "traefik.http.routers.engine2-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
         - "traefik.http.routers.engine2-secured.tls.certresolver=mytls" # <== Defining certsresolvers for https
+
+  engine3:
+    build:
+      context: ./Docker/DataEngine/
+      dockerfile: ./Engine3/Dockerfile
+    restart: always
+    container_name: engine3
+    labels: 
+        #### Labels define the behavior and rules of the traefik proxy for this container ####
+        - "traefik.enable=true" # <== Enable traefik to proxy this container
+        - "traefik.http.routers.engine3.rule=PathPrefix(`/engine3`)" # <== Your Domain Name goes here for the http rule
+        - "traefik.http.routers.engine3.entrypoints=web" # <== Defining the entrypoint for http, **ref: line 30
+        - "traefik.http.routers.engine3.middlewares=redirect@file" # <== This is a middleware to redirect to https
+        - "traefik.http.routers.engine3-secured.rule=PathPrefix(`/engine3`)" # <== Your Domain Name for the https rule 
+        - "traefik.http.routers.engine3-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
+        - "traefik.http.routers.engine3-secured.tls.certresolver=mytls" # <== Defining certsresolvers for https

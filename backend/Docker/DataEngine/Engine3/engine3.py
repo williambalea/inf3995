@@ -387,7 +387,4 @@ class Engine3:
         o["data"]["predictions"] = y.tolist()
         o["graph"] = graphString
         
-
-        # print('Label used: ', flush=True)
-        # print(y, flush=True)
         return json.dumps(o)
