@@ -12,9 +12,13 @@ import datetime
 
 class Engine3:
 
-    PREDICTION_DF_PATH = "./all_pred4.pkl"
-    RANDOM_FOREST_MODEL_PATH = "./finalized_model.sav"
-
+    PREDICTION_DF_PATH = "./all_pred5.pkl"
+    RF_MODEL_PATH = "./finalized_model.sav"
+    CSV_PATH_TEMPERATURE = '../kaggleData/historical-hourly-weather-data/temperature.csv'
+    CSV_PATH_WEATHER_DESC = '../kaggleData/historical-hourly-weather-data/weather_description.csv'
+    CSV_PATH_WINDSPEED = '../kaggleData/historical-hourly-weather-data/wind_speed.csv'
+    RF_N_ESTIMATORS = 20
+    RF_RANDOM_STATE = 42
 
     def __init__(self):
         return None 
@@ -31,9 +35,9 @@ class Engine3:
 
     def get_weather_df(self):
         print('importing weather data')
-        weather_description = pd.read_csv('../kaggleData/historical-hourly-weather-data/weather_description.csv', low_memory=False)
-        temperature = pd.read_csv('../kaggleData/historical-hourly-weather-data/temperature.csv', low_memory=False, dtype={'Montreal':np.float32})
-        wind_speed = pd.read_csv('../kaggleData/historical-hourly-weather-data/wind_speed.csv', low_memory=False, dtype={'Montreal':np.float32})
+        weather_description = pd.read_csv(self.CSV_PATH_TEMPERATURE, low_memory=False)
+        temperature = pd.read_csv(self.CSV_PATH_WEATHER_DESC, low_memory=False, dtype={'Montreal':np.float32})
+        wind_speed = pd.read_csv(self.CSV_PATH_WINDSPEED, low_memory=False, dtype={'Montreal':np.float32})
 
         print(weather_description.shape)
         print('filter only montreal')
@@ -91,7 +95,6 @@ class Engine3:
         weather = self.get_weather_df()
         return self.prep_df_for_rf(bixi2017, weather)
 
-  
 
     def prep_df_for_rf(self, bixi_df, weather_df):
         print('merging bixi and weather')
@@ -203,7 +206,7 @@ class Engine3:
 
     ### ##Loading or making Prediction and RandomFor Model
     def get_random_forest_model(self, train_l, train_f):
-        my_file = Path(self.RANDOM_FOREST_MODEL_PATH)
+        my_file = Path(self.RF_MODEL_PATH)
         if my_file.is_file():
             print('loading model...')
             # load the model from disk
@@ -211,7 +214,7 @@ class Engine3:
             print('loading model DONE')
         else:
             #instantiate model with 1000 decision trees
-            loaded_rf = RandomForestRegressor(n_estimators = 20, random_state = 42, n_jobs=-1)
+            loaded_rf = RandomForestRegressor(n_estimators = self.RF_N_ESTIMATORS, random_state = self.RF_RANDOM_STATE, n_jobs=-1)
             print('Fit calculating...')
             loaded_rf.fit(train_f, train_l)
             print('Fit DONE')
@@ -243,9 +246,12 @@ class Engine3:
         print('station filter')
         if str(station) != 'all':
             df = df[df.start_station_code == int(station)].copy()
-        #Filter Period
+        elif str(station) == 'all':
+            print('TODO')
+            #groupby jusqua l<heure
+            #Filter Period
 
-        print(df)
+
         print('period filter')
         df = self.period_filter(df, startDate, endDate)
         #Filter groupby
