@@ -1,10 +1,9 @@
-package inf3995.bixiapplication.StationView.StationStatistics
+package inf3995.bixiapplication.StationView.Predictions.StationPredictions
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
-import android.util.Base64.decode
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -12,55 +11,97 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
+import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
 import inf3995.bixiapplication.StationViewModel.StationLiveData.DataResponseStation
 import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
-import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
 import inf3995.bixiapplication.StationViewModel.WebBixiService
-import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.*
+import kotlinx.android.synthetic.main.activity_monthly_station_prediction.*
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text102
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text103
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text112
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text113
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text12
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text122
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text123
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text13
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text22
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text23
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text32
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text33
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text42
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text43
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text52
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text53
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text62
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text63
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text72
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text73
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text82
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text83
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text92
+import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text93
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
+class MonthlyStationPredictionActivity : AppCompatActivity() {
 
-class MonthlyStationStatisticActivity : AppCompatActivity() {
 
     var station : Station? = null
     lateinit var temps: String
     var code: Int = 0
     var year = 0
-    var myImage:ImageView? = null
-    private val TAG = "Monthly Station Statistics"
+    var myImage: ImageView? = null
+
+    var dateStart : String? = null
+    var dateEnd : String? = null
+
+    private val TAG = "Monthly Station Predictions values"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_monthly_station_statistic)
+        setContentView(R.layout.activity_monthly_station_prediction)
         val tempas = intent.getStringExtra("Temps")
         val annas = intent.getStringExtra("Annee")?.toInt()
-       station = intent.getSerializableExtra("data") as Station
+        station = intent.getSerializableExtra("data") as Station
 
-       Station_code.text = station!!.code.toString()
-       Station_name.text = station!!.name
+
+        val dataStart = intent.getStringExtra("DateStart")
+        val dataEnd = intent.getStringExtra("DateEnd")
+
+        Station_code.text = station!!.code.toString()
+        Station_name.text = station!!.name
 
         if (tempas != null) {
             temps = tempas
         }
 
+
         if (annas != null) {
             year = annas
         }
-        statisticYear.text = year.toString()
+
+        if (dataStart != null) {
+            dateStart = dataStart
+        }
+
+        if (dataEnd != null) {
+            dateEnd = dataStart
+        }
+
+        PredictTitle.text = getString(R.string.Monthly_Prediction_Title)
+        predictionYearM.text = year.toString()
         code =  station!!.code
         myImage = findViewById(R.id.image)
+
         requestToServer(IpAddressDialog.ipAddressInput)
-
     }
-
 
     private fun requestToServer(ipAddress: String?) {
 
@@ -71,28 +112,26 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        val call: Call<String> = service.getStationStatistics(year, temps, code)
+        //val call: Call<String> = service.getStationPrediction(annee, temps, code, dateStart, dateEnd)
+        val call = service.getStationStatistics(year, temps, code)
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse des Statistiques du Serveur: ${response?.body()}")
-                Log.i(TAG, "Status de reponse  des Statistiques du Serveur: ${response?.code()}")
-                Log.i(
-                    TAG,
-                    "Message de reponse  des Statistiques du Serveur: ${response?.message()}"
-                )
+                Log.i(TAG, "Réponse des predictions du Serveur: ${response?.body()}")
+                Log.i(TAG, "Status de reponse  des predictions du Serveur: ${response?.code()}")
+                Log.i(TAG,"Message de reponse  des predictions du Serveur: ${response?.message()}")
 
                 val arrayStationType = object : TypeToken<DataResponseStation>() {}.type
                 val jObj: DataResponseStation = Gson().fromJson(response?.body(), arrayStationType)
                 Log.i(TAG, "L'objet : $jObj")
                 fillData(jObj)
-                lllProgressBar.visibility = View.GONE
+                lllProgressBarM.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Error when receiving statistic!    cause:${t.cause}     message:${t.message}")
-                val builder = AlertDialog.Builder(this@MonthlyStationStatisticActivity)
-                builder.setTitle("Error while loading statistic!").setMessage("cause:${t.cause} \n message:${t.message}")
+                Log.i(TAG, "Error when receiving prediction!    cause:${t.cause}     message:${t.message}")
+                val builder = AlertDialog.Builder(this@MonthlyStationPredictionActivity)
+                builder.setTitle("Error while loading prediction!").setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()
             }
         })
@@ -101,8 +140,8 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
     private fun fillData(jObj: DataResponseStation) {
         val myImageString = jObj.graph
         val image1 = findViewById(R.id.image) as ImageView
-       try{image1.setImageBitmap(convertString64ToImage(myImageString))}
-        catch (e:Exception){
+        try{image1.setImageBitmap(convertString64ToImage(myImageString))}
+        catch (e: Exception){
             Log.e(TAG,"error")
         }
 
@@ -137,8 +176,7 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
     }
 
     private fun convertString64ToImage(base64String: String): Bitmap {
-        val decodedString = decode(base64String, Base64.NO_WRAP)
+        val decodedString = Base64.decode(base64String, Base64.NO_WRAP)
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
     }
-
 }

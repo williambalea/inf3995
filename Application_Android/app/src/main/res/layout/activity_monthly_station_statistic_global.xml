@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="inf3995.bixiapplication.StationView.StationStatistics.MonthlyStationStatisticActivity"
+    tools:context="inf3995.bixiapplication.StationView.Statistics.StationStatistics.MonthlyStationStatisticActivity"
     android:orientation="vertical">
 
     <include

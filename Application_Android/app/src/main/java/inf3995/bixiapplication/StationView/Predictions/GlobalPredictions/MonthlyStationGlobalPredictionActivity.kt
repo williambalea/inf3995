@@ -1,21 +1,20 @@
-package inf3995.bixiapplication.StationPredictions
+package inf3995.bixiapplication.StationView.Predictions.GlobalPredictions
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import inf3995.bixiapplication.Data.MonthlyStatisticStation
-import inf3995.bixiapplication.Data.Station
-import inf3995.bixiapplication.Dialog.IpAddressDialog
-import inf3995.bixiapplication.Service.WebBixiService
-import inf3995.bixiapplication.UnsafeOkHttpClient
+import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
+import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
+import inf3995.bixiapplication.StationViewModel.StationLiveData.DataResponseStation
+import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
+import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_monthly_station_prediction_global.*
 import retrofit2.Call
@@ -101,8 +100,8 @@ class MonthlyStationGlobalPredictionActivity: AppCompatActivity() {
                     "Message de reponse  des predictions du Serveur: ${response?.message()}"
                 )
 
-                val arrayStationType = object : TypeToken<MonthlyStatisticStation>() {}.type
-                val jObj: MonthlyStatisticStation = Gson().fromJson(response?.body(), arrayStationType)
+                val arrayStationType = object : TypeToken<DataResponseStation>() {}.type
+                val jObj: DataResponseStation = Gson().fromJson(response?.body(), arrayStationType)
                 Log.i(TAG, "L'objet : $jObj")
                 fillData(jObj)
                 //lllProgressBarM.visibility = View.GONE
@@ -117,7 +116,7 @@ class MonthlyStationGlobalPredictionActivity: AppCompatActivity() {
         })
     }
 
-    private fun fillData(jObj: MonthlyStatisticStation) {
+    private fun fillData(jObj: DataResponseStation) {
         val myImageString = jObj.graph
         val image1 = findViewById(R.id.image) as ImageView
         try{image1.setImageBitmap(convertString64ToImage(myImageString))}

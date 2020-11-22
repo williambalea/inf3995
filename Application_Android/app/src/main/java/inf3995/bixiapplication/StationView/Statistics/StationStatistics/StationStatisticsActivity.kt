@@ -1,26 +1,38 @@
-package inf3995.bixiapplication.StationView.StationStatistics
+package inf3995.bixiapplication.StationView.Statistics.StationStatistics
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
 import inf3995.test.bixiapplication.R
-import kotlinx.android.synthetic.main.activity_global_statistics.*
+import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
+import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
+import kotlinx.android.synthetic.main.activity_station_statistics.*
 
-class GlobalStatisticsActivity : AppCompatActivity() {
+class StationStatisticsActivity : AppCompatActivity() {
+
+    var station : Station?=null
     var time: String? = null
     var year: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_global_statistics)
+        setContentView(R.layout.activity_station_statistics)
+        station = intent.getSerializableExtra("data") as Station
+        Station_code.text = station!!.code.toString()
+        Station_name.text = station!!.name
+        //val code = station!!.code
+
         val years_List = listOf("","2014", "2015", "2016","2017")
         val years_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, years_List)
         spnTime.adapter = years_adapter
-        val period_List = listOf("","perMonth", "perWeekDay","perHour")
+
+        val period_List = listOf("","perMonth", "perWeekDay", "perHour")
         val period_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, period_List)
         spnPeriod.adapter = period_adapter
+
         limitDropDownmenuHeight(spnPeriod)
         limitDropDownmenuHeight(spnTime)
 
@@ -28,7 +40,7 @@ class GlobalStatisticsActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val item:String = years_List[position]
-                Toast.makeText(this@GlobalStatisticsActivity, "Year $item selected", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@StationStatisticsActivity, "Year $item selected", Toast.LENGTH_SHORT).show()
                 year = item
             }
         }
@@ -37,30 +49,38 @@ class GlobalStatisticsActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val item:String = period_List[position]
-                Toast.makeText(this@GlobalStatisticsActivity, "Period $item selected", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@StationStatisticsActivity, "Period $item selected", Toast.LENGTH_SHORT).show()
                 time = item
             }
         }
 
-        buttonDisplayGlobal.setOnClickListener{
-            when (time){
+        display_button.setOnClickListener{
+            Toast.makeText(this," $station.name station Statistics", Toast.LENGTH_SHORT).show()
+            //val code = station!!.code
+            val annee = year
+            val temps = time
+            //val name = station!!.name
+            when (temps){
                 "perMonth"-> {
-                    val intent = Intent(this@GlobalStatisticsActivity, MonthlyStationStatisticGlobalActivity::class.java)
-                    intent.putExtra("yearGlobal", year)
-                    intent.putExtra("timeGlobal", time)
+                    val intent = Intent(this@StationStatisticsActivity, MonthlyStationStatisticActivity::class.java)
+                    intent.putExtra("data", station)
+                    intent.putExtra("Annee", annee)
+                    intent.putExtra("Temps", temps)
                     startActivity(intent)
 
                 }
                 "perWeekDay"-> {
-                    val intent = Intent(this@GlobalStatisticsActivity, DailyStationStatisticGlobalActivity::class.java)
-                    intent.putExtra("yearGlobal", year)
-                    intent.putExtra("timeGlobal", time)
+                    val intent = Intent(this@StationStatisticsActivity, DailyStationStatisticActivity::class.java)
+                    intent.putExtra("data", station)
+                    intent.putExtra("Annee", annee)
+                    intent.putExtra("Temps", temps)
                     startActivity(intent)
                 }
                 "perHour"-> {
-                    val intent = Intent(this@GlobalStatisticsActivity, HourlyStationStatisticGlobalActivity::class.java)
-                    intent.putExtra("yearGlobal", year)
-                    intent.putExtra("timeGlobal", time)
+                    val intent = Intent(this@StationStatisticsActivity, HourlyStationStatisticActivity::class.java)
+                    intent.putExtra("data", station)
+                    intent.putExtra("Annee", annee)
+                    intent.putExtra("Temps", temps)
                     startActivity(intent)
                 }
             }
@@ -74,5 +94,6 @@ class GlobalStatisticsActivity : AppCompatActivity() {
         val popupWindow =popup.get(spnTest) as ListPopupWindow
         popupWindow.height = (5*resources.displayMetrics.density).toInt()
     }
+
 
 }

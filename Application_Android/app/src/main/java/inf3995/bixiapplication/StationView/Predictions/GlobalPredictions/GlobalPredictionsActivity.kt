@@ -1,4 +1,4 @@
-package inf3995.bixiapplication.StationView.StationPredictions
+package inf3995.bixiapplication.StationView.Predictions.GlobalPredictions
 
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -6,12 +6,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import inf3995.bixiapplication.Data.Station
-import inf3995.bixiapplication.StationPredictions.DailyStationGlobalPredictionActivity
-import inf3995.bixiapplication.StationPredictions.HourlyStationGlobalPredictionActivity
-import inf3995.bixiapplication.StationPredictions.MonthlyStationGlobalPredictionActivity
+import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
 import inf3995.test.bixiapplication.R
-import kotlinx.android.synthetic.main.activity_coordinates_station.*
 import kotlinx.android.synthetic.main.activity_global_predictions.*
 import java.util.*
 

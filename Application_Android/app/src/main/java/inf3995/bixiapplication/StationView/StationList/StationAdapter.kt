@@ -10,9 +10,9 @@ import android.widget.Filterable
 import android.widget.PopupMenu
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.recyclerview.widget.RecyclerView
+import inf3995.bixiapplication.StationView.Predictions.StationPredictions.StationPredictionsActivity
+import inf3995.bixiapplication.StationView.Statistics.StationStatistics.StationStatisticsActivity
 import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
-import inf3995.bixiapplication.StationView.StationPredictions.StationPredictionsActivity
-import inf3995.bixiapplication.StationView.StationStatistics.StationStatisticsActivity
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.station_items.view.*
 import kotlinx.android.synthetic.main.station_items_with_button.view.*

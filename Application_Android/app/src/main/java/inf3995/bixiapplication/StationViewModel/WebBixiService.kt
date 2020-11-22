@@ -31,8 +31,7 @@ interface WebBixiService {
 
     // Engine 3 methods , dateStart, dateEnd
     //@GET("/engine3/prediction/usage/{groupBy}/{station}/dateStart/dateEnd")
-
-    @GET("/engine3/data/usage/{year}/{time}/{station}/dateStart/dateEnd")
+    @GET("/engine3/prediction/usage/{year}/{time}/{station}/dateStart/dateEnd")
     fun getStationPrediction(@Path("year") year:Int, @Path("time") time:String, @Path("station") station: Int, @Path ("dateStart") dateStart: String, @Path ("dateEnd") dateEnd: String): Call<String>
 
     @GET("/engine3/prediction/error/{year}/{groupBy}")

@@ -7,8 +7,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_error_predictions.*
-import kotlinx.android.synthetic.main.activity_global_predictions.spnPeriod
-import kotlinx.android.synthetic.main.activity_global_predictions.spnTime
 
 class ErrorPredictionsActivity : AppCompatActivity() {
 

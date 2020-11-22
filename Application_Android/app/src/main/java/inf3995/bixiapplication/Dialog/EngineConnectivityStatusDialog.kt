@@ -1,9 +1,5 @@
 package inf3995.bixiapplication.Dialog
 
-import android.animation.ArgbEvaluator
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -14,8 +10,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDialogFragment
 import kotlinx.android.synthetic.main.engine_connectivity_status.*
-import kotlinx.android.synthetic.main.setting_ip_address_dialog.*
-import kotlin.system.exitProcess
 
 class EngineConnectivityStatusDialog: AppCompatDialogFragment() {
 
@@ -24,6 +18,7 @@ class EngineConnectivityStatusDialog: AppCompatDialogFragment() {
         lateinit var status2 :String
         lateinit var status3 :String
     }
+    private val TAG = "EngineConnectivityStatus Activity"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,15 +41,6 @@ class EngineConnectivityStatusDialog: AppCompatDialogFragment() {
     }
 
     private fun imageStatusBehaviour(animation: ImageView, connectivityStatus: TextView){
-        /*val engineProblemNotification = ObjectAnimator.ofInt(
-            animation,
-            "colorFilter",
-            Color.rgb(255,69,0),
-            Color.WHITE
-        )
-        engineProblemNotification.setEvaluator(ArgbEvaluator())
-        engineProblemNotification.repeatCount = ValueAnimator.INFINITE
-        engineProblemNotification.repeatMode = ValueAnimator.REVERSE*/
 
         if(connectivityStatus.text == "UP")
             animation.setColorFilter(Color.GREEN)

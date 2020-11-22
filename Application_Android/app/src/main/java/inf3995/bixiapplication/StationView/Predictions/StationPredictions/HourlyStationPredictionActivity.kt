@@ -1,4 +1,4 @@
-package inf3995.bixiapplication.StationView.StationStatistics
+package inf3995.bixiapplication.StationView.Predictions.StationPredictions
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -17,33 +17,37 @@ import inf3995.bixiapplication.StationViewModel.StationLiveData.DataResponseStat
 import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
 import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
-import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
-import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
-import kotlinx.android.synthetic.main.activity_hourly_station_statistic.*
+import kotlinx.android.synthetic.main.activity_hourly_station_prediction.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import kotlinx.android.synthetic.main.activity_hourly_station_statistic.statisticYear as statisticYear1
 
-class HourlyStationStatisticActivity : AppCompatActivity() {
+
+class HourlyStationPredictionActivity : AppCompatActivity() {
+
     var station : Station? = null
     lateinit var temps: String
+    lateinit var indicator:String
     var code: Int = 0
     var annee= 0
     var myImage: ImageView? = null
-    private val TAG = "Hourly Station Statistics"
+    var dateStart : String? = null
+    var dateEnd : String? = null
+    private val TAG = "Hourly Station Prediction"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_hourly_station_statistic)
+        setContentView(R.layout.activity_hourly_station_prediction)
+        station = intent.getSerializableExtra("data") as Station
         val tempas = intent.getStringExtra("Temps")
         val annas = intent.getStringExtra("Annee")?.toInt()
-        station = intent.getSerializableExtra("data") as Station
+        val dataStart = intent.getStringExtra("DateStart")
+        val dataEnd = intent.getStringExtra("DateEnd")
 
-        Station_code.text = station!!.code.toString()
-        Station_name.text = station!!.name
+        Station_codeH.text = station!!.code.toString()
+        Station_nameH.text = station!!.name
 
 
         if (tempas != null) {
@@ -53,13 +57,20 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
         if (annas != null) {
             annee = annas
         }
-        statisticYear1.text = annee.toString()
+        if (dataStart != null) {
+            dateStart = dataStart
+        }
+
+        if (dataEnd != null) {
+            dateEnd = dataStart
+        }
+
+        predictTitleH.text = getString(R.string.Hourly_Prediction_Title)
+        predictionYearH.text = annee.toString()
         code =  station!!.code
         myImage = findViewById(R.id.image)
         requestToServer(IpAddressDialog.ipAddressInput)
-
     }
-
 
     private fun requestToServer(ipAddress: String?) {
 
@@ -70,28 +81,26 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
+        //val call: Call<String> = service.getStationPrediction(annee, temps, code, dateStart, dateEnd)
         val call: Call<String> = service.getStationStatistics(annee, temps, code)
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse des Statistiques du Serveur: ${response?.body()}")
-                Log.i(TAG, "Status de reponse  des Statistiques du Serveur: ${response?.code()}")
-                Log.i(
-                    TAG,
-                    "Message de reponse  des Statistiques du Serveur: ${response?.message()}"
-                )
+                Log.i(TAG, "Réponse des predictions du Serveur: ${response?.body()}")
+                Log.i(TAG, "Status de reponse  des predictions du Serveur: ${response?.code()}")
+                Log.i(TAG,"Message de reponse  des predictions du Serveur: ${response?.message()}")
 
                 val arrayStationType = object : TypeToken<DataResponseStation>() {}.type
                 val jObj: DataResponseStation = Gson().fromJson(response?.body(), arrayStationType)
                 Log.i(TAG, "L'objet : $jObj")
                 fillData(jObj)
-                lllProgressBar.visibility = View.GONE
+                lllProgressBarH.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Error when receiving statistic!    cause:${t.cause}     message:${t.message}")
-                val builder = AlertDialog.Builder(this@HourlyStationStatisticActivity)
-                builder.setTitle("Error while loading statistic!").setMessage("cause:${t.cause} \n message:${t.message}")
+                Log.i(TAG, "Error when receiving predictions!    cause:${t.cause}     message:${t.message}")
+                val builder = AlertDialog.Builder(this@HourlyStationPredictionActivity)
+                builder.setTitle("Error while loading predictions!").setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()
             }
         })

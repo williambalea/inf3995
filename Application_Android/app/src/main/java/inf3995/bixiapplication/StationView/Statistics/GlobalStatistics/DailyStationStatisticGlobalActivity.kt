@@ -1,4 +1,4 @@
-package inf3995.bixiapplication.StationView.StationStatistics
+package inf3995.bixiapplication.StationView.Statistics.GlobalStatistics
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

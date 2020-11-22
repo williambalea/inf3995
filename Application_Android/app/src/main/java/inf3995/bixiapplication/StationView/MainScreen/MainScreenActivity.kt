@@ -15,14 +15,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import inf3995.bixiapplication.Data.ConnectivityData
-import inf3995.bixiapplication.Data.Station
 import inf3995.bixiapplication.Dialog.EngineConnectivityStatusDialog
-import inf3995.bixiapplication.Dialog.IpAddressDialog
-import inf3995.bixiapplication.GlobalPredictionsActivity
-import inf3995.bixiapplication.GlobalStatisticsActivity
-import inf3995.bixiapplication.ListStationActivity
-import inf3995.bixiapplication.Service.WebBixiService
-import inf3995.bixiapplication.UnsafeOkHttpClient
+import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
+import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
+import inf3995.bixiapplication.StationView.PredictionErrors.ErrorPredictionsActivity
+import inf3995.bixiapplication.StationView.Predictions.GlobalPredictions.GlobalPredictionsActivity
+import inf3995.bixiapplication.StationView.StationList.ListStationActivity
+import inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.GlobalStatisticsActivity
+import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,13 +32,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
-import androidx.appcompat.app.AppCompatActivity
-import inf3995.bixiapplication.StationView.StationList.ListStationActivity
-import inf3995.bixiapplication.StationView.PredictionErrors.ErrorPredictionsActivity
-import inf3995.bixiapplication.StationView.StationPredictions.GlobalPredictionsActivity
-import inf3995.bixiapplication.StationView.StationStatistics.GlobalStatisticsActivity
-import inf3995.test.bixiapplication.R
-
 
 class MainScreenActivity : AppCompatActivity() {
 
@@ -49,7 +42,7 @@ class MainScreenActivity : AppCompatActivity() {
     private lateinit var jObj: ConnectivityData
     val dialog1 = IpAddressDialog()
     val dialog2 = EngineConnectivityStatusDialog()
-    private lateinit var btn4: Button
+    private val TAG = "Main Screen Activity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,9 +126,7 @@ class MainScreenActivity : AppCompatActivity() {
 
                 call4.enqueue(object : Callback<String> {
                     override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                        Log.i(
-                            inf3995.bixiapplication.Dialog.TAG,
-                            "Réponse Connectivity: ${response?.errorBody()} ${response?.code()}"
+                        Log.i(TAG, "Réponse Connectivity: ${response?.errorBody()} ${response?.code()}"
                         )
                         val connectivityStatus = object : TypeToken<ConnectivityData>() {}.type
 
@@ -155,9 +146,7 @@ class MainScreenActivity : AppCompatActivity() {
                     }
 
                     override fun onFailure(call: Call<String>?, t: Throwable) {
-                        Log.i(
-                            inf3995.bixiapplication.Dialog.TAG,
-                            "Error when getting message from server!    cause: ${t.cause}     message: ${t.message}"
+                        Log.i(TAG, "Error when getting message from server!    cause: ${t.cause}     message: ${t.message}"
                         )
                     }
                 })

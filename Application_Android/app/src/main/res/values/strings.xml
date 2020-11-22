@@ -147,4 +147,5 @@
     <string name="Hourly_Error_Title"><![CDATA[Prediction Errors of Hourly Departures & Arrivals for:]]></string>
     <string name="Monthly_Prediction_Title"><![CDATA[Prediction Values of Monthly Departures & Arrivals for:]]></string>
     <string name="Monthly_Error_Title"><![CDATA[Prediction Errors of Monthly Departures & Arrivals for:]]></string>
+    <string name="PerDate_Prediction_Title"><![CDATA[Prediction Values of per date Departures & Arrivals for:]]></string>
 </resources>
