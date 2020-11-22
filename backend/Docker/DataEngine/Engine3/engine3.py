@@ -238,17 +238,27 @@ class Engine3:
 
     def filter_prediction(self, df,  station, groupby, startDate, endDate):
         print('filtering...')
-
+        print(df)
         #Filter station
+        print('station filter')
         if str(station) != 'all':
-            df = df[df.start_station_code == station]
+            print('alllllllllllllooooooooooooooooo245')
+            print(type(station))
+            print(df)
+            df = df[df.start_station_code == int(station)].copy()
+            print('alllllllllllllooooooooooooooooo248')
+            print(df)
         #Filter Period
+
+        print(df)
+        print('period filter')
         df = self.period_filter(df, startDate, endDate)
-        #Filter groupby      
+        #Filter groupby
+        print('groupby filter')      
         df = self.groupby_filter(df, groupby)
 
         print('filtering DONE')
-        return df
+        return df.copy()
 
     def get_prediction_graph(self, groupby, x, y):
         
@@ -268,10 +278,10 @@ class Engine3:
             # plt.xaxis.set_minor_locator(MultipleLocator(5))
             # Create legend & Show graphic
             plt.legend()
-            plt.savefig('bar.png')
+            plt.savefig('bar3.png')
             # plt.show()
             print('graph generated', flush=True)
-            plt.show()
+            # plt.show()
         elif groupby != "perDate":
             barWidth = 0.25
             plt.clf()
@@ -312,9 +322,13 @@ class Engine3:
 
 
     def period_filter(self, df, startDate, endDate):
-        startDateObj = datetime.datetime.strptime(startDate, '%d/%m/%Y')
-        endDateObj = datetime.datetime.strptime(endDate, '%d/%m/%Y')
+        print('allooooooooooooooooooooooooooooooo0')
+        print(df)
+        print('allooooooooooooooooooooooooooooooo1')
+        startDateObj = datetime.datetime.strptime(startDate, '%d-%m-%Y')
+        endDateObj = datetime.datetime.strptime(endDate, '%d-%m-%Y')
 
+        print('allooooooooooooooooooooooooooooooo2')
         minDate = datetime.datetime(2017, 4, 15)
         maxDate = datetime.datetime(2017, 9, 30)
         if startDateObj < minDate:
@@ -322,6 +336,7 @@ class Engine3:
         if endDateObj > maxDate:
             endDateObj = maxDate
 
+        print('allooooooooooooooooooooooooooooooo3')
         startYear = startDateObj.year
         startMonth = startDateObj.month
         startDay = startDateObj.day
@@ -329,17 +344,28 @@ class Engine3:
         endMonth = endDateObj.month
         endDay = endDateObj.day
 
+        print('allooooooooooooooooooooooooooooooo4')
         # Get names of indexes for which column Age has value 30
         indexNames = df[ df['month'] < startMonth ].index
+        print('allooooooooooooooooooooooooooooooo4.2')
+        print(indexNames)
         df.drop(indexNames , inplace=True)
+
+        print('allooooooooooooooooooooooooooooooo5')
         # print('indexNames: ', indexNames)
         indexNames = (df[ (df['month'] == startMonth) & (df['day'] < startDay)].index)
         df.drop(indexNames , inplace=True)
+
+        print('allooooooooooooooooooooooooooooooo6')
         indexNames = df[ df['month'] > endMonth ].index
         df.drop(indexNames , inplace=True)
         # print('indexNames: ', indexNames)
+
+        print('allooooooooooooooooooooooooooooooo7')
         indexNames = (df[ (df['month'] == endMonth) & (df['day'] > endDay)].index)
         df.drop(indexNames , inplace=True)
+
+        print('allooooooooooooooooooooooooooooooo8')
         return df
 
     def groupby_filter(self, df, groupby):
@@ -361,7 +387,7 @@ class Engine3:
             print('filtering perDate')
             df = df.groupby(['month', 'day']).agg({'predictions': 'sum', 'test_labels': 'sum'})
             
-        return df
+        return df.copy()
 
     def toBase64(self):
         print('toBase64()', flush=True)
