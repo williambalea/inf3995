@@ -278,10 +278,10 @@ class Engine3:
             # plt.xaxis.set_minor_locator(MultipleLocator(5))
             # Create legend & Show graphic
             plt.legend()
-            plt.savefig('bar.png')
+            plt.savefig('bar3.png')
             # plt.show()
             print('graph generated', flush=True)
-            plt.show()
+            # plt.show()
         elif groupby != "perDate":
             barWidth = 0.25
             plt.clf()
