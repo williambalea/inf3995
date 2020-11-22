@@ -11,7 +11,10 @@ WORKDIR /usr/src/Engine2/
 RUN pip3 install --upgrade pip
 RUN pip3 install Flask Flask-API matplotlib pandas numpy easydict mysql-connector-python 
 COPY ./Engine2 .
-COPY ./kaggleData ./kaggleData
+COPY ./kaggleData/OD_2014.csv ./kaggleData/OD_2014.csv
+COPY ./kaggleData/OD_2015.csv ./kaggleData/OD_2015.csv
+COPY ./kaggleData/OD_2016.csv ./kaggleData/OD_2016.csv
+COPY ./kaggleData/OD_2017.csv ./kaggleData/OD_2017.csv
 
 ENV FLASK_APP=engine2_HTTP.py
 ENV FLASK_RUN_HOST=0.0.0.0

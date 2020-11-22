@@ -210,7 +210,7 @@ class Engine3:
             loaded_rf = pickle.load(open(my_file, 'rb'))
         else:
             #instantiate model with 1000 decision trees
-            loaded_rf = RandomForestRegressor(n_estimators = 20, random_state = 42, n_jobs=-1)
+            loaded_rf = RandomForestRegressor(n_estimators = 15, random_state = 42, n_jobs=-1)
             print('Fit calculating...')
             loaded_rf.fit(train_f, train_l)
             print('Fit DONE')
