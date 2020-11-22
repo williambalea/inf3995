@@ -51,21 +51,15 @@ class StationPredictionsActivity : AppCompatActivity() {
                 this,
                 DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
                     val mmMonth = mMonth + 1
-                   startDate.setText("$mDay/$mmMonth/$mYear")
-                    dateStart = "$mDay/$mmMonth/$mYear"
+                   startDate.setText("$mDay-$mmMonth-$mYear")
+                    dateStart = "$mDay-$mmMonth-$mYear"
                     year = mYear.toString()
-                    //startDate.setText("$mDay/$mmMonth/$mYear")
                 },
                 theYear,
                 theMonth,
                 theDay
             )
             datePicker.show()
-
-            //dateStart = startDate.text.toString()
-            //dateStart = "$theDay/$theMonth/$theYear"
-            Log.i(TAG, "la date de debut est : $dateStart")
-            //year = theYear.toString()
         }
 
         endDateButton.setOnClickListener {
@@ -79,17 +73,15 @@ class StationPredictionsActivity : AppCompatActivity() {
                 this,
                 DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
                     val mmMonth = mMonth + 1
-                    val date = "$mDay/$mmMonth/$mYear"
-                    endDate.setText(date)           //setText(""+ mDay+"/" + mMonth + "/"+mYear)
-                    dateEnd = "$mDay/$mmMonth/$mYear"
+                    val date = "$mDay-$mmMonth-$mYear"
+                    endDate.setText(date)           //setText(""+ mDay+"-" + mMonth + "-"+mYear)
+                    dateEnd = "$mDay-$mmMonth-$mYear"
                 },
                 theYear,
                 theMonth,
                 theDay
             )
             datepicker.show()
-            //dateEnd = endDate.text.toString()
-           // dateEnd = "$theDay/$theMonth/$theYear"
 
         }
 
@@ -134,7 +126,7 @@ class StationPredictionsActivity : AppCompatActivity() {
             Log.i(TAG, "l'année est : $year")
 
             when (temps){
-                "perMonth" -> {
+                "perDate" -> {
                     val intent = Intent(
                         this@StationPredictionsActivity,
                         MonthlyStationPredictionActivity::class.java
@@ -171,7 +163,7 @@ class StationPredictionsActivity : AppCompatActivity() {
                     intent.putExtra("DateEnd", dateEnd)
                     startActivity(intent)
                 }
-                "perDate" -> {
+                "perMonth" -> {
                     val intent = Intent(
                         this@StationPredictionsActivity,
                         PerDateStationPredictionActivity::class.java
@@ -182,6 +174,10 @@ class StationPredictionsActivity : AppCompatActivity() {
                     intent.putExtra("DateStart", dateStart)
                     intent.putExtra("DateEnd", dateEnd)
                     startActivity(intent)
+
+                    Log.i(TAG, "l'année est : $year")
+                    Log.i(TAG, "la date de début de la plage est : $dateStart")
+                    Log.i(TAG, "la date de Fin de la plage est : $dateEnd")
                 }
             }
         }

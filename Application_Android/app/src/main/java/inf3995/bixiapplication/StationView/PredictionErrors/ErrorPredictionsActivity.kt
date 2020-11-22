@@ -65,6 +65,12 @@ class ErrorPredictionsActivity : AppCompatActivity() {
                     intent.putExtra("timeGlobal", time)
                     startActivity(intent)
                 }
+                "perDate"-> {
+                    val intent = Intent(this@ErrorPredictionsActivity, PerDatePredictionErrorsActivity::class.java)
+                    intent.putExtra("yearGlobal", year)
+                    intent.putExtra("timeGlobal", time)
+                    startActivity(intent)
+                }
             }
         }
 

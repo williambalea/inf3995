@@ -37,4 +37,9 @@ interface WebBixiService {
     @GET("/engine3/prediction/error/{year}/{groupBy}")
     fun getStationErrors(@Path("year") year:Int, @Path("groupBy") groupBy:String): Call<String>
 
+
+    @GET("/engine3/prediction/usage/{year}/{time}/all/dateStart/dateEnd")
+    fun getStationPrevisionsGlobal(@Path("year") year:Int, @Path("time") time:String, @Path ("dateStart") dateStart: String, @Path ("dateEnd") dateEnd: String): Call<String>
+
+
 }

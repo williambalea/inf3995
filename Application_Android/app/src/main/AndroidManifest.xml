@@ -21,7 +21,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="inf3995.bixiapplication.StationView.Predictions.StationPredictions.PerDateStationPredictionActivity"></activity>
+        <activity android:name="inf3995.bixiapplication.StationView.PredictionErrors.PerDatePredictionErrorsActivity"></activity>
+        <activity android:name="inf3995.bixiapplication.StationView.Predictions.StationPredictions.PerDateStationPredictionActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.PredictionErrors.HourlyPredictionErrorsActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
