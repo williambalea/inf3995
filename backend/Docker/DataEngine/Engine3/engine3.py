@@ -169,7 +169,7 @@ class Engine3:
         print('Testing Features Shape:', test_features.shape)
         print('Testing Labels Shape:', test_labels.shape)
         #not used yet... prbly to delete
-        feature_list = list(test_features.columns)
+        # feature_list = list(test_features.columns)
         
         #get Random forest model        
         loaded_rf = self.get_random_forest_model(train_labels, train_features)
@@ -212,12 +212,12 @@ class Engine3:
             #instantiate model with 1000 decision trees
             loaded_rf = RandomForestRegressor(n_estimators = 20, random_state = 42, n_jobs=-1)
             print('Fit calculating...')
-            loaded_rf.fit(train_features, train_labels)
+            loaded_rf.fit(train_f, train_l)
             print('Fit DONE')
 
             print('saving model')
             # save the model to disk
-            pickle.dump(loaded_rf, open(filename, 'wb'))
+            pickle.dump(loaded_rf, open(my_file, 'wb'))
 
         return loaded_rf
 
@@ -337,10 +337,10 @@ class Engine3:
             endDateObj = maxDate
 
         print('allooooooooooooooooooooooooooooooo3')
-        startYear = startDateObj.year
+        # startYear = startDateObj.year
         startMonth = startDateObj.month
         startDay = startDateObj.day
-        endYear = endDateObj.year
+        # endYear = endDateObj.year
         endMonth = endDateObj.month
         endDay = endDateObj.day
 
