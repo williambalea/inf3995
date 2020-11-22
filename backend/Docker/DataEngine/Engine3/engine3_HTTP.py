@@ -21,11 +21,16 @@ def predictionUsage(station, groupby, startDate,endDate):
 
     predictions_df = engine3.load_prediction_df()
     print('predictions_df: ', predictions_df)
+
     filtered_pred_df = engine3.filter_prediction(predictions_df, station, groupby, startDate, endDate)
     print('filtered_pred_df: ', filtered_pred_df)
+    
     x = engine3.get_graph_X(filtered_pred_df, groupby)
     print('x: ', x)
+
     y = engine3.get_graph_Y(filtered_pred_df)
     print('y: ', y)
+
     pred_graph = engine3.get_prediction_graph( groupby, x, y)
+    
     return engine3.datatoJSON(pred_graph, x, y)
