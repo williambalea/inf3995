@@ -1,5 +1,5 @@
 from flask import Flask
-from engine3 import Engine3
+from Engine3.engine3 import Engine3
 app = Flask(__name__)
 
 engine3 = Engine3()
@@ -8,7 +8,7 @@ engine3 = Engine3()
 # $ flask run
 @app.route('/engine3')
 def hello_world():
-    return 'Hello World from Engin 3 :)'
+    return 'Hello World from Engin 3'
 
 # http://127.0.0.1:5000/engine3/prediction/usage/5003/perMonth/'27-05-2017'/'27-08-2017'
 @app.route('/engine3/prediction/usage/<station>/<groupby>/<startDate>/<endDate>')

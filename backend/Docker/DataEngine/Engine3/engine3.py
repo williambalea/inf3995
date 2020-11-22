@@ -14,13 +14,13 @@ class Engine3:
 
     # csv_file_list = ["../kaggleData/OD_2014.csv","../kaggleData/OD_2015.csv", "../kaggleData/OD_2016.csv"]
 
-    csv_file_list = ["../kaggleData/OD_2015.csv", "../kaggleData/OD_2016.csv"]
+    csv_file_list = ["./kaggleData/OD_2015.csv", "./kaggleData/OD_2016.csv"]
 
     def __init__(self):
         return None 
     
     def get_bixi_data_year(self, year):
-        path = "../kaggleData/OD_"
+        path = "./kaggleData/OD_"
         path += str(year)
         path += ".csv"
         bixidf = pd.read_csv(path, dtype={'start_date':str,'start_station_code':int,'end_date':str,
@@ -31,9 +31,9 @@ class Engine3:
 
     def get_weather_df(self):
         print('importing weather data')
-        weather_description = pd.read_csv('../kaggleData/historical-hourly-weather-data/weather_description.csv', low_memory=False)
-        temperature = pd.read_csv('../kaggleData/historical-hourly-weather-data/temperature.csv', low_memory=False, dtype={'Montreal':np.float32})
-        wind_speed = pd.read_csv('../kaggleData/historical-hourly-weather-data/wind_speed.csv', low_memory=False, dtype={'Montreal':np.float32})
+        weather_description = pd.read_csv('./kaggleData/historical-hourly-weather-data/weather_description.csv', low_memory=False)
+        temperature = pd.read_csv('./kaggleData/historical-hourly-weather-data/temperature.csv', low_memory=False, dtype={'Montreal':np.float32})
+        wind_speed = pd.read_csv('./kaggleData/historical-hourly-weather-data/wind_speed.csv', low_memory=False, dtype={'Montreal':np.float32})
 
         print(weather_description.shape)
         print('filter only montreal')
