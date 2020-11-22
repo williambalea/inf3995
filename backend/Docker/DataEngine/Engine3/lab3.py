@@ -57,7 +57,7 @@ filtered_pred_df = engine3.filter_prediction(predictions_df, 6043, perHour, star
 
 x = engine3.get_graph_X(filtered_pred_df, perHour)
 y = engine3.get_graph_Y(filtered_pred_df)
-pred_graph = engine3.get_prediction_graph( perHour, x, y).show()
-# forAndroid = engine3.datatoJSON(pred_graph, x, y)
+pred_graph = engine3.get_prediction_graph( perHour, x, y)
+forAndroid = engine3.datatoJSON(pred_graph, x, y)
 print('GG')
 print(forAndroid)

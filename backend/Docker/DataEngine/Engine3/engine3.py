@@ -298,11 +298,17 @@ class Engine3:
                 xAxis = pd.Series(xAxisDate)
         else:
             xAxis = df.index.values
-            print(xAxis)
+        
+        print('getting X~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        print(xAxis)
         return xAxis
 
     def get_graph_Y(self, df):
-        return df['predictions']
+        print('getting Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        yAxis = df['predictions'].values
+        print(yAxis)
+        print(yAxis.shape)
+        return yAxis
 
 
     def period_filter(self, df, startDate, endDate):
@@ -359,7 +365,6 @@ class Engine3:
 
     def toBase64(self):
         print('toBase64()', flush=True)
-        # plt.savefig('bar.png')
         with open("bar3.png", "rb") as imageFile:
             strg = base64.b64encode(imageFile.read()).decode('utf-8')
             while strg[-1] == '=':
@@ -369,19 +374,20 @@ class Engine3:
 
         return strg
 
-    # def datatoJSON(self, graph, x, y):
-    #     print('datatoJSON()', flush=True)
+    def datatoJSON(self, graph, x, y):
+        print('datatoJSON()', flush=True)
         
-    #     graphString = self.toBase64()
+        graphString = self.toBase64()
         
 
-    #     myJson =  '{  "data":{ "time":[], "predictions":[] }, "graph":[] }'
+        myJson =  '{  "data":{ "time":[], "predictions":[] }, "graph":[] }'
 
-    #     o = json.loads(myJson)
-    #     o["data"]["time"] = y
-    #     o["data"]["predictions"] = x[0:len(x)].tolist()
-    #     o["graph"] = graphString
+        o = json.loads(myJson)
+        o["data"]["time"] = x[0:len(x)].tolist()
+        o["data"]["predictions"] = y.tolist()
+        o["graph"] = graphString
         
-    #     print('Label used: ', flush=True)
-    #     print(y, flush=True)
-    #     return json.dumps(o)
+
+        # print('Label used: ', flush=True)
+        # print(y, flush=True)
+        return json.dumps(o)
