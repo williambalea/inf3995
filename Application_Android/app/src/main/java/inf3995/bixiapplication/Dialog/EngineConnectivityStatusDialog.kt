@@ -14,9 +14,12 @@ import kotlinx.android.synthetic.main.engine_connectivity_status.*
 class EngineConnectivityStatusDialog: AppCompatDialogFragment() {
 
     companion object {
-        lateinit var status1 :String
-        lateinit var status2 :String
-        lateinit var status3 :String
+        //lateinit var status1 :String
+       // lateinit var status2 :String
+       // lateinit var status3 :String
+        var status1 = "UP"
+        var status2 = "UP"
+        var status3 = "UP"
     }
     private val TAG = "EngineConnectivityStatus Activity"
 

@@ -126,7 +126,7 @@ class StationPredictionsActivity : AppCompatActivity() {
             Log.i(TAG, "l'année est : $year")
 
             when (temps){
-                "perDate" -> {
+                "perMonth" -> {
                     val intent = Intent(
                         this@StationPredictionsActivity,
                         MonthlyStationPredictionActivity::class.java
@@ -163,7 +163,7 @@ class StationPredictionsActivity : AppCompatActivity() {
                     intent.putExtra("DateEnd", dateEnd)
                     startActivity(intent)
                 }
-                "perMonth" -> {
+                "perDate" -> {
                     val intent = Intent(
                         this@StationPredictionsActivity,
                         PerDateStationPredictionActivity::class.java

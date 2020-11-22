@@ -2,48 +2,30 @@ package inf3995.bixiapplication.StationView.Predictions.StationPredictions
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
 import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
-import inf3995.bixiapplication.StationViewModel.StationLiveData.DataResponseStation
+import inf3995.bixiapplication.StationViewModel.StationLiveData.DataPredictionResponseStation
 import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
 import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
 import kotlinx.android.synthetic.main.activity_monthly_station_prediction.*
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text102
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text103
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text112
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text113
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text12
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text122
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text123
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text13
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text22
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text23
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text32
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text33
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text42
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text43
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text52
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text53
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text62
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text63
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text72
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text73
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text82
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text83
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text92
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic.text93
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -61,7 +43,7 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
 
     var dateStart : String? = null
     var dateEnd : String? = null
-
+    lateinit var table: TableLayout
     private val TAG = "Monthly Station Predictions values"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +53,7 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
         val annas = intent.getStringExtra("Annee")?.toInt()
         station = intent.getSerializableExtra("data") as Station
 
-
+        table = findViewById(R.id.main_table)
         val dataStart = intent.getStringExtra("DateStart")
         val dataEnd = intent.getStringExtra("DateEnd")
 
@@ -92,7 +74,7 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
         }
 
         if (dataEnd != null) {
-            dateEnd = dataStart
+            dateEnd = dataEnd
         }
 
         PredictTitle.text = getString(R.string.Monthly_Prediction_Title)
@@ -112,8 +94,8 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        //val call: Call<String> = service.getStationPrediction(annee, temps, code, dateStart, dateEnd)
-        val call = service.getStationStatistics(year, temps, code)
+        val call: Call<String> = service.getStationPrediction(code, temps, dateStart!!, dateEnd!!)
+        //val call = service.getStationStatistics(year, temps, code)
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
@@ -121,8 +103,8 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
                 Log.i(TAG, "Status de reponse  des predictions du Serveur: ${response?.code()}")
                 Log.i(TAG,"Message de reponse  des predictions du Serveur: ${response?.message()}")
 
-                val arrayStationType = object : TypeToken<DataResponseStation>() {}.type
-                val jObj: DataResponseStation = Gson().fromJson(response?.body(), arrayStationType)
+                val arrayStationType = object : TypeToken<DataPredictionResponseStation>() {}.type
+                val jObj: DataPredictionResponseStation = Gson().fromJson(response?.body(), arrayStationType)
                 Log.i(TAG, "L'objet : $jObj")
                 fillData(jObj)
                 lllProgressBarM.visibility = View.GONE
@@ -137,46 +119,96 @@ class MonthlyStationPredictionActivity : AppCompatActivity() {
         })
     }
 
-    private fun fillData(jObj: DataResponseStation) {
+    private fun convertString64ToImage(base64String: String): Bitmap {
+        val decodedString = Base64.decode(base64String, Base64.NO_WRAP)
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+    }
+
+    private fun fillData(jObj: DataPredictionResponseStation) {
         val myImageString = jObj.graph
         val image1 = findViewById(R.id.image) as ImageView
-        try{image1.setImageBitmap(convertString64ToImage(myImageString))}
-        catch (e: Exception){
-            Log.e(TAG,"error")
+        try {
+            image1.setImageBitmap(convertString64ToImage(myImageString))
+        } catch (e: Exception) {
+            Log.e(TAG, "error")
         }
 
         Log.i(TAG, "affichage du graphique ")
 
-        text12.setText(jObj.data.departureValue[0].toString())
-        text13.setText(jObj.data.arrivalValue[0].toString())
-        text22.setText(jObj.data.departureValue[1].toString())
-        text23.setText(jObj.data.arrivalValue[1].toString())
-        text32.setText(jObj.data.departureValue[2].toString())
-        text33.setText(jObj.data.arrivalValue[2].toString())
-        text42.setText(jObj.data.departureValue[3].toString())
-        text43.setText(jObj.data.arrivalValue[3].toString())
-        text52.setText(jObj.data.departureValue[4].toString())
-        text53.setText(jObj.data.arrivalValue[4].toString())
-        text62.setText(jObj.data.departureValue[5].toString())
-        text63.setText(jObj.data.arrivalValue[5].toString())
-        text72.setText(jObj.data.departureValue[6].toString())
-        text73.setText(jObj.data.arrivalValue[6].toString())
-        text82.setText(jObj.data.departureValue[7].toString())
-        text83.setText(jObj.data.arrivalValue[7].toString())
+        for (i in 0 until jObj.data.predictions.size) {
 
-        text92.setText(jObj.data.departureValue[8].toString())
-        text93.setText(jObj.data.arrivalValue[8].toString())
-        text102.setText(jObj.data.departureValue[9].toString())
-        text103.setText(jObj.data.arrivalValue[9].toString())
-        text112.setText(jObj.data.departureValue[10].toString())
-        text113.setText(jObj.data.arrivalValue[10].toString())
-        text122.setText(jObj.data.departureValue[11].toString())
-        text123.setText(jObj.data.arrivalValue[11].toString())
+            val time = jObj.data.time[i]
+            val predictions = jObj.data.predictions[i]
 
-    }
+            val tbrow = TableRow(this)
+            val text0 = TextView(this)
+            val text1 = TextView(this)
+            val text2 = TextView(this)
 
-    private fun convertString64ToImage(base64String: String): Bitmap {
-        val decodedString = Base64.decode(base64String, Base64.NO_WRAP)
-        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+
+            // Set the heigth and width of the TextView
+            val scale = resources.displayMetrics.density
+            val myheight = (30 * scale + 0.5f).toInt()
+            val mywidth = (132 *2* scale + 0.5f).toInt()
+
+            // Set the first column of the table row
+
+            text0.setId(i + 1)
+            text0.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
+            text0.setText((i + 1).toString())
+            text0.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
+            text0.setTextSize(18F)
+            text0.setTypeface(text0.getTypeface(), Typeface.BOLD);
+            text0.gravity = Gravity.CENTER_HORIZONTAL
+            text0.apply {
+                layoutParams = TableRow.LayoutParams(
+                    mywidth,
+                    myheight
+                )
+                textAlignment = View.TEXT_ALIGNMENT_CENTER
+            }
+            // add the column to the tablerow
+            tbrow.addView(text0)
+
+            // Set the second column of the table row
+            text1.setId(i + 2)
+            text1.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
+            text1.setText(time)
+            text1.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
+            text1.setTextSize(18F)
+            text1.setTypeface(text1.getTypeface(), Typeface.BOLD);
+            text1.gravity = Gravity.CENTER_HORIZONTAL
+            text1.apply {
+                layoutParams = TableRow.LayoutParams(
+                    mywidth,
+                    myheight
+                )
+                textAlignment = View.TEXT_ALIGNMENT_CENTER
+            }
+            tbrow.addView(text1)
+
+            // Set the third column of the table row
+            text2.setId(i + 3)
+            text2.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
+            text2.setText(predictions.toString())
+            text2.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
+            text2.setTextSize(18F)
+            text2.setTypeface(text2.getTypeface(), Typeface.BOLD);
+            text2.gravity = Gravity.CENTER_HORIZONTAL
+            text2.apply {
+                layoutParams = TableRow.LayoutParams(
+                    mywidth,
+                    myheight
+                )
+                textAlignment = View.TEXT_ALIGNMENT_CENTER
+            }
+            tbrow.addView(text2)
+
+            // add the tablerow to the table Layout
+
+            table.addView(tbrow)
+
+        }
+
     }
 }

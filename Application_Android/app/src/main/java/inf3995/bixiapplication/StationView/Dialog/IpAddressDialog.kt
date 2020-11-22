@@ -9,7 +9,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.afollestad.vvalidator.form
 import inf3995.bixiapplication.StationViewModel.WebBixiService
-import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.setting_ip_address_dialog.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,7 +24,8 @@ const val TAG = "SettingsDialog"
 class IpAddressDialog: AppCompatDialogFragment() {
 
     companion object {
-        lateinit var ipAddressInput :String
+        //lateinit var ipAddressInput :String
+        var ipAddressInput = "70.80.27.156"
     }
 
     override fun onCreateView(

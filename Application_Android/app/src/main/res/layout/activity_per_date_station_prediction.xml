@@ -150,7 +150,7 @@
                 android:textAlignment="center"
                 android:gravity="center_horizontal"
                 android:layout_weight="0.5"
-                android:text="@string/day"
+                android:text="@string/day_month"
                 android:textColor="#ffff"
                 android:textStyle="bold" />
 
@@ -166,17 +166,7 @@
                 android:textColor="#ffff"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tex83"
-                android:layout_width="130dp"
-                android:layout_height="30dp"
-                android:textSize="20sp"
-                android:textAlignment="center"
-                android:gravity="center_horizontal"
-                android:layout_weight="0.5"
-                android:text="@string/arrival"
-                android:textColor="#ffff"
-                android:textStyle="bold" />
+
         </LinearLayout>
 
         <ScrollView
@@ -199,6 +189,5 @@
         </ScrollView>
 
     </LinearLayout>
-
 
 </LinearLayout>

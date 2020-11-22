@@ -18,6 +18,16 @@ data class Data(
    ): Serializable {}
 
 
+data class DataPrediction (
+    var time :Array<String>,
+    var predictions: Array<Float>,
+): Serializable {}
+
+data class DataPredictionResponseStation(
+    var data: DataPrediction,
+    var graph: String
+): Serializable {}
+
 data class DataResponseStation(
     var data: Data,
     var graph: String
