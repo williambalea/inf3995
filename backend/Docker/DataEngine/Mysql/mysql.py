@@ -19,9 +19,11 @@ class MySqlDB:
     ACCOUNTS = "SELECT * FROM CentralServer.Accounts"
     ENGINE1_LOGS = "../Engine1/engine.log"
     ENGINE2_LOGS = "../Engine2/engine.log"
+    ENGINE3_LOGS = "../Engine3/engine.log"
     ANSI_COLOR = r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]'
     ANSI_ESPACE = r'\\x1b[^m]*m'
     ENGINE1 = "engine1"
+    ENGINE2 = "engine2"
 
     def __init__(self):
         return None
@@ -29,15 +31,14 @@ class MySqlDB:
     #create connection to DB
     def create_connection(self, host_name, user_name, user_password, db_name):
         self.CONNECTION = None
-        try:
-            self.CONNECTION = mysql.connector.connect(
-                host=host_name,
-                user=user_name,
-                passwd=user_password,
-                database=db_name
-            )
-        except:
-            logging.error("Failed to connect to MYSQL DB")
+        self.CONNECTION = mysql.connector.connect(
+            host=host_name,
+            user=user_name,
+            passwd=user_password,
+            database=db_name
+        )
+        if (self.CONNECTION == None):
+            logging.info("Failed to connect to MYSQL DB")
         return self.CONNECTION
 
     def account_db(self):
@@ -68,8 +69,10 @@ class MySqlDB:
         lenght = 0
         if (engine == self.ENGINE1):
             logsFile= open(self.ENGINE1_LOGS, "r")
-        else:
+        elif (engine == self.ENGINE2):
             logsFile= open(self.ENGINE2_LOGS, "r")
+        else:
+            logsFile= open(self.ENGINE3_LOGS, "r")
         logs = logsFile.read()[int(byte):].splitlines()
         logsFile.close()
         for i in range(0, len(logs)):
