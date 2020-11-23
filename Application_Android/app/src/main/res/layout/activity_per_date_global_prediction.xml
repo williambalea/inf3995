@@ -8,7 +8,10 @@
     android:orientation="vertical"
     tools:context="inf3995.bixiapplication.StationView.Predictions.StationPredictions.PerDateStationPredictionActivity">
 
-
+    <include
+        android:id="@+id/lllProgressBarPerD"
+        android:visibility="visible"
+        layout="@layout/progress_bar"/>
 
     <LinearLayout
         android:layout_width="match_parent"
