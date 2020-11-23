@@ -12,12 +12,12 @@ import datetime
 
 class Engine3:
 
-    PREDICTION_DF_PATH = "./all_pred5.pkl"
+    PREDICTION_DF_PATH = "./all_pred6.pkl"
     RF_MODEL_PATH = "./finalized_model.sav"
     CSV_PATH_TEMPERATURE = '../kaggleData/historical-hourly-weather-data/temperature.csv'
     CSV_PATH_WEATHER_DESC = '../kaggleData/historical-hourly-weather-data/weather_description.csv'
     CSV_PATH_WINDSPEED = '../kaggleData/historical-hourly-weather-data/wind_speed.csv'
-    RF_N_ESTIMATORS = 20
+    RF_N_ESTIMATORS = 30
     RF_RANDOM_STATE = 42
 
     def __init__(self):
@@ -35,8 +35,8 @@ class Engine3:
 
     def get_weather_df(self):
         print('importing weather data')
-        weather_description = pd.read_csv(self.CSV_PATH_TEMPERATURE, low_memory=False)
-        temperature = pd.read_csv(self.CSV_PATH_WEATHER_DESC, low_memory=False, dtype={'Montreal':np.float32})
+        weather_description = pd.read_csv(self.CSV_PATH_WEATHER_DESC, low_memory=False)
+        temperature = pd.read_csv(self.CSV_PATH_TEMPERATURE, low_memory=False, dtype={'Montreal':np.float32})
         wind_speed = pd.read_csv(self.CSV_PATH_WINDSPEED, low_memory=False, dtype={'Montreal':np.float32})
 
         print(weather_description.shape)
@@ -136,8 +136,6 @@ class Engine3:
         #one-hot encoding weather description
         df_grouped = pd.get_dummies(df_grouped)
 
-        # df['year'] = df['year'].astype(np.int32)
-        print('testing 2 df col: ', df_grouped.dtypes)
 
         return df_grouped
 
