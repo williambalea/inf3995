@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="inf3995.bixiapplication.StationView.Predictions.StationPredictions.PerDateStationPredictionActivity">
+
+    <include
+        android:id="@+id/lllProgressBarPerD"
+        android:visibility="visible"
+        layout="@layout/progress_bar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/predictTitlePerD"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_margin="5sp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/colortextdata"
+            android:text="@string/PerDate_Prediction_Title"
+            android:textSize="25sp"
+            android:textStyle="bold">
+        </TextView>
+
+        <TextView
+            android:id="@+id/predictionYearPerD"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_margin="5sp"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:text="Prediction Year"
+            android:textSize="25sp"
+            android:textColor="@color/colortextdata"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold">
+        </TextView>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:src="@drawable/oranges" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:background="#DD2C00"
+            android:padding="5dp"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text80"
+                android:layout_width="130dp"
+                android:layout_height="30dp"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:gravity="center_horizontal"
+                android:layout_weight="0.5"
+                android:text="@string/rank"
+                android:textColor="#ffff"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text81"
+                android:layout_width="130dp"
+                android:layout_height="30dp"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:gravity="center_horizontal"
+                android:layout_weight="0.5"
+                android:text="@string/day"
+                android:textColor="#ffff"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text82"
+                android:layout_width="130dp"
+                android:layout_height="30dp"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:gravity="center_horizontal"
+                android:layout_weight="0.5"
+                android:text="@string/departure"
+                android:textColor="#ffff"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tex83"
+                android:layout_width="130dp"
+                android:layout_height="30dp"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:gravity="center_horizontal"
+                android:layout_weight="0.5"
+                android:text="@string/arrival"
+                android:textColor="#ffff"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="0dp">
+
+            <TableLayout
+                android:id="@+id/main_table"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="0dp"
+                android:paddingLeft="5dp"
+                app:tabMode="scrollable"
+                android:paddingRight="5dp">
+
+
+            </TableLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+
+</LinearLayout>

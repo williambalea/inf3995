@@ -35,7 +35,7 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
 
     var station : Station? = null
     lateinit var temps: String
-    lateinit var indicator:String
+    var indicator: String? = null
     var code: Int = 0
     var annee= 0
     var myImage: ImageView? = null

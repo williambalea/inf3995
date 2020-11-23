@@ -8,6 +8,11 @@
     tools:context="inf3995.bixiapplication.StationPredictions.MonthlyStationGlobalPredictionActivity"
     android:orientation="vertical">
 
+    <include
+        android:id="@+id/lllProgressBarM"
+        android:visibility="visible"
+        layout="@layout/progress_bar"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
