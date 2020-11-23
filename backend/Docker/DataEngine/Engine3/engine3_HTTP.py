@@ -1,8 +1,12 @@
 from flask import Flask
 from engine3 import Engine3
+from engine3_pred_error import Engine3_Pred_Error
+from pathlib import Path
+import pandas as pd
 app = Flask(__name__)
 
 engine3 = Engine3()
+engine3_pred_error = Engine3_Pred_Error()
 # $ export FLASK_APP=hello.py
 # export FLASK_ENV=development
 # $ flask run
@@ -19,6 +23,7 @@ def predictionUsage(station, groupby, startDate,endDate):
     print(startDate)
     print(endDate)
     predictions_df = engine3.load_prediction_df()
+
     print('predictions_df: ', predictions_df)
     filtered_pred_df = engine3.filter_prediction(predictions_df, station, groupby, startDate, endDate)
     print('filtered_pred_df: ', filtered_pred_df)
@@ -33,5 +38,12 @@ def predictionUsage(station, groupby, startDate,endDate):
 
 @app.route('/engine3/prediction/error')
 def predictionError():
-    error_json = engine3.load_error_json()
-    return error_json
+    my_file = Path(engine3.PREDICTION_DF_PATH)
+    if my_file.is_file():
+        print('loading Pred_df')
+        # load the pred_df from disk
+        pred_df = pd.read_pickle(my_file)
+        return engine3_pred_error.get_error_json(pred_df)
+    else:
+        return 'ERROR: prediction not ready yet'
+

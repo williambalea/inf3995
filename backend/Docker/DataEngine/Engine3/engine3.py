@@ -15,12 +15,14 @@ class Engine3:
 
     prediction_errors = []
 
-    PREDICTION_DF_PATH = "./all_pred6.pkl"
-    RF_MODEL_PATH = "./finalized_model.sav"
-    ERROR_JSON_PATH = './error_data_and_graph.json'
+    PREDICTION_DF_PATH = "./tempFiles/prediction_df.pkl"
+    RF_MODEL_PATH = "./tempFiles/rf_model.sav"
     CSV_PATH_TEMPERATURE = '../kaggleData/historical-hourly-weather-data/temperature.csv'
     CSV_PATH_WEATHER_DESC = '../kaggleData/historical-hourly-weather-data/weather_description.csv'
     CSV_PATH_WINDSPEED = '../kaggleData/historical-hourly-weather-data/wind_speed.csv'
+    PRED_GRAPH_PATH = './tempFiles/predGraph.png'
+    ERROR_JSON_PATH = './tempFiles/error_data_and_graph.json'
+    ERROR_GRAPH_PATH = './tempFiles/errorGraph2.png'
     RF_N_ESTIMATORS = 30
     RF_RANDOM_STATE = 42
 
@@ -342,7 +344,7 @@ class Engine3:
             # plt.xaxis.set_minor_locator(MultipleLocator(5))
             # Create legend & Show graphic
             plt.legend()
-            plt.savefig('bar3.png')
+            plt.savefig(self.PRED_GRAPH_PATH)
             # plt.show()
             print('graph generated', flush=True)
             # plt.show()
@@ -357,7 +359,7 @@ class Engine3:
             plt.tight_layout()
             # Create legend & Show graphic
             plt.legend()
-            plt.savefig('bar3.png')
+            plt.savefig(self.PRED_GRAPH_PATH)
             # plt.show()
             print('graph generated', flush=True)
             # plt.show()
@@ -384,7 +386,7 @@ class Engine3:
 
     def toBase64(self):
         print('toBase64()', flush=True)
-        with open("bar3.png", "rb") as imageFile:
+        with open(self.PRED_GRAPH_PATH, "rb") as imageFile:
             strg = base64.b64encode(imageFile.read()).decode('utf-8')
             while strg[-1] == '=':
                 strg = strg[:-1]           
@@ -407,82 +409,127 @@ class Engine3:
         return json.dumps(o)
 
 
-    def load_error_json(self):#load dataframe from file or generate it if desn't exist
-        my_file = Path(self.ERROR_JSON_PATH)
-        # if my_file.is_file():
-        #     print('loading error json')
-        #     # load the pred_df from disk
-        #     with open(my_file, 'r') as f:
-        #         data = json.load(f)
-        # else:
-        #     # Writing a JSON file
-        #     data = self.generate_error_json()
-        #     with open(my_file, 'w') as f:
-        #         json.dump(data, f)
+    # def get_error_json(self):#load dataframe from file or generate it if desn't exist
+    #     print('1.getting error json...')
+    #     my_file = Path(self.ERROR_JSON_PATH)
         
-        if my_file.is_file():
-            print('loading json error...')
-            # load the model from disk
-            json_error = pickle.load(open(my_file, 'rb'))
-        else:
-            json_error = self.generate_error_json()
-            print('saving model')
-            # save the model to disk
-            pickle.dump(json_error, open(my_file, 'wb'))
-        return json_error
+    #     if my_file.is_file():
+    #         print('json error file exists')
+    #         print('1.2.loading json error...')
+    #         # load the model from disk
+    #         json_error = pickle.load(open(my_file, 'rb'))
+    #     else:
+    #         print('json error file does not exist')
+    #         json_error = self.generate_error_json()
+    #         print('1.3.saving model...')
+    #         # save the model to disk
+    #         pickle.dump(json_error, open(my_file, 'wb'))
+    #         print('saving model DONE')
 
-    def generate_error_json(self):
-        print('loading prediction')
-        # pred_df = self.load_prediction_df()
-        # temp_df = self.groupby_filter(pred_df, 'perDate')
-        temp_df = self.load_prediction_df()
-        temp_df = temp_df.groupby(['month', 'day', 'hour']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+
+    #     print('getting error json DONE')
+    #     return json_error
+
+    # def generate_error_json(self):
+    #     print('1.3.1.generation of error json...')
+    #     # pred_df = self.load_prediction_df()
+    #     # temp_df = self.groupby_filter(pred_df, 'perDate')
+    #     print('1.3.2.loading prediction...')
+    #     temp_df = self.load_prediction_df()
+    #     print('loading prediction DONE')
+    #     temp_df = temp_df.groupby(['month', 'day', 'hour']).agg({'predictions': 'sum', 'test_labels': 'sum'})
      
-        print('temp_df:')
-        print(temp_df)
-        errors = temp_df['predictions'].values - temp_df['test_labels'].values
+    #     print('temp_df:')
+    #     # print(temp_df)
 
-        # print('dataframe lenght: ')
-        # print(len(temp_df['predictions']))
+    #     print('1.3.3.calculating prediction errors...')
+    #     errors = temp_df['predictions'].values - temp_df['test_labels'].values
 
-        xAxisDate = []
-        for i in range(len(temp_df.index.values)):
-            xAxisDate.append( str(temp_df.index.values[i][0])
-                            + "-" 
-                            + str(temp_df.index.values[i][1]) 
-                            + ' ' 
-                            + str(temp_df.index.values[i][2])
-                            + 'h')
-            xAxis = pd.Series(xAxisDate)
-        # for i in range(len(temp_df['predictions'])):
-        #         print(i)
-        #         xAxisDate.append(str(temp_df.at[i, 'month']) + "-" + str(temp_df.at[i, 'day']))
+    #     # # Calculate mean absolute percentage error (MAPE)
+    #     # mape = 100 * (abs(errors) / temp_df['test_labels'].values)# Calculate and display accuracy
+    #     # accuracy = 100 - np.mean(mape)
+    #     # print('Accuracy:', round(accuracy, 2), '%.')
+
+    #     # print('dataframe lenght: ')
+    #     # print(len(temp_df['predictions']))
+
+    #     print('1.3.4.getting xAxisDate...')
+    #     xAxisDate = []
+    #     for i in range(len(temp_df.index.values)):
+    #         xAxisDate.append( str(temp_df.index.values[i][0])
+    #                         + "-" 
+    #                         + str(temp_df.index.values[i][1]) 
+    #                         + ' ' 
+    #                         + str(temp_df.index.values[i][2])
+    #                         + 'h')
+    #         # xAxis = pd.Series(xAxisDate)
+            
+    #     xAxis = pd.Series(xAxisDate)
+    #     print('getting xAxisDate DONE')
+
+    #     print('xAxis (date): ')
+    #     # print(len(xAxis))
+    #     # print(xAxis)
+
+    #     print('Yaxis (errors): ')
+    #     print('error length: ',len(errors))
+    #     # print(errors)
         
-        xAxis = pd.Series(xAxisDate)
-        
-        print('xAxis (date): ')
-        print(len(xAxis))
-        print(xAxis)
 
-        print('Yaxis (errors): ')
-        print(len(errors))
-        print(errors)
+    #     graph_error_file = Path(self.ERROR_GRAPH_PATH)
         
+    #     if graph_error_file.is_file():
+    #         print('graph error file already exists ')
+    #     else:
+    #         print('graph error file does not exist')
+    #         print('1.3.5.generating error graph...')
+    #         barWidth = 0.25
+    #         plt2.clf()
+    #         plt2.plot(xAxis, errors,'.',  color='#D52B1E',  label='Predictions')
+    #         # Add xticks on the middle of the group bars
+    #         ('adding xticks')
+    #         plt2.xlabel('GroupBy')
+    #         plt2.ylabel('Predictions')
+    #         # plt.xaxis.set_minor_locator(MultipleLocator(5))
+    #         # Create legend & Show graphic
+    #         plt2.legend()
+    #         plt2.savefig(self.ERROR_GRAPH_PATH)
+    #         # plt.show()
+    #         print('generating error graph DONE', flush=True)
+    #         # plt.show()
+            
+            
+        
+    #     finalJson = self.datatoJSON_error(plt2, xAxis, errors)
 
-        barWidth = 0.25
-        plt2.clf()
-        plt2.plot(xAxis, errors, color='#D52B1E',  label='Predictions')
-        # Add xticks on the middle of the group bars
-        ('adding xticks')
-        plt2.xlabel('GroupBy')
-        plt2.ylabel('Predictions')
-        # plt.xaxis.set_minor_locator(MultipleLocator(5))
-        # Create legend & Show graphic
-        plt2.legend()
-        plt2.savefig('bar4.png')
-        # plt.show()
-        print('graph generated', flush=True)
-        # plt.show()
-        print('getting finaljson')
-        finalJson = self.datatoJSON(plt2, xAxis, errors)
-        return finalJson
+    #     print('generation of error json DONE')
+    #     return finalJson
+
+
+    # def datatoJSON_error(self, graph, x, y):
+    #     print('1.3.6.converting data and graph to JSON...', flush=True)
+    #     graphString = self.toBase64_error()
+
+    #     myJson =  '{  "data":{ "time":[], "errors":[] }, "graph":[] }'
+
+    #     o = json.loads(myJson)
+    #     o["data"]["time"] = x[0:len(x)].tolist()
+    #     o["data"]["errors"] = y.tolist()
+    #     o["graph"] = graphString
+        
+    #     # print('Label used: ', flush=True)
+    #     # print(y, flush=True)
+
+    #     print('converting data and graph to JSON DONE', flush=True)
+    #     return json.dumps(o)
+
+
+    # def toBase64_error(self):
+    #     print('1.3.6.1 converting graph png to base64...', flush=True)
+    #     with open(self.ERROR_GRAPH_PATH, "rb") as imageFile:
+    #         strg = base64.b64encode(imageFile.read()).decode('utf-8')
+    #         while strg[-1] == '=':
+    #             strg = strg[:-1]           
+    #         # print(strg)
+    #     print('converting graph png to base64 DONE', flush=True)
+    #     return strg
