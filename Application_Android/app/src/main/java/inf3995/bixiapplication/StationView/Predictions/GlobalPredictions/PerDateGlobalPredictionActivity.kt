@@ -19,6 +19,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
 import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
+import inf3995.bixiapplication.StationViewModel.StationLiveData.DataPredictionResponseStation
 import inf3995.bixiapplication.StationViewModel.StationLiveData.DataResponseStation
 import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
@@ -36,7 +37,7 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
     var dateStart : String? = null
     var dateEnd : String? = null
     private val TAG = "Per Date Station Prediction "
-    lateinit var table: TableLayout
+    var table: TableLayout? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +48,7 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
         val dataStart = intent.getStringExtra("DateStart")
         val dataEnd = intent.getStringExtra("DateEnd")
 
-        table = findViewById(R.id.main_table)
+        table = findViewById(R.id.main_table_GPPD)
 
         if (tempas != null) {
             temps = tempas
@@ -62,7 +63,7 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
         }
 
         if (dataEnd != null) {
-            dateEnd = dataStart
+            dateEnd = dataEnd
         }
 
         //predictTitlePerD.text = getString(R.string.Daily_Prediction_Title)
@@ -81,15 +82,15 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         //val call: Call<String> = service.getStationPrediction(annee, temps, code, dateStart, dateEnd)
-        val call: Call<String> = service.getStationStatisticsGlobal(annee, temps)
+        val call: Call<String> = service.getGlobalPrediction(temps, dateStart!!, dateEnd!!)
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
                 Log.i(TAG, "Réponse des predictions du Serveur: ${response?.body()}")
                 Log.i(TAG, "Status de reponse  des predictions du Serveur: ${response?.code()}")
 
-                val arrayStationType = object : TypeToken<DataResponseStation>() {}.type
-                val jObj: DataResponseStation = Gson().fromJson(response?.body(), arrayStationType)
+                val arrayStationType = object : TypeToken<DataPredictionResponseStation>() {}.type
+                val jObj: DataPredictionResponseStation = Gson().fromJson(response?.body(), arrayStationType)
                 Log.i(TAG, "L'objet : $jObj")
                 fillData(jObj)
                 lllProgressBarPerD.visibility = View.GONE
@@ -113,7 +114,7 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
     }
 
-    private fun fillData(jObj: DataResponseStation) {
+    private fun fillData(jObj: DataPredictionResponseStation) {
         val myImageString = jObj.graph
         val image1 = findViewById(R.id.image) as ImageView
         try{image1.setImageBitmap(convertString64ToImage(myImageString))}
@@ -122,11 +123,10 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
         }
         Log.i(TAG, "affichage du graphique ")
 
-        for (i in 0 until jObj.data.departureValue.size ){
+        for (i in 0 until jObj.data.predictions.size ){
 
             val time = jObj.data.time[i]
-            val departure = jObj.data.departureValue[i]
-            val arrival = jObj.data.arrivalValue[i]
+            val predictions = jObj.data.predictions[i]
 
             val tbrow = TableRow(this)
             val text0 = TextView(this)
@@ -138,7 +138,7 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
             // Set the heigth and width of the TextView
             val scale = resources.displayMetrics.density
             val myheight = (30 * scale + 0.5f).toInt()
-            val mywidth = (100 *2* scale + 0.5f).toInt()
+            val mywidth = (132 *2* scale + 0.5f).toInt()
 
             // Set the first column of the table row
 
@@ -179,7 +179,7 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
             // Set the third column of the table row
             text2.setId(i + 3)
             text2.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
-            text2.setText(departure.toString())
+            text2.setText(predictions.toString())
             text2.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
             text2.setTextSize(18F)
             text2.setTypeface(text2.getTypeface(), Typeface.BOLD);
@@ -193,27 +193,9 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
             }
             tbrow.addView(text2)
 
-            // Set the fourth column of the table row
-            text3.setId(i + 4)
-            text3.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
-            text3.setText(arrival.toString())
-            text3.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
-            text3.setTextSize(18F)
-            text3.apply {
-                layoutParams = TableRow.LayoutParams(
-                    mywidth,
-                    myheight
-                )
-                textAlignment = View.TEXT_ALIGNMENT_CENTER
-            }
-            text3.setTypeface(text3.getTypeface(), Typeface.BOLD);
-            text3.gravity = Gravity.CENTER_HORIZONTAL
-            // add the column to the tablerow
-            tbrow.addView(text3)
-
             // add the tablerow to the table Layout
 
-            table.addView(tbrow)
+            table?.addView(tbrow)
 
         }
     }

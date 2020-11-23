@@ -56,7 +56,7 @@ class HourlyStationStatisticGlobalActivity : AppCompatActivity() {
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        val call: Call<String> = service.getStationStatisticsGlobal(year, time)
+        val call: Call<String> = service.getGlobalStatistics(year, time)
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {

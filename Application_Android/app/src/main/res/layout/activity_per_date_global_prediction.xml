@@ -27,7 +27,7 @@
             android:layout_margin="5sp"
             android:layout_gravity="center_vertical"
             android:textColor="@color/colortextdata"
-            android:text="@string/PerDate_Prediction_Title"
+            android:text="@string/PerDate_Global_Prediction_Title"
             android:textSize="25sp"
             android:textStyle="bold">
         </TextView>
@@ -122,7 +122,7 @@
             android:layout_marginTop="0dp">
 
             <TableLayout
-                android:id="@+id/main_table"
+                android:id="@+id/main_table_GPPD"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="0dp"

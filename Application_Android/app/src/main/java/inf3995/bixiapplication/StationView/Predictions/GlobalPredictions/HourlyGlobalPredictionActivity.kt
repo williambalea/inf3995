@@ -2,17 +2,24 @@ package inf3995.bixiapplication.StationView.Predictions.GlobalPredictions
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
 import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
+import inf3995.bixiapplication.StationViewModel.StationLiveData.DataPredictionResponseStation
 import inf3995.bixiapplication.StationViewModel.StationLiveData.DataResponseStation
 import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
@@ -30,15 +37,17 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
     var dateStart : String? = null
     var dateEnd : String? = null
     private val TAG = "Hourly Station Prediction"
+    var table: TableLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hourly_global_prediction)
         val tempas = intent.getStringExtra("Temps")
-        val indicat = intent.getStringExtra("Indicateur")
         val annas = intent.getStringExtra("Annee")?.toInt()
         val dataStart = intent.getStringExtra("DateStart")
         val dataEnd = intent.getStringExtra("DateEnd")
+
+        table = findViewById(R.id.main_table_GPH)
 
         if (tempas != null) {
             temps = tempas
@@ -52,7 +61,7 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
         }
 
         if (dataEnd != null) {
-            dateEnd = dataStart
+            dateEnd = dataEnd
         }
 
         myImage = findViewById(R.id.image)
@@ -69,7 +78,7 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         //val call: Call<String> = service.getStationPrediction(annee, temps, code, dateStart, dateEnd)
-        val call: Call<String> = service.getStationStatisticsGlobal(annee, temps)
+        val call: Call<String> = service.getGlobalPrediction(temps, dateStart!!, dateEnd!!)
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
                 Log.i(TAG, "Réponse des predictions du Serveur: ${response?.body()}")
@@ -79,8 +88,8 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
                     "Message de reponse  des predictions du Serveur: ${response?.message()}"
                 )
 
-                val arrayStationType = object : TypeToken<DataResponseStation>() {}.type
-                val jObj: DataResponseStation = Gson().fromJson(response?.body(), arrayStationType)
+                val arrayStationType = object : TypeToken<DataPredictionResponseStation>() {}.type
+                val jObj: DataPredictionResponseStation = Gson().fromJson(response?.body(), arrayStationType)
                 Log.i(TAG, "L'objet : $jObj")
                 fillData(jObj)
                 lllProgressBarH.visibility = View.GONE
@@ -100,64 +109,88 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
     }
 
-    private fun fillData(jObj: DataResponseStation) {
+    private fun fillData(jObj: DataPredictionResponseStation) {
         val myImageString = jObj.graph
         val image1 = findViewById(R.id.image) as ImageView
-        try{image1.setImageBitmap(convertString64ToImage(myImageString))}
-        catch (e: Exception){
-            Log.e(TAG,"error")
+        try {
+            image1.setImageBitmap(convertString64ToImage(myImageString))
+        } catch (e: Exception) {
+            Log.e(TAG, "error")
         }
         //image1.setImageBitmap(convertString64ToImage(myImageString))
         Log.i(TAG, "affichage du graphique ")
 
-        text12.setText(jObj.data.departureValue[0].toString())
-        text13.setText(jObj.data.arrivalValue[0].toString())
-        text22.setText(jObj.data.departureValue[1].toString())
-        text23.setText(jObj.data.arrivalValue[1].toString())
-        text32.setText(jObj.data.departureValue[2].toString())
-        text33.setText(jObj.data.arrivalValue[2].toString())
-        text42.setText(jObj.data.departureValue[3].toString())
-        text43.setText(jObj.data.arrivalValue[3].toString())
-        text52.setText(jObj.data.departureValue[4].toString())
-        text53.setText(jObj.data.arrivalValue[4].toString())
-        text62.setText(jObj.data.departureValue[5].toString())
-        text63.setText(jObj.data.arrivalValue[5].toString())
-        text72.setText(jObj.data.departureValue[6].toString())
-        text73.setText(jObj.data.arrivalValue[6].toString())
-        text82.setText(jObj.data.departureValue[7].toString())
-        text83.setText(jObj.data.arrivalValue[7].toString())
-        text92.setText(jObj.data.departureValue[8].toString())
-        text93.setText(jObj.data.arrivalValue[8].toString())
-        text102.setText(jObj.data.departureValue[9].toString())
-        text103.setText(jObj.data.arrivalValue[9].toString())
-        text112.setText(jObj.data.departureValue[10].toString())
-        text113.setText(jObj.data.arrivalValue[10].toString())
-        text122.setText(jObj.data.departureValue[11].toString())
-        text123.setText(jObj.data.arrivalValue[11].toString())
-        text132.setText(jObj.data.departureValue[12].toString())
-        text133.setText(jObj.data.arrivalValue[12].toString())
-        text142.setText(jObj.data.departureValue[13].toString())
-        text143.setText(jObj.data.arrivalValue[13].toString())
-        text152.setText(jObj.data.departureValue[14].toString())
-        text153.setText(jObj.data.arrivalValue[14].toString())
-        text162.setText(jObj.data.departureValue[15].toString())
-        text163.setText(jObj.data.arrivalValue[15].toString())
-        text172.setText(jObj.data.departureValue[16].toString())
-        text173.setText(jObj.data.arrivalValue[16].toString())
-        text182.setText(jObj.data.departureValue[17].toString())
-        text183.setText(jObj.data.arrivalValue[17].toString())
-        text192.setText(jObj.data.departureValue[18].toString())
-        text193.setText(jObj.data.arrivalValue[18].toString())
-        text202.setText(jObj.data.departureValue[19].toString())
-        text203.setText(jObj.data.arrivalValue[19].toString())
-        text212.setText(jObj.data.departureValue[20].toString())
-        text213.setText(jObj.data.arrivalValue[20].toString())
-        text222.setText(jObj.data.departureValue[21].toString())
-        text223.setText(jObj.data.arrivalValue[21].toString())
-        text232.setText(jObj.data.departureValue[22].toString())
-        text233.setText(jObj.data.arrivalValue[22].toString())
-        text242.setText(jObj.data.departureValue[23].toString())
-        text243.setText(jObj.data.arrivalValue[23].toString())
+        for (i in 0 until jObj.data.predictions.size) {
 
+            val time = jObj.data.time[i]
+            val predictions = jObj.data.predictions[i]
+
+            val tbrow = TableRow(this)
+            val text0 = TextView(this)
+            val text1 = TextView(this)
+            val text2 = TextView(this)
+
+
+            // Set the heigth and width of the TextView
+            val scale = resources.displayMetrics.density
+            val myheight = (30 * scale + 0.5f).toInt()
+            val mywidth = (132 *2* scale + 0.5f).toInt()
+            // Set the first column of the table row
+
+            text0.setId(i + 1)
+            text0.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
+            text0.setText((i + 1).toString())
+            text0.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
+            text0.setTextSize(18F)
+            text0.setTypeface(text0.getTypeface(), Typeface.BOLD);
+            text0.gravity = Gravity.CENTER_HORIZONTAL
+            text0.apply {
+                layoutParams = TableRow.LayoutParams(
+                    mywidth,
+                    myheight
+                )
+                textAlignment = View.TEXT_ALIGNMENT_CENTER
+            }
+            // add the column to the tablerow
+            tbrow.addView(text0)
+
+            // Set the second column of the table row
+            text1.setId(i + 2)
+            text1.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
+            text1.setText(time)
+            text1.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
+            text1.setTextSize(18F)
+            text1.setTypeface(text1.getTypeface(), Typeface.BOLD);
+            text1.gravity = Gravity.CENTER_HORIZONTAL
+            text1.apply {
+                layoutParams = TableRow.LayoutParams(
+                    mywidth,
+                    myheight
+                )
+                textAlignment = View.TEXT_ALIGNMENT_CENTER
+            }
+            tbrow.addView(text1)
+
+            // Set the third column of the table row
+            text2.setId(i + 3)
+            text2.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
+            text2.setText(predictions.toString())
+            text2.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
+            text2.setTextSize(18F)
+            text2.setTypeface(text2.getTypeface(), Typeface.BOLD);
+            text2.gravity = Gravity.CENTER_HORIZONTAL
+            text2.apply {
+                layoutParams = TableRow.LayoutParams(
+                    mywidth,
+                    myheight
+                )
+                textAlignment = View.TEXT_ALIGNMENT_CENTER
+            }
+            tbrow.addView(text2)
+
+            // add the tablerow to the table Layout
+
+            table?.addView(tbrow)
+        }
     }
 }

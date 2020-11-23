@@ -75,7 +75,7 @@ class DailyPredictionErrorsActivity : AppCompatActivity() {
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         //val call: Call<String> = getStationErrors(annee, temps)
-        val call: Call<String> = service.getStationStatisticsGlobal(annee, temps)
+        val call: Call<String> = service.getGlobalStatistics(annee, temps)
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
