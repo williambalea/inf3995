@@ -12,6 +12,8 @@ import datetime
 
 class Engine3:
 
+    prediction_errors = []
+
     PREDICTION_DF_PATH = "./all_pred6.pkl"
     RF_MODEL_PATH = "./finalized_model.sav"
     CSV_PATH_TEMPERATURE = '../kaggleData/historical-hourly-weather-data/temperature.csv'
@@ -179,6 +181,7 @@ class Engine3:
         print('prediction: ', predictions)
         # Calculate the absolute errors
         errors = abs(predictions - test_labels)
+        self.prediction_errors.append(errors)
         # Print out the mean absolute error (mae)
         print('Prediction:')
         print(predictions)
@@ -400,3 +403,42 @@ class Engine3:
         # print('Label used: ', flush=True)
         # print(y, flush=True)
         return json.dumps(o)
+
+    def generate_error_json(self):
+        print('loading prediction')
+        pred_df = self.load_prediction_df()
+        temp_df = self.groupby_filter(pred_df, 'perDate')
+
+        print('pred_df:')
+        print(pred_df)
+        errors = temp_df['predictions'].values - temp_df['test_labels'].values
+
+        xAxisDate = []
+        for i in range(len(temp_df.index.values)):
+                xAxisDate.append(str(temp_df.index.values[i][0]) + "-" + str(temp_df.index.values[i][1]))
+                xAxis = pd.Series(xAxisDate)
+        
+        print('xAxis (date): ')
+        print(len(xAxis))
+        print(xAxis)
+
+        print('Yaxis (errors): ')
+        print(len(errors))
+        print(errors)
+        
+
+        barWidth = 0.25
+        plt.clf()
+        plt.plot(xAxis, errors, color='#D52B1E',  label='Predictions')
+        # Add xticks on the middle of the group bars
+        ('adding xticks')
+        plt.xlabel('GroupBy')
+        plt.ylabel('Predictions')
+        # plt.xaxis.set_minor_locator(MultipleLocator(5))
+        # Create legend & Show graphic
+        plt.legend()
+        plt.savefig('bar3.png')
+        # plt.show()
+        print('graph generated', flush=True)
+        plt.show()
+        return "Jaha!"

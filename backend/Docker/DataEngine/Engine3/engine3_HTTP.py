@@ -23,7 +23,6 @@ def predictionUsage(station, groupby, startDate,endDate):
     filtered_pred_df = engine3.filter_prediction(predictions_df, station, groupby, startDate, endDate)
     print('filtered_pred_df: ', filtered_pred_df)
 
-    print('44444444444444444444444444444444444444444444444444444444444444444444444444')
     print(filtered_pred_df)
     x = engine3.get_graph_X(filtered_pred_df, groupby)
     print('x: ', x)
@@ -32,6 +31,7 @@ def predictionUsage(station, groupby, startDate,endDate):
     pred_graph = engine3.get_prediction_graph( groupby, x, y)
     return engine3.datatoJSON(pred_graph, x, y)
 
-@app.rout('/engine3/prediction/error')
+@app.route('/engine3/prediction/error')
 def predictionError():
-    return 'Not done yet'
+    error_json = engine3.generate_error_json()
+    return error_json
