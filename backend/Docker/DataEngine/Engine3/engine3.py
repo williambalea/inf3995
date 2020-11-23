@@ -1,6 +1,7 @@
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt2
 import numpy as np
 import seaborn as sns
 import base64
@@ -16,6 +17,7 @@ class Engine3:
 
     PREDICTION_DF_PATH = "./all_pred6.pkl"
     RF_MODEL_PATH = "./finalized_model.sav"
+    ERROR_JSON_PATH = './error_data_and_graph.json'
     CSV_PATH_TEMPERATURE = '../kaggleData/historical-hourly-weather-data/temperature.csv'
     CSV_PATH_WEATHER_DESC = '../kaggleData/historical-hourly-weather-data/weather_description.csv'
     CSV_PATH_WINDSPEED = '../kaggleData/historical-hourly-weather-data/wind_speed.csv'
@@ -404,19 +406,59 @@ class Engine3:
         # print(y, flush=True)
         return json.dumps(o)
 
+
+    def load_error_json(self):#load dataframe from file or generate it if desn't exist
+        my_file = Path(self.ERROR_JSON_PATH)
+        # if my_file.is_file():
+        #     print('loading error json')
+        #     # load the pred_df from disk
+        #     with open(my_file, 'r') as f:
+        #         data = json.load(f)
+        # else:
+        #     # Writing a JSON file
+        #     data = self.generate_error_json()
+        #     with open(my_file, 'w') as f:
+        #         json.dump(data, f)
+        
+        if my_file.is_file():
+            print('loading json error...')
+            # load the model from disk
+            json_error = pickle.load(open(my_file, 'rb'))
+        else:
+            json_error = self.generate_error_json()
+            print('saving model')
+            # save the model to disk
+            pickle.dump(json_error, open(my_file, 'wb'))
+        return json_error
+
     def generate_error_json(self):
         print('loading prediction')
-        pred_df = self.load_prediction_df()
-        temp_df = self.groupby_filter(pred_df, 'perDate')
-
-        print('pred_df:')
-        print(pred_df)
+        # pred_df = self.load_prediction_df()
+        # temp_df = self.groupby_filter(pred_df, 'perDate')
+        temp_df = self.load_prediction_df()
+        temp_df = temp_df.groupby(['month', 'day', 'hour']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+     
+        print('temp_df:')
+        print(temp_df)
         errors = temp_df['predictions'].values - temp_df['test_labels'].values
+
+        # print('dataframe lenght: ')
+        # print(len(temp_df['predictions']))
 
         xAxisDate = []
         for i in range(len(temp_df.index.values)):
-                xAxisDate.append(str(temp_df.index.values[i][0]) + "-" + str(temp_df.index.values[i][1]))
-                xAxis = pd.Series(xAxisDate)
+            xAxisDate.append( str(temp_df.index.values[i][0])
+                            + "-" 
+                            + str(temp_df.index.values[i][1]) 
+                            + ' ' 
+                            + str(temp_df.index.values[i][2])
+                            + 'h')
+            xAxis = pd.Series(xAxisDate)
+        # for i in range(len(temp_df['predictions'])):
+        #         print(i)
+        #         xAxisDate.append(str(temp_df.at[i, 'month']) + "-" + str(temp_df.at[i, 'day']))
+        
+        xAxis = pd.Series(xAxisDate)
         
         print('xAxis (date): ')
         print(len(xAxis))
@@ -428,17 +470,19 @@ class Engine3:
         
 
         barWidth = 0.25
-        plt.clf()
-        plt.plot(xAxis, errors, color='#D52B1E',  label='Predictions')
+        plt2.clf()
+        plt2.plot(xAxis, errors, color='#D52B1E',  label='Predictions')
         # Add xticks on the middle of the group bars
         ('adding xticks')
-        plt.xlabel('GroupBy')
-        plt.ylabel('Predictions')
+        plt2.xlabel('GroupBy')
+        plt2.ylabel('Predictions')
         # plt.xaxis.set_minor_locator(MultipleLocator(5))
         # Create legend & Show graphic
-        plt.legend()
-        plt.savefig('bar3.png')
+        plt2.legend()
+        plt2.savefig('bar4.png')
         # plt.show()
         print('graph generated', flush=True)
-        plt.show()
-        return "Jaha!"
+        # plt.show()
+        print('getting finaljson')
+        finalJson = self.datatoJSON(plt2, xAxis, errors)
+        return finalJson

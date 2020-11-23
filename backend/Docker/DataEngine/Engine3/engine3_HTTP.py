@@ -33,5 +33,5 @@ def predictionUsage(station, groupby, startDate,endDate):
 
 @app.route('/engine3/prediction/error')
 def predictionError():
-    error_json = engine3.generate_error_json()
+    error_json = engine3.load_error_json()
     return error_json
