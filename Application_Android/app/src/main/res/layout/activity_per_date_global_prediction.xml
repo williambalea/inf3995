@@ -8,10 +8,7 @@
     android:orientation="vertical"
     tools:context="inf3995.bixiapplication.StationView.Predictions.StationPredictions.PerDateStationPredictionActivity">
 
-    <include
-        android:id="@+id/lllProgressBarPerD"
-        android:visibility="visible"
-        layout="@layout/progress_bar"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -99,18 +96,6 @@
                 android:gravity="center_horizontal"
                 android:layout_weight="0.5"
                 android:text="@string/departure"
-                android:textColor="#ffff"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tex83"
-                android:layout_width="130dp"
-                android:layout_height="30dp"
-                android:textSize="20sp"
-                android:textAlignment="center"
-                android:gravity="center_horizontal"
-                android:layout_weight="0.5"
-                android:text="@string/arrival"
                 android:textColor="#ffff"
                 android:textStyle="bold" />
         </LinearLayout>
