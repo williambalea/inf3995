@@ -1,6 +1,7 @@
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt2
 import numpy as np
 import seaborn as sns
 import base64
@@ -12,9 +13,18 @@ import datetime
 
 class Engine3:
 
-    # csv_file_list = ["../kaggleData/OD_2014.csv","../kaggleData/OD_2015.csv", "../kaggleData/OD_2016.csv"]
+    prediction_errors = []
 
-    csv_file_list = ["./kaggleData/OD_2015.csv", "./kaggleData/OD_2016.csv"]
+    PREDICTION_DF_PATH = "./tempFiles/prediction_df.pkl"
+    RF_MODEL_PATH = "./tempFiles/rf_model.sav"
+    CSV_PATH_TEMPERATURE = './kaggleData/historical-hourly-weather-data/temperature.csv'
+    CSV_PATH_WEATHER_DESC = './kaggleData/historical-hourly-weather-data/weather_description.csv'
+    CSV_PATH_WINDSPEED = './kaggleData/historical-hourly-weather-data/wind_speed.csv'
+    PRED_GRAPH_PATH = './tempFiles/predGraph.png'
+    ERROR_JSON_PATH = './tempFiles/error_data_and_graph.json'
+    ERROR_GRAPH_PATH = './tempFiles/errorGraph2.png'
+    RF_N_ESTIMATORS = 15
+    RF_RANDOM_STATE = 42
 
     def __init__(self):
         return None 
@@ -31,9 +41,9 @@ class Engine3:
 
     def get_weather_df(self):
         print('importing weather data')
-        weather_description = pd.read_csv('./kaggleData/historical-hourly-weather-data/weather_description.csv', low_memory=False)
-        temperature = pd.read_csv('./kaggleData/historical-hourly-weather-data/temperature.csv', low_memory=False, dtype={'Montreal':np.float32})
-        wind_speed = pd.read_csv('./kaggleData/historical-hourly-weather-data/wind_speed.csv', low_memory=False, dtype={'Montreal':np.float32})
+        weather_description = pd.read_csv(self.CSV_PATH_WEATHER_DESC, low_memory=False)
+        temperature = pd.read_csv(self.CSV_PATH_TEMPERATURE, low_memory=False, dtype={'Montreal':np.float32})
+        wind_speed = pd.read_csv(self.CSV_PATH_WINDSPEED, low_memory=False, dtype={'Montreal':np.float32})
 
         print(weather_description.shape)
         print('filter only montreal')
@@ -49,11 +59,7 @@ class Engine3:
         weather = weather.drop( ['Temperature'], axis=1)
 
         weather['Datetime'] = pd.to_datetime(weather['Datetime'])
-        print('here -----------------------------')
-        print(weather.head())
 
-
-        # weather['Temparature'] = weather['Temperature_C'].astype(int)
         weather = weather.sort_values(by = ['Datetime'])
 
         print('Weather_df done')
@@ -95,7 +101,6 @@ class Engine3:
         weather = self.get_weather_df()
         return self.prep_df_for_rf(bixi2017, weather)
 
-  
 
     def prep_df_for_rf(self, bixi_df, weather_df):
         print('merging bixi and weather')
@@ -137,8 +142,6 @@ class Engine3:
         #one-hot encoding weather description
         df_grouped = pd.get_dummies(df_grouped)
 
-        # df['year'] = df['year'].astype(np.int32)
-        print('testing 2 df col: ', df_grouped.dtypes)
 
         return df_grouped
 
@@ -174,12 +177,15 @@ class Engine3:
         #get Random forest model        
         loaded_rf = self.get_random_forest_model(train_labels, train_features)
 
-
+        
         # Use the forest's predict method on the test data
         print('prediction...')
+        print(test_features)
         predictions = loaded_rf.predict(test_features)
+        print('prediction: ', predictions)
         # Calculate the absolute errors
         errors = abs(predictions - test_labels)
+        self.prediction_errors.append(errors)
         # Print out the mean absolute error (mae)
         print('Prediction:')
         print(predictions)
@@ -202,15 +208,18 @@ class Engine3:
 
         return test_features
 
+
+    ### ##Loading or making Prediction and RandomFor Model
     def get_random_forest_model(self, train_l, train_f):
-        my_file = Path("./finalized_model.sav")
+        my_file = Path(self.RF_MODEL_PATH)
         if my_file.is_file():
-            print('loading model')
+            print('loading model...')
             # load the model from disk
             loaded_rf = pickle.load(open(my_file, 'rb'))
+            print('loading model DONE')
         else:
             #instantiate model with 1000 decision trees
-            loaded_rf = RandomForestRegressor(n_estimators = 15, random_state = 42, n_jobs=-1)
+            loaded_rf = RandomForestRegressor(n_estimators = self.RF_N_ESTIMATORS, random_state = self.RF_RANDOM_STATE, n_jobs=-1)
             print('Fit calculating...')
             loaded_rf.fit(train_f, train_l)
             print('Fit DONE')
@@ -222,7 +231,7 @@ class Engine3:
         return loaded_rf
 
     def load_prediction_df(self):#load dataframe from file or generate it if desn't exist
-        my_file = Path("./all_pred.pkl")
+        my_file = Path(self.PREDICTION_DF_PATH)
         if my_file.is_file():
             print('loading Pred_df')
             # load the pred_df from disk
@@ -235,22 +244,19 @@ class Engine3:
             df.to_pickle(my_file)
         return df
         
-
+    ##### Prediction Dataframe Filters
     def filter_prediction(self, df,  station, groupby, startDate, endDate):
         print('filtering...')
-        print(df)
         #Filter station
         print('station filter')
         if str(station) != 'all':
-            print('alllllllllllllooooooooooooooooo245')
-            print(type(station))
-            print(df)
             df = df[df.start_station_code == int(station)].copy()
-            print('alllllllllllllooooooooooooooooo248')
-            print(df)
-        #Filter Period
+        elif str(station) == 'all':
+            print('TODO')
+            #groupby jusqua l<heure
+            #Filter Period
 
-        print(df)
+
         print('period filter')
         df = self.period_filter(df, startDate, endDate)
         #Filter groupby
@@ -258,8 +264,68 @@ class Engine3:
         df = self.groupby_filter(df, groupby)
 
         print('filtering DONE')
-        return df.copy()
+        return df
 
+
+    def period_filter(self, df, startDate, endDate):
+        print('period filtering...')
+        startDateObj = datetime.datetime.strptime(startDate, '%d-%m-%Y')
+        endDateObj = datetime.datetime.strptime(endDate, '%d-%m-%Y')
+
+        minDate = datetime.datetime(2017, 4, 15)
+        maxDate = datetime.datetime(2017, 9, 30)
+        if startDateObj < minDate:
+            startDateObj = minDate
+        if endDateObj > maxDate:
+            endDateObj = maxDate
+
+        startYear = startDateObj.year
+        startMonth = startDateObj.month
+        startDay = startDateObj.day
+        endYear = endDateObj.year
+        endMonth = endDateObj.month
+        endDay = endDateObj.day
+
+        # Get names of indexes for which column Age has value 30
+        indexNames = df[ df['month'] < startMonth ].index
+        print(indexNames)
+        df.drop(indexNames , inplace=True)
+        # print('indexNames: ', indexNames)
+        indexNames = (df[ (df['month'] == startMonth) & (df['day'] < startDay)].index)
+        df.drop(indexNames , inplace=True)
+        indexNames = df[ df['month'] > endMonth ].index
+        df.drop(indexNames , inplace=True)
+        # print('indexNames: ', indexNames)
+        indexNames = (df[ (df['month'] == endMonth) & (df['day'] > endDay)].index)
+        df.drop(indexNames , inplace=True)
+
+        print('period filtering DONE')
+        return df
+
+    def groupby_filter(self, df, groupby):
+        print('groupby filtering...')
+        #filter groupby
+        if(groupby == "perHour"):
+            print('filtering perHour')
+            df = df.groupby(['hour']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+
+        elif(groupby == "perWeekDay"):
+            print('filtering perWeekDay')
+            df = df.groupby(['weekday']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+
+        elif(groupby == "perMonth"):
+            print('filtering perMonth')
+            df = df.groupby(['month']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+
+        elif(groupby == "perDate"):
+            print('filtering perDate')
+            df = df.groupby(['month', 'day']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+            
+        print('groupby filtering DONE')
+        return df
+
+
+    #####Graph generation and convertion for HTTP to Android
     def get_prediction_graph(self, groupby, x, y):
         
         print('x: ', x)
@@ -278,7 +344,7 @@ class Engine3:
             # plt.xaxis.set_minor_locator(MultipleLocator(5))
             # Create legend & Show graphic
             plt.legend()
-            plt.savefig('bar3.png')
+            plt.savefig(self.PRED_GRAPH_PATH)
             # plt.show()
             print('graph generated', flush=True)
             # plt.show()
@@ -293,7 +359,7 @@ class Engine3:
             plt.tight_layout()
             # Create legend & Show graphic
             plt.legend()
-            plt.savefig('bar3.png')
+            plt.savefig(self.PRED_GRAPH_PATH)
             # plt.show()
             print('graph generated', flush=True)
             # plt.show()
@@ -301,6 +367,7 @@ class Engine3:
         return plt
     
     def get_graph_X(self, df, groupby):
+        print('getting Xaxis data')
         xAxisDate = []
         if groupby == "perDate":
             for i in range(len(df.index.values)):
@@ -309,102 +376,26 @@ class Engine3:
         else:
             xAxis = df.index.values
         
-        print('getting X~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-        print(xAxis)
         return xAxis
 
     def get_graph_Y(self, df):
-        print('getting Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        print('getting Yaxis data')
         yAxis = df['predictions'].values
-        print(yAxis)
-        print(yAxis.shape)
         return yAxis
 
 
-    def period_filter(self, df, startDate, endDate):
-        print('allooooooooooooooooooooooooooooooo0')
-        print(df)
-        print('allooooooooooooooooooooooooooooooo1')
-        startDateObj = datetime.datetime.strptime(startDate, '%d-%m-%Y')
-        endDateObj = datetime.datetime.strptime(endDate, '%d-%m-%Y')
-
-        print('allooooooooooooooooooooooooooooooo2')
-        minDate = datetime.datetime(2017, 4, 15)
-        maxDate = datetime.datetime(2017, 9, 30)
-        if startDateObj < minDate:
-            startDateObj = minDate
-        if endDateObj > maxDate:
-            endDateObj = maxDate
-
-        print('allooooooooooooooooooooooooooooooo3')
-        # startYear = startDateObj.year
-        startMonth = startDateObj.month
-        startDay = startDateObj.day
-        # endYear = endDateObj.year
-        endMonth = endDateObj.month
-        endDay = endDateObj.day
-
-        print('allooooooooooooooooooooooooooooooo4')
-        # Get names of indexes for which column Age has value 30
-        indexNames = df[ df['month'] < startMonth ].index
-        print('allooooooooooooooooooooooooooooooo4.2')
-        print(indexNames)
-        df.drop(indexNames , inplace=True)
-
-        print('allooooooooooooooooooooooooooooooo5')
-        # print('indexNames: ', indexNames)
-        indexNames = (df[ (df['month'] == startMonth) & (df['day'] < startDay)].index)
-        df.drop(indexNames , inplace=True)
-
-        print('allooooooooooooooooooooooooooooooo6')
-        indexNames = df[ df['month'] > endMonth ].index
-        df.drop(indexNames , inplace=True)
-        # print('indexNames: ', indexNames)
-
-        print('allooooooooooooooooooooooooooooooo7')
-        indexNames = (df[ (df['month'] == endMonth) & (df['day'] > endDay)].index)
-        df.drop(indexNames , inplace=True)
-
-        print('allooooooooooooooooooooooooooooooo8')
-        return df
-
-    def groupby_filter(self, df, groupby):
-        
-        #filter groupby
-        if(groupby == "perHour"):
-            print('filtering perHour')
-            df = df.groupby(['hour']).agg({'predictions': 'sum', 'test_labels': 'sum'})
-
-        elif(groupby == "perWeekDay"):
-            print('filtering perWeekDay')
-            df = df.groupby(['weekday']).agg({'predictions': 'sum', 'test_labels': 'sum'})
-
-        elif(groupby == "perMonth"):
-            print('filtering perMonth')
-            df = df.groupby(['month']).agg({'predictions': 'sum', 'test_labels': 'sum'})
-
-        elif(groupby == "perDate"):
-            print('filtering perDate')
-            df = df.groupby(['month', 'day']).agg({'predictions': 'sum', 'test_labels': 'sum'})
-            
-        return df.copy()
-
     def toBase64(self):
         print('toBase64()', flush=True)
-        with open("bar3.png", "rb") as imageFile:
+        with open(self.PRED_GRAPH_PATH, "rb") as imageFile:
             strg = base64.b64encode(imageFile.read()).decode('utf-8')
             while strg[-1] == '=':
-                strg = strg[:-1]
-                
+                strg = strg[:-1]           
             # print(strg)
-
         return strg
 
     def datatoJSON(self, graph, x, y):
         print('datatoJSON()', flush=True)
-        
         graphString = self.toBase64()
-        
 
         myJson =  '{  "data":{ "time":[], "predictions":[] }, "graph":[] }'
 
@@ -413,4 +404,6 @@ class Engine3:
         o["data"]["predictions"] = y.tolist()
         o["graph"] = graphString
         
+        # print('Label used: ', flush=True)
+        # print(y, flush=True)
         return json.dumps(o)
