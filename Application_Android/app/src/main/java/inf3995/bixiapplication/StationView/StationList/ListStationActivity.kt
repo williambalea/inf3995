@@ -51,15 +51,13 @@ class ListStationActivity : AppCompatActivity(){
         MainScreenActivity.listen.observe(this, Observer {
 
             if(it[0] == "DOWN"){
-                Toast.makeText(
-                    this,
-                    "Engine Problem!",
-                    Toast.LENGTH_LONG
-                ).show()
-
-                val intent = Intent(this, MainScreenActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                startActivity(intent)
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 1")
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                    startActivity(intent)
+                }
             }
 
         })
