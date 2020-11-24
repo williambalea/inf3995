@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
@@ -95,15 +96,13 @@ class StationStatisticsActivity : AppCompatActivity() {
         MainScreenActivity.listen.observe(this, Observer {
 
             if(it[1] == "DOWN"){
-                Toast.makeText(
-                    this,
-                    "Engine Problem!",
-                    Toast.LENGTH_LONG
-                ).show()
-
-                val intent = Intent(this, MainScreenActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                startActivity(intent)
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 2")
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                    startActivity(intent)
+                }
             }
 
         })
