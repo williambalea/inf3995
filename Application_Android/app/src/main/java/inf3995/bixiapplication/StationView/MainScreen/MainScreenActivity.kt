@@ -133,7 +133,7 @@ class MainScreenActivity : AppCompatActivity() {
         engineProblemNotification.repeatMode = ValueAnimator.REVERSE
 
         Observable.interval(
-            1, 10,
+            0, 10,
             TimeUnit.SECONDS
         )
             .observeOn(Schedulers.io())
@@ -149,10 +149,7 @@ class MainScreenActivity : AppCompatActivity() {
 
                 call4.enqueue(object : Callback<String> {
                     override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                        Log.i(
-                            TAG,
-                            "Réponse Connectivity: ${response?.errorBody()} ${response?.code()}"
-                        )
+
                         val connectivityStatus = object : TypeToken<ConnectivityData>() {}.type
 
                         jObj = if (response?.isSuccessful!!) Gson().fromJson(
@@ -163,8 +160,12 @@ class MainScreenActivity : AppCompatActivity() {
                             connectivityStatus
                         )
 
+                        Log.i(
+                            TAG,
+                            "Réponse Connectivity: ${jObj.message} ${response.code()}"
+                        )
+
                         listen.value = jObj.message.split(" ").toTypedArray()
-                        //listen.value = jObj.message.split(" ").toTypedArray()
 
                         if (listen.value!![0] == "UP" && listen.value!![1] == "UP" && listen.value!![2] == "UP") {
                             engineProblemNotification.cancel()
@@ -194,4 +195,5 @@ class MainScreenActivity : AppCompatActivity() {
         button3.isEnabled = engineStatus[2] != "DOWN"
         button4.isEnabled = engineStatus[2] != "DOWN"
     }
+
 }

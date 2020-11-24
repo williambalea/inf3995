@@ -47,7 +47,8 @@
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.MonthlyStationStatisticGlobalActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.StationStatistics.StationStatisticsActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Predictions.GlobalPredictions.GlobalPredictionsActivity" />
-        <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.GlobalStatisticsActivity" />
+        <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.GlobalStatisticsActivity"
+                  android:launchMode="singleTask"/>
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.StationStatistics.DailyStationStatisticActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.DailyStationStatisticGlobalActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.StationStatistics.HourlyStationStatisticActivity" />
