@@ -11,7 +11,11 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import inf3995.bixiapplication.Data.ConnectivityData
@@ -24,6 +28,7 @@ import inf3995.bixiapplication.StationView.StationList.ListStationActivity
 import inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.GlobalStatisticsActivity
 import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
+import kotlinx.android.synthetic.main.activity_main_screen.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,10 +40,18 @@ import java.util.concurrent.TimeUnit
 
 class MainScreenActivity : AppCompatActivity() {
 
+    companion object {
+        var isInFront :Boolean = true
+        //var `listen.value` :Array<String>? = null
+        var listen : MutableLiveData<Array<String>> =  MutableLiveData<Array<String>>()
+    }
+
     private lateinit var btn1: Button
     private lateinit var btn2: Button
     private lateinit var btn3: Button
     private lateinit var btn4: Button
+    private lateinit var btn5: Button
+    private lateinit var btn6: Button
     private lateinit var jObj: ConnectivityData
     val dialog1 = IpAddressDialog()
     val dialog2 = EngineConnectivityStatusDialog()
@@ -52,6 +65,7 @@ class MainScreenActivity : AppCompatActivity() {
         btn2 = findViewById(R.id.button2)
         btn3 = findViewById(R.id.button3)
         btn4 = findViewById(R.id.button4)
+
 
         btn1.setOnClickListener{
             val intent = Intent(this, ListStationActivity::class.java)
@@ -73,6 +87,15 @@ class MainScreenActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+    }
+    override fun onResume() {
+        super.onResume()
+        isInFront = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isInFront = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -110,7 +133,7 @@ class MainScreenActivity : AppCompatActivity() {
         engineProblemNotification.repeatMode = ValueAnimator.REVERSE
 
         Observable.interval(
-            1, 10,
+            0, 10,
             TimeUnit.SECONDS
         )
             .observeOn(Schedulers.io())
@@ -126,33 +149,51 @@ class MainScreenActivity : AppCompatActivity() {
 
                 call4.enqueue(object : Callback<String> {
                     override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                        Log.i(TAG, "Réponse Connectivity: ${response?.errorBody()} ${response?.code()}"
-                        )
+
                         val connectivityStatus = object : TypeToken<ConnectivityData>() {}.type
 
-                        jObj = if(response?.isSuccessful!!) Gson().fromJson(response.body(), connectivityStatus)  else Gson().fromJson(response.errorBody()?.charStream(), connectivityStatus)
+                        jObj = if (response?.isSuccessful!!) Gson().fromJson(
+                            response.body(),
+                            connectivityStatus
+                        ) else Gson().fromJson(
+                            response.errorBody()?.charStream(),
+                            connectivityStatus
+                        )
 
-                        val connectivity = jObj.message.split(" ").toTypedArray()
+                        Log.i(
+                            TAG,
+                            "Réponse Connectivity: ${jObj.message} ${response.code()}"
+                        )
 
-                        if (connectivity[0] == "UP" && connectivity[1] == "UP" && connectivity[2] == "UP") {
+                        listen.value = jObj.message.split(" ").toTypedArray()
+
+                        if (listen.value!![0] == "UP" && listen.value!![1] == "UP" && listen.value!![2] == "UP") {
+                            engineProblemNotification.cancel()
                             item?.setTint(Color.argb(255, 0, 255, 0))
                         } else {
                             engineProblemNotification.start()
                         }
-                        EngineConnectivityStatusDialog.status1 = connectivity[0]
-                        EngineConnectivityStatusDialog.status2 = connectivity[1]
-                        EngineConnectivityStatusDialog.status3 = connectivity[2]
-
+                        buttonStatus(listen.value!!)
+                        EngineConnectivityStatusDialog.status1 = listen.value!![0]
+                        EngineConnectivityStatusDialog.status2 = listen.value!![1]
+                        EngineConnectivityStatusDialog.status3 = listen.value!![2]
                     }
 
                     override fun onFailure(call: Call<String>?, t: Throwable) {
-                        Log.i(TAG, "Error when getting message from server!    cause: ${t.cause}     message: ${t.message}"
+                        Log.i(
+                            TAG,
+                            "Error when getting message from server!    cause: ${t.cause}     message: ${t.message}"
                         )
                     }
                 })
             }
+    }
 
-
+    private fun buttonStatus(engineStatus: Array<String>){
+        button1.isEnabled = engineStatus[0] != "DOWN"
+        button2.isEnabled = engineStatus[1] != "DOWN"
+        button3.isEnabled = engineStatus[2] != "DOWN"
+        button4.isEnabled = engineStatus[2] != "DOWN"
     }
 
 }

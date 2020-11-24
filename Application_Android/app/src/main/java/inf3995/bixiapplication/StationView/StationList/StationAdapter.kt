@@ -5,20 +5,18 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.PopupMenu
+import android.widget.*
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.recyclerview.widget.RecyclerView
+import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
 import inf3995.bixiapplication.StationView.Predictions.StationPredictions.StationPredictionsActivity
 import inf3995.bixiapplication.StationView.Statistics.StationStatistics.StationStatisticsActivity
 import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.station_items.view.*
-import kotlinx.android.synthetic.main.station_items_with_button.view.*
 import kotlinx.android.synthetic.main.station_items_with_button.view.code
-import kotlinx.android.synthetic.main.station_items_with_button.view.imageView
 import kotlinx.android.synthetic.main.station_items_with_button.view.name
+
 
 class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHolder>(), //var clickedItem: ClickedItem
     Filterable {
@@ -27,29 +25,24 @@ class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHol
     lateinit var context: Context
 
 
-     fun setData(stationList:ArrayList<Station>, context: Context){
+     fun setData(stationList: ArrayList<Station>, context: Context){
         this.stationList = stationList
         this.stationListFilter = stationList
         this.context = context
         notifyDataSetChanged()
     }
 
-     class StationAdapterViewHolder(itemView:View):RecyclerView.ViewHolder(itemView) {
+     class StationAdapterViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
 
-        var imageView = itemView.imageView
-        var name = itemView.name
-        var code = itemView.code
+        var name: TextView = itemView.name
+        var code: TextView = itemView.code
 
-         var dataButton = itemView.data_button
-         var statisticButton = itemView.statistics_button
-         var predictionButton = itemView.prediction_button
-         var coordinatesButton = itemView.coordinates_button
-         var dropDownMenu = itemView.dropDownMenu
+         var dropDownMenu: ImageButton = itemView.dropDownMenu
      }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StationAdapterViewHolder {
         return StationAdapterViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.station_items,parent,false)
+            LayoutInflater.from(parent.context).inflate(R.layout.station_items, parent, false)
         )
     }
 
@@ -58,26 +51,53 @@ class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHol
         holder.name.text = station.name
         holder.code.text = station.code.toString()
 
+
+
+
         holder.dropDownMenu.setOnClickListener{
             //var popupMenu = PopupMenu(this.context,holder.dropDownMenu)
             val wrapper = ContextThemeWrapper(this.context, R.style.BasePopupMenu)
-            val popupMenu = android.widget.PopupMenu(wrapper, holder.dropDownMenu)
+            val popupMenu = PopupMenu(wrapper, holder.dropDownMenu)
 
-            popupMenu.menuInflater.inflate(R.menu.popup_menu,popupMenu.menu)
+            popupMenu.menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
+            if(MainScreenActivity.listen.value?.get(1) == "DOWN") {
+                //popupMenu.menu.getItem(1).isEnabled = false
+                popupMenu.menu.getItem(1).isVisible = false
+            }
+
+            if(MainScreenActivity.listen.value?.get(2) == "DOWN") {
+                //popupMenu.menu.getItem(2).isEnabled = false
+                popupMenu.menu.getItem(2).isVisible = false
+            }
+
             popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
-                when(item.itemId) {
+                when (item.itemId) {
                     R.id.action_popup_details ->
-                        context.startActivity(Intent(context, StationCoordinatesActivity::class.java).putExtra("data", station))
+                        context.startActivity(
+                            Intent(
+                                context,
+                                StationCoordinatesActivity::class.java
+                            ).putExtra("data", station)
+                        )
                     R.id.action_popup_statistics ->
-                        context.startActivity(Intent(context, StationStatisticsActivity::class.java).putExtra("data", station))
+                        context.startActivity(
+                            Intent(context, StationStatisticsActivity::class.java).putExtra(
+                                "data",
+                                station
+                            )
+                        )
                     R.id.action_popup_predictions ->
-                        context.startActivity(Intent(context, StationPredictionsActivity::class.java).putExtra("data", station))
+                        context.startActivity(
+                            Intent(
+                                context,
+                                StationPredictionsActivity::class.java
+                            ).putExtra("data", station)
+                        )
                 }
                 true
             })
             popupMenu.show()
         }
-
     }
 
 
@@ -99,7 +119,9 @@ class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHol
                     var itemModalTemp = ArrayList<Station>()
 
                     for (item in stationListFilter!!) {
-                        if ( item.name.toLowerCase().contains(searchChr) || item.name.toLowerCase().startsWith(searchChr) || item.code.toString().contains(searchChr)) {
+                        if ( item.name.toLowerCase().contains(searchChr) || item.name.toLowerCase().startsWith(
+                                searchChr
+                            ) || item.code.toString().contains(searchChr)) {
                             itemModalTemp.add(item)
                         }
                     }

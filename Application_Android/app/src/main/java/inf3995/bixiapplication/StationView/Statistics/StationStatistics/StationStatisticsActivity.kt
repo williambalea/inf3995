@@ -4,7 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
 import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
@@ -85,6 +88,24 @@ class StationStatisticsActivity : AppCompatActivity() {
                 }
             }
         }
+
+    }
+    override fun onResume() {
+        super.onResume()
+
+        MainScreenActivity.listen.observe(this, Observer {
+
+            if(it[1] == "DOWN"){
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 2")
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                    startActivity(intent)
+                }
+            }
+
+        })
 
     }
 

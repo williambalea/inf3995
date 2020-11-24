@@ -24,7 +24,7 @@ interface WebBixiService {
     fun getStationStatistics(@Path("year") year:Int, @Path("time") time:String, @Path("station") station: Int): Call<String>
 
     @GET("/engine2/data/usage/{year}/{time}/all")
-    fun getStationStatisticsGlobal(@Path("year") year:Int, @Path("time") time:String): Call<String>
+    fun getGlobalStatistics(@Path("year") year:Int, @Path("time") time:String): Call<String>
 
     @PUT("/server/survey")
     fun sendServerSurveyData(@Body survey: String):Call<String>
@@ -34,6 +34,9 @@ interface WebBixiService {
     //@GET("/engine3/prediction/usage/{groupBy}/{station}/dateStart/dateEnd")
     @GET("/engine3/prediction/usage/{station}/{groupby}/{startDate}/{endDate}")
     fun getStationPrediction(@Path("station") station: Int, @Path("groupby") groupby:String,  @Path ("startDate") startDate: String, @Path ("endDate") endDate: String): Call<String>
+
+    @GET("/engine3/prediction/usage/all/{groupby}/{startDate}/{endDate}")
+    fun getGlobalPrediction(@Path("groupby") groupby:String,  @Path ("startDate") startDate: String, @Path ("endDate") endDate: String): Call<String>
 
     //@GET("/engine3/prediction/usage/{year}/{time}/{station}/dateStart/dateEnd")
    // fun getStationPrediction(@Path("year") year:Int, @Path("time") time:String, @Path("station") station: Int, @Path ("dateStart") dateStart: String, @Path ("dateEnd") dateEnd: String): Call<String>
