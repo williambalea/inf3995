@@ -3,7 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.pyplot as plt2
 import numpy as np
-import seaborn as sns
 import base64
 from sklearn.ensemble import RandomForestRegressor
 import scipy as sps
@@ -18,7 +17,10 @@ class Engine3:
     PREDICTION_DF_PATH = "./tempFiles/prediction_df.pkl"
     RF_MODEL_PATH = "./tempFiles/rf_model.sav"
     CSV_PATH_TEMPERATURE = '../kaggleData/historical-hourly-weather-data/temperature.csv'
+    
+    print('wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww')
     CSV_PATH_WEATHER_DESC = '../kaggleData/historical-hourly-weather-data/weather_description.csv'
+    print('wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww')
     CSV_PATH_WINDSPEED = '../kaggleData/historical-hourly-weather-data/wind_speed.csv'
     PRED_GRAPH_PATH = './tempFiles/predGraph.png'
     ERROR_JSON_PATH = './tempFiles/error_data_and_graph.json'
@@ -99,6 +101,11 @@ class Engine3:
         print('fetching csv data')
         bixi2017 = self.get_bixi_data_year(2017)
         weather = self.get_weather_df()
+
+        #filtre de periode
+
+        #filtre de station
+
         return self.prep_df_for_rf(bixi2017, weather)
 
 
@@ -179,7 +186,7 @@ class Engine3:
 
         
         # Use the forest's predict method on the test data
-        print('prediction...')
+        print(' no more weather_descripwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww')
         print(test_features)
         predictions = loaded_rf.predict(test_features)
         print('prediction: ', predictions)
@@ -209,7 +216,7 @@ class Engine3:
         return test_features
 
 
-    ### ##Loading or making Prediction and RandomFor Model
+    #####Loading or making Prediction and RandomFor Model
     def get_random_forest_model(self, train_l, train_f):
         my_file = Path(self.RF_MODEL_PATH)
         if my_file.is_file():
@@ -219,7 +226,7 @@ class Engine3:
             print('loading model DONE')
         else:
             #instantiate model with 1000 decision trees
-            loaded_rf = RandomForestRegressor(n_estimators = self.RF_N_ESTIMATORS, random_state = self.RF_RANDOM_STATE, n_jobs=-1)
+            loaded_rf = RandomForestRegressor(n_estimators = self.RF_N_ESTIMATORS, random_state = self.RF_RANDOM_STATE, n_jobs=1)
             print('Fit calculating...')
             loaded_rf.fit(train_f, train_l)
             print('Fit DONE')
@@ -340,6 +347,7 @@ class Engine3:
             # Add xticks on the middle of the group bars
             ('adding xticks')
             plt.xlabel('GroupBy')
+            ##############plt.xlim
             plt.ylabel('Predictions')
             # plt.xaxis.set_minor_locator(MultipleLocator(5))
             # Create legend & Show graphic
@@ -347,7 +355,7 @@ class Engine3:
             plt.savefig(self.PRED_GRAPH_PATH)
             # plt.show()
             print('graph generated', flush=True)
-            # plt.show()
+            plt.show()
         elif groupby != "perDate":
             barWidth = 0.25
             plt.clf()
@@ -362,7 +370,7 @@ class Engine3:
             plt.savefig(self.PRED_GRAPH_PATH)
             # plt.show()
             print('graph generated', flush=True)
-            # plt.show()
+            plt.show()
             
         return plt
     
@@ -407,129 +415,3 @@ class Engine3:
         # print('Label used: ', flush=True)
         # print(y, flush=True)
         return json.dumps(o)
-
-
-    # def get_error_json(self):#load dataframe from file or generate it if desn't exist
-    #     print('1.getting error json...')
-    #     my_file = Path(self.ERROR_JSON_PATH)
-        
-    #     if my_file.is_file():
-    #         print('json error file exists')
-    #         print('1.2.loading json error...')
-    #         # load the model from disk
-    #         json_error = pickle.load(open(my_file, 'rb'))
-    #     else:
-    #         print('json error file does not exist')
-    #         json_error = self.generate_error_json()
-    #         print('1.3.saving model...')
-    #         # save the model to disk
-    #         pickle.dump(json_error, open(my_file, 'wb'))
-    #         print('saving model DONE')
-
-
-    #     print('getting error json DONE')
-    #     return json_error
-
-    # def generate_error_json(self):
-    #     print('1.3.1.generation of error json...')
-    #     # pred_df = self.load_prediction_df()
-    #     # temp_df = self.groupby_filter(pred_df, 'perDate')
-    #     print('1.3.2.loading prediction...')
-    #     temp_df = self.load_prediction_df()
-    #     print('loading prediction DONE')
-    #     temp_df = temp_df.groupby(['month', 'day', 'hour']).agg({'predictions': 'sum', 'test_labels': 'sum'})
-     
-    #     print('temp_df:')
-    #     # print(temp_df)
-
-    #     print('1.3.3.calculating prediction errors...')
-    #     errors = temp_df['predictions'].values - temp_df['test_labels'].values
-
-    #     # # Calculate mean absolute percentage error (MAPE)
-    #     # mape = 100 * (abs(errors) / temp_df['test_labels'].values)# Calculate and display accuracy
-    #     # accuracy = 100 - np.mean(mape)
-    #     # print('Accuracy:', round(accuracy, 2), '%.')
-
-    #     # print('dataframe lenght: ')
-    #     # print(len(temp_df['predictions']))
-
-    #     print('1.3.4.getting xAxisDate...')
-    #     xAxisDate = []
-    #     for i in range(len(temp_df.index.values)):
-    #         xAxisDate.append( str(temp_df.index.values[i][0])
-    #                         + "-" 
-    #                         + str(temp_df.index.values[i][1]) 
-    #                         + ' ' 
-    #                         + str(temp_df.index.values[i][2])
-    #                         + 'h')
-    #         # xAxis = pd.Series(xAxisDate)
-            
-    #     xAxis = pd.Series(xAxisDate)
-    #     print('getting xAxisDate DONE')
-
-    #     print('xAxis (date): ')
-    #     # print(len(xAxis))
-    #     # print(xAxis)
-
-    #     print('Yaxis (errors): ')
-    #     print('error length: ',len(errors))
-    #     # print(errors)
-        
-
-    #     graph_error_file = Path(self.ERROR_GRAPH_PATH)
-        
-    #     if graph_error_file.is_file():
-    #         print('graph error file already exists ')
-    #     else:
-    #         print('graph error file does not exist')
-    #         print('1.3.5.generating error graph...')
-    #         barWidth = 0.25
-    #         plt2.clf()
-    #         plt2.plot(xAxis, errors,'.',  color='#D52B1E',  label='Predictions')
-    #         # Add xticks on the middle of the group bars
-    #         ('adding xticks')
-    #         plt2.xlabel('GroupBy')
-    #         plt2.ylabel('Predictions')
-    #         # plt.xaxis.set_minor_locator(MultipleLocator(5))
-    #         # Create legend & Show graphic
-    #         plt2.legend()
-    #         plt2.savefig(self.ERROR_GRAPH_PATH)
-    #         # plt.show()
-    #         print('generating error graph DONE', flush=True)
-    #         # plt.show()
-            
-            
-        
-    #     finalJson = self.datatoJSON_error(plt2, xAxis, errors)
-
-    #     print('generation of error json DONE')
-    #     return finalJson
-
-
-    # def datatoJSON_error(self, graph, x, y):
-    #     print('1.3.6.converting data and graph to JSON...', flush=True)
-    #     graphString = self.toBase64_error()
-
-    #     myJson =  '{  "data":{ "time":[], "errors":[] }, "graph":[] }'
-
-    #     o = json.loads(myJson)
-    #     o["data"]["time"] = x[0:len(x)].tolist()
-    #     o["data"]["errors"] = y.tolist()
-    #     o["graph"] = graphString
-        
-    #     # print('Label used: ', flush=True)
-    #     # print(y, flush=True)
-
-    #     print('converting data and graph to JSON DONE', flush=True)
-    #     return json.dumps(o)
-
-
-    # def toBase64_error(self):
-    #     print('1.3.6.1 converting graph png to base64...', flush=True)
-    #     with open(self.ERROR_GRAPH_PATH, "rb") as imageFile:
-    #         strg = base64.b64encode(imageFile.read()).decode('utf-8')
-    #         while strg[-1] == '=':
-    #             strg = strg[:-1]           
-    #         # print(strg)
-    #     print('converting graph png to base64 DONE', flush=True)
-    #     return strg
