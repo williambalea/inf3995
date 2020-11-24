@@ -6,6 +6,7 @@
 #include <qqml.h>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include "engine.h"
 
 class BackEnd : public QObject
 {
@@ -30,7 +31,6 @@ public:
     Q_INVOKABLE void changePw(QString old, QString newPass);
     Q_INVOKABLE void serverConn(QString host);
     Q_INVOKABLE void startTimer();
-
 
 signals:
     void hostChanged();
@@ -77,12 +77,11 @@ private:
     bool m_engine1Status = false;
     bool m_engine2Status = false;
     bool m_engine3Status = false;
-    QString m_host = "";
+    QString m_host = "10.0.0.105";
     //TODO: empty string
-    QString m_user = "";
-    QString m_pass = "";
+    QString m_user = "admin";
+    QString m_pass = "admin";
     int engineBytesReceived[3] = {0, 0, 0};
-
 };
 
 #endif // BACKEND_H

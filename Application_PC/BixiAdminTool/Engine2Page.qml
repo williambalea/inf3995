@@ -9,9 +9,13 @@ Page {
     width: applicationWindow.width
     height: applicationWindow.height - 86
 
-    Connections {
-        target: backend
-        onLog2Changed: {
+    Engine {
+        idNumber: 2
+        host: backend.host
+        user: backend.user
+        pass: backend.pass
+
+        onLogChanged: {
             var t = "";
             var i = "";
             if(isText) {

@@ -12,7 +12,6 @@ BackEnd::BackEnd(QObject *parent) : QObject(parent) {
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(periodicFn()));
-//    timer->start(CHECK_ENGINE_INTERVALL);
 }
 
 BackEnd::~BackEnd() {
@@ -23,6 +22,7 @@ BackEnd::~BackEnd() {
     delete manLogin;
     delete manEnginesStatus;
     delete manLogs1;
+    delete manLogs2;
     delete timer;
 }
 
@@ -211,5 +211,5 @@ void BackEnd::getLogs2() {
 void BackEnd::startTimer() {
     periodicFn();
     timer->start(CHECK_ENGINE_INTERVALL);
-
 }
+

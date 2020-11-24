@@ -9,6 +9,34 @@ Page {
     id: engine3Page
     width: applicationWindow.width
     height: applicationWindow.height - 86
+
+    Engine {
+        idNumber: 3
+        host: backend.host
+        user: backend.user
+        pass: backend.pass
+
+        onLogChanged: {
+            var t = "";
+            var i = "";
+            if(isText) {
+                t = log;
+            } else {
+                var logParts = log.split(" ");
+                for (i = 0; i < logParts.length - 1; i++) {
+                    t += logParts[i] + " ";
+                }
+
+                i = "data:image/png;base64," + logParts[logParts.length - 1];
+            }
+
+            elements.insert(0, {
+                logText: t,
+                image: i,
+                typ: isText
+            });
+        }
+    }
     
     Rectangle {
         id: listViewContenant
@@ -46,9 +74,9 @@ Page {
                 }
                 Rectangle {
                     id: rectangle1
-                    visible: (typ === 1)
-                    width: (typ === 0) ? 0 : 500
-                    height: (typ === 0) ? 0 : 500
+                    visible: !typ
+                    width: typ ? 0 : 500
+                    height: typ ? 0 : 500
                     color: "transparent"
                     Image {
                         source: image
