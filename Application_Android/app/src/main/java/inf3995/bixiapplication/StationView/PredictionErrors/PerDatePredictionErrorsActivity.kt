@@ -3,6 +3,7 @@ package inf3995.bixiapplication.StationView.PredictionErrors
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
+import android.content.Intent
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
@@ -13,6 +14,7 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.gson.Gson
@@ -21,6 +23,8 @@ import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
 import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
 import inf3995.bixiapplication.StationViewModel.StationLiveData.DataErrorResponse
 import inf3995.bixiapplication.StationViewModel.WebBixiService
+import androidx.lifecycle.Observer
+import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_per_date_error_predictions.*
 import retrofit2.Call
@@ -171,5 +175,26 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
             table.addView(tbrow)
 
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        MainScreenActivity.listen.observe(this, Observer {
+
+            if(it[2] == "DOWN"){
+                Toast.makeText(
+                    this,
+                    "Engine Problem!",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                val intent = Intent(this, MainScreenActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                startActivity(intent)
+            }
+
+        })
+
     }
 }

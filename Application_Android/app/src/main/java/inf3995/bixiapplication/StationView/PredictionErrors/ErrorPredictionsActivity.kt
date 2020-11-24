@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_error_predictions.*
 
@@ -40,7 +42,26 @@ class ErrorPredictionsActivity : AppCompatActivity() {
 
         }
     }
+    override fun onResume() {
+        super.onResume()
 
+        MainScreenActivity.listen.observe(this, Observer {
+
+            if(it[2] == "DOWN"){
+                Toast.makeText(
+                    this,
+                    "Engine Problem!",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                val intent = Intent(this, MainScreenActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                startActivity(intent)
+            }
+
+        })
+
+    }
     fun limitDropDownmenuHeight(spnTest: Spinner){
         val popup = Spinner::class.java.getDeclaredField("mPopup")
         popup.isAccessible =true

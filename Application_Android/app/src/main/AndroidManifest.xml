@@ -46,7 +46,8 @@
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.MonthlyStationStatisticGlobalActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.StationStatistics.StationStatisticsActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Predictions.GlobalPredictions.GlobalPredictionsActivity" />
-        <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.GlobalStatisticsActivity" />
+        <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.GlobalStatisticsActivity"
+                  android:launchMode="singleTask"/>
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.StationStatistics.DailyStationStatisticActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.DailyStationStatisticGlobalActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.StationStatistics.HourlyStationStatisticActivity" />
@@ -60,9 +61,10 @@
         <activity android:name="inf3995.bixiapplication.StationView.Predictions.StationPredictions.MonthlyStationPredictionActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Predictions.StationPredictions.PerDateStationPredictionActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Predictions.StationPredictions.StationPredictionsActivity" />
-        <activity android:name="inf3995.bixiapplication.StationView.Predictions.GlobalPredictions.HourlyStationGlobalPredictionActivity" />
-        <activity android:name="inf3995.bixiapplication.StationView.Predictions.GlobalPredictions.DailyStationGlobalPredictionActivity" />
-        <activity android:name="inf3995.bixiapplication.StationView.Predictions.GlobalPredictions.MonthlyStationGlobalPredictionActivity" />
+        <activity android:name="inf3995.bixiapplication.StationView.Predictions.GlobalPredictions.HourlyGlobalPredictionActivity" />
+        <activity android:name="inf3995.bixiapplication.StationView.Predictions.GlobalPredictions.DailyGlobalPredictionActivity" />
+        <activity android:name="inf3995.bixiapplication.StationView.Predictions.GlobalPredictions.MonthlyGlobalPredictionActivity" />
+        <activity android:name="inf3995.bixiapplication.StationView.Predictions.GlobalPredictions.PerDateGlobalPredictionActivity" />
         <activity
             android:name="inf3995.bixiapplication.StationView.StationList.StationMapsActivity"
             android:label="@string/title_activity_station_maps" />

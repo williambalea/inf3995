@@ -150,4 +150,8 @@
     <string name="month">Month</string>
     <string name="day_month">Day-Month</string>
     <string name="hour">Hour</string>
+    <string name="PerDate_Global_Prediction_Title">Global Prediction Values of per date Departures for:</string>
+    <string name="Hourly_Global_Prediction_Title">Global Prediction Values of Hourly Departures for:</string>
+    <string name="Monthly_Global_Prediction_Title">Global Prediction Values of Monthly Departures for:</string>
+    <string name="Daily_Global_Prediction_Title">Global Prediction Values of Daily Departures for:</string>
 </resources>

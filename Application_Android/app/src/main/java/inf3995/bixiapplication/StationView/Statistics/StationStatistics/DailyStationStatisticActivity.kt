@@ -1,5 +1,6 @@
 package inf3995.bixiapplication.StationView.Statistics.StationStatistics
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -7,12 +8,15 @@ import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
 import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
+import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
 import inf3995.bixiapplication.StationViewModel.StationLiveData.DataResponseStation
 import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
 import inf3995.bixiapplication.StationViewModel.WebBixiService
@@ -57,7 +61,24 @@ class DailyStationStatisticActivity : AppCompatActivity() {
         requestToServer(IpAddressDialog.ipAddressInput)
 
     }
+    override fun onResume() {
+        super.onResume()
 
+        MainScreenActivity.listen.observe(this, Observer {
+
+            if(it[1] == "DOWN"){
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 2")
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                    startActivity(intent)
+                }
+            }
+
+        })
+
+    }
 
     private fun requestToServer(ipAddress: String?) {
 
