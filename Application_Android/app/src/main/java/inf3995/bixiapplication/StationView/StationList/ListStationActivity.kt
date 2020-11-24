@@ -1,5 +1,6 @@
 package inf3995.bixiapplication.StationView.StationList
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -9,11 +10,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
 import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
+import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
 import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
 import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
@@ -42,7 +45,26 @@ class ListStationActivity : AppCompatActivity(){
         requestToServer(IpAddressDialog.ipAddressInput)
     }
 
+    override fun onResume() {
+        super.onResume()
 
+        MainScreenActivity.listen.observe(this, Observer {
+
+            if(it[0] == "DOWN"){
+                Toast.makeText(
+                    this,
+                    "Engine Problem!",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                val intent = Intent(this, MainScreenActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                startActivity(intent)
+            }
+
+        })
+
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)

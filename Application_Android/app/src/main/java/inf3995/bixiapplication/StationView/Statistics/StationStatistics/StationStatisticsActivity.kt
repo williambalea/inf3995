@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
 import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_coordinates_station.Station_code
@@ -85,6 +87,26 @@ class StationStatisticsActivity : AppCompatActivity() {
                 }
             }
         }
+
+    }
+    override fun onResume() {
+        super.onResume()
+
+        MainScreenActivity.listen.observe(this, Observer {
+
+            if(it[1] == "DOWN"){
+                Toast.makeText(
+                    this,
+                    "Engine Problem!",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                val intent = Intent(this, MainScreenActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                startActivity(intent)
+            }
+
+        })
 
     }
 
