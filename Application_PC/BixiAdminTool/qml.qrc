@@ -2,12 +2,12 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>qtquickcontrols2.conf</file>
-        <file>Page3.qml</file>
         <file>LoginPage.qml</file>
         <file>Engine1Page.qml</file>
         <file>Settings.qml</file>
         <file>App.qml</file>
         <file>Engine2Page.qml</file>
         <file>Engine3Page.qml</file>
+        <file>SurveyList.qml</file>
     </qresource>
 </RCC>

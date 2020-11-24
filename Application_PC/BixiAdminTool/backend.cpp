@@ -6,12 +6,27 @@
 #include <QJsonArray>
 
 #define CHECK_ENGINE_INTERVALL 5000
+#define HTTP_OK 200
+#define HTTP_SERVER_ERR 500
+#define NULL_JSON_SIZE 4
+#define IS_RUNNING "UP"
+
+#define HTTPS "https://"
+#define SERVER_PATH    "/server"
+#define STATUS_PATH    "/server/status"
+#define CHANGE_PW_PATH "/server/user/password"
+#define LOGIN_PATH     "/server/user/login"
+#define SURVEY_PATH    "/server/survey"
+
+/**
+ * PUBLIC functions
+ */
 
 BackEnd::BackEnd(QObject *parent) : QObject(parent) {
     setupNetworkManagers();
 
     timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(periodicFn()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(checkEngines()));
 }
 
 BackEnd::~BackEnd() {
@@ -21,9 +36,94 @@ BackEnd::~BackEnd() {
     delete manSqlData;
     delete manLogin;
     delete manEnginesStatus;
-    delete manLogs1;
-    delete manLogs2;
     delete timer;
+}
+
+QString BackEnd::sqlData() {
+    return (m_sqlData.size() > NULL_JSON_SIZE) ? m_sqlData : "{}";
+}
+
+/**
+ * INVOKABLE function
+ */
+
+void BackEnd::refresh() {
+    QNetworkRequest req = makeRequest(QUrl(HTTPS + m_host + SURVEY_PATH));
+    setAuthHeader(req, m_user, m_pass);
+    manSqlData->get(req);
+}
+
+void BackEnd::login(QString user, QString pass) {
+    QNetworkRequest req = makeRequest(QUrl(HTTPS + m_host + LOGIN_PATH));
+    setAuthHeader(req, user, pass);
+    manLogin->get(req);
+}
+
+void BackEnd::changePw(QString old, QString newPass) {
+    QNetworkRequest req = makeRequest(QUrl(HTTPS + m_host + CHANGE_PW_PATH));
+    setAuthHeader(req, m_user, old);
+    QJsonObject obj;
+    obj["new"] = newPass;
+    manChangePw->put(req, QJsonDocument(obj).toJson());
+}
+
+void BackEnd::serverConn(QString host) {
+    QNetworkRequest req = makeRequest(QUrl(HTTPS + host + SERVER_PATH));
+    manServerConn->get(req);
+}
+
+void BackEnd::startTimer() {
+    checkEngines();
+    timer->start(CHECK_ENGINE_INTERVALL);
+}
+
+bool BackEnd::engineStatus(int statusArrayNumber) {
+    return enginesStatus[statusArrayNumber];
+}
+
+/**
+ * PRIVATE SLOTS functions
+ */
+
+void BackEnd::sqlFinished(QNetworkReply *reply) {
+    m_sqlData = QString::fromStdString(reply->readAll().toStdString());
+    emit sqlDataChanged();
+}
+
+void BackEnd::loginFinished(QNetworkReply *reply) {
+    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    emit loginChanged(code == HTTP_OK);
+}
+
+void BackEnd::checkEnginesFinished(QNetworkReply *reply) {
+    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    if (code == HTTP_OK || code == HTTP_SERVER_ERR) {
+        QByteArray result = reply->readAll();
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(result);
+        QJsonObject body = jsonResponse.object();
+        QStringList status = body["message"].toString().split(QLatin1Char(' '));
+
+        for (int i = 0; i < NB_OF_ENGINES; i++)
+            enginesStatus[i] = (status[i] == IS_RUNNING);
+
+    } else {
+
+        for (auto& status : enginesStatus)
+            status = false;
+    }
+
+    emit enginesStatusChanged();
+}
+
+void BackEnd::changePwFinished(QNetworkReply *reply) {
+    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    bool isSuccessful = code == HTTP_OK;
+    emit passwordChanged(isSuccessful);
+}
+
+void BackEnd::serverConnFinished(QNetworkReply *reply) {
+    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    emit serverConnChanged(code == HTTP_OK);
 }
 
 void BackEnd::setupNetworkManagers() {
@@ -42,113 +142,6 @@ void BackEnd::setupNetworkManagers() {
     manServerConn = new QNetworkAccessManager(this);
     connect(manServerConn, &QNetworkAccessManager::finished, this, &BackEnd::serverConnFinished);
 
-    manLogs1 = new QNetworkAccessManager(this);
-    connect(manLogs1, &QNetworkAccessManager::finished, this, &BackEnd::logs1Finished);
-
-    manLogs2 = new QNetworkAccessManager(this);
-    connect(manLogs2, &QNetworkAccessManager::finished, this, &BackEnd::logs2Finished);
-}
-
-
-QString BackEnd::sqlData() {
-    return (m_sqlData.size() > 4) ? m_sqlData : "{}";
-}
-
-void BackEnd::setSqlData(const QString &data) {
-    m_sqlData = data;
-    emit sqlDataChanged();
-}
-
-void BackEnd::refresh() {
-    QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server/survey"));
-    setAuthHeader(req, m_user, m_pass);
-    manSqlData->get(req);
-}
-
-void BackEnd::login(QString user, QString pass) {
-    QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server/user/login"));
-    setAuthHeader(req, user, pass);
-    manLogin->get(req);
-}
-
-
-void BackEnd::sqlFinished(QNetworkReply *reply) {
-    QString data = QString::fromStdString(reply->readAll().toStdString());
-    setSqlData(data);
-}
-
-void BackEnd::loginFinished(QNetworkReply *reply) {
-    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    emit loginChanged(code == "200");
-}
-
-void BackEnd::serverConnFinished(QNetworkReply *reply) {
-    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    emit serverConnChanged(code == "200");
-}
-
-void BackEnd::checkEnginesFinished(QNetworkReply *reply) {
-    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    if (code == "200" || code == "500") {
-        QByteArray result = reply->readAll();
-        QJsonDocument jsonResponse = QJsonDocument::fromJson(result);
-        QJsonObject body = jsonResponse.object();
-        QStringList status = body["message"].toString().split(QLatin1Char(' '));
-
-        m_engine1Status = (status[0] == "UP");
-        m_engine2Status = (status[1] == "UP");
-        m_engine3Status = (status[2] == "UP");
-    } else {
-        m_engine1Status = false;
-        m_engine2Status = false;
-        m_engine3Status = false;
-    }
-
-    emit enginesStatusChanged();
-}
-
-void BackEnd::changePwFinished(QNetworkReply *reply) {
-    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    bool isSuccessful = code == "200";
-    emit passwordChanged(isSuccessful);
-}
-
-void BackEnd::logs1Finished(QNetworkReply *reply) {
-    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    QByteArray body = reply->readAll();
-    logsReplyHandler(1, code, body);
-}
-
-void BackEnd::logs2Finished(QNetworkReply *reply) {
-    QVariant code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    QByteArray body = reply->readAll();
-    logsReplyHandler(2, code, body);
-}
-
-void BackEnd::logsReplyHandler(int engineNumber, QVariant code, QByteArray replyRead) {
-    if (code != "200") return;
-    QJsonDocument jsonResponse = QJsonDocument::fromJson(replyRead);
-    QJsonArray body = jsonResponse.array();
-    engineBytesReceived[engineNumber - 1] = body.at(0).toObject().value("byte").toInt();
-    int max = body.size();
-    for (int i = 1; i < max; i++) {
-        QString data = body.at(i).toObject().value("logs").toString();
-        bool isText = data.size() < 200;
-        emitToEnginePage(engineNumber, data, isText);
-    }
-}
-void BackEnd::emitToEnginePage(int engineNumber, QString data, bool isText) {
-    switch(engineNumber) {
-    case 1:
-        emit log1Changed(data, isText);
-        break;
-    case 2:
-        emit log2Changed(data, isText);
-        break;
-    case 3:
-        //TODO : emit log3Changed(data, isText);
-        break;
-    }
 }
 
 QNetworkRequest BackEnd::makeRequest(const QUrl &url) {
@@ -161,27 +154,8 @@ QNetworkRequest BackEnd::makeRequest(const QUrl &url) {
 }
 
 void BackEnd::checkEngines() {
-    QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server/status"));
+    QNetworkRequest req = makeRequest(QUrl(HTTPS + m_host + STATUS_PATH));
     manEnginesStatus->get(req);
-}
-
-void BackEnd::changePw(QString old, QString newPass) {
-    QNetworkRequest req = makeRequest(QUrl("https://" + m_host + "/server/user/password"));
-    setAuthHeader(req, m_user, old);
-    QJsonObject obj;
-    obj["new"] = newPass;
-    manChangePw->put(req, QJsonDocument(obj).toJson());
-}
-
-void BackEnd::serverConn(QString host) {
-    QNetworkRequest req = makeRequest(QUrl("https://" + host + "/server"));
-    manServerConn->get(req);
-}
-
-void BackEnd::periodicFn() {
-    checkEngines();
-    getLogs1();
-    getLogs2();
 }
 
 void BackEnd::setAuthHeader(QNetworkRequest &req, QString user, QString pass) {
@@ -191,25 +165,3 @@ void BackEnd::setAuthHeader(QNetworkRequest &req, QString user, QString pass) {
     req.setRawHeader("Authorization", headerData.toLocal8Bit());
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 }
-
-void BackEnd::getLogs1() {
-    QString bytesToAsk = QString::number(engineBytesReceived[0]);
-    QUrl url = QUrl("https://" + m_host + "/engine1/logs/" + bytesToAsk);
-    QNetworkRequest req = makeRequest(url);
-    setAuthHeader(req, m_user, m_pass);
-    manLogs1->get(req);
-}
-
-void BackEnd::getLogs2() {
-    QString bytesToAsk = QString::number(engineBytesReceived[1]);
-    QUrl url = QUrl("https://" + m_host + "/engine2/logs/" + bytesToAsk);
-    QNetworkRequest req = makeRequest(url);
-    setAuthHeader(req, m_user, m_pass);
-    manLogs2->get(req);
-}
-
-void BackEnd::startTimer() {
-    periodicFn();
-    timer->start(CHECK_ENGINE_INTERVALL);
-}
-

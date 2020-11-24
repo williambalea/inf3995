@@ -30,8 +30,8 @@ Page{
                 if (isSuccessful) {
                     backend.user = user.text;
                     backend.pass = pw.text;
-                    stackView.push("App.qml", StackView.Immediate);
                     backend.startTimer();
+                    stackView.push("App.qml", StackView.Immediate);
                 } else {
                     errorLogin.visible = true;
                 }

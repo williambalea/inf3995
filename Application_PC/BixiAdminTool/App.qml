@@ -7,13 +7,19 @@ import custom.classes 1.0
 
 Item {
 
-//    Component.onCompleted: {
-//        backend.startTimer();
-//    }
+    property bool engine1Status: false
+    property bool engine2Status: false
+    property bool engine3Status: false
 
     Connections{
         target: backend
         onSqlDataChanged: sqlProgBar.visible = false
+
+        onEnginesStatusChanged: function() {
+            engine1Status = backend.engineStatus(0);
+            engine2Status = backend.engineStatus(1);
+            engine3Status = backend.engineStatus(2);
+        }
     }
 
     TabBar {
@@ -39,7 +45,7 @@ Item {
         }
 
         TabButton {
-            id: tab1labe
+            id: tab1
             x: 155
             y: 0
             text: qsTr("Data Engine 1")
@@ -49,7 +55,7 @@ Item {
             }
             Rectangle {
                 visible: parent.width > 150
-                color: backend.engine1Status ?  "#00f715" : "#808080";
+                color: engine1Status ?  "#00f715" : "#808080";
                 x: (parent.width / 2) - 70
                 y: 15
                 width: 13
@@ -59,7 +65,7 @@ Item {
                 border.width: 1
             }
             ToolTip.visible: hovered
-            ToolTip.text: qsTr(backend.engine1Status ? "Online" : "Offline")
+            ToolTip.text: qsTr(engine1Status ? "Online" : "Offline")
             ToolTip.delay: 500
             ToolTip.timeout: 2000
         }
@@ -75,7 +81,7 @@ Item {
             }
             Rectangle {
                 visible: parent.width > 150
-                color: backend.engine2Status ?  "#00f715" : "#808080";
+                color: engine2Status ?  "#00f715" : "#808080";
                 x: (parent.width / 2) - 70
                 y: 15
                 width: 13
@@ -85,7 +91,7 @@ Item {
                 border.width: 1
             }
             ToolTip.visible: hovered
-            ToolTip.text: qsTr(backend.engine2Status ? "Online" : "Offline")
+            ToolTip.text: qsTr(engine2Status ? "Online" : "Offline")
             ToolTip.delay: 500
             ToolTip.timeout: 2000
         }
@@ -101,7 +107,7 @@ Item {
             }
             Rectangle {
                 visible: parent.width > 150
-                color: backend.engine3Status ?  "#00f715" : "#808080";
+                color: engine3Status ?  "#00f715" : "#808080";
                 x: (parent.width / 2) - 70
                 y: 15
                 width: 13
@@ -111,7 +117,7 @@ Item {
                 border.width: 1
             }
             ToolTip.visible: hovered
-            ToolTip.text: qsTr(backend.engine3Status ? "Online" : "Offline")
+            ToolTip.text: qsTr(engine3Status ? "Online" : "Offline")
             ToolTip.delay: 500
             ToolTip.timeout: 2000
         }
@@ -136,8 +142,8 @@ Item {
                 color: "#E1E2E1"
             }
 
-            Page3 {
-                id: page3
+            SurveyList {
+                id: surveyList
                 anchors.fill: parent
                 anchors.margins: 6
                 anchors.bottomMargin: 10

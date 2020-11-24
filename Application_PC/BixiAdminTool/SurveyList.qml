@@ -32,7 +32,6 @@ TableView {
             text: styleData.value
             font.pointSize: 12
             verticalAlignment: Text.AlignVCenter
-            //font.weight: Font.DemiBold
             rightPadding: 10
             leftPadding: 10
             anchors.fill: parent

@@ -6,16 +6,16 @@
 #define CHECK_ENGINE_INTERVALL 5000
 #define HTTP_OK 200
 #define MAX_TEXTLOG_SIZE 200
-#define JSON_BYTES_NB "bytes"
+#define JSON_BYTES_NB "byte"
 #define JSON_LOGS "logs"
 
 Engine::Engine(QObject *parent) : QObject(parent) {
     man = new QNetworkAccessManager(this);
     connect(man, &QNetworkAccessManager::finished, this, &Engine::logsFinished);
+    getLogs();
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(getLogs()));
-    getLogs();
     timer->start(CHECK_ENGINE_INTERVALL);
 }
 
