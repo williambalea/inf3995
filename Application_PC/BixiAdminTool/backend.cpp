@@ -18,6 +18,12 @@
 #define LOGIN_PATH     "/server/user/login"
 #define SURVEY_PATH    "/server/survey"
 
+#define SURVEY_MAN "sqlData"
+#define LOGIN_MAN  "login"
+#define ENGINE_MAN "enginesStatus"
+#define PW_MAN     "changePw"
+#define SERVER_MAN "serverConn"
+
 /**
  * PUBLIC functions
  */
@@ -30,12 +36,9 @@ BackEnd::BackEnd(QObject *parent) : QObject(parent) {
 }
 
 BackEnd::~BackEnd() {
-    delete manSqlData;
-    delete manChangePw;
-    delete manServerConn;
-    delete manSqlData;
-    delete manLogin;
-    delete manEnginesStatus;
+    for (const auto& man : mans)
+        delete man.second;
+
     delete timer;
 }
 
@@ -50,13 +53,13 @@ QString BackEnd::sqlData() {
 void BackEnd::refresh() {
     QNetworkRequest req = makeRequest(QUrl(HTTPS + m_host + SURVEY_PATH));
     setAuthHeader(req, m_user, m_pass);
-    manSqlData->get(req);
+    mans[SURVEY_MAN]->get(req);
 }
 
 void BackEnd::login(QString user, QString pass) {
     QNetworkRequest req = makeRequest(QUrl(HTTPS + m_host + LOGIN_PATH));
     setAuthHeader(req, user, pass);
-    manLogin->get(req);
+    mans[LOGIN_MAN]->get(req);
 }
 
 void BackEnd::changePw(QString old, QString newPass) {
@@ -64,12 +67,12 @@ void BackEnd::changePw(QString old, QString newPass) {
     setAuthHeader(req, m_user, old);
     QJsonObject obj;
     obj["new"] = newPass;
-    manChangePw->put(req, QJsonDocument(obj).toJson());
+    mans[PW_MAN]->put(req, QJsonDocument(obj).toJson());
 }
 
 void BackEnd::serverConn(QString host) {
     QNetworkRequest req = makeRequest(QUrl(HTTPS + host + SERVER_PATH));
-    manServerConn->get(req);
+    mans[SERVER_MAN]->get(req);
 }
 
 void BackEnd::startTimer() {
@@ -127,20 +130,16 @@ void BackEnd::serverConnFinished(QNetworkReply *reply) {
 }
 
 void BackEnd::setupNetworkManagers() {
-    manSqlData = new QNetworkAccessManager(this);
-    connect(manSqlData, &QNetworkAccessManager::finished, this, &BackEnd::sqlFinished);
+    createNetworkManager(SURVEY_MAN, &BackEnd::sqlFinished);
+    createNetworkManager(LOGIN_MAN,  &BackEnd::loginFinished);
+    createNetworkManager(ENGINE_MAN, &BackEnd::checkEnginesFinished);
+    createNetworkManager(PW_MAN,     &BackEnd::changePwFinished);
+    createNetworkManager(SERVER_MAN, &BackEnd::serverConnFinished);
+}
 
-    manLogin = new QNetworkAccessManager(this);
-    connect(manLogin, &QNetworkAccessManager::finished, this, &BackEnd::loginFinished);
-
-    manEnginesStatus = new QNetworkAccessManager(this);
-    connect(manEnginesStatus, &QNetworkAccessManager::finished, this, &BackEnd::checkEnginesFinished);
-
-    manChangePw = new QNetworkAccessManager(this);
-    connect(manChangePw, &QNetworkAccessManager::finished, this, &BackEnd::changePwFinished);
-
-    manServerConn = new QNetworkAccessManager(this);
-    connect(manServerConn, &QNetworkAccessManager::finished, this, &BackEnd::serverConnFinished);
+void BackEnd::createNetworkManager(QString manName, void (BackEnd::* slot) (QNetworkReply *)) {
+    mans[manName] = new QNetworkAccessManager(this);
+    connect(mans[manName], &QNetworkAccessManager::finished, this, slot);
 
 }
 
@@ -155,7 +154,7 @@ QNetworkRequest BackEnd::makeRequest(const QUrl &url) {
 
 void BackEnd::checkEngines() {
     QNetworkRequest req = makeRequest(QUrl(HTTPS + m_host + STATUS_PATH));
-    manEnginesStatus->get(req);
+    mans[ENGINE_MAN]->get(req);
 }
 
 void BackEnd::setAuthHeader(QNetworkRequest &req, QString user, QString pass) {

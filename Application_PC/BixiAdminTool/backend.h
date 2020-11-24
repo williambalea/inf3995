@@ -6,6 +6,7 @@
 #include <qqml.h>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <map>
 #include "engine.h"
 
 #define NB_OF_ENGINES 3
@@ -50,21 +51,18 @@ private slots:
 
 private:
     void setupNetworkManagers();
+    void createNetworkManager(QString manName, void (BackEnd::* slot) (QNetworkReply *));
     QNetworkRequest makeRequest(const QUrl &url);
     void checkEngines();
     void setAuthHeader(QNetworkRequest &req, QString user, QString pass);
 
     QString m_sqlData;
-    QNetworkAccessManager *manSqlData;
-    QNetworkAccessManager *manLogin;
-    QNetworkAccessManager *manEnginesStatus;
-    QNetworkAccessManager *manChangePw;
-    QNetworkAccessManager *manServerConn;
     QTimer *timer;
     QString m_host;
     QString m_user;
     QString m_pass;
     bool enginesStatus[NB_OF_ENGINES] = {false};
+    std::map<QString, QNetworkAccessManager*> mans;
 };
 
 #endif // BACKEND_H

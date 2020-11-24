@@ -39,7 +39,6 @@ private:
     QString pass;
     int id;
     int bytesReceived = 0;
-    bool m_status = false;
 
 private slots:
     void getLogs();
