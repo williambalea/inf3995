@@ -40,14 +40,14 @@ class GlobalPredictionsActivity : AppCompatActivity() {
         // button click to show date picker
         startDateButton.setOnClickListener {
             val dpd = DatePickerDialog(this,
-                DatePickerDialog.OnDateSetListener{ view, mYear, mMonth, mDay ->
+                DatePickerDialog.OnDateSetListener{ _, mYear, mMonth, mDay ->
                 startDate.setText(""+ mDay+"/" + mMonth + "/"+mYear)}, yearDate1,monthDate1,dayDate1)
             dpd.show()
             dateStart = dpd.toString()
         }
         endDateButton.setOnClickListener {
             val dpd = DatePickerDialog(this,
-                DatePickerDialog.OnDateSetListener{ view, mYear, mMonth, mDay ->
+                DatePickerDialog.OnDateSetListener{ _, mYear, mMonth, mDay ->
                 endDate.setText(""+ mDay+"/" + mMonth + "/"+mYear)}, yearDate2,monthDate2,dayDate2)
             dpd.show()
             dateEnd = dpd.toString()

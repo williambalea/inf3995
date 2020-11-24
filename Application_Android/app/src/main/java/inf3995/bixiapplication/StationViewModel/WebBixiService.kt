@@ -30,14 +30,20 @@ interface WebBixiService {
     fun sendServerSurveyData(@Body survey: String):Call<String>
 
     // Engine 3 methods , dateStart, dateEnd
+
     //@GET("/engine3/prediction/usage/{groupBy}/{station}/dateStart/dateEnd")
     @GET("/engine3/prediction/usage/{station}/{groupby}/{startDate}/{endDate}")
     fun getStationPrediction(@Path("station") station: Int, @Path("groupby") groupby:String,  @Path ("startDate") startDate: String, @Path ("endDate") endDate: String): Call<String>
+
     //@GET("/engine3/prediction/usage/{year}/{time}/{station}/dateStart/dateEnd")
    // fun getStationPrediction(@Path("year") year:Int, @Path("time") time:String, @Path("station") station: Int, @Path ("dateStart") dateStart: String, @Path ("dateEnd") dateEnd: String): Call<String>
 
     @GET("/engine3/prediction/error/{year}/{groupby}")
     fun getStationErrors(@Path("year") year:Int, @Path("groupby") groupBy:String): Call<String>
+
+
+    @GET("/engine3/prediction/error")
+    fun getPredictionsErrors(): Call<String>
 
     @GET("/engine3/prediction/usage/all/{groupby}/{startDate}/{endDate}")
     //@GET("/engine3/prediction/usage/{year}/{time}/all/dateStart/dateEnd")

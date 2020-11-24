@@ -20,10 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="inf3995.bixiapplication.StationView.PredictionErrors.PerDatePredictionErrorsActivity"></activity>
-        <activity android:name="inf3995.bixiapplication.StationView.Predictions.StationPredictions.PerDateStationPredictionActivity" />
-        <activity android:name="inf3995.bixiapplication.StationView.PredictionErrors.HourlyPredictionErrorsActivity" />
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:targetApi="m">
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -54,12 +53,12 @@
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.HourlyStationStatisticGlobalActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.StationList.ListStationActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.StationList.StationCoordinatesActivity" />
-        <activity android:name="inf3995.bixiapplication.StationView.PredictionErrors.MonthlyPredictionErrorsActivity" />
-        <activity android:name="inf3995.bixiapplication.StationView.PredictionErrors.DailyPredictionErrorsActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.PredictionErrors.ErrorPredictionsActivity" />
+        <activity android:name="inf3995.bixiapplication.StationView.PredictionErrors.PerDatePredictionErrorsActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Predictions.StationPredictions.HourlyStationPredictionActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Predictions.StationPredictions.DailyStationPredictionActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Predictions.StationPredictions.MonthlyStationPredictionActivity" />
+        <activity android:name="inf3995.bixiapplication.StationView.Predictions.StationPredictions.PerDateStationPredictionActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Predictions.StationPredictions.StationPredictionsActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Predictions.GlobalPredictions.HourlyStationGlobalPredictionActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Predictions.GlobalPredictions.DailyStationGlobalPredictionActivity" />

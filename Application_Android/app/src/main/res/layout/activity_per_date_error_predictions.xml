@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="inf3995.bixiapplication.StationView.Predictions.StationPredictions.PerDateStationPredictionActivity">
+    android:weightSum="9"
+    tools:context="inf3995.bixiapplication.StationView.PredictionErrors.PerDatePredictionErrorsActivity">
 
     <include
         android:id="@+id/lllProgressBarPerD"
@@ -14,90 +14,65 @@
         layout="@layout/progress_bar"/>
 
     <LinearLayout
-        android:id="@+id/coord_station"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@drawable/recyclerview_bg"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_height="80dp"
+        android:background="@drawable/background_bg"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="parent">
 
-        <LinearLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/Station_code_Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/code"
-                android:textColor="@color/colortextdata"
-                android:textSize="25sp"
-                android:textStyle="bold" />
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="190dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="0dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_statistic" />
 
-            <TextView
-                android:id="@+id/Station_codePerD"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"
-                android:text="@string/station_code"
-                android:textColor="@color/colortextlabel"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/Station_name_Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/name"
-                android:textColor="@color/colortextdata"
-                android:textSize="25sp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/Station_namePerD"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"
-                android:text="@string/station_name"
-                android:textColor="@color/colortextlabel"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                app:fontFamily="sans-serif"/>
-        </LinearLayout>
-
+                <TextView
+                    android:layout_width="600dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:text="PREDICTION ERRORS"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="50sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_margin="5dp"
+        android:layout_margin="0dp"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/predictTitlePerD"
+            android:id="@+id/ErrorPredictionTitle"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:layout_margin="5sp"
             android:layout_gravity="center_vertical"
             android:textColor="@color/colortextdata"
-            android:text="@string/PerDate_Prediction_Title"
+            android:text="Prediction Errors per Date for year:"
             android:textSize="25sp"
             android:textStyle="bold">
         </TextView>
 
         <TextView
-            android:id="@+id/predictionYearPerD"
+            android:id="@+id/ErrorPredictionYear"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
             android:layout_margin="5sp"
@@ -116,7 +91,7 @@
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="10dp"
         android:src="@drawable/oranges" />
 
     <LinearLayout
@@ -134,8 +109,8 @@
             <TextView
                 android:id="@+id/text80"
                 android:layout_width="130dp"
-                android:layout_height="30dp"
-                android:textSize="20sp"
+                android:layout_height="40dp"
+                android:textSize="25sp"
                 android:textAlignment="center"
                 android:gravity="center_horizontal"
                 android:layout_weight="0.5"
@@ -146,24 +121,24 @@
             <TextView
                 android:id="@+id/text81"
                 android:layout_width="130dp"
-                android:layout_height="30dp"
-                android:textSize="20sp"
+                android:layout_height="40dp"
+                android:textSize="25sp"
                 android:textAlignment="center"
                 android:gravity="center_horizontal"
                 android:layout_weight="0.5"
-                android:text="@string/day_month"
+                android:text="Time"
                 android:textColor="#ffff"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/text82"
                 android:layout_width="130dp"
-                android:layout_height="30dp"
-                android:textSize="20sp"
+                android:layout_height="40dp"
+                android:textSize="25sp"
                 android:textAlignment="center"
                 android:gravity="center_horizontal"
                 android:layout_weight="0.5"
-                android:text="@string/departure"
+                android:text="Errors"
                 android:textColor="#ffff"
                 android:textStyle="bold" />
 
@@ -191,5 +166,5 @@
 
     </LinearLayout>
 
-</LinearLayout>
 
+</LinearLayout>

@@ -33,3 +33,13 @@ data class DataResponseStation(
     var graph: String
 ): Serializable {}
 
+
+data class DataError(
+    var time :Array<String>,
+    var errors: Array<Float>,
+): Serializable {}
+
+data class DataErrorResponse(
+    var data: DataError,
+    var graph: String
+): Serializable {}

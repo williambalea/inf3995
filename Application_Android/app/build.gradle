@@ -70,8 +70,7 @@ dependencies {
     implementation "com.karumi:dexter:5.0.0"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-
-    // For tests     
+    // For tests
 
     // Required -- JUnit 4 framework
     testImplementation 'junit:junit:4.13.1'

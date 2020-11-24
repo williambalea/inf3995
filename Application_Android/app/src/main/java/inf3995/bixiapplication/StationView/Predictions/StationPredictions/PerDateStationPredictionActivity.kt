@@ -140,7 +140,6 @@ class PerDateStationPredictionActivity : AppCompatActivity() {
             val text0 = TextView(this)
             val text1= TextView(this)
             val text2= TextView(this)
-            val text3= TextView(this)
 
 
             // Set the heigth and width of the TextView
