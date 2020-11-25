@@ -25,7 +25,7 @@ def predictionUsage(station, groupby, startDate,endDate):
     predictions_df = engine3.load_prediction_df(station, startDate, endDate)
 
     print('predictions_df: ', predictions_df)
-    filtered_pred_df = engine3.filter_prediction(predictions_df, station, groupby, startDate, endDate)
+    filtered_pred_df = engine3.groupby_filter(predictions_df, groupby)
     print('filtered_pred_df: ', filtered_pred_df)
 
     print(filtered_pred_df)
@@ -38,14 +38,32 @@ def predictionUsage(station, groupby, startDate,endDate):
 
 @app.route('/engine3/prediction/error')
 def predictionError():
-    my_file = Path(engine3.PREDICTION_DF_PATH)
-    if my_file.is_file():
-        print('loading Pred_df')
-        # load the pred_df from disk
-        pred_df = pd.read_pickle(my_file)
+    rf_model_file = Path(engine3.RF_MODEL_PATH)
+    if rf_model_file.is_file():
+        print('rf_model exist so we can get prediction error')
+        pred_with_error_path = Path(engine3.PREDICTION_DF_ALL_2017_PATH)
+        if pred_with_error_path.is_file():
+            print('pred for 2017 with all station used for pred error exists!')
+            pred_df = pd.read_pickle(pred_with_error_path)
+        else:
+            print('generating pred for 2017 with all station used for pred')
+            pred_df = engine3.get_prediction('all', '15-04-2017', '30-09-2017')
+
+            pred_df.to_pickle(pred_with_error_path)
+        
+        print('getting pred error json')
         return engine3_pred_error.get_error_json(pred_df)
     else:
-        return 'ERROR: prediction not ready yet'
+        return "Training not done, please come back later"
+
+    # my_file = Path(engine3.PREDICTION_DF_PATH)
+    # if my_file.is_file():
+    #     print('loading Pred_df')
+    #     # load the pred_df from disk
+    #     pred_df = pd.read_pickle(my_file)
+    #     return engine3_pred_error.get_error_json(pred_df)
+    # else:
+    #     return 'ERROR: prediction not ready yet'
 
 
 @app.route('/engine3/testing/<station>/<startDate>/<endDate>')

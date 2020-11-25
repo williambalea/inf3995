@@ -15,8 +15,9 @@ class Engine3:
     prediction_errors = []
 
     PREDICTION_DF_PATH = "./tempFiles/prediction_df.pkl"
+    PREDICTION_DF_ALL_2017_PATH = "./tempFiles/pred_df_all_2017.pkl"
     TESTING_DF_PATH = "./tempFiles/testing_df.pkl"
-    RF_MODEL_PATH = "./tempFiles/rf_model3.sav"
+    RF_MODEL_PATH = "./tempFiles/rf_model.sav"
     CSV_PATH_TEMPERATURE = '../kaggleData/historical-hourly-weather-data/temperature.csv'
     NEW_CSV_WEATHER_PATH = '../kaggleData/historical-hourly-weather-data/weatherstats_montreal_hourly.csv'
     # CSV_PATH_WEATHER_DESC = '../kaggleData/historical-hourly-weather-data/weather_description.csv'
@@ -173,19 +174,6 @@ class Engine3:
         test_features = self.get_testing_df(station, startDate, endDate)
         print('testing DONE---------------------') 
 
-        # print('getting training df------------------')
-        # train_features = self.get_traning_df()
-        # print('getting training df DONE---------------------') 
-
-        # print('Convert NaN values to empty string')
-        # nan_value = float("NaN")
-        # train_features.replace("", nan_value, inplace=True)
-        # train_features.dropna(subset = ["temperature"], inplace=True)
-        # print('train_feature: ', train_features)
-        # train_labels = np.array(train_features['num_trips'])
-        # train_features = train_features.drop(['num_trips'], axis=1)
-
-
         print('test_feature: ', test_features)
         print('getting train/test labels')
         test_labels = np.array(test_features['num_trips'])
@@ -283,28 +271,6 @@ class Engine3:
         return df
         
     ##### Prediction Dataframe Filters
-    def filter_prediction(self, df,  station, groupby, startDate, endDate):
-        print('filtering...')
-        # #Filter station
-        # print('station filter')
-        # if str(station) != 'all':
-        #     df = df[df.start_station_code == int(station)].copy()
-        # elif str(station) == 'all':
-        #     print('TODO')
-        #     #groupby jusqua l<heure
-        #     #Filter Period
-
-
-        # print('period filter')
-        # df = self.period_filter(df, startDate, endDate)
-        #Filter groupby
-        print('groupby filter')      
-        df = self.groupby_filter(df, groupby)
-
-        print('filtering DONE')
-        return df
-
-
     def period_filter(self, df, startDate, endDate):
         print('period filtering...')
         startDateObj = datetime.datetime.strptime(startDate, '%d-%m-%Y')
@@ -324,7 +290,6 @@ class Engine3:
         endMonth = endDateObj.month
         endDay = endDateObj.day
         
-
         # Get names of indexes for which column Age has value 30
         indexNames = df[ df['month'] < startMonth ].index
         
