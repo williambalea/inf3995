@@ -22,7 +22,7 @@ def predictionUsage(station, groupby, startDate,endDate):
     print('Dates')
     print(startDate)
     print(endDate)
-    predictions_df = engine3.load_prediction_df()
+    predictions_df = engine3.load_prediction_df(station, startDate, endDate)
 
     print('predictions_df: ', predictions_df)
     filtered_pred_df = engine3.filter_prediction(predictions_df, station, groupby, startDate, endDate)
@@ -47,3 +47,11 @@ def predictionError():
     else:
         return 'ERROR: prediction not ready yet'
 
+
+@app.route('/engine3/testing/<station>/<startDate>/<endDate>')
+def testing(station, startDate,endDate):
+    startDate = str(startDate)
+    endDate = str(endDate)
+    weather = engine3.get_testing_df(station, startDate, endDate)
+
+    return weather

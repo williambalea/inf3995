@@ -15,17 +15,15 @@ class Engine3:
     prediction_errors = []
 
     PREDICTION_DF_PATH = "./tempFiles/prediction_df.pkl"
-    RF_MODEL_PATH = "./tempFiles/rf_model.sav"
+    RF_MODEL_PATH = "./tempFiles/rf_model3.sav"
     CSV_PATH_TEMPERATURE = '../kaggleData/historical-hourly-weather-data/temperature.csv'
-    
-    print('wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww')
-    CSV_PATH_WEATHER_DESC = '../kaggleData/historical-hourly-weather-data/weather_description.csv'
-    print('wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww')
+    NEW_CSV_WEATHER_PATH = '../kaggleData/historical-hourly-weather-data/weatherstats_montreal_hourly.csv'
+    # CSV_PATH_WEATHER_DESC = '../kaggleData/historical-hourly-weather-data/weather_description.csv'
     CSV_PATH_WINDSPEED = '../kaggleData/historical-hourly-weather-data/wind_speed.csv'
     PRED_GRAPH_PATH = './tempFiles/predGraph.png'
     ERROR_JSON_PATH = './tempFiles/error_data_and_graph.json'
     ERROR_GRAPH_PATH = './tempFiles/errorGraph2.png'
-    RF_N_ESTIMATORS = 30
+    RF_N_ESTIMATORS = 10
     RF_RANDOM_STATE = 42
 
     def __init__(self):
@@ -42,31 +40,43 @@ class Engine3:
 
 
     def get_weather_df(self):
-        print('importing weather data')
-        weather_description = pd.read_csv(self.CSV_PATH_WEATHER_DESC, low_memory=False)
-        temperature = pd.read_csv(self.CSV_PATH_TEMPERATURE, low_memory=False, dtype={'Montreal':np.float32})
-        wind_speed = pd.read_csv(self.CSV_PATH_WINDSPEED, low_memory=False, dtype={'Montreal':np.float32})
+        # print('importing weather data')
+        # # weather_description = pd.read_csv(self.CSV_PATH_WEATHER_DESC, low_memory=False)
+        # temperature = pd.read_csv(self.CSV_PATH_TEMPERATURE, low_memory=False, dtype={'Montreal':np.float32})
+        # wind_speed = pd.read_csv(self.CSV_PATH_WINDSPEED, low_memory=False, dtype={'Montreal':np.float32})
 
-        print(weather_description.shape)
-        print('filter only montreal')
-        weather_description = weather_description.filter(items=['datetime','Montreal'])
-        temperature = temperature.filter(items=['datetime','Montreal']) #temp in  Kelvin
+        # # print(weather_description.shape)
+        # print('filter only montreal')
+        # # weather_description = weather_description.filter(items=['datetime','Montreal'])
+        # temperature = temperature.filter(items=['datetime','Montreal']) #temp in  Kelvin
 
-        wind_speed = wind_speed.filter(items=['datetime','Montreal'])
+        # wind_speed = wind_speed.filter(items=['datetime','Montreal'])
 
-        weather = (weather_description.merge(temperature, on='datetime').
-                                    merge(wind_speed, on='datetime'))
-        weather.columns = ['Datetime','Description', 'Temperature', 'Wind_speed']
-        weather['Temperature_C'] = weather['Temperature'] - 273.15 #temp in celcius
-        weather = weather.drop( ['Temperature'], axis=1)
+        # weather = (temperature.merge(wind_speed, on='datetime'))
+        # weather.columns = ['Datetime', 'Temperature', 'Wind_speed']
+        # weather['Temperature_C'] = weather['Temperature'] - 273.15 #temp in celcius
+        # weather = weather.drop( ['Temperature'], axis=1)
 
-        weather['Datetime'] = pd.to_datetime(weather['Datetime'])
+        # weather['Datetime'] = pd.to_datetime(weather['Datetime'])
 
-        weather = weather.sort_values(by = ['Datetime'])
+        # weather = weather.sort_values(by = ['Datetime'])
 
-        print('Weather_df done')
+        # print('Weather_df done')
 
-        print(weather.shape)
+        # print(weather.shape)
+        print('reading weather csv')
+        weather = pd.read_csv(self.NEW_CSV_WEATHER_PATH, low_memory=False, dtype={'date_time_local':str,
+                                                                                  'wind_speed':np.float32,
+                                                                                  'temperature':np.float32})
+        print('keeping only date, temperature and pressure')
+        weather = weather.filter(items=['date_time_local','wind_speed', 'temperature'])
+        print('date to datetime')
+        weather['date_time_local'] = pd.to_datetime(weather['date_time_local'])
+        print('sort by date')
+        weather = weather.sort_values(by = ['date_time_local'])
+        # weather['date_time_local'] = pd.to_datetime(weather['date_time_local'], format='%Y-%m-%d %H:%M:%S %Z')
+        print(weather)
+        print(weather.dtypes)
         return weather
 
     def merge_bixi_weather_df(self, bixi, weather):
@@ -76,7 +86,7 @@ class Engine3:
         df_complete = bixi.sort_values(by = ['start_date'])
         print('df_complete 2 adding merging of weather')
         df_complete = pd.merge_asof(df_complete, weather, left_on = 'start_date', 
-                                    right_on = 'Datetime', direction = 'nearest').drop('Datetime',  axis=1)
+                                    right_on = 'date_time_local', direction = 'nearest').drop('date_time_local',  axis=1)
         print(df_complete.columns)
         return df_complete
 
@@ -97,16 +107,34 @@ class Engine3:
         return self.prep_df_for_rf(big_bixi_df, weather_df)
         
 
-    def get_testing_df(self):
+    def get_testing_df(self, station, startDate, endDate):
+
+        startDateObj = datetime.datetime.strptime(startDate, '%d-%m-%Y')
+        startYear = startDateObj.year
+
         print('fetching csv data')
         bixi2017 = self.get_bixi_data_year(2017)
+        
         weather = self.get_weather_df()
 
-        #filtre de periode
+        full_year_df = self.prep_df_for_rf(bixi2017, weather)
 
         #filtre de station
+        print('df before station filter')
+        print(full_year_df)
+        print('station filtering...')
+        if str(station) != 'all':
+            full_year_df = full_year_df[full_year_df.start_station_code == int(station)].copy()
+        elif str(station) == 'all':
+            print('TODO')
+            
+        #filtre de periode
+        print('filtering bixi _period... ')
+        print(full_year_df)
+        bixi2017_period_filtered = self.period_filter(full_year_df, startDate, endDate)
 
-        return self.prep_df_for_rf(bixi2017, weather)
+        print(bixi2017_period_filtered)
+        return bixi2017_period_filtered
 
 
     def prep_df_for_rf(self, bixi_df, weather_df):
@@ -131,7 +159,7 @@ class Engine3:
         # df_grouped = df.groupby(['year','month', 'day', 'hour']).agg('first')
         # column = df.groupby(['year','month', 'day', 'hour']).count()['Description']
         df_grouped = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).agg('first')
-        column = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).count()['Description']
+        column = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).count()['temperature']
         
         df_grouped['num_trips']= column
         df_grouped = df_grouped.reset_index()
@@ -153,17 +181,30 @@ class Engine3:
         return df_grouped
 
 
-    def get_prediction(self):
+    def get_prediction(self, station, startDate, endDate):
         print('testing---------------------') 
-        test_features = self.get_testing_df()
+        test_features = self.get_testing_df(station, startDate, endDate)
+        print(test_features)
+        print('testing DONE---------------------') 
 
         print('traning------------------')
         train_features = self.get_traning_df()
+        print(train_features)
+        print('traning DONE---------------------') 
 
-        # Add missing  columns from/to each dataframe
-        col_list = (test_features.append([train_features])).columns.tolist()
-        test_features = test_features.reindex(columns = col_list,  fill_value=0)
-        train_features = train_features.reindex(columns = col_list,  fill_value=0)
+        #notusefulyet# Add missing  columns from/to each dataframe
+        # col_list = (test_features.append([train_features])).columns.tolist()
+        # test_features = test_features.reindex(columns = col_list,  fill_value=0)
+        # train_features = train_features.reindex(columns = col_list,  fill_value=0)
+
+
+        print('Convert NaN values to empty string')
+        nan_value = float("NaN")
+        train_features.replace("", nan_value, inplace=True)
+        train_features.dropna(subset = ["temperature"], inplace=True)
+
+        print(train_features.dtypes)
+        print(train_features.shape)
 
         print('test_feature: ', test_features)
         print('train_feature: ', train_features)
@@ -228,6 +269,18 @@ class Engine3:
             #instantiate model with 1000 decision trees
             loaded_rf = RandomForestRegressor(n_estimators = self.RF_N_ESTIMATORS, random_state = self.RF_RANDOM_STATE, n_jobs=1)
             print('Fit calculating...')
+
+            # print('Convert NaN values to empty string')
+            # nan_value = float("NaN")
+            # train_f.replace("", nan_value, inplace=True)
+            # train_f.dropna(subset = ["temperature"], inplace=True)
+
+            print(train_f.dtypes)
+            print(train_f.shape)
+            #print(train_f.isnull().sum().sum())
+            count_nan_in_df = train_f.isnull().sum()
+            print(count_nan_in_df)
+            print('fitting...')
             loaded_rf.fit(train_f, train_l)
             print('Fit DONE')
 
@@ -237,7 +290,7 @@ class Engine3:
 
         return loaded_rf
 
-    def load_prediction_df(self):#load dataframe from file or generate it if desn't exist
+    def load_prediction_df(self, station, startDate, endDate):#load dataframe from file or generate it if desn't exist
         my_file = Path(self.PREDICTION_DF_PATH)
         if my_file.is_file():
             print('loading Pred_df')
@@ -245,7 +298,7 @@ class Engine3:
             df = pd.read_pickle(my_file)
         else:
             print('getting pred_df')
-            df = self.get_prediction()
+            df = self.get_prediction(station, startDate, endDate)
             print('this is the pred df:', df)
             print('saving pred_df')
             df.to_pickle(my_file)
@@ -254,18 +307,18 @@ class Engine3:
     ##### Prediction Dataframe Filters
     def filter_prediction(self, df,  station, groupby, startDate, endDate):
         print('filtering...')
-        #Filter station
-        print('station filter')
-        if str(station) != 'all':
-            df = df[df.start_station_code == int(station)].copy()
-        elif str(station) == 'all':
-            print('TODO')
-            #groupby jusqua l<heure
-            #Filter Period
+        # #Filter station
+        # print('station filter')
+        # if str(station) != 'all':
+        #     df = df[df.start_station_code == int(station)].copy()
+        # elif str(station) == 'all':
+        #     print('TODO')
+        #     #groupby jusqua l<heure
+        #     #Filter Period
 
 
-        print('period filter')
-        df = self.period_filter(df, startDate, endDate)
+        # print('period filter')
+        # df = self.period_filter(df, startDate, endDate)
         #Filter groupby
         print('groupby filter')      
         df = self.groupby_filter(df, groupby)
@@ -292,6 +345,9 @@ class Engine3:
         endYear = endDateObj.year
         endMonth = endDateObj.month
         endDay = endDateObj.day
+
+        print('Problem here!. Also voici le dataframe:')
+        print(df)
 
         # Get names of indexes for which column Age has value 30
         indexNames = df[ df['month'] < startMonth ].index
