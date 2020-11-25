@@ -50,8 +50,6 @@ class MainScreenActivity : AppCompatActivity() {
     private lateinit var btn2: Button
     private lateinit var btn3: Button
     private lateinit var btn4: Button
-    private lateinit var btn5: Button
-    private lateinit var btn6: Button
     private lateinit var jObj: ConnectivityData
     val dialog1 = IpAddressDialog()
     val dialog2 = EngineConnectivityStatusDialog()

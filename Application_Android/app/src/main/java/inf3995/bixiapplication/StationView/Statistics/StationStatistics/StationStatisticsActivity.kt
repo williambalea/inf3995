@@ -95,7 +95,7 @@ class StationStatisticsActivity : AppCompatActivity() {
 
         MainScreenActivity.listen.observe(this, Observer {
 
-            if(it[1] == "DOWN"){
+            if(it[0] == "DOWN"|| it[1] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 2")
                 builder.show().setOnDismissListener {

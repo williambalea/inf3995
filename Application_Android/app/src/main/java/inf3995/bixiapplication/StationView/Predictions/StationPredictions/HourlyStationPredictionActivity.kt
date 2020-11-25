@@ -83,7 +83,7 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
 
         MainScreenActivity.listen.observe(this, Observer {
 
-            if(it[2] == "DOWN"){
+            if(it[0] == "DOWN"|| it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
                 builder.show().setOnDismissListener {
