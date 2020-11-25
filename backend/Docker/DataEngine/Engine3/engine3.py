@@ -17,7 +17,7 @@ class Engine3:
     PREDICTION_DF_PATH = "./tempFiles/prediction_df.pkl"
     PREDICTION_DF_ALL_2017_PATH = "./tempFiles/pred_df_all_2017.pkl"
     TESTING_DF_PATH = "./tempFiles/testing_df.pkl"
-    RF_MODEL_PATH = "./tempFiles/rf_model.sav"
+    RF_MODEL_PATH = "./tempFiles/rf_model3.sav"
     CSV_PATH_TEMPERATURE = '../kaggleData/historical-hourly-weather-data/temperature.csv'
     NEW_CSV_WEATHER_PATH = '../kaggleData/historical-hourly-weather-data/weatherstats_montreal_hourly.csv'
     # CSV_PATH_WEATHER_DESC = '../kaggleData/historical-hourly-weather-data/weather_description.csv'
@@ -196,8 +196,9 @@ class Engine3:
         print(predictions)
         print('errors:')
         print(errors)
-        print('Mean Absolute Error:', round(np.mean(errors), 2), 'departs.')
 
+        print('Accuracy in get_pred 1-------------------------------------------------------1')
+        print('Mean Absolute Error:', round(np.mean(errors), 2), 'departs.')
         # Calculate mean absolute percentage error (MAPE)
         mape = 100 * (errors / test_labels)# Calculate and display accuracy
         accuracy = 100 - np.mean(mape)

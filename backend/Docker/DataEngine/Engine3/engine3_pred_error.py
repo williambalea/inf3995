@@ -39,6 +39,14 @@ class Engine3_Pred_Error:
 		print('1.3.1.generation of error json...')
 		# pred_df = self.load_prediction_df()
 		# temp_df = self.groupby_filter(pred_df, 'perDate')
+
+		print('Accuracy in pred_error -------------------------------------------------------')
+		errors_accuracy = pred_df['predictions'].values - pred_df['test_labels'].values
+		# Calculate mean absolute percentage error (MAPE)
+		mape = 100 * (abs(errors_accuracy) / pred_df['test_labels'].values)# Calculate and display accuracy
+		pred_accuracy = round(100 - np.mean(mape), 2)
+		print('Accuracy:', pred_accuracy, '%.')
+
 		print('1.3.2.loading prediction...')
 		print('loading prediction DONE')
 		pred_df = pred_df.groupby(['month', 'day', 'hour']).agg({'predictions': 'sum', 'test_labels': 'sum'})
@@ -46,11 +54,6 @@ class Engine3_Pred_Error:
 
 		print('1.3.3.calculating prediction errors...')
 		errors = pred_df['predictions'].values - pred_df['test_labels'].values
-
-		# # Calculate mean absolute percentage error (MAPE)
-		# mape = 100 * (abs(errors) / temp_df['test_labels'].values)# Calculate and display accuracy
-		# accuracy = 100 - np.mean(mape)
-		# print('Accuracy:', round(accuracy, 2), '%.')
 
 		# print('dataframe lenght: ')
 		# print(len(temp_df['predictions']))
@@ -101,19 +104,20 @@ class Engine3_Pred_Error:
 			# plt.show()
 
 
-		finalJson = self.datatoJSON_error(plt2, xAxis, errors)
+		finalJson = self.datatoJSON_error(plt2, xAxis, errors, pred_accuracy)
 
 		print('generation of error json DONE')
 		return finalJson
 
 
-	def datatoJSON_error(self, graph, x, y):
+	def datatoJSON_error(self, graph, x, y, precision):
 		print('1.3.6.converting data and graph to JSON...', flush=True)
 		graphString = self.toBase64_error()
 
-		myJson =  '{  "data":{ "time":[], "errors":[] }, "graph":[] }'
+		myJson =  '{  "data":{ "precision":[], "time":[], "errors":[] }, "graph":[] }'
 
 		o = json.loads(myJson)
+		o["data"]["precision"] = precision
 		o["data"]["time"] = x[0:len(x)].tolist()
 		o["data"]["errors"] = y.tolist()
 		o["graph"] = graphString
