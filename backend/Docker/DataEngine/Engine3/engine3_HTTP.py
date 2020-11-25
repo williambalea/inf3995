@@ -7,9 +7,7 @@ app = Flask(__name__)
 
 engine3 = Engine3()
 engine3_pred_error = Engine3_Pred_Error()
-# $ export FLASK_APP=hello.py
-# export FLASK_ENV=development
-# $ flask run
+
 @app.route('/engine3')
 def hello_world():
     return 'Hello World from Engin 3'
@@ -18,8 +16,8 @@ def hello_world():
 def predictionUsage(station, groupby, startDate,endDate):
     startDate = str(startDate)
     endDate = str(endDate)
-    predictions_df = engine3.load_prediction_df()
-    filtered_pred_df = engine3.filter_prediction(predictions_df, station, groupby, startDate, endDate)
+    predictions_df = engine3.load_prediction_df(station, startDate, endDate)
+    filtered_pred_df = engine3.groupby_filter(predictions_df, groupby)
     x = engine3.get_graph_X(filtered_pred_df, groupby)
     y = engine3.get_graph_Y(filtered_pred_df)
     pred_graph = engine3.get_prediction_graph( groupby, x, y)
@@ -27,11 +25,16 @@ def predictionUsage(station, groupby, startDate,endDate):
 
 @app.route('/engine3/prediction/error')
 def predictionError():
-    my_file = Path(engine3.PREDICTION_DF_PATH)
-    if my_file.is_file():
-        # load the pred_df from disk
-        pred_df = pd.read_pickle(my_file)
+    rf_model_file = Path(engine3.RF_MODEL_PATH)
+    if rf_model_file.is_file():
+        pred_with_error_path = Path(engine3.PREDICTION_DF_ALL_2017_PATH)
+        if pred_with_error_path.is_file():
+            pred_df = pd.read_pickle(pred_with_error_path)
+        else:
+            pred_df = engine3.get_prediction('all', '15-04-2017', '30-09-2017')
+
+            pred_df.to_pickle(pred_with_error_path)
+        
         return engine3_pred_error.get_error_json(pred_df)
     else:
-        return 'ERROR: prediction not ready yet'
-
+        return "Training not done, please come back later"
