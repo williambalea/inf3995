@@ -40,51 +40,21 @@ class Engine3:
 
 
     def get_weather_df(self):
-        # print('importing weather data')
-        # # weather_description = pd.read_csv(self.CSV_PATH_WEATHER_DESC, low_memory=False)
-        # temperature = pd.read_csv(self.CSV_PATH_TEMPERATURE, low_memory=False, dtype={'Montreal':np.float32})
-        # wind_speed = pd.read_csv(self.CSV_PATH_WINDSPEED, low_memory=False, dtype={'Montreal':np.float32})
-
-        # # print(weather_description.shape)
-        # print('filter only montreal')
-        # # weather_description = weather_description.filter(items=['datetime','Montreal'])
-        # temperature = temperature.filter(items=['datetime','Montreal']) #temp in  Kelvin
-
-        # wind_speed = wind_speed.filter(items=['datetime','Montreal'])
-
-        # weather = (temperature.merge(wind_speed, on='datetime'))
-        # weather.columns = ['Datetime', 'Temperature', 'Wind_speed']
-        # weather['Temperature_C'] = weather['Temperature'] - 273.15 #temp in celcius
-        # weather = weather.drop( ['Temperature'], axis=1)
-
-        # weather['Datetime'] = pd.to_datetime(weather['Datetime'])
-
-        # weather = weather.sort_values(by = ['Datetime'])
-
-        # print('Weather_df done')
-
-        # print(weather.shape)
         print('reading weather csv')
         weather = pd.read_csv(self.NEW_CSV_WEATHER_PATH, low_memory=False, dtype={'date_time_local':str,
                                                                                   'wind_speed':np.float32,
                                                                                   'temperature':np.float32})
-        print('keeping only date, temperature and pressure')
         weather = weather.filter(items=['date_time_local','wind_speed', 'temperature'])
-        print('date to datetime')
         weather['date_time_local'] = pd.to_datetime(weather['date_time_local'])
-        print('sort by date')
         weather = weather.sort_values(by = ['date_time_local'])
         # weather['date_time_local'] = pd.to_datetime(weather['date_time_local'], format='%Y-%m-%d %H:%M:%S %Z')
-        print(weather)
-        print(weather.dtypes)
         return weather
 
     def merge_bixi_weather_df(self, bixi, weather):
         print('bixi columns')
         print(bixi.columns)
-        print('df_complete 1 sorting values by startdate')
         df_complete = bixi.sort_values(by = ['start_date'])
-        print('df_complete 2 adding merging of weather')
+        print('Merging bixi and weather df')
         df_complete = pd.merge_asof(df_complete, weather, left_on = 'start_date', 
                                     right_on = 'date_time_local', direction = 'nearest').drop('date_time_local',  axis=1)
         print(df_complete.columns)
@@ -108,39 +78,31 @@ class Engine3:
         
 
     def get_testing_df(self, station, startDate, endDate):
-
         startDateObj = datetime.datetime.strptime(startDate, '%d-%m-%Y')
         startYear = startDateObj.year
-
-        print('fetching csv data')
+        print('fetching bixi 2017 data')
         bixi2017 = self.get_bixi_data_year(2017)
 
         #get proper year for testing prediction
         if str(startYear) != '2017':
-            print('im in :)')
             year_offset = startYear - 2017 
             bixi2017['start_date'] = bixi2017['start_date'] + pd.DateOffset(years=year_offset)
-
         weather = self.get_weather_df()
-        full_year_df = self.prep_df_for_rf(bixi2017, weather)
+        testing_df_unfiltered = self.prep_df_for_rf(bixi2017, weather)
 
         #filtre de station
-        print('df before station filter')
-        print(full_year_df)
         print('station filtering...')
         if str(station) != 'all':
-            full_year_df = full_year_df[full_year_df.start_station_code == int(station)].copy()
+            testing_df_unfiltered = testing_df_unfiltered[testing_df_unfiltered.start_station_code == int(station)].copy()
         elif str(station) == 'all':
             print('TODO')
 
-
         #filtre de periode
         print('filtering bixi_period... ')
-        print(full_year_df)
-        bixi2017_period_filtered = self.period_filter(full_year_df, startDate, endDate)
+        print(testing_df_unfiltered)
+        testing_df = self.period_filter(testing_df_unfiltered, startDate, endDate)
 
-        print(bixi2017_period_filtered)
-        return bixi2017_period_filtered
+        return testing_df
 
 
     def prep_df_for_rf(self, bixi_df, weather_df):
@@ -190,27 +152,16 @@ class Engine3:
     def get_prediction(self, station, startDate, endDate):
         print('testing---------------------') 
         test_features = self.get_testing_df(station, startDate, endDate)
-        print(test_features)
         print('testing DONE---------------------') 
 
-        print('traning------------------')
+        print('training------------------')
         train_features = self.get_traning_df()
-        print(train_features)
-        print('traning DONE---------------------') 
-
-        #notusefulyet# Add missing  columns from/to each dataframe
-        # col_list = (test_features.append([train_features])).columns.tolist()
-        # test_features = test_features.reindex(columns = col_list,  fill_value=0)
-        # train_features = train_features.reindex(columns = col_list,  fill_value=0)
-
+        print('training DONE---------------------') 
 
         print('Convert NaN values to empty string')
         nan_value = float("NaN")
         train_features.replace("", nan_value, inplace=True)
         train_features.dropna(subset = ["temperature"], inplace=True)
-
-        print(train_features.dtypes)
-        print(train_features.shape)
 
         print('test_feature: ', test_features)
         print('train_feature: ', train_features)
@@ -225,16 +176,11 @@ class Engine3:
         print('Training Labels Shape:', train_labels.shape)
         print('Testing Features Shape:', test_features.shape)
         print('Testing Labels Shape:', test_labels.shape)
-        #not used yet... prbly to delete
-        feature_list = list(test_features.columns)
         
         #get Random forest model        
         loaded_rf = self.get_random_forest_model(train_labels, train_features)
 
-        
         # Use the forest's predict method on the test data
-        print(' no more weather_descripwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww')
-        print(test_features)
         predictions = loaded_rf.predict(test_features)
         print('prediction: ', predictions)
         # Calculate the absolute errors
@@ -258,7 +204,6 @@ class Engine3:
         test_features.drop(test_features.columns.difference(['year', 'month', 'day', 'hour', 'start_station_code',
                                        'weekday', 'weekofyear', 'predictions', 'test_labels'
                                        ]), 1, inplace=True)
-        print(test_features)
 
         return test_features
 
@@ -272,14 +217,9 @@ class Engine3:
             loaded_rf = pickle.load(open(my_file, 'rb'))
             print('loading model DONE')
         else:
-            #instantiate model with 1000 decision trees
+            #instantiate model with some decision trees
             loaded_rf = RandomForestRegressor(n_estimators = self.RF_N_ESTIMATORS, random_state = self.RF_RANDOM_STATE, n_jobs=1)
             print('Fit calculating...')
-
-            # print('Convert NaN values to empty string')
-            # nan_value = float("NaN")
-            # train_f.replace("", nan_value, inplace=True)
-            # train_f.dropna(subset = ["temperature"], inplace=True)
 
             print(train_f.dtypes)
             print(train_f.shape)
