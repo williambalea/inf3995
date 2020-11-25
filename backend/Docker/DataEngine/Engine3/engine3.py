@@ -114,9 +114,14 @@ class Engine3:
 
         print('fetching csv data')
         bixi2017 = self.get_bixi_data_year(2017)
-        
-        weather = self.get_weather_df()
 
+        #get proper year for testing prediction
+        if str(startYear) != '2017':
+            print('im in :)')
+            year_offset = startYear - 2017 
+            bixi2017['start_date'] = bixi2017['start_date'] + pd.DateOffset(years=year_offset)
+
+        weather = self.get_weather_df()
         full_year_df = self.prep_df_for_rf(bixi2017, weather)
 
         #filtre de station
@@ -127,9 +132,10 @@ class Engine3:
             full_year_df = full_year_df[full_year_df.start_station_code == int(station)].copy()
         elif str(station) == 'all':
             print('TODO')
-            
+
+
         #filtre de periode
-        print('filtering bixi _period... ')
+        print('filtering bixi_period... ')
         print(full_year_df)
         bixi2017_period_filtered = self.period_filter(full_year_df, startDate, endDate)
 
@@ -332,8 +338,8 @@ class Engine3:
         startDateObj = datetime.datetime.strptime(startDate, '%d-%m-%Y')
         endDateObj = datetime.datetime.strptime(endDate, '%d-%m-%Y')
 
-        minDate = datetime.datetime(2017, 4, 15)
-        maxDate = datetime.datetime(2017, 9, 30)
+        minDate = datetime.datetime(startDateObj.year, 4, 15)
+        maxDate = datetime.datetime(endDateObj.year, 9, 30)
         if startDateObj < minDate:
             startDateObj = minDate
         if endDateObj > maxDate:
@@ -345,13 +351,11 @@ class Engine3:
         endYear = endDateObj.year
         endMonth = endDateObj.month
         endDay = endDateObj.day
-
-        print('Problem here!. Also voici le dataframe:')
-        print(df)
+        
 
         # Get names of indexes for which column Age has value 30
         indexNames = df[ df['month'] < startMonth ].index
-        print(indexNames)
+        
         df.drop(indexNames , inplace=True)
         # print('indexNames: ', indexNames)
         indexNames = (df[ (df['month'] == startMonth) & (df['day'] < startDay)].index)
