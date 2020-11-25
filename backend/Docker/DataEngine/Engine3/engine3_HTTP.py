@@ -52,6 +52,5 @@ def predictionError():
 def testing(station, startDate,endDate):
     startDate = str(startDate)
     endDate = str(endDate)
-    weather = engine3.get_testing_df(station, startDate, endDate)
-
-    return weather
+    path = engine3.get_testing_df(station, startDate, endDate)
+    return path

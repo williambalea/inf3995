@@ -15,6 +15,7 @@ class Engine3:
     prediction_errors = []
 
     PREDICTION_DF_PATH = "./tempFiles/prediction_df.pkl"
+    TESTING_DF_PATH = "./tempFiles/testing_df.pkl"
     RF_MODEL_PATH = "./tempFiles/rf_model3.sav"
     CSV_PATH_TEMPERATURE = '../kaggleData/historical-hourly-weather-data/temperature.csv'
     NEW_CSV_WEATHER_PATH = '../kaggleData/historical-hourly-weather-data/weatherstats_montreal_hourly.csv'
@@ -80,16 +81,31 @@ class Engine3:
     def get_testing_df(self, station, startDate, endDate):
         startDateObj = datetime.datetime.strptime(startDate, '%d-%m-%Y')
         startYear = startDateObj.year
-        print('fetching bixi 2017 data')
-        bixi2017 = self.get_bixi_data_year(2017)
 
-        #get proper year for testing prediction
-        if str(startYear) != '2017':
-            year_offset = startYear - 2017 
-            bixi2017['start_date'] = bixi2017['start_date'] + pd.DateOffset(years=year_offset)
-        weather = self.get_weather_df()
-        testing_df_unfiltered = self.prep_df_for_rf(bixi2017, weather)
+        path_year = self.TESTING_DF_PATH
+        path_year = path_year.replace('.pkl', '_' + str(startYear) + '.pkl')
+        my_file = Path(path_year)
+        if my_file.is_file():
+            print('loading testing df', str(startYear))
+            # load the pred_df from disk
+            testing_df_unfiltered = pd.read_pickle(my_file)
+        else:
+            print('generating testing df', str(startYear))
+            print('fetching bixi 2017 data')
+            bixi2017 = self.get_bixi_data_year(2017)
 
+            #changing year for testing prediction
+            if str(startYear) != '2017':
+                year_offset = startYear - 2017
+                bixi2017['start_date'] = bixi2017['start_date'] + pd.DateOffset(years=year_offset)
+            
+            weather = self.get_weather_df()
+            testing_df_unfiltered = self.prep_df_for_rf(bixi2017, weather)
+            print(testing_df_unfiltered)
+            testing_df_unfiltered.to_pickle(my_file)
+        
+
+        print(testing_df_unfiltered)
         #filtre de station
         print('station filtering...')
         if str(station) != 'all':
@@ -97,11 +113,14 @@ class Engine3:
         elif str(station) == 'all':
             print('TODO')
 
+
+        print(testing_df_unfiltered)
         #filtre de periode
         print('filtering bixi_period... ')
-        print(testing_df_unfiltered)
         testing_df = self.period_filter(testing_df_unfiltered, startDate, endDate)
 
+        print('station: ', station)
+        print(testing_df)
         return testing_df
 
 
@@ -154,31 +173,29 @@ class Engine3:
         test_features = self.get_testing_df(station, startDate, endDate)
         print('testing DONE---------------------') 
 
-        print('training------------------')
-        train_features = self.get_traning_df()
-        print('training DONE---------------------') 
+        # print('getting training df------------------')
+        # train_features = self.get_traning_df()
+        # print('getting training df DONE---------------------') 
 
-        print('Convert NaN values to empty string')
-        nan_value = float("NaN")
-        train_features.replace("", nan_value, inplace=True)
-        train_features.dropna(subset = ["temperature"], inplace=True)
+        # print('Convert NaN values to empty string')
+        # nan_value = float("NaN")
+        # train_features.replace("", nan_value, inplace=True)
+        # train_features.dropna(subset = ["temperature"], inplace=True)
+        # print('train_feature: ', train_features)
+        # train_labels = np.array(train_features['num_trips'])
+        # train_features = train_features.drop(['num_trips'], axis=1)
+
 
         print('test_feature: ', test_features)
-        print('train_feature: ', train_features)
-
         print('getting train/test labels')
         test_labels = np.array(test_features['num_trips'])
-        train_labels = np.array(train_features['num_trips'])
         test_features = test_features.drop(['num_trips'], axis=1)
-        train_features = train_features.drop(['num_trips'], axis=1)
 
-        print('Training Features Shape:', train_features.shape)
-        print('Training Labels Shape:', train_labels.shape)
         print('Testing Features Shape:', test_features.shape)
         print('Testing Labels Shape:', test_labels.shape)
         
         #get Random forest model        
-        loaded_rf = self.get_random_forest_model(train_labels, train_features)
+        loaded_rf = self.get_random_forest_model()
 
         # Use the forest's predict method on the test data
         predictions = loaded_rf.predict(test_features)
@@ -209,7 +226,7 @@ class Engine3:
 
 
     #####Loading or making Prediction and RandomFor Model
-    def get_random_forest_model(self, train_l, train_f):
+    def get_random_forest_model(self):
         my_file = Path(self.RF_MODEL_PATH)
         if my_file.is_file():
             print('loading model...')
@@ -217,17 +234,31 @@ class Engine3:
             loaded_rf = pickle.load(open(my_file, 'rb'))
             print('loading model DONE')
         else:
+            print('getting training df------------------')
+            train_features = self.get_traning_df()
+            print('getting training df DONE---------------------') 
+
+            print('Convert NaN values to empty string')
+            nan_value = float("NaN")
+            train_features.replace("", nan_value, inplace=True)
+            train_features.dropna(subset = ["temperature"], inplace=True)
+            print('train_feature: ', train_features)
+            train_labels = np.array(train_features['num_trips'])
+            train_features = train_features.drop(['num_trips'], axis=1)
+
             #instantiate model with some decision trees
             loaded_rf = RandomForestRegressor(n_estimators = self.RF_N_ESTIMATORS, random_state = self.RF_RANDOM_STATE, n_jobs=1)
             print('Fit calculating...')
 
-            print(train_f.dtypes)
-            print(train_f.shape)
+            print(train_features.dtypes)
+            print(train_features.shape)
+            #removing NotANumber
             #print(train_f.isnull().sum().sum())
-            count_nan_in_df = train_f.isnull().sum()
+            count_nan_in_df = train_features.isnull().sum()
             print(count_nan_in_df)
+
             print('fitting...')
-            loaded_rf.fit(train_f, train_l)
+            loaded_rf.fit(train_features, train_labels)
             print('Fit DONE')
 
             print('saving model')
@@ -237,6 +268,7 @@ class Engine3:
         return loaded_rf
 
     def load_prediction_df(self, station, startDate, endDate):#load dataframe from file or generate it if desn't exist
+
         my_file = Path(self.PREDICTION_DF_PATH)
         if my_file.is_file():
             print('loading Pred_df')
@@ -247,7 +279,7 @@ class Engine3:
             df = self.get_prediction(station, startDate, endDate)
             print('this is the pred df:', df)
             print('saving pred_df')
-            df.to_pickle(my_file)
+            # df.to_pickle(my_file)
         return df
         
     ##### Prediction Dataframe Filters
