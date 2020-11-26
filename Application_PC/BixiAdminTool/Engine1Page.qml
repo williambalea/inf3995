@@ -15,6 +15,8 @@ Page {
         user: backend.user
         pass: backend.pass
 
+        Component.onCompleted: startTimer()
+
         onLogChanged: {
             var t = "";
             var i = "";
@@ -28,7 +30,7 @@ Page {
 
                 i = "data:image/png;base64," + logParts[logParts.length - 1];
             }
-
+            if (t.length === 0) return;
             elements.insert(0, {
                 logText: t,
                 image: i,
@@ -62,12 +64,8 @@ Page {
                 width: listViewContenant.width
                 height: childrenRect.height
                 clip: true
-                border.color: "#7b7b7b"
-                border.width: 2
-                radius: 5
                 Text{
                     width: parent.width
-                    padding: 5
                     text: logText
                     wrapMode: Text.WordWrap
                 }

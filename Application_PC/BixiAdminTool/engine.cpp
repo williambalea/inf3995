@@ -16,12 +16,16 @@ Engine::Engine(QObject *parent) : QObject(parent) {
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(getLogs()));
-    timer->start(CHECK_ENGINE_INTERVALL);
 }
 
 Engine::~Engine() {
     delete man;
     delete timer;
+}
+
+void Engine::startTimer() {
+    getLogs();
+    timer->start(CHECK_ENGINE_INTERVALL);
 }
 
 void Engine::getLogs() {
@@ -44,7 +48,7 @@ void Engine::logsReplyHandler(int code, QByteArray replyRead) {
     if (code != HTTP_OK) return;
     QJsonDocument jsonResponse = QJsonDocument::fromJson(replyRead);
     QJsonArray body = jsonResponse.array();
-    bytesReceived = body.at(0).toObject().value(JSON_BYTES_NB).toInt();
+    bytesReceived += body.at(0).toObject().value(JSON_BYTES_NB).toInt();
     int max = body.size();
     for (int i = 1; i < max; i++) {
         QString data = body.at(i).toObject().value(JSON_LOGS).toString();

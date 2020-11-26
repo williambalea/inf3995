@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.0
 import custom.classes 1.0
 
 Page {
-    id: engine2Page
+    id: engine1Page
     width: applicationWindow.width
     height: applicationWindow.height - 86
 
@@ -14,6 +14,8 @@ Page {
         host: backend.host
         user: backend.user
         pass: backend.pass
+
+        Component.onCompleted: startTimer()
 
         onLogChanged: {
             var t = "";
@@ -28,7 +30,7 @@ Page {
 
                 i = "data:image/png;base64," + logParts[logParts.length - 1];
             }
-
+            if (t.length === 0) return;
             elements.insert(0, {
                 logText: t,
                 image: i,
@@ -36,7 +38,7 @@ Page {
             });
         }
     }
-    
+
     Rectangle {
         id: listViewContenant
         x: 5
@@ -44,7 +46,7 @@ Page {
         width: parent.width - 10
         height: parent.height - 10
         radius: 5
-        
+
         ListView {
             id: listView
             anchors.fill: parent
@@ -54,20 +56,16 @@ Page {
             ScrollBar.vertical: ScrollBar {}
             model: ListModel {
                 id: elements
-                
+
             }
-            
+
             delegate: Rectangle {
                 id: rectangle
                 width: listViewContenant.width
                 height: childrenRect.height
                 clip: true
-                border.color: "#7b7b7b"
-                border.width: 2
-                radius: 5
                 Text{
                     width: parent.width
-                    padding: 5
                     text: logText
                     wrapMode: Text.WordWrap
                 }
@@ -79,11 +77,11 @@ Page {
                     color: "transparent"
                     Image {
                         source: image
-                        anchors.leftMargin: 10
-                        anchors.bottomMargin: 0
-                        anchors.topMargin: 0
+                        anchors.leftMargin: 5
+                        anchors.bottomMargin: 5
+                        anchors.topMargin: 5
                         fillMode: Image.PreserveAspectFit
-                        width: 498
+                        width: 490
                         anchors.left: parent.left
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
@@ -92,8 +90,14 @@ Page {
             }
         }
     }
-    
+
     background: Rectangle {
         color: "#E1E2E1"
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;formeditorZoom:0.5;height:480;width:640}
+}
+##^##*/

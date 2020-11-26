@@ -20,6 +20,8 @@ public:
     explicit Engine(QObject *parent = nullptr);
     ~Engine();
 
+    Q_INVOKABLE void startTimer();
+
 signals:
     void idChanged();
     void hostChanged();

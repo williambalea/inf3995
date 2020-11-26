@@ -4,9 +4,8 @@ import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.0
 import custom.classes 1.0
 
-
 Page {
-    id: engine3Page
+    id: engine1Page
     width: applicationWindow.width
     height: applicationWindow.height - 86
 
@@ -15,6 +14,8 @@ Page {
         host: backend.host
         user: backend.user
         pass: backend.pass
+
+        Component.onCompleted: startTimer()
 
         onLogChanged: {
             var t = "";
@@ -29,7 +30,7 @@ Page {
 
                 i = "data:image/png;base64," + logParts[logParts.length - 1];
             }
-
+            if (t.length === 0) return;
             elements.insert(0, {
                 logText: t,
                 image: i,
@@ -37,7 +38,7 @@ Page {
             });
         }
     }
-    
+
     Rectangle {
         id: listViewContenant
         x: 5
@@ -45,7 +46,7 @@ Page {
         width: parent.width - 10
         height: parent.height - 10
         radius: 5
-        
+
         ListView {
             id: listView
             anchors.fill: parent
@@ -55,20 +56,16 @@ Page {
             ScrollBar.vertical: ScrollBar {}
             model: ListModel {
                 id: elements
-                
+
             }
-            
+
             delegate: Rectangle {
                 id: rectangle
                 width: listViewContenant.width
                 height: childrenRect.height
                 clip: true
-                border.color: "#7b7b7b"
-                border.width: 2
-                radius: 5
                 Text{
                     width: parent.width
-                    padding: 5
                     text: logText
                     wrapMode: Text.WordWrap
                 }
@@ -93,8 +90,14 @@ Page {
             }
         }
     }
-    
+
     background: Rectangle {
         color: "#E1E2E1"
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;formeditorZoom:0.5;height:480;width:640}
+}
+##^##*/
