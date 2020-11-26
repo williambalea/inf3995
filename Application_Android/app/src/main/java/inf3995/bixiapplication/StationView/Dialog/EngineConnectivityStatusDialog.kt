@@ -1,4 +1,4 @@
-package inf3995.bixiapplication.Dialog
+package inf3995.bixiapplication.StationView.Dialog
 
 import android.graphics.Color
 import android.os.Bundle

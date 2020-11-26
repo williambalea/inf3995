@@ -11,15 +11,12 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import inf3995.bixiapplication.Data.ConnectivityData
-import inf3995.bixiapplication.Dialog.EngineConnectivityStatusDialog
+import inf3995.bixiapplication.StationView.Dialog.EngineConnectivityStatusDialog
 import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
 import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
 import inf3995.bixiapplication.StationView.PredictionErrors.ErrorPredictionsActivity
@@ -42,7 +39,6 @@ class MainScreenActivity : AppCompatActivity() {
 
     companion object {
         var isInFront :Boolean = true
-        //var `listen.value` :Array<String>? = null
         var listen : MutableLiveData<Array<String>> =  MutableLiveData<Array<String>>()
     }
 
@@ -50,8 +46,6 @@ class MainScreenActivity : AppCompatActivity() {
     private lateinit var btn2: Button
     private lateinit var btn3: Button
     private lateinit var btn4: Button
-    private lateinit var btn5: Button
-    private lateinit var btn6: Button
     private lateinit var jObj: ConnectivityData
     val dialog1 = IpAddressDialog()
     val dialog2 = EngineConnectivityStatusDialog()

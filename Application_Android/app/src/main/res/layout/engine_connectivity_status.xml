@@ -10,7 +10,7 @@
     android:maxHeight="500dp"
     android:maxWidth="600dp"
     android:minHeight="0dp"
-    tools:context="inf3995.bixiapplication.Dialog.EngineConnectivityStatusDialog">
+    tools:context="inf3995.bixiapplication.StationView.Dialog.EngineConnectivityStatusDialog">
 
     <LinearLayout
         android:layout_width="match_parent"

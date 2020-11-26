@@ -23,6 +23,7 @@ import inf3995.bixiapplication.StationViewModel.StationLiveData.DataPredictionRe
 import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_monthly_global_prediction.*
+import kotlinx.android.synthetic.main.activity_per_date_global_prediction.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -69,7 +70,7 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
         }
 
         myImage = findViewById(R.id.image)
-
+        predictionYearM.text = year.toString()
         requestToServer(IpAddressDialog.ipAddressInput)
     }
     override fun onResume() {
@@ -119,7 +120,7 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Error when receiving statistic!    cause:${t.cause}     message:${t.message}")
+                Log.i(TAG, "Error when receiving global predictions!    cause:${t.cause}     message:${t.message}")
                 val builder = AlertDialog.Builder(this@MonthlyGlobalPredictionActivity)
                 builder.setTitle("Error while loading prediction!").setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()

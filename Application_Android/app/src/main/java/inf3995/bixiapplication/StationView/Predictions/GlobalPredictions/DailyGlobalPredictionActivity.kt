@@ -20,7 +20,6 @@ import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
 import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
 import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
 import inf3995.bixiapplication.StationViewModel.StationLiveData.DataPredictionResponseStation
-import inf3995.bixiapplication.StationViewModel.StationLiveData.DataResponseStation
 import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_daily_global_prediction.*
@@ -49,7 +48,6 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
 
         table = findViewById(R.id.main_table_GPD)
 
-
         if (tempas != null) {
             temps = tempas
         }
@@ -67,7 +65,7 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
 
         myImage = findViewById(R.id.image)
 
-
+        predictionYearD.text =annee.toString()
         requestToServer(IpAddressDialog.ipAddressInput)
 
     }
@@ -100,6 +98,7 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         //val call: Call<String> = service.getStationPrediction(annee, temps, code, dateStart, dateEnd)
         val call: Call<String> = service.getGlobalPrediction(temps, dateStart!!, dateEnd!!)
+
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
                 Log.i(TAG, "Réponse des predictions du Serveur: ${response?.body()}")

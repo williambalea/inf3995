@@ -20,7 +20,6 @@ import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
 import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
 import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
 import inf3995.bixiapplication.StationViewModel.StationLiveData.DataPredictionResponseStation
-import inf3995.bixiapplication.StationViewModel.StationLiveData.DataResponseStation
 import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_hourly_global_prediction.*
@@ -63,7 +62,7 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
         if (dataEnd != null) {
             dateEnd = dataEnd
         }
-
+        PredictionYearH.text = annee.toString()
         myImage = findViewById(R.id.image)
         requestToServer(IpAddressDialog.ipAddressInput)
     }
