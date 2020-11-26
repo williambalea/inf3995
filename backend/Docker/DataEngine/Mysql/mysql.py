@@ -7,6 +7,7 @@ import re
 from flask import request
 import hashlib
 from unittest import case
+from flask_api import status
 
 class MySqlDB:
 
@@ -57,7 +58,7 @@ class MySqlDB:
         if auth and auth.username == row[0] and authPW == row[2] :
             return self.engineLogs(engine, byte)
         else:
-            logging.info("The user name or password is incorrect")
+            logging.info("The user name or password is incorrect"), status.HTTP_401_UNAUTHORIZED
     
     def secureHashPW(self, salt, password):
         hashPW = hashlib.sha512((str(salt) + str(password)).encode('utf-8'))
@@ -67,19 +68,27 @@ class MySqlDB:
         logs = {}
         removeAnsi = []
         lenght = 0
+        byte = int(byte)
         if (engine == self.ENGINE1):
             logsFile= open(self.ENGINE1_LOGS, "r")
         elif (engine == self.ENGINE2):
             logsFile= open(self.ENGINE2_LOGS, "r")
         else:
             logsFile= open(self.ENGINE3_LOGS, "r")
-        logs = logsFile.read()[int(byte):].splitlines()
+
+        read = logsFile.read()
         logsFile.close()
+
+        if (byte < len(read)):
+            logs = read[byte:].splitlines()
+        else:
+            logs = ''
+            return logs, byte
         for i in range(0, len(logs)):
-            lenght += len(logs[i])
             removeAnsi.append(self.espace_ansi(logs[i]))
         logs = {"logs": removeAnsi}
-        return logs, lenght
+        lenght = len(read) - byte
+        return logs, lenght + 1
         
     def espace_ansi(self, line):
         ansi_espace = re.sub(self.ANSI_COLOR, "", line)
@@ -92,6 +101,8 @@ class MySqlDB:
         myJson =  '{"byte": []}'
         sendJson = json.loads(myJson)
         sendJson["byte"] = lenght
+        if (len(logs) == 0):
+            return '', status.HTTP_204_NO_CONTENT
         logsList.append(sendJson)
         for i in range(0, len(logs["logs"])):
             myJson =  '{ "text": [], "logs": [] }'
@@ -99,7 +110,7 @@ class MySqlDB:
             sendJson["text"] = (len(logs["logs"][i]) < 200)
             sendJson["logs"] = logs["logs"][i]
             logsList.append(sendJson)
-        return json.dumps(logsList)
+        return json.dumps(logsList), status.HTTP_200_OK
 
 
     
