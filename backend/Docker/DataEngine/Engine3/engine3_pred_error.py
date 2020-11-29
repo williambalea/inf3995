@@ -10,11 +10,7 @@ from pathlib import Path
 class Engine3_Pred_Error:
 
 	ERROR_JSON_PATH = './tempFiles/error_data_and_graph.json'
-	ERROR_GRAPH_PATH = './tempFiles/errorGraph2.png'    
-	hourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
-	monthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-	monthLabel2 = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov']
-	weekDayLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+	ERROR_GRAPH_PATH = './tempFiles/errorGraph2.png'
 	
 	
 	def get_error_json(self, pred_df):
@@ -41,8 +37,6 @@ class Engine3_Pred_Error:
 
 	def generate_error_json(self, pred_df):
 		print('1.3.1.generation of error json...')
-		# pred_df = self.load_prediction_df()
-		# temp_df = self.groupby_filter(pred_df, 'perDate')
 
 		print('Accuracy 1 TO THE HOUR AND STATION groupby in pred_error -------------------------------------------------------')
 		errors_accuracy1 = pred_df['predictions'].values - pred_df['test_labels'].values
@@ -51,8 +45,6 @@ class Engine3_Pred_Error:
 		pred_accuracy1 = round(100 - np.mean(mape), 2)
 		print('Accuracy:', pred_accuracy1, '%.')
 		
-
-
 		print('1.3.2.loading prediction...')
 		print('loading prediction DONE')
 		pred_df = pred_df.groupby(['month', 'day', 'hour']).agg({'predictions': 'sum', 'test_labels': 'sum'})
@@ -86,8 +78,6 @@ class Engine3_Pred_Error:
 		print('getting xAxisDate DONE')
 
 		print('xAxis (date): ')
-		# print(len(xAxis))
-		# print(xAxis)
 
 		print('Yaxis (errors): ')
 		print('error length: ',len(errors))

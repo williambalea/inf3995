@@ -23,9 +23,6 @@ class Engine3:
     TESTING_DF_PATH = "./tempFiles/testing_df.pkl"
     PRED_GRAPH_PATH = './tempFiles/predGraph.png'
     NEW_CSV_WEATHER_PATH = '../kaggleData/historical-hourly-weather-data/weatherstats_montreal_hourly.csv'
-    # CSV_PATH_TEMPERATURE = '../kaggleData/historical-hourly-weather-data/temperature.csv'
-    # CSV_PATH_WEATHER_DESC = '../kaggleData/historical-hourly-weather-data/weather_description.csv'
-    # CSV_PATH_WINDSPEED = '../kaggleData/historical-hourly-weather-data/wind_speed.csv'
     ERROR_JSON_PATH = './tempFiles/error_data_and_graph.json'
     ERROR_GRAPH_PATH = './tempFiles/errorGraph2.png'
     RF_MODEL_PATH = "./tempFiles/rf_model13.sav"
@@ -33,10 +30,10 @@ class Engine3:
     RF_MAX_DEPTH = 15
     RF_RANDOM_STATE = 42
     RF_N_JOBS = 1
-    hourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
-    monthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
-    monthLabel2 = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov']
-    weekDayLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    perHourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
+    perMonthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
+    perWeekDayLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
 
     def __init__(self):
         return None 
@@ -59,7 +56,6 @@ class Engine3:
         weather = weather.filter(items=['date_time_local','wind_speed', 'temperature'])
         weather['date_time_local'] = pd.to_datetime(weather['date_time_local'])
         weather = weather.sort_values(by = ['date_time_local'])
-        # weather['date_time_local'] = pd.to_datetime(weather['date_time_local'], format='%Y-%m-%d %H:%M:%S %Z')
         return weather
 
     def merge_bixi_weather_df(self, bixi, weather):
@@ -112,11 +108,9 @@ class Engine3:
             
             weather = self.get_weather_df()
             testing_df_unfiltered = self.prep_df_for_rf(bixi2017, weather)
-            print(testing_df_unfiltered)
             testing_df_unfiltered.to_pickle(my_file)
         
 
-        print(testing_df_unfiltered)
         #filtre de station
         print('station filtering...')
         if str(station) != 'all':
@@ -125,13 +119,11 @@ class Engine3:
             print('TODO')
 
 
-        print(testing_df_unfiltered)
         #filtre de periode
         print('filtering bixi_period... ')
         testing_df = self.period_filter(testing_df_unfiltered, startDate, endDate)
 
         print('station: ', station)
-        print(testing_df)
         return testing_df
 
 
@@ -153,12 +145,7 @@ class Engine3:
                         'is_member', 
                         'Unnamed: 0'], axis=1)
 
-        print('alllllllllllllllllllllllllllllllllllllllllllllllllllllllllll33333333333333333333333333333333333333333000000000000000000000000000000000')
-        print(df)
-
-        # Group by hour
-        # df_grouped = df.groupby(['year','month', 'day', 'hour']).agg('first')
-        # column = df.groupby(['year','month', 'day', 'hour']).count()['Description']
+        # Group by hour and station
         df_grouped = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).agg('first')
         column = df.groupby(['year','month', 'day', 'hour', 'start_station_code']).count()['temperature']
         
@@ -214,15 +201,6 @@ class Engine3:
         # Use the forest's predict method on the test data
         predictions = loaded_rf.predict(test_features)
         print('prediction: ', predictions)
-        # Calculate the absolute errors
-        errors = abs(predictions - test_labels)
-        self.prediction_errors.append(errors)
-        # Print out the mean absolute error (mae)
-        print('Prediction:')
-        print(predictions)
-        print('errors:')
-        print(errors)
-
 
         #concat test_features to predictions
         test_features.insert(len(test_features.columns), 'predictions', predictions)
@@ -260,9 +238,6 @@ class Engine3:
 
             # Saving feature names for later use
             feature_list = list(train_features.columns)
-            print('feature list!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1')
-            print(feature_list)
-
             #instantiate model with some decision trees
             loaded_rf = RandomForestRegressor(n_estimators = self.RF_N_ESTIMATORS, 
                                                 random_state = self.RF_RANDOM_STATE, 
@@ -432,9 +407,6 @@ class Engine3:
         return plt
     
     def get_graph_X(self, df, groupby):
-        perHourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
-        perMonthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
-        perWeekDayLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
         print('getting Xaxis data')
         if groupby == 'perDate':
@@ -445,25 +417,22 @@ class Engine3:
             xAxis = tempXAxis.tolist()
             
         else:
+            #xLabel for other groupby
             tempXAxis = df.index.values
 
             if groupby == 'perMonth':
-                #0=mon, 1=tue, 2=wed, 3=thu, 4=fri, 5=sat, 6=sun
-                label = perMonthLabel
+                label = self.perMonthLabel
                 groupbyAlign = -1
             elif groupby == 'perHour':
-                label = perHourLabel
+                label = self.perHourLabel
                 groupbyAlign = 0
             elif groupby == 'perWeekDay':
-                label = perWeekDayLabel
+                #0=mon, 1=tue, 2=wed, 3=thu, 4=fri, 5=sat, 6=sun
+                label = self.perWeekDayLabel
                 groupbyAlign = 0
 
             xAxis = []
             for i in tempXAxis:
-                print('allo bonjour!')
-                print(i)
-                # print(label[i])
-                print(label[i-groupbyAlign])
                 xAxis.append(label[i+groupbyAlign])
         
         return xAxis
