@@ -9,6 +9,10 @@ import scipy as sps
 import pickle
 from pathlib import Path
 import datetime
+from sklearn.tree import export_graphviz
+import pydot
+from subprocess import call
+from IPython.display import Image
 
 class Engine3:
 
@@ -17,16 +21,22 @@ class Engine3:
     PREDICTION_DF_PATH = "./tempFiles/prediction_df.pkl"
     PREDICTION_DF_ALL_2017_PATH = "./tempFiles/pred_df_all_2017.pkl"
     TESTING_DF_PATH = "./tempFiles/testing_df.pkl"
-    RF_MODEL_PATH = "./tempFiles/rf_model3.sav"
-    CSV_PATH_TEMPERATURE = '../kaggleData/historical-hourly-weather-data/temperature.csv'
-    NEW_CSV_WEATHER_PATH = '../kaggleData/historical-hourly-weather-data/weatherstats_montreal_hourly.csv'
-    # CSV_PATH_WEATHER_DESC = '../kaggleData/historical-hourly-weather-data/weather_description.csv'
-    CSV_PATH_WINDSPEED = '../kaggleData/historical-hourly-weather-data/wind_speed.csv'
     PRED_GRAPH_PATH = './tempFiles/predGraph.png'
+    NEW_CSV_WEATHER_PATH = '../kaggleData/historical-hourly-weather-data/weatherstats_montreal_hourly.csv'
+    # CSV_PATH_TEMPERATURE = '../kaggleData/historical-hourly-weather-data/temperature.csv'
+    # CSV_PATH_WEATHER_DESC = '../kaggleData/historical-hourly-weather-data/weather_description.csv'
+    # CSV_PATH_WINDSPEED = '../kaggleData/historical-hourly-weather-data/wind_speed.csv'
     ERROR_JSON_PATH = './tempFiles/error_data_and_graph.json'
     ERROR_GRAPH_PATH = './tempFiles/errorGraph2.png'
-    RF_N_ESTIMATORS = 10
+    RF_MODEL_PATH = "./tempFiles/rf_model13.sav"
+    RF_N_ESTIMATORS = 13
+    RF_MAX_DEPTH = 15
     RF_RANDOM_STATE = 42
+    RF_N_JOBS = 1
+    hourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
+    monthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
+    monthLabel2 = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov']
+    weekDayLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
     def __init__(self):
         return None 
@@ -143,6 +153,9 @@ class Engine3:
                         'is_member', 
                         'Unnamed: 0'], axis=1)
 
+        print('alllllllllllllllllllllllllllllllllllllllllllllllllllllllllll33333333333333333333333333333333333333333000000000000000000000000000000000')
+        print(df)
+
         # Group by hour
         # df_grouped = df.groupby(['year','month', 'day', 'hour']).agg('first')
         # column = df.groupby(['year','month', 'day', 'hour']).count()['Description']
@@ -170,6 +183,10 @@ class Engine3:
 
 
     def get_prediction(self, station, startDate, endDate):
+
+        #get Random forest model        
+        loaded_rf = self.get_random_forest_model()
+        
         print('testing---------------------') 
         test_features = self.get_testing_df(station, startDate, endDate)
         print('testing DONE---------------------') 
@@ -182,8 +199,6 @@ class Engine3:
         print('Testing Features Shape:', test_features.shape)
         print('Testing Labels Shape:', test_labels.shape)
         
-        #get Random forest model        
-        loaded_rf = self.get_random_forest_model()
 
         # Use the forest's predict method on the test data
         predictions = loaded_rf.predict(test_features)
@@ -197,12 +212,6 @@ class Engine3:
         print('errors:')
         print(errors)
 
-        print('Accuracy in get_pred 1-------------------------------------------------------1')
-        print('Mean Absolute Error:', round(np.mean(errors), 2), 'departs.')
-        # Calculate mean absolute percentage error (MAPE)
-        mape = 100 * (errors / test_labels)# Calculate and display accuracy
-        accuracy = 100 - np.mean(mape)
-        print('Accuracy:', round(accuracy, 2), '%.')
 
         #concat test_features to predictions
         test_features.insert(len(test_features.columns), 'predictions', predictions)
@@ -227,6 +236,7 @@ class Engine3:
             train_features = self.get_traning_df()
             print('getting training df DONE---------------------') 
 
+
             print('Convert NaN values to empty string')
             nan_value = float("NaN")
             train_features.replace("", nan_value, inplace=True)
@@ -235,8 +245,17 @@ class Engine3:
             train_labels = np.array(train_features['num_trips'])
             train_features = train_features.drop(['num_trips'], axis=1)
 
+
+            # Saving feature names for later use
+            feature_list = list(train_features.columns)
+            print('feature list!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1')
+            print(feature_list)
+
             #instantiate model with some decision trees
-            loaded_rf = RandomForestRegressor(n_estimators = self.RF_N_ESTIMATORS, random_state = self.RF_RANDOM_STATE, n_jobs=1)
+            loaded_rf = RandomForestRegressor(n_estimators = self.RF_N_ESTIMATORS, 
+                                                random_state = self.RF_RANDOM_STATE, 
+                                                n_jobs=self.RF_N_JOBS, 
+                                                max_depth=self.RF_MAX_DEPTH)
             print('Fit calculating...')
 
             print(train_features.dtypes)
@@ -253,24 +272,55 @@ class Engine3:
             print('saving model')
             # save the model to disk
             pickle.dump(loaded_rf, open(my_file, 'wb'))
+            
+            print('generating ')
 
+
+        # self.get_random_tree_png(loaded_rf)
         return loaded_rf
 
-    def load_prediction_df(self, station, startDate, endDate):#load dataframe from file or generate it if desn't exist
+    def get_random_tree_png(self, rf):
+        feature_list_hardcoded = ['year', 'month', 'day', 'hour', 'start_station_code', 'weekday', 'weekofyear', 'wind_speed', 'temperature']
+        print('in random tree png generation')
+        print('var importancesss')
+        importances = list(rf.feature_importances_)
+        # List of tuples with variable and importance
+        feature_importances = [(feature, round(importance, 2)) for feature, importance in zip(feature_list_hardcoded, importances)]
+        # Sort the feature importances by most important first
+        feature_importances = sorted(feature_importances, key = lambda x: x[1], reverse = True)
+        # Print out the feature and importances 
+        [print('Variable: {:20} Importance: {}'.format(*pair)) for pair in feature_importances]
 
-        my_file = Path(self.PREDICTION_DF_PATH)
-        if my_file.is_file():
-            print('loading Pred_df')
-            # load the pred_df from disk
-            df = pd.read_pickle(my_file)
-        else:
-            print('getting pred_df')
-            df = self.get_prediction(station, startDate, endDate)
-            print('this is the pred df:', df)
-            print('saving pred_df')
-            # df.to_pickle(my_file)
-        return df
-        
+
+        print('tree.png in the makinggggggggggggggggggggggggggggggggggg')
+        print(feature_list_hardcoded)
+        # Pull out one tree from the forest
+        tree = rf.estimators_[5]# Export the image to a dot file
+        print('stuck 283')
+        print(tree)
+
+        # dotfile = open("./dtree2.dot", 'w')
+        # export_graphviz(tree, out_file = dotfile, feature_names = feature_list_hardcoded)
+        # print('stuck 283.8')
+        # dotfile.close()
+        print('stuck 284')
+        # Export as dot file
+        # export_graphviz(tree, 
+        #                 out_file='./tree.dot', 
+        #                 feature_names = feature_list_hardcoded,
+        #                 rounded = True, proportion = False, 
+        #                 precision = 2, filled = True)
+        export_graphviz(tree, out_file= 'tree.dot', feature_names = feature_list_hardcoded, rounded = True, precision = 1)
+        print('stuck 286')
+        call(['dot', '-Tpng', 'tree.dot', '-o', 'tree.png', '-Gdpi=600'])
+        # (graph, ) = pydot.graph_from_dot_file('./tree.dot')# Write graph to a png file
+        print('stuck 288')# Display in jupyter notebook
+        from IPython.display import Image
+        Image(filename = 'tree.png')
+        # graph.write_png('tree.png')
+        print('tree.png donnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnneeeeeeeeeeeeeeeeeeeeeeeee')
+        return None
+    
     ##### Prediction Dataframe Filters
     def period_filter(self, df, startDate, endDate):
         print('period filtering...')
@@ -373,17 +423,43 @@ class Engine3:
         return plt
     
     def get_graph_X(self, df, groupby):
+        perHourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
+        perMonthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
+        perWeekDayLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
         print('getting Xaxis data')
-        xAxisDate = []
-        if groupby == "perDate":
+        if groupby == 'perDate':
+            xAxisDate = []
             for i in range(len(df.index.values)):
                 xAxisDate.append(str(df.index.values[i][0]) + "-" + str(df.index.values[i][1]))
-                xAxis = pd.Series(xAxisDate)
+                tempXAxis = pd.Series(xAxisDate)
+            xAxis = tempXAxis.tolist()
+            
         else:
-            xAxis = df.index.values
+            tempXAxis = df.index.values
+
+            if groupby == 'perMonth':
+                #0=mon, 1=tue, 2=wed, 3=thu, 4=fri, 5=sat, 6=sun
+                label = perMonthLabel
+                groupbyAlign = -1
+            elif groupby == 'perHour':
+                label = perHourLabel
+                groupbyAlign = 0
+            elif groupby == 'perWeekDay':
+                label = perWeekDayLabel
+                groupbyAlign = 0
+
+            xAxis = []
+            for i in tempXAxis:
+                print('allo bonjour!')
+                print(i)
+                # print(label[i])
+                print(label[i-groupbyAlign])
+                xAxis.append(label[i+groupbyAlign])
         
         return xAxis
 
+    
     def get_graph_Y(self, df):
         print('getting Yaxis data')
         yAxis = df['predictions'].values
@@ -406,7 +482,7 @@ class Engine3:
         myJson =  '{  "data":{ "time":[], "predictions":[] }, "graph":[] }'
 
         o = json.loads(myJson)
-        o["data"]["time"] = x[0:len(x)].tolist()
+        o["data"]["time"] = x[0:len(x)]
         o["data"]["predictions"] = y.tolist()
         o["graph"] = graphString
         

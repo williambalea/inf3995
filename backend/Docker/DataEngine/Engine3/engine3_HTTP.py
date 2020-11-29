@@ -22,7 +22,7 @@ def predictionUsage(station, groupby, startDate,endDate):
     print('Dates')
     print(startDate)
     print(endDate)
-    predictions_df = engine3.load_prediction_df(station, startDate, endDate)
+    predictions_df = engine3.get_prediction(station, startDate, endDate)
 
     print('predictions_df: ', predictions_df)
     filtered_pred_df = engine3.groupby_filter(predictions_df, groupby)
@@ -66,9 +66,9 @@ def predictionError():
     #     return 'ERROR: prediction not ready yet'
 
 
-@app.route('/engine3/testing/<station>/<startDate>/<endDate>')
-def testing(station, startDate,endDate):
-    startDate = str(startDate)
-    endDate = str(endDate)
-    path = engine3.get_testing_df(station, startDate, endDate)
-    return path
+@app.route('/engine3/testing')
+def testing():
+   
+    # (graph, ) = pydot.graph_from_dot_file('tree.dot')# Write graph to a png file
+    # graph.write_png('tree.png')
+    return 'gg'
