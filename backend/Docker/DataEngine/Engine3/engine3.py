@@ -191,6 +191,16 @@ class Engine3:
         test_features = self.get_testing_df(station, startDate, endDate)
         print('testing DONE---------------------') 
 
+        # print('Convert NaN values to empty string')
+        nan_value = float("NaN")
+        test_features.replace("", nan_value, inplace=True)
+        test_features.dropna(subset = ["temperature"], inplace=True)
+
+        #display NotANumber
+        print(test_features.isnull().sum().sum())
+        count_nan_in_df = test_features.isnull().sum()
+        print(count_nan_in_df)
+
         print('test_feature: ', test_features)
         print('getting train/test labels')
         test_labels = np.array(test_features['num_trips'])
@@ -199,6 +209,7 @@ class Engine3:
         print('Testing Features Shape:', test_features.shape)
         print('Testing Labels Shape:', test_labels.shape)
         
+
 
         # Use the forest's predict method on the test data
         predictions = loaded_rf.predict(test_features)
@@ -237,10 +248,11 @@ class Engine3:
             print('getting training df DONE---------------------') 
 
 
-            print('Convert NaN values to empty string')
+            # print('Convert NaN values to empty string')
             nan_value = float("NaN")
             train_features.replace("", nan_value, inplace=True)
             train_features.dropna(subset = ["temperature"], inplace=True)
+
             print('train_feature: ', train_features)
             train_labels = np.array(train_features['num_trips'])
             train_features = train_features.drop(['num_trips'], axis=1)
@@ -261,7 +273,7 @@ class Engine3:
             print(train_features.dtypes)
             print(train_features.shape)
             #removing NotANumber
-            #print(train_f.isnull().sum().sum())
+            print(train_features.isnull().sum().sum())
             count_nan_in_df = train_features.isnull().sum()
             print(count_nan_in_df)
 
@@ -395,10 +407,7 @@ class Engine3:
             # Add xticks on the middle of the group bars
             ('adding xticks')
             plt.xlabel('GroupBy')
-            ##############plt.xlim
             plt.ylabel('Predictions')
-            # plt.xaxis.set_minor_locator(MultipleLocator(5))
-            # Create legend & Show graphic
             plt.legend()
             plt.savefig(self.PRED_GRAPH_PATH)
             # plt.show()
