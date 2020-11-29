@@ -16,7 +16,7 @@ def hello_world():
 def predictionUsage(station, groupby, startDate,endDate):
     startDate = str(startDate)
     endDate = str(endDate)
-    predictions_df = engine3.load_prediction_df(station, startDate, endDate)
+    predictions_df = engine3.get_prediction(station, startDate, endDate)
     filtered_pred_df = engine3.groupby_filter(predictions_df, groupby)
     x = engine3.get_graph_X(filtered_pred_df, groupby)
     y = engine3.get_graph_Y(filtered_pred_df)

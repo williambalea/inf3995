@@ -9,7 +9,7 @@ COPY ./Mysql .
 
 WORKDIR /usr/src/Engine3/
 RUN pip3 install --upgrade pip
-RUN pip3 install Flask Flask-API matplotlib pandas numpy easydict mysql-connector-python seaborn sklearn mysql-connector-python-rf
+RUN pip3 install Flask Flask-API matplotlib pandas numpy mysql-connector-python sklearn mysql-connector-python-rf IPython pydot
 COPY ./Engine3 .
 COPY ./kaggleData/historical-hourly-weather-data ./kaggleData/historical-hourly-weather-data
 COPY ./kaggleData/OD_2014.csv ./kaggleData/OD_2014.csv

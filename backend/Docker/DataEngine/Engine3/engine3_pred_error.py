@@ -37,20 +37,25 @@ class Engine3_Pred_Error:
 
 	def generate_error_json(self, pred_df):
 		print('1.3.1.generation of error json...')
-		# pred_df = self.load_prediction_df()
-		# temp_df = self.groupby_filter(pred_df, 'perDate')
 
-		print('Accuracy in pred_error -------------------------------------------------------')
+		print('Accuracy 1 TO THE HOUR AND STATION groupby in pred_error -------------------------------------------------------')
+		errors_accuracy1 = pred_df['predictions'].values - pred_df['test_labels'].values
+		# Calculate mean absolute percentage error (MAPE)
+		mape = 100 * (abs(errors_accuracy1) / pred_df['test_labels'].values)# Calculate and display accuracy
+		pred_accuracy1 = round(100 - np.mean(mape), 2)
+		print('Accuracy:', pred_accuracy1, '%.')
+		
+		print('1.3.2.loading prediction...')
+		print('loading prediction DONE')
+		pred_df = pred_df.groupby(['month', 'day', 'hour']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+
+		print('Accuracy 2 TO THE DATE groupby in pred_error -------------------------------------------------------')
 		errors_accuracy = pred_df['predictions'].values - pred_df['test_labels'].values
 		# Calculate mean absolute percentage error (MAPE)
 		mape = 100 * (abs(errors_accuracy) / pred_df['test_labels'].values)# Calculate and display accuracy
 		pred_accuracy = round(100 - np.mean(mape), 2)
 		print('Accuracy:', pred_accuracy, '%.')
-
-		print('1.3.2.loading prediction...')
-		print('loading prediction DONE')
-		pred_df = pred_df.groupby(['month', 'day', 'hour']).agg({'predictions': 'sum', 'test_labels': 'sum'})
-
+		
 
 		print('1.3.3.calculating prediction errors...')
 		errors = pred_df['predictions'].values - pred_df['test_labels'].values
@@ -73,8 +78,6 @@ class Engine3_Pred_Error:
 		print('getting xAxisDate DONE')
 
 		print('xAxis (date): ')
-		# print(len(xAxis))
-		# print(xAxis)
 
 		print('Yaxis (errors): ')
 		print('error length: ',len(errors))
