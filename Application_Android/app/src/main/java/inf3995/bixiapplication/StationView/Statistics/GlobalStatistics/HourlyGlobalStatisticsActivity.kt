@@ -8,7 +8,6 @@ import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -26,12 +25,13 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
 
-class HourlyStationStatisticGlobalActivity : AppCompatActivity() {
+class HourlyGlobalStatisticsActivity : AppCompatActivity() {
     lateinit var time: String
     var year= 0
     var myImage: ImageView? = null
-    private val TAG = "Hourly Station Statistics Global"
+    private val TAG = "Hourly Global Statistics"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,31 +57,27 @@ class HourlyStationStatisticGlobalActivity : AppCompatActivity() {
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
-            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().readTimeout(120, TimeUnit.SECONDS).build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         val call: Call<String> = service.getGlobalStatistics(year, time)
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse des Statistiques du Serveur: ${response?.body()}")
-                Log.i(TAG, "Status de reponse  des Statistiques du Serveur: ${response?.code()}")
-                Log.i(
-                    TAG,
-                    "Message de reponse  des Statistiques du Serveur: ${response?.message()}"
-                )
+                Log.i(TAG, "Response Status  of Hourly Global statistics  from Server: ${response?.code()}")
+                Log.i(TAG, "Response body of Hourly Global statistics from Server: ${response?.body()}")
 
                 val arrayStationType = object : TypeToken<DataResponseStation>() {}.type
                 val jObj: DataResponseStation = Gson().fromJson(response?.body(), arrayStationType)
-                Log.i(TAG, "L'objet : $jObj")
+                Log.i(TAG, "Object : $jObj")
                 fillData(jObj)
                 lllProgressBar.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Error when receiving statistic!    cause:${t.cause}     message:${t.message}")
-                val builder = AlertDialog.Builder(this@HourlyStationStatisticGlobalActivity)
-                builder.setTitle("Error while loading statistic!").setMessage("cause:${t.cause} \n message:${t.message}")
+                Log.i(TAG, "Error when loading statistics!    cause:${t.cause}     message:${t.message}")
+                val builder = AlertDialog.Builder(this@HourlyGlobalStatisticsActivity)
+                builder.setTitle("Error while loading statistics!").setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()
             }
         })
@@ -114,7 +110,7 @@ class HourlyStationStatisticGlobalActivity : AppCompatActivity() {
     private fun fillData(jObj: DataResponseStation) {
         val myImageString = jObj.graph
         imageGlobal.setImageBitmap(convertString64ToImage(myImageString))
-        Log.i(TAG, "affichage du graphique ")
+        Log.i(TAG, "Display the graph ")
 
         textGlobal12.setText(jObj.data.departureValue[0].toString())
         textGlobal13.setText(jObj.data.arrivalValue[0].toString())

@@ -24,11 +24,9 @@ import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_monthly_global_prediction.*
 import kotlinx.android.synthetic.main.activity_per_date_global_prediction.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
+import retrofit2.*
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
 
 class MonthlyGlobalPredictionActivity: AppCompatActivity() {
 
@@ -38,7 +36,7 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
     var dateStart : String? = null
     var dateEnd : String? = null
     var table: TableLayout? = null
-
+    lateinit var response: Response<String>
     private val TAG = "Monthly Station Predictions values"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +69,22 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
 
         myImage = findViewById(R.id.image)
         predictionYearM.text = year.toString()
-        requestToServer(IpAddressDialog.ipAddressInput)
+        if(!(dateEnd == dateStart)){
+            requestToServer(IpAddressDialog.ipAddressInput)
+        } else {
+            val builder = AlertDialog.Builder(this@MonthlyGlobalPredictionActivity)
+            builder.setTitle("Oups. Error in the dates entered !!!")
+                .setMessage("To solve this error, verify that you respect the following rules. " +
+                        " Choose two differents date in the same year for Start date and End date. Make sure the start date is prior to End date. " +
+                        "Do not forget, the predictions are only available for year 2017. So choose the year 2017.")
+            builder.setIcon(R.mipmap.ic_launcher)
+            builder.show().setOnDismissListener {
+                val intent = Intent(this, GlobalPredictionsActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                startActivity(intent)
+            }
+        }
+
     }
     override fun onResume() {
         super.onResume()
@@ -91,16 +104,18 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
         })
 
     }
+
+
     private fun requestToServer(ipAddress: String?) {
 
         // get check connexion with Server Hello from Server
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
-            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().readTimeout(300, TimeUnit.SECONDS).build())
             .build()
+
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        //val call: Call<String> = service.getStationPrediction(annee, temps, code, dateStart, dateEnd)
         val call: Call<String> = service.getGlobalPrediction(temps, dateStart!!, dateEnd!!)
 
         call.enqueue(object : Callback<String> {
@@ -109,7 +124,7 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
                 Log.i(TAG, "Status de reponse  des predictions du Serveur: ${response?.code()}")
                 Log.i(
                     TAG,
-                    "Message de reponse  des predictions du Serveur: ${response?.message()}"
+                    "Message de réponse  des predictions du Serveur: ${response?.message()}"
                 )
 
                 val arrayStationType = object : TypeToken<DataPredictionResponseStation>() {}.type

@@ -35,7 +35,6 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
 
     var station : Station? = null
     lateinit var temps: String
-    var indicator: String? = null
     var code: Int = 0
     var annee= 0
     var myImage: ImageView? = null
@@ -76,7 +75,22 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
         PredictionYearH.text = annee.toString()
         code =  station!!.code
         myImage = findViewById(R.id.image)
-        requestToServer(IpAddressDialog.ipAddressInput)
+
+        if(!(dateEnd == dateStart)){
+            requestToServer(IpAddressDialog.ipAddressInput)
+        } else {
+            val builder = AlertDialog.Builder(this@HourlyStationPredictionActivity)
+            builder.setTitle("Oups. Error in the dates entered !!!")
+                .setMessage("To solve this error, verify that you respect the following rules. " +
+                        " Choose two differents date in the same year for Start date and End date. Make sure the start date is prior to End date." +
+                        "Do not forget, the predictions are only available for year 2017. So choose the year 2017.")
+            builder.setIcon(R.mipmap.ic_launcher)
+            builder.show().setOnDismissListener {
+                val intent = Intent(this, StationPredictionsActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                startActivity(intent)
+            }
+        }
     }
     override fun onResume() {
         super.onResume()
@@ -106,13 +120,11 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         val call: Call<String> = service.getStationPrediction(code, temps, dateStart!!, dateEnd!!)
-        //val call: Call<String> = service.getStationStatistics(annee, temps, code)
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse des predictions du Serveur: ${response?.body()}")
-                Log.i(TAG, "Status de reponse  des predictions du Serveur: ${response?.code()}")
-                Log.i(TAG,"Message de reponse  des predictions du Serveur: ${response?.message()}")
+                Log.i(TAG, "Response Status  of Hourly station predictions  from Server: ${response?.code()}")
+                Log.i(TAG, "Response body of Hourly station predictions from Server: ${response?.body()}")
 
                 val arrayStationType = object : TypeToken<DataPredictionResponseStation>() {}.type
                 val jObj: DataPredictionResponseStation = Gson().fromJson(response?.body(), arrayStationType)
@@ -143,8 +155,7 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e(TAG, "error")
         }
-        //image1.setImageBitmap(convertString64ToImage(myImageString))
-        Log.i(TAG, "affichage du graphique ")
+        Log.i(TAG, "Display the graph")
 
         for (i in 0 until jObj.data.predictions.size) {
 

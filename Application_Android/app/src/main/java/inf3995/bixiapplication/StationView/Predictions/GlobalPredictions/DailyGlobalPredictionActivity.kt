@@ -28,6 +28,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
 
 class DailyGlobalPredictionActivity : AppCompatActivity(){
     lateinit var temps: String
@@ -66,7 +67,21 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
         myImage = findViewById(R.id.image)
 
         predictionYearD.text =annee.toString()
-        requestToServer(IpAddressDialog.ipAddressInput)
+        if(!(dateEnd == dateStart)){
+            requestToServer(IpAddressDialog.ipAddressInput)
+        } else {
+            val builder = AlertDialog.Builder(this@DailyGlobalPredictionActivity)
+            builder.setTitle("Oups. Error in the dates entered !!!")
+                .setMessage("To solve this error, verify that you respect the following rules. " +
+                        " Choose two differents date in the same year for Start date and End date. Make sure the start date is prior to End date. " +
+                        "Do not forget, the predictions are only available for year 2017. So choose the year 2017.")
+            builder.setIcon(R.mipmap.ic_launcher)
+            builder.show().setOnDismissListener {
+                val intent = Intent(this, GlobalPredictionsActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                startActivity(intent)
+            }
+        }
 
     }
     override fun onResume() {
@@ -93,7 +108,7 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
-            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().readTimeout(300, TimeUnit.SECONDS).build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         //val call: Call<String> = service.getStationPrediction(annee, temps, code, dateStart, dateEnd)

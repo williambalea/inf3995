@@ -11,7 +11,6 @@ import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
 import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity.Companion.listen
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_global_statistics.*
-import okhttp3.internal.wait
 
 class GlobalStatisticsActivity : AppCompatActivity() {
     var time: String? = null
@@ -50,20 +49,20 @@ class GlobalStatisticsActivity : AppCompatActivity() {
         buttonDisplayGlobal.setOnClickListener{
             when (time){
                 "perMonth"-> {
-                    val intent = Intent(this@GlobalStatisticsActivity, MonthlyStationStatisticGlobalActivity::class.java)
+                    val intent = Intent(this@GlobalStatisticsActivity, MonthlyGlobalStatisticsActivity::class.java)
                     intent.putExtra("yearGlobal", year)
                     intent.putExtra("timeGlobal", time)
                     startActivity(intent)
 
                 }
                 "perWeekDay"-> {
-                    val intent = Intent(this@GlobalStatisticsActivity, DailyStationStatisticGlobalActivity::class.java)
+                    val intent = Intent(this@GlobalStatisticsActivity, DailyGlobalStatisticActivity::class.java)
                     intent.putExtra("yearGlobal", year)
                     intent.putExtra("timeGlobal", time)
                     startActivity(intent)
                 }
                 "perHour"-> {
-                    val intent = Intent(this@GlobalStatisticsActivity, HourlyStationStatisticGlobalActivity::class.java)
+                    val intent = Intent(this@GlobalStatisticsActivity, HourlyGlobalStatisticsActivity::class.java)
                     intent.putExtra("yearGlobal", year)
                     intent.putExtra("timeGlobal", time)
                     startActivity(intent)

@@ -34,16 +34,16 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
     var myImage: ImageView? = null
     private val TAG = " Prediction Errors "
     lateinit var table: TableLayout
-    var year: String? = null
-    var precision = 0.9
+    var year = "2017"
+    //var precision = 82.82
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_per_date_error_predictions)
-        val yearReceived = intent.getStringExtra("Year")
-        if (yearReceived != null) {
-            year = yearReceived
-        }
+        //val yearReceived = intent.getStringExtra("Year")
+        ///if (yearReceived != null) {
+       //    year = yearReceived
+       // }
         ErrorPredictionYear.text = year.toString()
         //PrecisionPredictionValue.text = precision.toString()
         table = findViewById(R.id.main_table)
@@ -63,14 +63,44 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse du Serveur pour les erreurs de predictions : ${response?.body()}")
-                Log.i(TAG, "Status de reponse du Serveur pour les erreurs des predictions: ${response?.code()}")
+                Log.i(
+                    TAG,
+                    "Réponse du Serveur pour les erreurs de predictions : ${response?.body()}"
+                )
+                Log.i(
+                    TAG,
+                    "Status de reponse du Serveur pour les erreurs des predictions: ${response?.code()}"
+                )
+                /*
+                if (response?.code() == 404) {
+                    Toast.makeText(
+                        this@PerDatePredictionErrorsActivity,
+                        "Prediction is not yet done, please go to predictions first!! ",
+                        Toast.LENGTH_LONG
+                    ).show()
+*/
 
-                val arrayStationType = object : TypeToken<DataErrorResponse>() {}.type
-                val jObj: DataErrorResponse = Gson().fromJson(response?.body(), arrayStationType)
-                Log.i(TAG, "L'objet : $jObj")
-                fillData(jObj)
-                lllProgressBarPerD.visibility = View.GONE
+                if(!(response?.code() == 404)){
+                    val builder = AlertDialog.Builder(this@PerDatePredictionErrorsActivity)
+                    builder.setTitle("Oups. Error 404 !!!")
+                        .setMessage("Prediction is not yet done, please go to predictions page first.")
+                    builder.setIcon(R.mipmap.ic_launcher)
+                    builder.show().setOnDismissListener {
+                        val intent = Intent(this@PerDatePredictionErrorsActivity, MainScreenActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                        startActivity(intent)
+                    }
+                    } else {
+                    val arrayStationType = object : TypeToken<DataErrorResponse>() {}.type
+                    val jObj: DataErrorResponse = Gson().fromJson(
+                        response?.body(),
+                        arrayStationType
+                    )
+                    Log.i(TAG, "L'objet : $jObj")
+                    fillData(jObj)
+                    lllProgressBarPerD.visibility = View.GONE
+                }
+
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
@@ -83,6 +113,7 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
                     .setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()
             }
+
         })
     }
     private fun convertString64ToImage(base64String: String): Bitmap {
@@ -180,12 +211,13 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
         super.onResume()
 
         MainScreenActivity.listen.observe(this, Observer {
-            if(it[2] == "DOWN"){
+            if (it[2] == "DOWN") {
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
                 builder.show().setOnDismissListener {
                     val intent = Intent(this, MainScreenActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
                     startActivity(intent)
                 }
             }

@@ -20,7 +20,6 @@ import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
 import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
 import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
 import inf3995.bixiapplication.StationViewModel.StationLiveData.DataPredictionResponseStation
-import inf3995.bixiapplication.StationViewModel.StationLiveData.DataResponseStation
 import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_per_date_global_prediction.*
@@ -29,6 +28,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
 
 class PerDateGlobalPredictionActivity: AppCompatActivity() {
     lateinit var temps: String
@@ -38,7 +38,7 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
     var dateEnd : String? = null
     private val TAG = "Per Date Station Prediction "
     var table: TableLayout? = null
-
+    var predictionAlreadyDone = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +70,22 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
         predictionYearPerD.text = annee.toString()
         myImage = findViewById(R.id.image)
 
-        requestToServer(IpAddressDialog.ipAddressInput)
+        if(!(dateEnd == dateStart)){
+            requestToServer(IpAddressDialog.ipAddressInput)
+        } else {
+            val builder = AlertDialog.Builder(this@PerDateGlobalPredictionActivity)
+            builder.setTitle("Oups. Error in the dates entered !!!")
+                .setMessage("To solve this error, verify that you respect the following rules. " +
+                        " Choose two differents date in the same year for Start date and End date. Make sure the start date is prior to End date. " +
+                        "Do not forget, the predictions are only available for year 2017. So choose the year 2017.")
+            builder.setIcon(R.mipmap.ic_launcher)
+            builder.show().setOnDismissListener {
+                val intent = Intent(this, GlobalPredictionsActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                startActivity(intent)
+            }
+        }
+
     }
     override fun onResume() {
         super.onResume()
@@ -95,35 +110,34 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
-            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().readTimeout(300, TimeUnit.SECONDS).build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        //val call: Call<String> = service.getStationPrediction(annee, temps, code, dateStart, dateEnd)
         val call: Call<String> = service.getGlobalPrediction(temps, dateStart!!, dateEnd!!)
 
         call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse des predictions du Serveur: ${response?.body()}")
-                Log.i(TAG, "Status de reponse  des predictions du Serveur: ${response?.code()}")
+        override fun onResponse(call: Call<String>?, response: Response<String>?) {
+            Log.i(TAG, "Réponse des predictions du Serveur: ${response?.body()}")
+            Log.i(TAG, "Status de reponse  des predictions du Serveur: ${response?.code()}")
 
-                val arrayStationType = object : TypeToken<DataPredictionResponseStation>() {}.type
-                val jObj: DataPredictionResponseStation = Gson().fromJson(response?.body(), arrayStationType)
-                Log.i(TAG, "L'objet : $jObj")
-                fillData(jObj)
-                lllProgressBarPerD.visibility = View.GONE
-            }
+            val arrayStationType = object : TypeToken<DataPredictionResponseStation>() {}.type
+            val jObj: DataPredictionResponseStation = Gson().fromJson(response?.body(), arrayStationType)
+            Log.i(TAG, "L'objet : $jObj")
+            fillData(jObj)
+            lllProgressBarPerD.visibility = View.GONE
+        }
 
-            override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(
-                    TAG,
-                    "Error when receiving prediction!    cause:${t.cause}     message:${t.message}"
-                )
-                val builder = AlertDialog.Builder(this@PerDateGlobalPredictionActivity)
-                builder.setTitle("Error while loading prediction!")
-                    .setMessage("cause:${t.cause} \n message:${t.message}")
-                builder.show()
-            }
-        })
+        override fun onFailure(call: Call<String>?, t: Throwable) {
+            Log.i(
+                TAG,
+                "Error when receiving prediction!    cause:${t.cause}     message:${t.message}"
+            )
+            val builder = AlertDialog.Builder(this@PerDateGlobalPredictionActivity)
+            builder.setTitle("Error while loading prediction!")
+                .setMessage("cause:${t.cause} \n message:${t.message}")
+            builder.show()
+        }
+    })
     }
 
     private fun convertString64ToImage(base64String: String): Bitmap {

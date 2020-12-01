@@ -18,17 +18,13 @@
         android:layout_height="150dp"
         android:background="@drawable/background_bg"
         android:orientation="vertical"
-        android:padding="0dp"
        >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+
 
                 <ImageView
                     android:id="@+id/imageView"
@@ -39,7 +35,7 @@
                     android:src="@drawable/ic_statistic" />
 
                 <TextView
-                    android:layout_width="590dp"
+                    android:layout_width="593dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
                     android:gravity="center"
@@ -48,7 +44,7 @@
                     android:textColor="@color/colorWhite"
                     android:textSize="45sp"
                     android:textStyle="bold" />
-            </LinearLayout>
+
         </androidx.appcompat.widget.Toolbar>
     </LinearLayout>
 
@@ -56,20 +52,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_margin="0dp"
+        android:layout_margin="5dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/ErrorPredictionTitle"
-            android:layout_width="350dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_margin="5sp"
             android:layout_gravity="center_vertical"
-            android:textColor="@color/colortextdata"
+            android:layout_margin="5sp"
             android:text="Prediction Errors per Date for year:"
+            android:textColor="@color/colortextdata"
             android:textSize="25sp"
-            android:textStyle="bold">
-        </TextView>
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/ErrorPredictionYear"
@@ -77,10 +72,9 @@
             android:layout_height="40dp"
             android:layout_margin="5sp"
             android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
             android:text="Prediction Year"
             android:textSize="25sp"
-            android:textColor="@color/colortextdata"
+            android:textColor="@color/colortextlabel"
             android:layout_gravity="center_vertical"
             android:textStyle="bold">
         </TextView>
@@ -90,8 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_margin="5sp"
-            android:layout_marginStart="40dp"
-            android:layout_marginLeft="40dp"
+            android:layout_marginStart="50dp"
             android:text="Precision : "
             android:textSize="25sp"
             android:textColor="@color/colortextdata"
@@ -105,10 +98,9 @@
             android:layout_height="40dp"
             android:layout_margin="5sp"
             android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
             android:text="Prediction Year"
             android:textSize="25sp"
-            android:textColor="@color/colortextdata"
+            android:textColor="@color/colortextlabel"
             android:layout_gravity="center_vertical"
             android:textStyle="bold">
         </TextView>

@@ -8,7 +8,6 @@ import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -96,24 +95,20 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse des Statistiques du Serveur: ${response?.body()}")
-                Log.i(TAG, "Status de reponse  des Statistiques du Serveur: ${response?.code()}")
-                Log.i(
-                    TAG,
-                    "Message de reponse  des Statistiques du Serveur: ${response?.message()}"
-                )
+                Log.i(TAG, "Response Status  of Hourly Station statistics  from Server: ${response?.code()}")
+                Log.i(TAG, "Response body of Hourly Station statistics from Server: ${response?.body()}")
 
                 val arrayStationType = object : TypeToken<DataResponseStation>() {}.type
                 val jObj: DataResponseStation = Gson().fromJson(response?.body(), arrayStationType)
-                Log.i(TAG, "L'objet : $jObj")
+                Log.i(TAG, "Object : $jObj")
                 fillData(jObj)
                 lllProgressBar.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Error when receiving statistic!    cause:${t.cause}     message:${t.message}")
+                Log.i(TAG, "Error when loading statistics!    cause:${t.cause}     message:${t.message}")
                 val builder = AlertDialog.Builder(this@HourlyStationStatisticActivity)
-                builder.setTitle("Error while loading statistic!").setMessage("cause:${t.cause} \n message:${t.message}")
+                builder.setTitle("Error while loading statistics!").setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()
             }
         })
@@ -129,10 +124,10 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
         val image1 = findViewById(R.id.image) as ImageView
         try{image1.setImageBitmap(convertString64ToImage(myImageString))}
         catch (e: Exception){
-            Log.e(TAG,"error")
+            Log.e(TAG,"Error")
         }
         //image1.setImageBitmap(convertString64ToImage(myImageString))
-        Log.i(TAG, "affichage du graphique ")
+        Log.i(TAG, "Display the graph ")
 
         text12.setText(jObj.data.departureValue[0].toString())
         text13.setText(jObj.data.arrivalValue[0].toString())

@@ -19,7 +19,7 @@ import inf3995.bixiapplication.Data.ConnectivityData
 import inf3995.bixiapplication.StationView.Dialog.EngineConnectivityStatusDialog
 import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
 import inf3995.bixiapplication.StationView.Dialog.UnsafeOkHttpClient
-import inf3995.bixiapplication.StationView.PredictionErrors.ErrorPredictionsActivity
+import inf3995.bixiapplication.StationView.PredictionErrors.PerDatePredictionErrorsActivity
 import inf3995.bixiapplication.StationView.Predictions.GlobalPredictions.GlobalPredictionsActivity
 import inf3995.bixiapplication.StationView.StationList.ListStationActivity
 import inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.GlobalStatisticsActivity
@@ -77,7 +77,7 @@ class MainScreenActivity : AppCompatActivity() {
         }
 
         btn4.setOnClickListener{
-            val intent = Intent(this, ErrorPredictionsActivity::class.java)
+            val intent = Intent(this, PerDatePredictionErrorsActivity::class.java) //ErrorPredictionsActivity
             startActivity(intent)
         }
 

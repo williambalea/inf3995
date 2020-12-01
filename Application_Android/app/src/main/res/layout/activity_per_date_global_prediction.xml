@@ -13,7 +13,6 @@
         android:visibility="visible"
         layout="@layout/progress_bar"/>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -54,7 +53,7 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
         android:orientation="horizontal">
@@ -74,13 +73,13 @@
         <TextView
             android:id="@+id/predictionYearPerD"
             android:layout_width="wrap_content"
-            android:layout_height="28dp"
+            android:layout_height="40dp"
             android:layout_margin="5sp"
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
             android:text="Prediction Year"
             android:textSize="25sp"
-            android:textColor="@color/colortextdata"
+            android:textColor="@color/colortextlabel"
             android:layout_gravity="center_vertical"
             android:textStyle="bold">
         </TextView>
@@ -91,7 +90,7 @@
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="10dp"
         android:src="@drawable/oranges" />
     <LinearLayout
         android:layout_width="match_parent"

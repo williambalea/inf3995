@@ -43,15 +43,15 @@
             </intent-filter>
         </activity>
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.StationStatistics.MonthlyStationStatisticActivity" />
-        <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.MonthlyStationStatisticGlobalActivity" />
+        <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.MonthlyGlobalStatisticsActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.StationStatistics.StationStatisticsActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Predictions.GlobalPredictions.GlobalPredictionsActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.GlobalStatisticsActivity"
                   android:launchMode="singleTask"/>
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.StationStatistics.DailyStationStatisticActivity" />
-        <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.DailyStationStatisticGlobalActivity" />
+        <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.DailyGlobalStatisticActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.Statistics.StationStatistics.HourlyStationStatisticActivity" />
-        <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.HourlyStationStatisticGlobalActivity" />
+        <activity android:name="inf3995.bixiapplication.StationView.Statistics.GlobalStatistics.HourlyGlobalStatisticsActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.StationList.ListStationActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.StationList.StationCoordinatesActivity" />
         <activity android:name="inf3995.bixiapplication.StationView.PredictionErrors.ErrorPredictionsActivity" />

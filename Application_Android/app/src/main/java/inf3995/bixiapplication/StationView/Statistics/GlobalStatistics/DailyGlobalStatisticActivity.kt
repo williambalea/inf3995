@@ -5,11 +5,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
-import android.util.Base64.decode
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -21,35 +19,34 @@ import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
 import inf3995.bixiapplication.StationViewModel.StationLiveData.DataResponseStation
 import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
-import kotlinx.android.synthetic.main.activity_monthly_station_statistic_global.*
+import kotlinx.android.synthetic.main.activity_daily_station_statistic_global.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
 
+class DailyGlobalStatisticActivity : AppCompatActivity() {
 
-class MonthlyStationStatisticGlobalActivity : AppCompatActivity() {
-
-    lateinit var time: String
-    var year = 0
+    lateinit var temps: String
+    var annee= 0
     var myImage:ImageView? = null
-    private val TAG = "Monthly Station Statistics Global"
+    private val TAG = "Daily Global Statistics"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_monthly_station_statistic_global)
+        setContentView(R.layout.activity_daily_station_statistic_global)
         val tempas = intent.getStringExtra("timeGlobal")
         val annas = intent.getStringExtra("yearGlobal")?.toInt()
 
         if (tempas != null) {
-            time = tempas
+            temps = tempas
         }
-
         if (annas != null) {
-            year = annas
+            annee = annas
         }
-        statisticGlobalYear.text = year.toString()
+        statisticGlobalYear.text = annee.toString()
         myImage = findViewById(R.id.image)
         requestToServer(IpAddressDialog.ipAddressInput)
 
@@ -73,26 +70,21 @@ class MonthlyStationStatisticGlobalActivity : AppCompatActivity() {
         })
 
     }
-
     private fun requestToServer(ipAddress: String?) {
 
         // get check connexion with Server Hello from Server
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
-            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().readTimeout(120, TimeUnit.SECONDS).build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        val call: Call<String> = service.getGlobalStatistics(year, time)
+        val call: Call<String> = service.getGlobalStatistics(annee, temps)
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse des Statistiques du Serveur: ${response?.body()}")
-                Log.i(TAG, "Status de reponse  des Statistiques du Serveur: ${response?.code()}")
-                Log.i(
-                    TAG,
-                    "Message de reponse  des Statistiques du Serveur: ${response?.message()}"
-                )
+                Log.i(TAG, "Response Status  of Global statistics  from Server: ${response?.code()}")
+                Log.i(TAG, "Response body of Global statistics from Server: ${response?.body()}")
 
                 val arrayStationType = object : TypeToken<DataResponseStation>() {}.type
                 val jObj: DataResponseStation = Gson().fromJson(response?.body(), arrayStationType)
@@ -102,20 +94,23 @@ class MonthlyStationStatisticGlobalActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Error when receiving statistic!    cause:${t.cause}     message:${t.message}")
-                val builder = AlertDialog.Builder(this@MonthlyStationStatisticGlobalActivity)
-                builder.setTitle("Error while loading statistic!").setMessage("cause:${t.cause} \n message:${t.message}")
+                Log.i(TAG, "Error when loading statistics!    cause:${t.cause}     message:${t.message}")
+                val builder = AlertDialog.Builder(this@DailyGlobalStatisticActivity)
+                builder.setTitle("Error while loading statistics!").setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()
             }
         })
     }
 
+    private fun convertString64ToImage(base64String: String): Bitmap {
+        val decodedString = Base64.decode(base64String, Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+    }
+
     private fun fillData(jObj: DataResponseStation) {
         val myImageString = jObj.graph
         imageGlobal.setImageBitmap(convertString64ToImage(myImageString))
-        imageGlobal.maxHeight.equals(332)
-        imageGlobal.maxWidth.equals(332)
-        Log.i(TAG, "affichage du graphique ")
+        Log.i(TAG, "Display the graph")
 
         textGlobal12.setText(jObj.data.departureValue[0].toString())
         textGlobal13.setText(jObj.data.arrivalValue[0].toString())
@@ -131,23 +126,7 @@ class MonthlyStationStatisticGlobalActivity : AppCompatActivity() {
         textGlobal63.setText(jObj.data.arrivalValue[5].toString())
         textGlobal72.setText(jObj.data.departureValue[6].toString())
         textGlobal73.setText(jObj.data.arrivalValue[6].toString())
-        textGlobal82.setText(jObj.data.departureValue[7].toString())
-        textGlobal83.setText(jObj.data.arrivalValue[7].toString())
 
-        textGlobal92.setText(jObj.data.departureValue[8].toString())
-        textGlobal93.setText(jObj.data.arrivalValue[8].toString())
-        textGlobal102.setText(jObj.data.departureValue[9].toString())
-        textGlobal103.setText(jObj.data.arrivalValue[9].toString())
-        textGlobal112.setText(jObj.data.departureValue[10].toString())
-        textGlobal113.setText(jObj.data.arrivalValue[10].toString())
-        textGlobal122.setText(jObj.data.departureValue[11].toString())
-        textGlobal123.setText(jObj.data.arrivalValue[11].toString())
-
-    }
-
-    private fun convertString64ToImage(base64String: String): Bitmap {
-        val decodedString = decode(base64String, Base64.DEFAULT)
-        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
     }
 
 }
