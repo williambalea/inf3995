@@ -11,10 +11,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -43,7 +40,7 @@ class MainScreenActivity : AppCompatActivity() {
     companion object {
         var isInFront :Boolean = true
         //var `listen.value` :Array<String>? = null
-        var listen : MutableLiveData<Array<String>> =  MutableLiveData<Array<String>>()
+        var connectivity : MutableLiveData<Array<String>> =  MutableLiveData<Array<String>>()
     }
 
     private lateinit var btn1: Button
@@ -163,18 +160,18 @@ class MainScreenActivity : AppCompatActivity() {
                             "Réponse Connectivity: ${jObj.message} ${response.code()}"
                         )
 
-                        listen.value = jObj.message.split(" ").toTypedArray()
+                        connectivity.value = jObj.message.split(" ").toTypedArray()
 
-                        if (listen.value!![0] == "UP" && listen.value!![1] == "UP" && listen.value!![2] == "UP") {
+                        if (connectivity.value!![0] == "UP" && connectivity.value!![1] == "UP" && connectivity.value!![2] == "UP") {
                             engineProblemNotification.cancel()
                             item?.setTint(Color.argb(255, 0, 255, 0))
                         } else {
                             engineProblemNotification.start()
                         }
-                        buttonStatus(listen.value!!)
-                        EngineConnectivityStatusDialog.status1 = listen.value!![0]
-                        EngineConnectivityStatusDialog.status2 = listen.value!![1]
-                        EngineConnectivityStatusDialog.status3 = listen.value!![2]
+                        buttonStatus(connectivity.value!!)
+                        EngineConnectivityStatusDialog.status1 = connectivity.value!![0]
+                        EngineConnectivityStatusDialog.status2 = connectivity.value!![1]
+                        EngineConnectivityStatusDialog.status3 = connectivity.value!![2]
                     }
 
                     override fun onFailure(call: Call<String>?, t: Throwable) {

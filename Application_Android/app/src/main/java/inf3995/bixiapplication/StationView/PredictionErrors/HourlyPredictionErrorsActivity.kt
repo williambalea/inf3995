@@ -105,7 +105,7 @@ class HourlyPredictionErrorsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        MainScreenActivity.listen.observe(this, Observer {
+        MainScreenActivity.connectivity.observe(this, Observer {
 
             if(it[2] == "DOWN"){
                 Toast.makeText(

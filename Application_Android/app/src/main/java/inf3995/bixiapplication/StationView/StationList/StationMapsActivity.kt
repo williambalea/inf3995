@@ -1,9 +1,12 @@
 package inf3995.bixiapplication.StationView.StationList
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -13,6 +16,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
 import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
 import inf3995.test.bixiapplication.R
 
@@ -41,6 +45,28 @@ class StationMapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.O
         mapFragment.getMapAsync(this)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        MainScreenActivity.connectivity.observe(this, Observer {
+
+            if(it[0] == "DOWN"){
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 2")
+                if(!builder.show().isShowing) {
+                    builder.show().setOnDismissListener {
+                        val intent = Intent(this, MainScreenActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                        startActivity(intent)
+                    }
+                }
+            }
+
+        })
 
     }
 

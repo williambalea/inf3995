@@ -60,12 +60,12 @@ class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHol
             val popupMenu = PopupMenu(wrapper, holder.dropDownMenu)
 
             popupMenu.menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
-            if(MainScreenActivity.listen.value?.get(1) == "DOWN") {
+            if(MainScreenActivity.connectivity.value?.get(1) == "DOWN") {
                 //popupMenu.menu.getItem(1).isEnabled = false
                 popupMenu.menu.getItem(1).isVisible = false
             }
 
-            if(MainScreenActivity.listen.value?.get(2) == "DOWN") {
+            if(MainScreenActivity.connectivity.value?.get(2) == "DOWN") {
                 //popupMenu.menu.getItem(2).isEnabled = false
                 popupMenu.menu.getItem(2).isVisible = false
             }

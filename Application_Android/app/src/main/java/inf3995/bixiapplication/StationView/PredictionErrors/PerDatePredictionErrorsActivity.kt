@@ -2,7 +2,6 @@ package inf3995.bixiapplication.StationView.PredictionErrors
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -18,7 +17,7 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        MainScreenActivity.listen.observe(this, Observer {
+        MainScreenActivity.connectivity.observe(this, Observer {
 
             if(it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
