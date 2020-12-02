@@ -64,6 +64,7 @@ class Engine3_Pred_Error:
 		# print(len(temp_df['predictions']))
 
 		print('1.3.4.getting xAxisDate...')
+		print(pred_df)
 		xAxisDate = []
 		for i in range(len(pred_df.index.values)):
 			xAxisDate.append( str(pred_df.index.values[i][0])
@@ -72,7 +73,7 @@ class Engine3_Pred_Error:
 							+ ' ' 
 							+ str(pred_df.index.values[i][2])
 							+ 'h')
-			# xAxis = pd.Series(xAxisDate)
+							
 
 		xAxis = pd.Series(xAxisDate)
 		print('getting xAxisDate DONE')
@@ -93,13 +94,13 @@ class Engine3_Pred_Error:
 			print('1.3.5.generating error graph...')
 			barWidth = 0.25
 			plt2.clf()
-			plt2.plot(xAxis, errors,'.',  color='#D52B1E',  label='Predictions')
+			plt2.plot(xAxis, errors,'.',  color='#D52B1E',  label='Prediction Errors')
 			# Add xticks on the middle of the group bars
 			('adding xticks')
 			label_step = 500
 			plt2.xticks(xAxis[::label_step], rotation='45')
 			plt2.xlabel('Per Dates')
-			plt2.ylabel('Predictions')
+			plt2.ylabel('Prediction Errors')
 			plt2.title('Prediction Errors per Date in 2017')
 			plt2.tight_layout()
 			# plt.xaxis.set_minor_locator(MultipleLocator(5))

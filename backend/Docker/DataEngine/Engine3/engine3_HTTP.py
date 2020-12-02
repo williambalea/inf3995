@@ -56,15 +56,6 @@ def predictionError():
     else:
         return "Training not done, please come back later"
 
-    # my_file = Path(engine3.PREDICTION_DF_PATH)
-    # if my_file.is_file():
-    #     print('loading Pred_df')
-    #     # load the pred_df from disk
-    #     pred_df = pd.read_pickle(my_file)
-    #     return engine3_pred_error.get_error_json(pred_df)
-    # else:
-    #     return 'ERROR: prediction not ready yet'
-
 
 @app.route('/engine3/testing')
 def testing():
