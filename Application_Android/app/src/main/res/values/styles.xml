@@ -3,7 +3,7 @@
     <!--style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar" -->>
     <style name="AppTheme" parent="Theme.AppCompat.Light">
     <!-- Customize your theme here. -->
-    <item name="colorPrimary">@android:color/holo_red_light</item>
+    <item name="colorPrimary">#D52B1E</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
 </style>
@@ -26,12 +26,16 @@
 
 <style name ="AppTheme.Toolbar.SearchView" parent = "Widget.AppCompat.SearchView">
     <item name="queryBackground">@android:color/holo_green_light</item>
+    <item name="android:textColor">#ffff</item>
+    <item name="android:textSize">30sp</item>
+    <item name="android:layout_height">80dp</item>
     <item name="searchIcon">@android:drawable/ic_menu_search</item>
 </style>
 
-<style name ="MenuItems" parent = "AppTheme">
-    <item name="android:textSize">20sp</item>
-    <item name="android:layout_height">50dp</item>
+    <style name ="MenuItems" parent = "AppTheme">
+    <item name="android:textSize">40sp</item>
+    <item name="android:textColor">#000</item>
+    <item name="android:layout_height">80dp</item>
 
 </style>
 <style name ="spinnerDropDownItemStyle" parent = "android:TextAppearance.Widget.TextView.SpinnerItem">
@@ -92,5 +96,12 @@
         <item name="colorButtonNormal">
             @color/white</item>
     </style>
+
+
+    <style name="AppSearchView" parent="Widget.AppCompat.SearchView" >
+        <item name="android:textSize">60sp</item>
+    </style>
+
+
 
 </resources>

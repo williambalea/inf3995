@@ -1,33 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@drawable/background_bg"
     android:layout_height="match_parent"
     tools:context="inf3995.bixiapplication.StationView.StationList.ListStationActivity">
 
     <!---progress bar-->
-    <include
-        android:id="@+id/llProgressBar"
-        android:visibility="visible"
-        layout="@layout/progress_bar"/>
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="@color/colorWhite"
-            android:textSize="50sp"
-            android:textStyle="bold"
-            android:text="@string/bixi_stations"
-            android:layout_gravity="center"/>
-
-    </androidx.appcompat.widget.Toolbar>
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/station_search"
+        android:layout_width="750dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginRight="0dp"
+        android:background="@drawable/background_searchview"
+        android:gravity="center_horizontal"
+        android:textCursorDrawable="@null"
+        app:queryHint="Search Bixi Station..."
+        android:iconifiedByDefault="false"
+        app:iconifiedByDefault="false"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/recyclerView"

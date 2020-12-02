@@ -1,11 +1,12 @@
 package inf3995.bixiapplication.StationView.StationList
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.View
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -42,31 +43,35 @@ class ListStationActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.station_list_activity_main)
         requestToServer(IpAddressDialog.ipAddressInput)
-    }
 
-    override fun onResume() {
-        super.onResume()
+        station_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(filterString: String?): Boolean {
+                stationAdapter!!.filter.filter(filterString)
+                return false
+            }
 
-        MainScreenActivity.connectivity.observe(this, Observer {
-
-            if(it[0] == "DOWN"){
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 1")
-
-                    builder.show().setOnDismissListener {
-                        val intent = Intent(this, MainScreenActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                        startActivity(intent)
-                    }
-
+            override fun onQueryTextChange(newText: String?): Boolean {
+                stationAdapter!!.filter.filter(newText)
+                return false
             }
 
         })
 
+        val searchIcon = station_search.findViewById<ImageView>(R.id.search_mag_icon)
+        searchIcon.setColorFilter(Color.BLACK)
+
+        val cancelIcon = station_search.findViewById<ImageView>(R.id.search_close_btn)
+        cancelIcon.setColorFilter(Color.BLACK)
+
+        val textView = station_search.findViewById<TextView>(R.id.search_src_text)
+        textView.setTextColor(Color.BLACK)
+        textView.setTextSize(30F)
+
+
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+/*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         val menuItem = menu!!.findItem(R.id.searchView)
         val searchView = menuItem.actionView as SearchView
@@ -87,7 +92,8 @@ class ListStationActivity : AppCompatActivity(){
         })
 
         return true
-    }
+    }*/
+
 
     private fun requestToServer(ipAddress: String?) {
         // get check connexion with Server Hello from Server
@@ -109,7 +115,7 @@ class ListStationActivity : AppCompatActivity(){
                 val arrayStationType = object : TypeToken<Array<Station>>() {}.type
                 val jObj: Array<Station> = Gson().fromJson(response?.body(), arrayStationType)
                 makeRecyclerView(jObj)
-                llProgressBar.visibility = View.GONE
+                //llProgressBar.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
@@ -132,6 +138,28 @@ class ListStationActivity : AppCompatActivity(){
 
         recyclerView.layoutManager = LinearLayoutManager(this@ListStationActivity)
         recyclerView.setHasFixedSize(true)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        MainScreenActivity.connectivity.observe(this, Observer {
+
+            if(it[0] == "DOWN"){
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 1")
+
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                    startActivity(intent)
+                }
+
+            }
+
+        })
+
     }
 
 }
