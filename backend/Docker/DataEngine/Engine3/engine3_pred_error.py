@@ -96,13 +96,17 @@ class Engine3_Pred_Error:
 			plt2.plot(xAxis, errors,'.',  color='#D52B1E',  label='Predictions')
 			# Add xticks on the middle of the group bars
 			('adding xticks')
-			plt2.xlabel('GroupBy')
+			label_step = 500
+			plt2.xticks(xAxis[::label_step], rotation='45')
+			plt2.xlabel('Per Dates')
 			plt2.ylabel('Predictions')
+			plt2.title('Prediction Errors per Date in 2017')
+			plt2.tight_layout()
 			# plt.xaxis.set_minor_locator(MultipleLocator(5))
 			# Create legend & Show graphic
 			plt2.legend()
 			plt2.savefig(self.ERROR_GRAPH_PATH)
-			# plt.show()
+			plt2.show()
 			print('generating error graph DONE', flush=True)
 			# plt.show()
 
