@@ -28,6 +28,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
 
 class PerDatePredictionErrorsActivity : AppCompatActivity() {
 
@@ -56,31 +57,17 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
-            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().readTimeout(120, TimeUnit.SECONDS).build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         val call: Call<String> = service.getPredictionsErrors()
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(
-                    TAG,
-                    "Réponse du Serveur pour les erreurs de predictions : ${response?.body()}"
-                )
-                Log.i(
-                    TAG,
-                    "Status de reponse du Serveur pour les erreurs des predictions: ${response?.code()}"
-                )
-                /*
-                if (response?.code() == 404) {
-                    Toast.makeText(
-                        this@PerDatePredictionErrorsActivity,
-                        "Prediction is not yet done, please go to predictions first!! ",
-                        Toast.LENGTH_LONG
-                    ).show()
-*/
+                Log.i(TAG,"Response body of predictions errors from server  : ${response?.body()}")
+                Log.i(TAG,"Response status  of predictions errors from server : ${response?.code()}")
 
-                if(!(response?.code() == 404)){
+                if((response?.code() == 404)){
                     val builder = AlertDialog.Builder(this@PerDatePredictionErrorsActivity)
                     builder.setTitle("Oups. Error 404 !!!")
                         .setMessage("Prediction is not yet done, please go to predictions page first.")
@@ -96,7 +83,7 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
                         response?.body(),
                         arrayStationType
                     )
-                    Log.i(TAG, "L'objet : $jObj")
+                    Log.i(TAG, "Object : $jObj")
                     fillData(jObj)
                     lllProgressBarPerD.visibility = View.GONE
                 }
@@ -141,7 +128,6 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
             val text0 = TextView(this)
             val text1= TextView(this)
             val text2= TextView(this)
-
 
             // Set the heigth and width of the TextView
             val scale = resources.displayMetrics.density
