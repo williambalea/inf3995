@@ -37,15 +37,17 @@ class StationCoordinatesActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        MainScreenActivity.listen.observe(this, Observer {
+        MainScreenActivity.connectivity.observe(this, Observer {
 
             if(it[0] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 1")
-                builder.show().setOnDismissListener {
-                    val intent = Intent(this, MainScreenActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                    startActivity(intent)
+                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 2")
+                if(!builder.show().isShowing){
+                    builder.show().setOnDismissListener {
+                        val intent = Intent(this, MainScreenActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                        startActivity(intent)
+                    }
                 }
             }
 

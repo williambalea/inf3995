@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -48,16 +47,19 @@ class ListStationActivity : AppCompatActivity(){
     override fun onResume() {
         super.onResume()
 
-        MainScreenActivity.listen.observe(this, Observer {
+        MainScreenActivity.connectivity.observe(this, Observer {
 
             if(it[0] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 1")
-                builder.show().setOnDismissListener {
-                    val intent = Intent(this, MainScreenActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                    startActivity(intent)
-                }
+
+                    builder.show().setOnDismissListener {
+                        val intent = Intent(this, MainScreenActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                        startActivity(intent)
+                    }
+
             }
 
         })
@@ -73,21 +75,13 @@ class ListStationActivity : AppCompatActivity(){
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(filterString: String?): Boolean {
                 stationAdapter!!.filter.filter(filterString)
-                Toast.makeText(
-                    this@ListStationActivity,
-                    "Looking for Station containing the word  $filterString ",
-                    Toast.LENGTH_LONG
-                ).show()
+
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 stationAdapter!!.filter.filter(newText)
-                Toast.makeText(
-                    this@ListStationActivity,
-                    "Looking for Station containing the word  $newText ",
-                    Toast.LENGTH_LONG
-                ).show()
+
                 return true
             }
         })

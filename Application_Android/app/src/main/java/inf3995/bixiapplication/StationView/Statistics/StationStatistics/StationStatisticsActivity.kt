@@ -26,7 +26,6 @@ class StationStatisticsActivity : AppCompatActivity() {
         station = intent.getSerializableExtra("data") as Station
         Station_code.text = station!!.code.toString()
         Station_name.text = station!!.name
-        //val code = station!!.code
 
         val years_List = listOf("","2014", "2015", "2016","2017")
         val years_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, years_List)
@@ -43,7 +42,6 @@ class StationStatisticsActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val item:String = years_List[position]
-                Toast.makeText(this@StationStatisticsActivity, "Year $item selected", Toast.LENGTH_SHORT).show()
                 year = item
             }
         }
@@ -52,17 +50,14 @@ class StationStatisticsActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val item:String = period_List[position]
-                Toast.makeText(this@StationStatisticsActivity, "Period $item selected", Toast.LENGTH_SHORT).show()
                 time = item
             }
         }
 
         display_button.setOnClickListener{
-            Toast.makeText(this," $station.name station Statistics", Toast.LENGTH_SHORT).show()
-            //val code = station!!.code
+
             val annee = year
             val temps = time
-            //val name = station!!.name
             when (temps){
                 "perMonth"-> {
                     val intent = Intent(this@StationStatisticsActivity, MonthlyStationStatisticActivity::class.java)
@@ -93,16 +88,18 @@ class StationStatisticsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        MainScreenActivity.listen.observe(this, Observer {
+        MainScreenActivity.connectivity.observe(this, Observer {
 
-            if(it[1] == "DOWN"){
+            if(it[0] == "DOWN"|| it[1] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 2")
-                builder.show().setOnDismissListener {
-                    val intent = Intent(this, MainScreenActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                    startActivity(intent)
-                }
+                    builder.show().setOnDismissListener {
+                        val intent = Intent(this, MainScreenActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                        startActivity(intent)
+                    }
+
             }
 
         })

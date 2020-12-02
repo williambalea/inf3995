@@ -8,7 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
-import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity.Companion.listen
+import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity.Companion.connectivity
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_global_statistics.*
 
@@ -32,7 +32,6 @@ class GlobalStatisticsActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val item:String = years_List[position]
-                Toast.makeText(this@GlobalStatisticsActivity, "Year $item selected", Toast.LENGTH_SHORT).show()
                 year = item
             }
         }
@@ -41,7 +40,6 @@ class GlobalStatisticsActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val item:String = period_List[position]
-                Toast.makeText(this@GlobalStatisticsActivity, "Period $item selected", Toast.LENGTH_SHORT).show()
                 time = item
             }
         }
@@ -74,16 +72,18 @@ class GlobalStatisticsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        listen.observe(this, Observer {
+        connectivity.observe(this, Observer {
 
-            if(it[1] == "DOWN"){
+            if(it[1] == "DOWN") {
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 2")
-                builder.show().setOnDismissListener {
-                    val intent = Intent(this, MainScreenActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                    startActivity(intent)
-                }
+                    builder.show().setOnDismissListener {
+                        val intent = Intent(this, MainScreenActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                        startActivity(intent)
+                    }
+
             }
         })
 

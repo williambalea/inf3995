@@ -66,15 +66,22 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
 
         myImage = findViewById(R.id.image)
 
-        predictionYearD.text =annee.toString()
-        if(!(dateEnd == dateStart)){
+        predictionYearD.text = annee.toString()
+        val yearEnd = dateEnd!!.split('-')[2]
+        val yearStart = dateStart!!.split('-')[2]
+        val monthEnd = dateEnd!!.split('-')[1]
+        val monthStart = dateStart!!.split('-')[1]
+        val dayEnd = dateEnd!!.split('-')[0]
+        val dayStart = dateStart!!.split('-')[0]
+
+        if(!(dateEnd == dateStart) && ((yearEnd == yearStart)) ){
             requestToServer(IpAddressDialog.ipAddressInput)
         } else {
             val builder = AlertDialog.Builder(this@DailyGlobalPredictionActivity)
-            builder.setTitle("Oups. Error in the dates entered !!!")
-                .setMessage("To solve this error, verify that you respect the following rules. " +
-                        " Choose two differents date in the same year for Start date and End date. Make sure the start date is prior to End date. " +
-                        "Do not forget, the predictions are only available for year 2017. So choose the year 2017.")
+            builder.setTitle(" Error!")
+                .setMessage(" One of these conditions is not respected.\n"+
+                        "- End date and Start date should be in the same year.\n" +
+                        "- Start date should be prior to End date.\n")
             builder.setIcon(R.mipmap.ic_launcher)
             builder.show().setOnDismissListener {
                 val intent = Intent(this, GlobalPredictionsActivity::class.java)
@@ -82,21 +89,22 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
                 startActivity(intent)
             }
         }
-
     }
+
     override fun onResume() {
         super.onResume()
 
-        MainScreenActivity.listen.observe(this, Observer {
+        MainScreenActivity.connectivity.observe(this, Observer {
 
             if(it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
-                builder.show().setOnDismissListener {
-                    val intent = Intent(this, MainScreenActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                    startActivity(intent)
-                }
+                    builder.show().setOnDismissListener {
+                        val intent = Intent(this, MainScreenActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                        startActivity(intent)
+                    }
             }
 
         })
@@ -108,7 +116,7 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
-            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().readTimeout(300, TimeUnit.SECONDS).build())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().readTimeout(360, TimeUnit.SECONDS).build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         //val call: Call<String> = service.getStationPrediction(annee, temps, code, dateStart, dateEnd)
@@ -116,20 +124,20 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse des predictions du Serveur: ${response?.body()}")
-                Log.i(TAG, "Status de reponse  des predictions du Serveur: ${response?.code()}")
+                Log.i(TAG, "Response of station predictions from Server: ${response?.body()}")
+                Log.i(TAG, "Response status of station predictions from Server: ${response?.code()}")
 
                 val arrayStationType = object : TypeToken<DataPredictionResponseStation>() {}.type
                 val jObj: DataPredictionResponseStation = Gson().fromJson(response?.body(), arrayStationType)
-                Log.i(TAG, "L'objet : $jObj")
+                Log.i(TAG, "Object : $jObj")
                 fillData(jObj)
                 lllProgressBarD.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Error when receiving prediction!    cause:${t.cause}     message:${t.message}")
+                Log.i(TAG, "Error when loading predictions!    cause:${t.cause}     message:${t.message}")
                 val builder = AlertDialog.Builder(this@DailyGlobalPredictionActivity)
-                builder.setTitle("Error while loading prediction!").setMessage("cause:${t.cause} \n message:${t.message}")
+                builder.setTitle("Error while loading predictions!").setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()
             }
         })
@@ -148,7 +156,7 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
         } catch (e: Exception) {
             Log.e(TAG, "error")
         }
-        Log.i(TAG, "affichage du graphique ")
+        Log.i(TAG, "display the graph ")
 
         for (i in 0 until jObj.data.predictions.size) {
 

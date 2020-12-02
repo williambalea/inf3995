@@ -110,18 +110,13 @@ class StationPredictionsActivity : AppCompatActivity() {
                 id: Long
             ) {
                 val item:String = period_List[position]
-                Toast.makeText(
-                    this@StationPredictionsActivity,
-                    "Period $item selected",
-                    Toast.LENGTH_SHORT
-                ).show()
+
                 time = item
             }
         }
 
         display_button.setOnClickListener{
-            Toast.makeText(this, " $station.name station Predictions", Toast.LENGTH_SHORT).show()
-            //val code = station!!.code
+
             val annee = year
             val temps = time
             val dateEnd = dateEnd
@@ -139,6 +134,7 @@ class StationPredictionsActivity : AppCompatActivity() {
                     intent.putExtra("Temps", temps)
                     intent.putExtra("DateStart", dateStart)
                     intent.putExtra("DateEnd", dateEnd)
+
                     startActivity(intent)
 
                 }
@@ -178,9 +174,9 @@ class StationPredictionsActivity : AppCompatActivity() {
                     intent.putExtra("DateEnd", dateEnd)
                     startActivity(intent)
 
-                    Log.i(TAG, "l'année est : $year")
-                    Log.i(TAG, "la date de début de la plage est : $dateStart")
-                    Log.i(TAG, "la date de Fin de la plage est : $dateEnd")
+                    Log.i(TAG, "Year is : $year")
+                    Log.i(TAG, "Start date is : $dateStart")
+                    Log.i(TAG, "End date is : $dateEnd")
                 }
             }
         }
@@ -189,16 +185,18 @@ class StationPredictionsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        MainScreenActivity.listen.observe(this, Observer {
+        MainScreenActivity.connectivity.observe(this, Observer {
 
-            if(it[2] == "DOWN"){
+            if(it[0] == "DOWN"|| it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
-                builder.show().setOnDismissListener {
-                    val intent = Intent(this, MainScreenActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                    startActivity(intent)
-                }
+                    builder.show().setOnDismissListener {
+                        val intent = Intent(this, MainScreenActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                        startActivity(intent)
+                    }
+
             }
 
         })

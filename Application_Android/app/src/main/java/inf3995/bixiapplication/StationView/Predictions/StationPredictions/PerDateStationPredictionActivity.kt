@@ -29,6 +29,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
 
 class PerDateStationPredictionActivity : AppCompatActivity() {
 
@@ -60,8 +61,6 @@ class PerDateStationPredictionActivity : AppCompatActivity() {
         if (tempas != null) {
             temps = tempas
         }
-
-
         if (annas != null) {
             annee = annas
         }
@@ -78,14 +77,21 @@ class PerDateStationPredictionActivity : AppCompatActivity() {
         code =  station!!.code
         myImage = findViewById(R.id.image)
 
-        if(!(dateEnd == dateStart)){
+        val yearEnd = dateEnd!!.split('-')[2]
+        val yearStart = dateStart!!.split('-')[2]
+        val monthEnd = dateEnd!!.split('-')[1]
+        val monthStart = dateStart!!.split('-')[1]
+        val dayEnd = dateEnd!!.split('-')[0]
+        val dayStart = dateStart!!.split('-')[0]
+
+        if(!(dateEnd == dateStart) && ((yearEnd == yearStart)) ){
             requestToServer(IpAddressDialog.ipAddressInput)
         } else {
             val builder = AlertDialog.Builder(this@PerDateStationPredictionActivity)
-            builder.setTitle("Oups. Error in the dates entered !!!")
-                .setMessage("To solve this error, verify that you respect the following rules. " +
-                        " Choose two differents date in the same year for Start date and End date. Make sure the start date is prior to End date." +
-                        "Do not forget, the predictions are only available for year 2017. So choose the year 2017.")
+            builder.setTitle(" Error!")
+                .setMessage(" One of these conditions was not respected.\n"+
+                        "- End date and Start date should be in the same year.\n" +
+                        "- Start date should be prior to End date.\n")
             builder.setIcon(R.mipmap.ic_launcher)
             builder.show().setOnDismissListener {
                 val intent = Intent(this, StationPredictionsActivity::class.java)
@@ -97,16 +103,18 @@ class PerDateStationPredictionActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        MainScreenActivity.listen.observe(this, Observer {
+        MainScreenActivity.connectivity.observe(this, Observer {
 
-            if(it[2] == "DOWN"){
+            if(it[0] == "DOWN"|| it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
-                builder.show().setOnDismissListener {
-                    val intent = Intent(this, MainScreenActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                    startActivity(intent)
-                }
+                    builder.show().setOnDismissListener {
+                        val intent = Intent(this, MainScreenActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                        startActivity(intent)
+                    }
+
             }
 
         })
@@ -117,7 +125,7 @@ class PerDateStationPredictionActivity : AppCompatActivity() {
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
-            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
+            .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().readTimeout(360, TimeUnit.SECONDS).build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
         val call: Call<String> = service.getStationPrediction(code, temps, dateStart!!, dateEnd!!)

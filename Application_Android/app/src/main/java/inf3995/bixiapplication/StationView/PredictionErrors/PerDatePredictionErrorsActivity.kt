@@ -36,17 +36,12 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
     private val TAG = " Prediction Errors "
     lateinit var table: TableLayout
     var year = "2017"
-    //var precision = 82.82
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_per_date_error_predictions)
-        //val yearReceived = intent.getStringExtra("Year")
-        ///if (yearReceived != null) {
-       //    year = yearReceived
-       // }
+
         ErrorPredictionYear.text = year.toString()
-        //PrecisionPredictionValue.text = precision.toString()
         table = findViewById(R.id.main_table)
         myImage = findViewById(R.id.image)
         requestToServer(IpAddressDialog.ipAddressInput)
@@ -69,7 +64,7 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
 
                 if((response?.code() == 404)){
                     val builder = AlertDialog.Builder(this@PerDatePredictionErrorsActivity)
-                    builder.setTitle("Oups. Error 404 !!!")
+                    builder.setTitle("Oups. Error!")
                         .setMessage("Prediction is not yet done, please go to predictions page first.")
                     builder.setIcon(R.mipmap.ic_launcher)
                     builder.show().setOnDismissListener {
@@ -196,7 +191,7 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        MainScreenActivity.listen.observe(this, Observer {
+        MainScreenActivity.connectivity.observe(this, Observer {
             if (it[2] == "DOWN") {
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
