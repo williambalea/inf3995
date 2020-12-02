@@ -125,7 +125,7 @@ class Engine2:
         else:
             st = station
 
-        path = "./kaggleData/OD_{}".format(ye)
+        path = "./CSVData/OD_{}".format(ye)
         path += ".csv"
         # df = pd.read_csv(path)
         # print(df.dtypes)

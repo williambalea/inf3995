@@ -18,12 +18,12 @@ class Engine3:
     PREDICTION_DF_ALL_2017_PATH = "./tempFiles/pred_df_all_2017.pkl"
     TESTING_DF_PATH = "./tempFiles/testingDF.pkl"
     PRED_GRAPH_PATH = './tempFiles/predGraph.png'
-    NEW_CSV_WEATHER_PATH = '../kaggleData/historical-hourly-weather-data/weatherstats_montreal_hourly.csv'
+    NEW_CSV_WEATHER_PATH = '../CSVData/historical-hourly-weather-data/weatherstats_montreal_hourly.csv'
     ERROR_JSON_PATH = './tempFiles/error_data_and_graph.json'
     ERROR_GRAPH_PATH = './tempFiles/errorGraph2.png'
-    RF_MODEL_PATH = "./tempFiles/rf_model6.sav"
-    RF_N_ESTIMATORS = 6
-    RF_MAX_DEPTH = 4
+    RF_MODEL_PATH = "./tempFiles/rf_model15.sav"
+    RF_N_ESTIMATORS = 15
+    RF_MAX_DEPTH = 20
     RF_RANDOM_STATE = 42
     RF_N_JOBS = 1
     PER_HOUR_LABEL = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h',
@@ -43,7 +43,7 @@ class Engine3:
         return None 
     
     def get_bixi_data_year(self, year):
-        path = "../kaggleData/OD_"
+        path = "../CSVData/OD_"
         path += str(year)
         path += ".csv"
         bixidf = pd.read_csv(path, dtype={'start_date':str,'start_station_code':int,'end_date':str,
