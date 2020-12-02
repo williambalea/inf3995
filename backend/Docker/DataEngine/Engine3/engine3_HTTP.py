@@ -7,59 +7,34 @@ app = Flask(__name__)
 
 engine3 = Engine3()
 engine3_pred_error = Engine3_Pred_Error()
-# $ export FLASK_APP=hello.py
-# export FLASK_ENV=development
-# $ flask run
+
 @app.route('/engine3')
 def hello_world():
     return 'Hello World from Engin 3 :)'
 
-# http://127.0.0.1:5000/engine3/prediction/usage/5003/perMonth/'27-05-2017'/'27-08-2017'
 @app.route('/engine3/prediction/usage/<station>/<groupby>/<startDate>/<endDate>')
-def predictionUsage(station, groupby, startDate,endDate):
+def prediction_usage(station, groupby, startDate,endDate):
     startDate = str(startDate)
     endDate = str(endDate)
-    print('Dates')
-    print(startDate)
-    print(endDate)
-    predictions_df = engine3.get_prediction(station, startDate, endDate)
-
-    print('predictions_df: ', predictions_df)
-    filtered_pred_df = engine3.groupby_filter(predictions_df, groupby)
-    print('filtered_pred_df: ', filtered_pred_df)
-
-    print(filtered_pred_df)
-    x = engine3.get_graph_X(filtered_pred_df, groupby)
-    print('x: ', x)
-    y = engine3.get_graph_Y(filtered_pred_df)
-    print('y: ', y)
-    pred_graph = engine3.get_prediction_graph( groupby, x, y, station)
-    return engine3.datatoJSON(pred_graph, x, y, groupby)
+    predictionsDF = engine3.get_prediction(station, startDate, endDate)
+    filteredPredDF = engine3.groupby_filter(predictionsDF, groupby)
+    x = engine3.get_graph_X(filteredPredDF, groupby)
+    y = engine3.get_graph_Y(filteredPredDF)
+    predGraph = engine3.get_prediction_graph( groupby, x, y, station)
+    return engine3.datatoJSON(predGraph, x, y, groupby)
 
 @app.route('/engine3/prediction/error')
-def predictionError():
-    rf_model_file = Path(engine3.RF_MODEL_PATH)
-    if rf_model_file.is_file():
-        print('rf_model exist so we can get prediction error')
-        pred_with_error_path = Path(engine3.PREDICTION_DF_ALL_2017_PATH)
-        if pred_with_error_path.is_file():
-            print('pred for 2017 with all station used for pred error exists!')
-            pred_df = pd.read_pickle(pred_with_error_path)
+def prediction_error():
+    rfModelFile = Path(engine3.RF_MODEL_PATH)
+    if rfModelFile.is_file():
+        print('loading saved Random Forest Model')
+        errorPredDFPath = Path(engine3.PREDICTION_DF_ALL_2017_PATH)
+        #if predictions dataframe for 2017 exist then load else generate it
+        if errorPredDFPath.is_file():
+            predDF = pd.read_pickle(errorPredDFPath)
         else:
-            print('generating pred for 2017 with all station used for pred')
-            pred_df = engine3.get_prediction('all', '15-04-2017', '30-09-2017')
-
-            pred_df.to_pickle(pred_with_error_path)
-        
-        print('getting pred error json')
-        return engine3_pred_error.get_error_json(pred_df)
+            predDF = engine3.get_prediction('all', '15-04-2017', '30-09-2017')
+            predDF.to_pickle(errorPredDFPath)
+        return engine3_pred_error.get_error_json(predDF)
     else:
         return "Training not done, please come back later"
-
-
-@app.route('/engine3/testing')
-def testing():
-   
-    # (graph, ) = pydot.graph_from_dot_file('tree.dot')# Write graph to a png file
-    # graph.write_png('tree.png')
-    return 'gg'

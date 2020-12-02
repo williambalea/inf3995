@@ -1,18 +1,14 @@
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.pyplot as plt2
 import numpy as np
 import base64
 from sklearn.ensemble import RandomForestRegressor
-import scipy as sps
 import pickle
 from pathlib import Path
 import datetime
 from sklearn.tree import export_graphviz
 import pydot
-from subprocess import call
-from IPython.display import Image
 
 class Engine3:
 
