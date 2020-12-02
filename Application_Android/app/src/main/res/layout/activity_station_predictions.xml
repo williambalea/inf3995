@@ -252,10 +252,7 @@
                     android:textStyle="bold" />
 
             </LinearLayout>
-            <FrameLayout
-                android:id="@+id/global_data_fragment_holder"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+
 
         </LinearLayout>
 

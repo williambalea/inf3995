@@ -67,32 +67,7 @@ class ListStationActivity : AppCompatActivity(){
         textView.setTextColor(Color.BLACK)
         textView.setTextSize(30F)
 
-
     }
-
-
-/*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu, menu)
-        val menuItem = menu!!.findItem(R.id.searchView)
-        val searchView = menuItem.actionView as SearchView
-
-        searchView.maxWidth = Int.MAX_VALUE
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(filterString: String?): Boolean {
-                stationAdapter!!.filter.filter(filterString)
-
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                stationAdapter!!.filter.filter(newText)
-
-                return true
-            }
-        })
-
-        return true
-    }*/
 
 
     private fun requestToServer(ipAddress: String?) {
