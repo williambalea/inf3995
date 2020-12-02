@@ -384,42 +384,48 @@ class Engine3:
 
 
     #####Graph generation and convertion for HTTP to Android
-    def get_prediction_graph(self, groupby, x, y):
+    def get_prediction_graph(self, groupby, x, y, station):
         
         print('x: ', x)
         print('y: ', y)
 
         # Make the plot
         # set width of bar
+        barWidth = 0.25
+        plt.clf()
         if groupby == "perDate":
-            barWidth = 0.25
-            plt.clf()
             plt.scatter(x, y, color='#D52B1E',  edgecolor='white', label='Predictions')
-            # Add xticks on the middle of the group bars
-            ('adding xticks')
-            plt.xlabel('GroupBy')
-            plt.ylabel('Predictions')
-            plt.legend()
-            plt.savefig(self.PRED_GRAPH_PATH)
-            # plt.show()
-            print('graph generated', flush=True)
-            plt.show()
-        elif groupby != "perDate":
-            barWidth = 0.25
-            plt.clf()
-            plt.bar(x, y, color='#D52B1E', width=barWidth, edgecolor='white', label='Predictions')
-            # Add xticks on the middle of the group bars
-            ('adding xticks')
-            plt.xlabel('GroupBy', fontweight='bold')
-            plt.ylabel('Predictions', fontweight='bold')
-            plt.tight_layout()
-            # Create legend & Show graphic
-            plt.legend()
-            plt.savefig(self.PRED_GRAPH_PATH)
-            # plt.show()
-            print('graph generated', flush=True)
-            plt.show()
+            label_step = 10
+            plt.xticks(x[::label_step], rotation='45')
             
+            
+        elif groupby != "perDate":            
+            plt.bar(x, y, color='#D52B1E', width=barWidth, edgecolor='white', label='Predictions')
+            
+            plt.xticks( rotation='45')
+
+
+        graphTitle = 'Prediction of Bixi Usage ' + str(groupby)
+        # if groupby == 'perHour':
+        #     graphTitle += '(h)'
+        graphTitle += ' for '
+        if station == 'all':
+            graphTitle += 'All Stations'
+        else:
+            graphTitle += 'station #{}'.format(station)
+        plt.title(graphTitle)
+        # Add xticks on the middle of the group bars
+        ('adding xticks')
+        plt.xlabel(str(groupby), fontweight='bold')
+        plt.tight_layout()
+        plt.ylabel('Predictions', fontweight='bold')
+        # Create legend & Show graphic
+        plt.legend()
+        plt.savefig(self.PRED_GRAPH_PATH)
+        # plt.show()
+        print('graph generated', flush=True)
+        plt.show()
+        
         return plt
     
     def get_graph_X(self, df, groupby):
@@ -482,10 +488,11 @@ class Engine3:
             elif groupby == 'perWeekDay':
                 completeLabel = self.completeWeekDayLabel
                 
-        for i in range(len(x)):
-            for j in range(len(completeLabel)):
-                if x[i] in completeLabel[j]:
-                    x[i] = completeLabel[j]
+            for i in range(len(x)):
+                for j in range(len(completeLabel)):
+                    if x[i] in completeLabel[j]:
+                        x[i] = completeLabel[j]
+                        
 
         o = json.loads(myJson)
         o["data"]["time"] = x[0:len(x)]
