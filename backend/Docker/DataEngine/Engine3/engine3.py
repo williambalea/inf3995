@@ -21,7 +21,8 @@ class Engine3:
     NEW_CSV_WEATHER_PATH = '../CSVData/historical-hourly-weather-data/weatherstats_montreal_hourly.csv'
     ERROR_JSON_PATH = './tempFiles/error_data_and_graph.json'
     ERROR_GRAPH_PATH = './tempFiles/errorGraph2.png'
-    RF_MODEL_PATH = "./tempFiles/rf_model15.sav"
+    TREE_IMAGE_PATH = './tree_good.png'
+    RF_MODEL_PATH = './tempFiles/rf_model15.sav'
     RF_N_ESTIMATORS = 15
     RF_MAX_DEPTH = 20
     RF_RANDOM_STATE = 42
@@ -226,13 +227,13 @@ class Engine3:
             pickle.dump(loadedRF, open(myFile, 'wb'))
         
         #TODO
-        #self.get_random_tree_png(loadedRF)
+        self.get_random_tree_png(loadedRF)
         return loadedRF
 
     def get_random_tree_png(self, rf):
+
         featureList = ['year', 'month', 'day', 'hour', 'start_station_code', 'weekday', 'weekofyear', 'wind_speed', 'temperature']
-        
-        importances = list(rf.featureImportance_)
+        importances = list(rf.feature_importances_)
         # List of tuples with variable and importance
         featureImportance = [(feature, round(importance, 2)) for feature, importance in zip(featureList, importances)]
         # Sort the feature importances by most important first
@@ -240,13 +241,18 @@ class Engine3:
         # Print out the feature and importances 
         [print('Variable: {:20} Importance: {}'.format(*pair)) for pair in featureImportance]
 
-        # Pull out one tree from the forest
-        tree = rf.estimators_[3]
-        # Export the image to a dot file
-        export_graphviz(tree, out_file= 'tree.dot', feature_names = featureList, rounded = True, precision = 1)
-        (graph, ) = pydot.graph_from_dot_file('./tree.dot')
-        # Write graph to a png file
-        graph.write_png('tree.png')
+        myFile = Path(self.TREE_IMAGE_PATH)
+        if myFile.is_file():
+            pass
+        else:
+            # Pull out one tree from the forest
+            tree = rf.estimators_[3]
+            # Export the image to a dot file
+            export_graphviz(tree, out_file= 'tree.dot', feature_names = featureList, rounded = True, precision = 1)
+            (graph, ) = pydot.graph_from_dot_file('./tree.dot')
+            # Write graph to a png file
+            graph.write_png(myFile)
+
         return None
     
     
