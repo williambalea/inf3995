@@ -9,13 +9,13 @@ COPY ./Logs .
 
 WORKDIR /usr/src/Engine3/
 RUN pip3 install --upgrade pip
-RUN pip3 install Flask Flask-API matplotlib pandas numpy mysql-connector-python sklearn mysql-connector-python-rf IPython pydot
+RUN pip3 install Flask Flask-API matplotlib pandas numpy mysql-connector-python sklearn pydot
 COPY ./Engine3 .
-COPY ./kaggleData/historical-hourly-weather-data ./kaggleData/historical-hourly-weather-data
-COPY ./kaggleData/OD_2014.csv ./kaggleData/OD_2014.csv
-COPY ./kaggleData/OD_2015.csv ./kaggleData/OD_2015.csv
-COPY ./kaggleData/OD_2016.csv ./kaggleData/OD_2016.csv
-COPY ./kaggleData/OD_2017.csv ./kaggleData/OD_2017.csv
+COPY ./CSVData/historical-hourly-weather-data ./CSVData/historical-hourly-weather-data
+COPY ./CSVData/OD_2014.csv ./CSVData/OD_2014.csv
+COPY ./CSVData/OD_2015.csv ./CSVData/OD_2015.csv
+COPY ./CSVData/OD_2016.csv ./CSVData/OD_2016.csv
+COPY ./CSVData/OD_2017.csv ./CSVData/OD_2017.csv
 
 ENV FLASK_APP=engine3_HTTP.py
 ENV FLASK_RUN_HOST=0.0.0.0

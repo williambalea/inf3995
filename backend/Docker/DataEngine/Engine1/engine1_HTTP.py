@@ -17,8 +17,8 @@ def hello_world():
     return 'Hello World from Engin 1', status.HTTP_200_OK
     
 @app.route('/engine1/station/all')
-def allStation():
-    return engine1.getAllStations(), status.HTTP_200_OK
+def all_station():
+    return engine1.get_all_stations(), status.HTTP_200_OK
 
 @app.route('/<engine1>/logs/<byte>')
 def logs(engine1, byte):
