@@ -25,14 +25,20 @@ class Engine3:
     NEW_CSV_WEATHER_PATH = '../kaggleData/historical-hourly-weather-data/weatherstats_montreal_hourly.csv'
     ERROR_JSON_PATH = './tempFiles/error_data_and_graph.json'
     ERROR_GRAPH_PATH = './tempFiles/errorGraph2.png'
-    RF_MODEL_PATH = "./tempFiles/rf_model13.sav"
-    RF_N_ESTIMATORS = 13
+    RF_MODEL_PATH = "./tempFiles/rf_model15.sav"
+    RF_N_ESTIMATORS = 15
     RF_MAX_DEPTH = 15
     RF_RANDOM_STATE = 42
     RF_N_JOBS = 1
-    perHourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
-    perMonthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
+    perHourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h',
+                    '12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
+    perMonthLabel = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
+    completeMonthLabel = ['January', 'February', 'March', 'April',
+                    'May', 'June', 'July', 'August',
+                    'September', 'October', 'November', 'December']
     perWeekDayLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    completeWeekDayLabel = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    
 
 
     def __init__(self):
@@ -202,12 +208,21 @@ class Engine3:
         predictions = loaded_rf.predict(test_features)
         print('prediction: ', predictions)
 
+        #score
+        tempX = predictions.reshape(-1, 1)
+        tempY = test_labels.reshape(-1,1)
+        
+        # score = loaded_rf.score(test_features, test_labels)
+        # print('score hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee123123123')
+        # print(score)
+
         #concat test_features to predictions
         test_features.insert(len(test_features.columns), 'predictions', predictions)
         test_features.insert(len(test_features.columns), 'test_labels', test_labels)
         test_features.drop(test_features.columns.difference(['year', 'month', 'day', 'hour', 'start_station_code',
                                        'weekday', 'weekofyear', 'predictions', 'test_labels'
                                        ]), 1, inplace=True)
+
 
         return test_features
 
@@ -262,8 +277,8 @@ class Engine3:
             
             print('generating ')
 
-
         # self.get_random_tree_png(loaded_rf)
+
         return loaded_rf
 
     def get_random_tree_png(self, rf):
@@ -299,12 +314,13 @@ class Engine3:
         #                 precision = 2, filled = True)
         export_graphviz(tree, out_file= 'tree.dot', feature_names = feature_list_hardcoded, rounded = True, precision = 1)
         print('stuck 286')
-        call(['dot', '-Tpng', 'tree.dot', '-o', 'tree.png', '-Gdpi=600'])
-        # (graph, ) = pydot.graph_from_dot_file('./tree.dot')# Write graph to a png file
+        # Save the tree as a png image
+        # call(['dot', '-Tpng', 'tree.dot', '-o', 'tree.png', '-Gdpi=600'])
+        (graph, ) = pydot.graph_from_dot_file('./tree.dot')# Write graph to a png file
         print('stuck 288')# Display in jupyter notebook
-        from IPython.display import Image
-        Image(filename = 'tree.png')
-        # graph.write_png('tree.png')
+        # from IPython.display import Image
+        # Image(filename = 'tree.png')
+        graph.write_png('tree.png')
         print('tree.png donnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnneeeeeeeeeeeeeeeeeeeeeeeee')
         return None
     
@@ -453,11 +469,23 @@ class Engine3:
             # print(strg)
         return strg
 
-    def datatoJSON(self, graph, x, y):
+    def datatoJSON(self, graph, x, y, groupby):
         print('datatoJSON()', flush=True)
         graphString = self.toBase64()
 
         myJson =  '{  "data":{ "time":[], "predictions":[] }, "graph":[] }'
+
+        
+        if groupby == 'perMonth' or groupby == 'perWeekDay':
+            if groupby == 'perMonth':
+                completeLabel = self.completeMonthLabel
+            elif groupby == 'perWeekDay':
+                completeLabel = self.completeWeekDayLabel
+                
+        for i in range(len(x)):
+            for j in range(len(completeLabel)):
+                if x[i] in completeLabel[j]:
+                    x[i] = completeLabel[j]
 
         o = json.loads(myJson)
         o["data"]["time"] = x[0:len(x)]
