@@ -43,7 +43,7 @@ class ListStationActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.station_list_activity_main)
         requestToServer(IpAddressDialog.ipAddressInput)
-
+      
         station_search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(filterString: String?): Boolean {
                 stationAdapter!!.filter.filter(filterString)
