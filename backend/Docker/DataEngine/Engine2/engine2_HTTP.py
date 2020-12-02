@@ -1,14 +1,14 @@
 from flask import Flask
 from flask_api import status
 from Engine2.engine2 import Engine2
-from Mysql.mysql import MySqlDB
+from Logs.logs import Logs
 import logging
 
 app = Flask(__name__)
 log = logging.getLogger('werkzeug')
 log.disabled = True
 engine2 = Engine2()
-mysql = MySqlDB()
+logs = Logs()
 
 logging.info("Engine 2 has started")
 
@@ -22,4 +22,4 @@ def dataUsage(year, time, station):
 
 @app.route('/<engine2>/logs/<byte>')
 def logs(engine2, byte):
-    return mysql.authorizationLogs(engine2, byte)
+    return logs.authorizationLogs(engine2, byte)

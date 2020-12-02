@@ -1,5 +1,6 @@
 from flask import Flask
 from Engine3.engine3 import Engine3
+from flask_api import status
 from Engine3.engine3_pred_error import Engine3_Pred_Error
 from pathlib import Path
 import pandas as pd
@@ -21,7 +22,7 @@ def predictionUsage(station, groupby, startDate,endDate):
     x = engine3.get_graph_X(filtered_pred_df, groupby)
     y = engine3.get_graph_Y(filtered_pred_df)
     pred_graph = engine3.get_prediction_graph( groupby, x, y)
-    return engine3.datatoJSON(pred_graph, x, y)
+    return engine3.datatoJSON(pred_graph, x, y), status.HTTP_200_OK
 
 @app.route('/engine3/prediction/error')
 def predictionError():
@@ -35,6 +36,6 @@ def predictionError():
 
             pred_df.to_pickle(pred_with_error_path)
         
-        return engine3_pred_error.get_error_json(pred_df)
+        return engine3_pred_error.get_error_json(pred_df), status.HTTP_200_OK
     else:
-        return "Training not done, please come back later"
+        return "Training not done, please come back later", status.HTTP_404_NOT_FOUND

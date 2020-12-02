@@ -9,7 +9,7 @@ import hashlib
 from unittest import case
 from flask_api import status
 
-class MySqlDB:
+class Logs:
 
 
     DB_HOSTNAME = "34.70.117.28"

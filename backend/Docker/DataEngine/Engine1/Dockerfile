@@ -2,10 +2,10 @@ FROM python:3.8.5
 
 #Install dependencies
 RUN mkdir /usr/src/Engine1/
-RUN mkdir /usr/src/Mysql
+RUN mkdir /usr/src/Logs
 
-WORKDIR /usr/src/Mysql
-COPY ./Mysql .
+WORKDIR /usr/src/Logs
+COPY ./Logs .
 
 WORKDIR /usr/src/Engine1/
 RUN pip3 install --upgrade pip
