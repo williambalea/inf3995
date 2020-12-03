@@ -25,6 +25,7 @@ class Logs:
     ANSI_ESPACE = r'\\x1b[^m]*m'
     ENGINE1 = "engine1"
     ENGINE2 = "engine2"
+    ENGINE3 = "engine3"
 
     def __init__(self):
         return None
@@ -73,7 +74,7 @@ class Logs:
             logsFile= open(self.ENGINE1_LOGS, "r")
         elif (engine == self.ENGINE2):
             logsFile= open(self.ENGINE2_LOGS, "r")
-        else:
+        elif (engine == self.ENGINE3):
             logsFile= open(self.ENGINE3_LOGS, "r")
 
         read = logsFile.read()
@@ -107,7 +108,7 @@ class Logs:
         for i in range(0, len(logs["logs"])):
             myJson =  '{ "text": [], "logs": [] }'
             sendJson = json.loads(myJson)
-            sendJson["text"] = (len(logs["logs"][i]) < 200)
+            sendJson["text"] = (len(logs["logs"][i]) < 300)
             sendJson["logs"] = logs["logs"][i]
             logsList.append(sendJson)
         return json.dumps(logsList), status.HTTP_200_OK

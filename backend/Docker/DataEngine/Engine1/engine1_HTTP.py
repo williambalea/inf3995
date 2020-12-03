@@ -21,5 +21,5 @@ def all_station():
     return engine1.get_all_stations(), status.HTTP_200_OK
 
 @app.route('/<engine1>/logs/<byte>')
-def logs(engine1, byte):
+def logs_engine1(engine1, byte):
     return logs.authorizationLogs(engine1, byte)

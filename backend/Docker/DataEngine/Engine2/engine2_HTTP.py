@@ -21,5 +21,5 @@ def dataUsage(year, time, station):
     return engine2.datatoJSON(year, time, station), status.HTTP_200_OK
 
 @app.route('/<engine2>/logs/<byte>')
-def logs(engine2, byte):
+def logs_engine2(engine2, byte):
     return logs.authorizationLogs(engine2, byte)

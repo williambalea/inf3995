@@ -5,7 +5,7 @@ import numpy as np
 import base64
 import pickle
 from pathlib import Path
-
+import logging
 
 class Engine3_Pred_Error:
 
@@ -14,22 +14,24 @@ class Engine3_Pred_Error:
 	GRAPH_LABEL_ROTATION = '45'
 	GRAPH_COLOR = '#D52B1E'
 	GRAPH_LABEL_STEP = 500
+
+	logging.basicConfig(filename='engine.log', filemode='w', level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
 	
 	def get_error_json(self, pred_df):
 		#load error json from file or generate it if desn't exist
 		myFile = Path(self.ERROR_JSON_PATH)
 		if myFile.is_file():
-			print('loading error json...')
+			logging.info('Loading error json...')
 			json_error = pickle.load(open(myFile, 'rb'))
 		else:
 			json_error = self.generate_error_json(pred_df)
 			pickle.dump(json_error, open(myFile, 'wb'))
 
-		print('getting error json DONE')
+		logging.info('Getting error json DONE')
 		return json_error
 
 	def generate_error_json(self, pred_df):
-		print('generating error json...')
+		logging.info('Generating error json...')
 
 		#Prediction accuracy per hour for each station
 		predError = pred_df['predictions'].values - pred_df['test_labels'].values
@@ -37,7 +39,7 @@ class Engine3_Pred_Error:
 		mape = 100 * (abs(predError) / pred_df['test_labels'].values)
 		# Calculate and display accuracy
 		predAccuracy = round(100 - np.mean(mape), 2)
-		print('Accuracy per hour for each station:', predAccuracy, '%.')
+		logging.info('Accuracy per hour for each station:', predAccuracy, '%.')
 		
 		pred_df = pred_df.groupby(['month', 'day', 'hour']).agg({'predictions': 'sum', 'test_labels': 'sum'})
 
@@ -47,7 +49,7 @@ class Engine3_Pred_Error:
 		mape = 100 * (abs(predErrorPerHour) / pred_df['test_labels'].values)
 		#Calculate and display accuracy
 		predAccuracyHour = round(100 - np.mean(mape), 2)
-		print('Accuracy hour hour (sum of all stations):', predAccuracyHour, '%.')
+		logging.info('Accuracy hour hour (sum of all stations):', predAccuracyHour, '%.')
 		
 		
 		xAxisDate = []
@@ -77,7 +79,7 @@ class Engine3_Pred_Error:
 			plt2.tight_layout()
 			plt2.legend()
 			plt2.savefig(self.ERROR_GRAPH_PATH)
-			print('generating error graph DONE')
+			logging.info('Generating error graph DONE')
 
 		return self.datatoJSON_error(plt2, xAxis, predErrorPerHour, predAccuracyHour)
 
@@ -100,4 +102,5 @@ class Engine3_Pred_Error:
 			strg = base64.b64encode(imageFile.read()).decode('utf-8')
 			while strg[-1] == '=':
 				strg = strg[:-1]
+		logging.info('Graph toBase64(): {}'.format(strg))
 		return strg

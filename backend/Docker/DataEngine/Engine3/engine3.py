@@ -9,6 +9,7 @@ from pathlib import Path
 import datetime
 from sklearn.tree import export_graphviz
 import pydot
+import logging
 
 class Engine3:
 
@@ -38,7 +39,7 @@ class Engine3:
     GRAPH_COLOR = '#1E00FF'
     GRAPH_LABEL_STEP = 10
     
-
+    logging.basicConfig(filename='engine.log', filemode='w', level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
 
     def __init__(self):
         return None 
@@ -69,7 +70,7 @@ class Engine3:
         return completeDF
 
     def get_traning_df(self):
-        print('getting training dataframe...')
+        logging.info('Getting training dataframe...')
         bixi2014 = self.get_bixi_data_year(2014)
         bixi2015 = self.get_bixi_data_year(2015)
         bixi2016 = self.get_bixi_data_year(2016)
@@ -85,7 +86,7 @@ class Engine3:
         
 
     def get_testing_df(self, station, startDate, endDate):
-        print('getting testing dataframe...')
+        logging.info('Getting testing dataframe...')
         startDateObj = datetime.datetime.strptime(startDate, '%d-%m-%Y')
         startYear = startDateObj.year
 
@@ -118,7 +119,7 @@ class Engine3:
 
 
     def prep_df_for_rf(self, bixi_df, weatherDF):
-        print('data preparation for random forest algo')
+        logging.info('Data preparation for random forest algo')
         df = self.merge_bixi_weather_df(bixi_df, weatherDF)
 
         #cleaning Columns
@@ -162,7 +163,7 @@ class Engine3:
         loadedRF = self.get_random_forest_model()
         
         testFeatures = self.get_testing_df(station, startDate, endDate)
-        print('getting testing dataframe DONE')
+        logging.info('Getting testing dataframe DONE')
 
         #removing NaN values in df
         nan_value = float("NaN")
@@ -188,13 +189,13 @@ class Engine3:
     def get_random_forest_model(self):
         myFile = Path(self.RF_MODEL_PATH)
         if myFile.is_file():
-            print('loading model...')
+            logging.info('Loading model...')
             # load the model from disk
             loadedRF = pickle.load(open(myFile, 'rb'))
-            print('loading model DONE')
+            logging.info('Loading model DONE')
         else:
             trainFeatures = self.get_traning_df()
-            print('getting training dataframe DONE')
+            logging.info('Getting training dataframe DONE')
 
             #removing NaN values in df
             nan_value = float("NaN")
@@ -210,14 +211,13 @@ class Engine3:
                                                 random_state = self.RF_RANDOM_STATE, 
                                                 n_jobs=self.RF_N_JOBS, 
                                                 max_depth=self.RF_MAX_DEPTH)
-            print('Fitting calculating...')  
+            logging.info('Fitting calculating...')  
             loadedRF.fit(trainFeatures, trainLabels)
-            print('Fitting DONE')
+            logging.info('Fitting calculating DONE')
 
             # save the model to disk
             pickle.dump(loadedRF, open(myFile, 'wb'))
         
-        #TODO
         self.get_random_tree_png(loadedRF)
         return loadedRF
 
@@ -229,12 +229,12 @@ class Engine3:
         featureImportance = [(feature, round(importance, 2)) for feature, importance in zip(featureList, importances)]
         # Sort the feature importances by most important first
         featureImportance = sorted(featureImportance, key = lambda x: x[1], reverse = True)
-        # Print out the feature and importances 
-        [print('Variable: {:20} Importance: {}'.format(*pair)) for pair in featureImportance]
+        # logging.info out the feature and importances 
+        [logging.info('Variable: {:20} Importance: {}'.format(*pair)) for pair in featureImportance]
 
         myFile = Path(self.TREE_IMAGE_PATH)
         if myFile.is_file():
-            pass
+            self.toBase64('tree_good.png')
         else:
             # Pull out one tree from the forest
             tree = rf.estimators_[3]
@@ -285,7 +285,7 @@ class Engine3:
         elif(groupby == "perMonth"):
             df = df.groupby(['month']).agg({'predictions': 'sum', 'test_labels': 'sum'})
         elif(groupby == "perDate"):
-            df = df.groupby(['month', 'day']).agg({'predictions': 'sum', 'test_labels': 'sum'})
+            df = df.groupby(['day', 'month']).agg({'predictions': 'sum', 'test_labels': 'sum'})
         return df
 
 
@@ -293,7 +293,7 @@ class Engine3:
         barWidth = 0.25
         plt.clf()
         if groupby == "perDate":
-            plt.plot(x, y, color=self.GRAPH_COLOR, marker='jsonInString', label='Predictions')
+            plt.plot(x, y, color=self.GRAPH_COLOR, marker='o', label='Predictions')
             plt.xticks(x[::self.GRAPH_LABEL_STEP], rotation=self.GRAPH_LABEL_ROTATION)
         elif groupby != "perDate":            
             plt.bar(x, y, color=self.GRAPH_COLOR, width=barWidth, edgecolor='white', label='Predictions')
@@ -347,15 +347,16 @@ class Engine3:
         return df['predictions'].values
 
 
-    def toBase64(self):
-        with open(self.PRED_GRAPH_PATH, "rb") as imageFile:
+    def toBase64(self, png):
+        with open(png, "rb") as imageFile:
             strg = base64.b64encode(imageFile.read()).decode('utf-8')
             while strg[-1] == '=':
                 strg = strg[:-1]
+        logging.info('Graph toBase64(): {}'.format(strg))
         return strg
 
     def datatoJSON(self, graph, x, y, groupby):
-        graphString = self.toBase64()
+        graphString = self.toBase64(self.PRED_GRAPH_PATH)
         myJson =  '{  "data":{ "time":[], "predictions":[] }, "graph":[] }'
         if groupby == 'perMonth' or groupby == 'perWeekDay':
             if groupby == 'perMonth':
@@ -373,4 +374,5 @@ class Engine3:
         jsonInString["data"]["predictions"] = y.tolist()
         jsonInString["graph"] = graphString
         
+        logging.info('Label used: {}'.format(completeLabel))
         return json.dumps(jsonInString)
