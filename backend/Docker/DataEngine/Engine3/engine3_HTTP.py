@@ -50,4 +50,4 @@ def prediction_error():
 
 @app.route('/<engine3>/logs/<byte>')
 def logs_engine3(engine3, byte):
-    return logs.authorizationLogs(engine3, byte)
+    return logs.authorization_logs(engine3, byte)

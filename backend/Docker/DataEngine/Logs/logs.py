@@ -11,7 +11,6 @@ from flask_api import status
 
 class Logs:
 
-
     DB_HOSTNAME = "34.70.117.28"
     DB_USERNAME = "root"
     DB_PASSWORD = "jerome"
@@ -52,20 +51,20 @@ class Logs:
         self.CONNECTION.close()
         return row
 
-    def authorizationLogs(self, engine, byte):
+    def authorization_logs(self, engine, byte):
         row = self.account_db()
         auth = request.authorization
-        authPW = self.secureHashPW(row[1], auth.password).hexdigest()
+        authPW = self.secure_HashPW(row[1], auth.password).hexdigest()
         if auth and auth.username == row[0] and authPW == row[2] :
-            return self.engineLogs(engine, byte)
+            return self.engine_logs(engine, byte)
         else:
             logging.info("The user name or password is incorrect"), status.HTTP_401_UNAUTHORIZED
     
-    def secureHashPW(self, salt, password):
+    def secure_HashPW(self, salt, password):
         hashPW = hashlib.sha512((str(salt) + str(password)).encode('utf-8'))
         return hashPW
 
-    def logsToJSON(self, engine, byte):
+    def logs_to_JSON(self, engine, byte):
         logs = {}
         removeAnsi = []
         lenght = 0
@@ -96,9 +95,9 @@ class Logs:
         ansi_espace = re.sub(self.ANSI_ESPACE, "", ansi_espace)
         return ansi_espace
     
-    def engineLogs(self, engine, byte):
+    def engine_logs(self, engine, byte):
         logsList = []
-        logs, lenght = self.logsToJSON(engine, byte)
+        logs, lenght = self.logs_to_JSON(engine, byte)
         myJson =  '{"byte": []}'
         sendJson = json.loads(myJson)
         sendJson["byte"] = lenght

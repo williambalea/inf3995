@@ -22,4 +22,4 @@ def all_station():
 
 @app.route('/<engine1>/logs/<byte>')
 def logs_engine1(engine1, byte):
-    return logs.authorizationLogs(engine1, byte)
+    return logs.authorization_logs(engine1, byte)

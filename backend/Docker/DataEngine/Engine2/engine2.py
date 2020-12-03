@@ -7,18 +7,17 @@ import logging
 
 class Engine2:
 
-    hourLabel = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
-    monthLabel = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    monthLabel2 = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov']
-    weekDayLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    firstDayMonday = 3
+    HOUR_LABEL = ['0h', '1h','2h', '3h', '4h', '5h', '6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h']
+    MONTH_LABEL = ['Jan', 'Fev', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    WEEKDAY_LABEL = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    FIRST_DAY_MONDAY = 3
 
     logging.basicConfig(filename='engine.log', filemode='w', level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
 
     def __init__(self):
         return None 
                       
-    def getPerTimeCountStart(self, df, station, time):
+    def get_perTime_countStart(self, df, station, time):
         dfStart = df[['start_date', 'start_station_code']].copy()
         #filter rows
         if station != 'all':
@@ -29,18 +28,18 @@ class Engine2:
         startDateSeries = dfStart['start_date'].values.astype('datetime64[m]')
         if time == "perHour":
             timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
-            label = self.hourLabel
+            label = self.HOUR_LABEL
         elif time == "perWeekDay":
-            timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+self.firstDayMonday, 7)
-            label = self.weekDayLabel
+            timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+self.FIRST_DAY_MONDAY, 7)
+            label = self.WEEKDAY_LABEL
         elif time == "perMonth":
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
-            label = self.monthLabel
+            label = self.MONTH_LABEL
         timeCount = np.bincount(timeNumber, None, len(label))
         logging.info('TimeCount Start: {}'.format(timeCount))
         return timeCount
     
-    def getPerTimeCountEnd(self, df, station, time):
+    def get_perTime_countEnd(self, df, station, time):
         dfEnd = df[['end_date', 'end_station_code']].copy()
         #filter rows
         if station != 'all':
@@ -51,18 +50,18 @@ class Engine2:
         startDateSeries = dfEnd['end_date'].values.astype('datetime64[m]')
         if time == "perHour":
             timeNumber = np.remainder(startDateSeries.astype("M8[h]").astype("int"), 24)
-            label = self.hourLabel
+            label = self.HOUR_LABEL
         elif time == "perWeekDay":
-            timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+self.firstDayMonday, 7)
-            label = self.weekDayLabel
+            timeNumber = np.remainder(startDateSeries.astype("M8[D]").astype("int")+self.FIRST_DAY_MONDAY, 7)
+            label = self.WEEKDAY_LABEL
         elif time == "perMonth":
             timeNumber = np.remainder(startDateSeries.astype("M8[M]").astype("int"), 12)
-            label = self.monthLabel
+            label = self.MONTH_LABEL
         timeCount = np.bincount(timeNumber, None, len(label))
         logging.info('TimeCount End: {}'.format(timeCount))
         return timeCount
     
-    def getGraphPerTime(self, countStart, countEnd, station, time):
+    def get_graph_perTime(self, countStart, countEnd, station, time):
         if time == 'perMonth':
             countStart = countStart[3:len(countStart)-1]
             countEnd = countEnd[3:len(countEnd)-1]
@@ -80,19 +79,19 @@ class Engine2:
         if time == "perHour":
             plt.xlabel('Per Hour', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
-            plt.xticks([r + barWidth for r in range(len(countStart))], self.hourLabel[:len(countStart)], rotation="vertical")
+            plt.xticks([r + barWidth for r in range(len(countStart))], self.HOUR_LABEL[:len(countStart)], rotation="vertical")
             plt.title('Bixi usage per Hour of the Day for Station#{}'.format(station))
             plt.tight_layout()
         elif time == "perWeekDay":
             plt.xlabel('Per Week Day', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
-            plt.xticks([r + barWidth for r in range(len(countStart))], self.weekDayLabel[:len(countStart)])
+            plt.xticks([r + barWidth for r in range(len(countStart))], self.WEEKDAY_LABEL[:len(countStart)])
             plt.title('Bixi usage per Weekday for Station#{}'.format(station))
             plt.tight_layout()
         elif time == "perMonth":
             plt.xlabel('Per Month', fontweight='bold')
             plt.ylabel('User Count', fontweight='bold')
-            plt.xticks([r + barWidth for r in range(len(countStart))], self.monthLabel[3:len(countStart)+3])
+            plt.xticks([r + barWidth for r in range(len(countStart))], self.MONTH_LABEL[3:len(countStart)+3])
             plt.title('Bixi usage per Month for Station#{}'.format(station))
             plt.tight_layout()
         # Create legend & Show graphic
@@ -102,7 +101,7 @@ class Engine2:
         return plt
 
 
-    def toBase64(self):
+    def to_Base64(self):
         with open("bar.png", "rb") as imageFile:
             graphBase64 = base64.b64encode(imageFile.read()).decode('utf-8')
             while graphBase64[-1] == '=':
@@ -110,7 +109,7 @@ class Engine2:
         logging.info('Graph toBase64(): {}'.format(graphBase64))
         return graphBase64
 
-    def datatoJSON(self, year, time, station):
+    def data_to_JSON(self, year, time, station):
         ye = int(year)
         ti = str(time)
         if str(station) == 'all':
@@ -128,17 +127,17 @@ class Engine2:
             'duration_sec':int,
             'is_member':int})
         logging.info('dataframe: {}'.format(df))
-        countStart = self.getPerTimeCountStart(df, st, ti)
-        countEnd = self.getPerTimeCountEnd(df, st, ti)
+        countStart = self.get_perTime_countStart(df, st, ti)
+        countEnd = self.get_perTime_countEnd(df, st, ti)
         
-        self.getGraphPerTime(countStart, countEnd, st, ti)
-        graphString = self.toBase64()
+        self.get_graph_perTime(countStart, countEnd, st, ti)
+        graphString = self.to_Base64()
         if time == "perHour":
-            label = self.hourLabel
+            label = self.HOUR_LABEL
         elif time == "perWeekDay":
-            label = self.weekDayLabel
+            label = self.WEEKDAY_LABEL
         elif time == "perMonth":
-            label = self.monthLabel
+            label = self.MONTH_LABEL
 
         myJson =  '{  "data":{ "time":[], "departureValue":[], "arrivalValue":[] }, "graph":[] }'
 

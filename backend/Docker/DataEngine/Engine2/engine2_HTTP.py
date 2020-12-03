@@ -17,9 +17,9 @@ def hello_world():
     return 'Hello World from Engin 2', status.HTTP_200_OK
 
 @app.route('/engine2/data/usage/<year>/<time>/<station>')
-def dataUsage(year, time, station):
-    return engine2.datatoJSON(year, time, station), status.HTTP_200_OK
+def data_usage(year, time, station):
+    return engine2.data_to_JSON(year, time, station), status.HTTP_200_OK
 
 @app.route('/<engine2>/logs/<byte>')
 def logs_engine2(engine2, byte):
-    return logs.authorizationLogs(engine2, byte)
+    return logs.authorization_logs(engine2, byte)
