@@ -47,9 +47,9 @@ class MainScreenActivity : AppCompatActivity() {
     private lateinit var btn3: Button
     private lateinit var btn4: Button
     private lateinit var jObj: ConnectivityData
-    val dialog1 = IpAddressDialog()
-    val dialog2 = EngineConnectivityStatusDialog()
-    private val TAG = "Main Screen Activity"
+    private var dialog1 = IpAddressDialog()
+    private var dialog2 = EngineConnectivityStatusDialog()
+    private var TAG = "Main Screen Activity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +59,6 @@ class MainScreenActivity : AppCompatActivity() {
         btn2 = findViewById(R.id.button2)
         btn3 = findViewById(R.id.button3)
         btn4 = findViewById(R.id.button4)
-
 
         btn1.setOnClickListener{
             val intent = Intent(this, ListStationActivity::class.java)

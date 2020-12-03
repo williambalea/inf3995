@@ -27,7 +27,6 @@ class SurveyActivity : AppCompatActivity() {
     var TAG :String = "SurveyActivity"
     val dialog = IpAddressDialog()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.survey)
@@ -55,7 +54,7 @@ class SurveyActivity : AppCompatActivity() {
                 isNumber().atLeast(1)
                 isNumber().lessThan(130)
             }
-            submitWith(buttonSend) { result ->
+            submitWith(buttonSend) {
                 surveyData = SurveyData(
                     editTextEmail.text.toString(),
                     editTextFirstName.text.toString(),
@@ -65,7 +64,6 @@ class SurveyActivity : AppCompatActivity() {
                     ),
                     checkBoxYesSurvey.isChecked
                 )
-
                 sendSurveyData(surveyData)
             }
         }
@@ -74,12 +72,9 @@ class SurveyActivity : AppCompatActivity() {
             val intent = Intent(this@SurveyActivity, MainScreenActivity::class.java)
             startActivity(intent)
         }
-
-
     }
 
     private fun sendSurveyData(surveyData: SurveyData) {
-
         // Post Server Ip address
         val retrofit5 = Retrofit.Builder()
             .baseUrl("https://${IpAddressDialog.ipAddressInput}")
@@ -88,8 +83,7 @@ class SurveyActivity : AppCompatActivity() {
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().build())
             .build()
 
-        var gson = Gson()
-        var jsonString = gson.toJson(surveyData)
+        val jsonString = Gson().toJson(surveyData)
 
         val service5: WebBixiService = retrofit5.create(WebBixiService::class.java)
         val call5: Call<String> = service5.sendServerSurveyData(jsonString)

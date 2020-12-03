@@ -28,6 +28,7 @@ class UnsafeOkHttpClient {
                 // Install the all-trusting trust manager
                 val sslContext = SSLContext.getInstance("SSL")
                 sslContext.init(null, trustAllCerts, java.security.SecureRandom())
+
                 // Create an ssl socket factory with our all-trusting manager
                 val sslSocketFactory = sslContext.socketFactory
 
@@ -36,6 +37,7 @@ class UnsafeOkHttpClient {
                 builder.hostnameVerifier { _, _ -> true }
 
                 return builder
+
             } catch (e: Exception) {
                 throw RuntimeException(e)
             }

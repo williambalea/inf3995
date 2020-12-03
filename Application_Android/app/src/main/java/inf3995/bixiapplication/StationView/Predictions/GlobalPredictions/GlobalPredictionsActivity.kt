@@ -20,7 +20,6 @@ class GlobalPredictionsActivity : AppCompatActivity() {
 
     var time: String? = null
     var year: String? = "2017"
-
     var dateStart : String? = null
     var dateEnd : String? = null
     private val TAG = "Global Prediction Activity"
@@ -36,6 +35,7 @@ class GlobalPredictionsActivity : AppCompatActivity() {
         startDateButton.setOnClickListener {
             // Initialize a new calendar instance
             val c = Calendar.getInstance()
+
             // Get the calendar current year, month and day of month
             val theYear = c.get(Calendar.YEAR)
             val theMonth = c.get(Calendar.MONTH)
@@ -43,9 +43,9 @@ class GlobalPredictionsActivity : AppCompatActivity() {
 
             val datePicker = DatePickerDialog(
                 this,
-                DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
+                { view, mYear, mMonth, mDay ->
                     val mmMonth = mMonth + 1
-                    startDate.setText("$mDay-$mmMonth-$mYear")
+                    startDate.text = "$mDay-$mmMonth-$mYear"
                     dateStart = "$mDay-$mmMonth-$mYear"
                     year = mYear.toString()
                 },
@@ -59,29 +59,27 @@ class GlobalPredictionsActivity : AppCompatActivity() {
         endDateButton.setOnClickListener {
             // Initialize a new calendar instance
             val c = Calendar.getInstance()
+
             // Get the calendar current year, month and day of month
-            val theYear = year!!.toInt() //c.get(Calendar.YEAR)
+            val theYear = year!!.toInt()
             val theMonth = c.get(Calendar.MONTH)
             val theDay = c.get(Calendar.DAY_OF_MONTH)
-            val datepicker = DatePickerDialog(
+            val datePicker = DatePickerDialog(
                 this,
-                DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
+                { view, mYear, mMonth, mDay ->
                     val mmMonth = mMonth + 1
                     val date = "$mDay-$mmMonth-$mYear"
-                    endDate.setText(date)           //setText(""+ mDay+"-" + mMonth + "-"+mYear)
+                    endDate.text = date
                     dateEnd = "$mDay-$mmMonth-$mYear"
                 },
                 theYear,
                 theMonth,
                 theDay
             )
-            datepicker.show()
-
+            datePicker.show()
         }
 
-
         // Dropdownmenu  to choose de GroupByor period
-
         val period_List = listOf("", "perMonth", "perWeekDay", "perHour","perDate")
         val period_adapter = ArrayAdapter(
             this,
@@ -90,7 +88,7 @@ class GlobalPredictionsActivity : AppCompatActivity() {
         )
         spnPeriode.adapter = period_adapter
 
-        limitDropDownmenuHeight(spnPeriode)
+        limitDropDownMenuHeight(spnPeriode)
 
         spnPeriode.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -101,13 +99,11 @@ class GlobalPredictionsActivity : AppCompatActivity() {
                 id: Long
             ) {
                 val item:String = period_List[position]
-
                 time = item
             }
         }
 
         display_button.setOnClickListener{
-
             val annee = year
             val temps = time
             val dateEnd = dateEnd
@@ -125,7 +121,6 @@ class GlobalPredictionsActivity : AppCompatActivity() {
                     intent.putExtra("DateStart", dateStart)
                     intent.putExtra("DateEnd", dateEnd)
                     startActivity(intent)
-
                 }
                 "perWeekDay" -> {
                     val intent = Intent(
@@ -171,7 +166,6 @@ class GlobalPredictionsActivity : AppCompatActivity() {
         super.onResume()
 
         MainScreenActivity.connectivity.observe(this, Observer {
-
             if(it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("Connection with Engine 3 failed")
@@ -187,12 +181,10 @@ class GlobalPredictionsActivity : AppCompatActivity() {
         })
 
     }
-    fun limitDropDownmenuHeight(spnTest: Spinner){
+    private fun limitDropDownMenuHeight(spnTest: Spinner){
         val popup = Spinner::class.java.getDeclaredField("mPopup")
         popup.isAccessible =true
         val popupWindow =popup.get(spnTest) as ListPopupWindow
         popupWindow.height = (5*resources.displayMetrics.density).toInt()
     }
-
-
 }

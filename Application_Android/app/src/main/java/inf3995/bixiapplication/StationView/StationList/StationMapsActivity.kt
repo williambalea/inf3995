@@ -24,7 +24,6 @@ class StationMapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.O
 
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
     var station : Station?=null
     var latitude:Float? = null
     var longitude:Float? = null
@@ -51,7 +50,6 @@ class StationMapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.O
         super.onResume()
 
         MainScreenActivity.connectivity.observe(this, Observer {
-
             if(it[0] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("Connection with Engine 1 failed")
@@ -65,21 +63,21 @@ class StationMapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.O
         })
     }
     override fun onMapReady(googleMap: GoogleMap) {
-
         map = googleMap
+
         // Add a marker in Sydney and move the camera
         val myPlace = LatLng(latitude!!.toDouble(), longitude!!.toDouble())
         val zoomlevel = 15.0f
         val label = station!!.name
-        val stationMarker = map.addMarker(MarkerOptions().position(myPlace).title("Station :" + " " + label))
+        val stationMarker = map.addMarker(MarkerOptions().position(myPlace).title("Station : $label"))
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(myPlace, zoomlevel))
-        map.getUiSettings().setZoomControlsEnabled(true)
+        map.uiSettings.isZoomControlsEnabled = true
         map.setOnMarkerClickListener(this)
         stationMarker.showInfoWindow()
         setUpMap()
     }
 
-    override fun onMarkerClick(p0: Marker?)= false
+    override fun onMarkerClick(p0: Marker?) = false
 
     private fun setUpMap() {
         if (ActivityCompat.checkSelfPermission(this,

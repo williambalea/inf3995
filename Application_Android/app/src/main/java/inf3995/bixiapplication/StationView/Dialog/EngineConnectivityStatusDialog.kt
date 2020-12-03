@@ -14,14 +14,10 @@ import kotlinx.android.synthetic.main.engine_connectivity_status.*
 class EngineConnectivityStatusDialog: AppCompatDialogFragment() {
 
     companion object {
-        //lateinit var status1 :String
-       // lateinit var status2 :String
-       // lateinit var status3 :String
         var status1 = "UP"
         var status2 = "UP"
         var status3 = "UP"
     }
-    private val TAG = "EngineConnectivityStatus Activity"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,16 +27,14 @@ class EngineConnectivityStatusDialog: AppCompatDialogFragment() {
         Log.d(TAG, "onCreateView: called")
         return inflater.inflate(inf3995.test.bixiapplication.R.layout.engine_connectivity_status, container, false)
     }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ConnectivityStatus1.text = status1
         ConnectivityStatus2.text = status2
         ConnectivityStatus3.text = status3
         imageStatusBehaviour(statusImage1,ConnectivityStatus1)
         imageStatusBehaviour(statusImage2,ConnectivityStatus2)
         imageStatusBehaviour(statusImage3,ConnectivityStatus3)
-
-
     }
 
     private fun imageStatusBehaviour(animation: ImageView, connectivityStatus: TextView){
@@ -50,5 +44,4 @@ class EngineConnectivityStatusDialog: AppCompatDialogFragment() {
         else
             animation.setColorFilter(Color.rgb(255,69,0))
     }
-
 }

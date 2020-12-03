@@ -14,16 +14,13 @@ import inf3995.bixiapplication.StationView.Statistics.StationStatistics.StationS
 import inf3995.bixiapplication.StationViewModel.StationLiveData.Station
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.station_items.view.*
-import kotlinx.android.synthetic.main.station_items_with_button.view.code
-import kotlinx.android.synthetic.main.station_items_with_button.view.name
 
 
-class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHolder>(), //var clickedItem: ClickedItem
+class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHolder>(),
     Filterable {
     lateinit var stationList: ArrayList<Station>
     var stationListFilter: ArrayList<Station>? = null
     lateinit var context: Context
-
 
      fun setData(stationList: ArrayList<Station>, context: Context){
         this.stationList = stationList
@@ -33,10 +30,8 @@ class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHol
     }
 
      class StationAdapterViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
-
         var name: TextView = itemView.name
         var code: TextView = itemView.code
-
          var dropDownMenu: ImageButton = itemView.dropDownMenu
      }
 
@@ -47,12 +42,9 @@ class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHol
     }
 
     override fun onBindViewHolder(holder: StationAdapterViewHolder, position: Int) {
-        var station = stationList[position]
+        val station = stationList[position]
         holder.name.text = station.name
         holder.code.text = station.code.toString()
-
-
-
 
         holder.dropDownMenu.setOnClickListener{
             val wrapper = ContextThemeWrapper(this.context, R.style.BasePopupMenu)
@@ -97,11 +89,9 @@ class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHol
         }
     }
 
-
     override fun getItemCount(): Int {
         return stationList.size
     }
-
 
     override fun getFilter(): Filter {
         return object:Filter(){
@@ -111,9 +101,9 @@ class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHol
                     filtersResults.count = stationListFilter!!.size
                     filtersResults.values = stationListFilter
                 } else {
-                    var searchChr = charsequence.toString().toLowerCase()
+                    val searchChr = charsequence.toString().toLowerCase()
 
-                    var itemModalTemp = ArrayList<Station>()
+                    val itemModalTemp = ArrayList<Station>()
 
                     for (item in stationListFilter!!) {
                         if ( item.name.toLowerCase().contains(searchChr) || item.name.toLowerCase().startsWith(

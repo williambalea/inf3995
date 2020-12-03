@@ -36,7 +36,7 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
     var myImage: ImageView? = null
     var dateStart : String? = null
     var dateEnd : String? = null
-    private val TAG = "Daily Station Prediction "
+    private var TAG = "Daily Station Prediction "
     var table: TableLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,12 +69,8 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
         predictionYearD.text = annee.toString()
         val yearEnd = dateEnd!!.split('-')[2]
         val yearStart = dateStart!!.split('-')[2]
-        val monthEnd = dateEnd!!.split('-')[1]
-        val monthStart = dateStart!!.split('-')[1]
-        val dayEnd = dateEnd!!.split('-')[0]
-        val dayStart = dateStart!!.split('-')[0]
 
-        if(!(dateEnd == dateStart) && ((yearEnd == yearStart)) ){
+        if(dateEnd != dateStart && ((yearEnd == yearStart)) ){
             requestToServer(IpAddressDialog.ipAddressInput)
         } else {
             val builder = AlertDialog.Builder(this@DailyGlobalPredictionActivity)
@@ -95,7 +91,6 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
         super.onResume()
 
         MainScreenActivity.connectivity.observe(this, Observer {
-
             if(it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("Connection with Engine 3 failed")
@@ -108,25 +103,20 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
             }
 
         })
-
     }
     private fun requestToServer(ipAddress: String?) {
 
-        // get check connexion with Server Hello from Server
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().readTimeout(360, TimeUnit.SECONDS).build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        //val call: Call<String> = service.getStationPrediction(annee, temps, code, dateStart, dateEnd)
         val call: Call<String> = service.getGlobalPrediction(temps, dateStart!!, dateEnd!!)
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Response of global daily predictions from Server: ${response?.body()}")
-                Log.i(TAG, "Response status of global daily predictions from Server: ${response?.code()}")
-
+                Log.i(TAG, "Response of global daily predictions from Server: ${response?.body()} code: ${response?.code()}")
                 val arrayStationType = object : TypeToken<DataPredictionResponseStation>() {}.type
                 val jObj: DataPredictionResponseStation = Gson().fromJson(response?.body(), arrayStationType)
                 Log.i(TAG, "Object : $jObj")
@@ -158,12 +148,12 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
         }
         Log.i(TAG, "display the graph ")
 
-        for (i in 0 until jObj.data.predictions.size) {
+        for (i in jObj.data.predictions.indices) {
 
             val time = jObj.data.time[i]
             val predictions = jObj.data.predictions[i]
 
-            val tbrow = TableRow(this)
+            val tbRow = TableRow(this)
             val text0 = TextView(this)
             val text1 = TextView(this)
             val text2 = TextView(this)
@@ -176,60 +166,62 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
 
             // Set the first column of the table row
 
-            text0.setId(i + 1)
+            text0.id = i + 1
             text0.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
-            text0.setText((i + 1).toString())
+            text0.text = (i + 1).toString()
             text0.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
-            text0.setTextSize(18F)
+            text0.textSize = 18F
             text0.setTypeface(text0.getTypeface(), Typeface.BOLD);
             text0.gravity = Gravity.CENTER_HORIZONTAL
             text0.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight,3F
+                    myheight,
+                    3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
             // add the column to the tablerow
-            tbrow.addView(text0)
+            tbRow.addView(text0)
 
             // Set the second column of the table row
-            text1.setId(i + 2)
+            text1.id = i + 2
             text1.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
-            text1.setText(time)
+            text1.text = time
             text1.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
-            text1.setTextSize(18F)
+            text1.textSize = 18F
             text1.setTypeface(text1.getTypeface(), Typeface.BOLD);
             text1.gravity = Gravity.CENTER_HORIZONTAL
             text1.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight, 3F
+                    myheight,
+                    3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
-            tbrow.addView(text1)
+            tbRow.addView(text1)
 
             // Set the third column of the table row
-            text2.setId(i + 3)
+            text2.id = i + 3
             text2.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
-            text2.setText(predictions.toString())
+            text2.text = predictions.toString()
             text2.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
-            text2.setTextSize(18F)
+            text2.textSize = 18F
             text2.setTypeface(text2.getTypeface(), Typeface.BOLD);
             text2.gravity = Gravity.CENTER_HORIZONTAL
             text2.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight, 3F
+                    myheight,
+                    3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
-            tbrow.addView(text2)
+            tbRow.addView(text2)
 
             // add the tablerow to the table Layout
-
-            table?.addView(tbrow)
+            table?.addView(tbRow)
 
         }
 

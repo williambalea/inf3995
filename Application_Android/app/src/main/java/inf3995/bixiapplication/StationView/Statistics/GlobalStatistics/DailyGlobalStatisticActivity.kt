@@ -56,7 +56,6 @@ class DailyGlobalStatisticActivity : AppCompatActivity() {
         super.onResume()
 
         MainScreenActivity.connectivity.observe(this, Observer {
-
             if(it[1] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("Connection with Engine 2 failed")
@@ -67,13 +66,9 @@ class DailyGlobalStatisticActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
             }
-
         })
-
     }
     private fun requestToServer(ipAddress: String?) {
-
-        // get check connexion with Server Hello from Server
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
@@ -93,7 +88,6 @@ class DailyGlobalStatisticActivity : AppCompatActivity() {
                 fillData(jObj)
                 lllProgressBar.visibility = View.GONE
             }
-
             override fun onFailure(call: Call<String>?, t: Throwable) {
                 Log.i(TAG, "Error when loading statistics!    cause:${t.cause}     message:${t.message}")
                 val builder = AlertDialog.Builder(this@DailyGlobalStatisticActivity)
@@ -113,20 +107,20 @@ class DailyGlobalStatisticActivity : AppCompatActivity() {
         imageGlobal.setImageBitmap(convertString64ToImage(myImageString))
         Log.i(TAG, "Display the graph")
 
-        textGlobal12.setText(jObj.data.departureValue[0].toString())
-        textGlobal13.setText(jObj.data.arrivalValue[0].toString())
-        textGlobal22.setText(jObj.data.departureValue[1].toString())
-        textGlobal23.setText(jObj.data.arrivalValue[1].toString())
-        textGlobal32.setText(jObj.data.departureValue[2].toString())
-        textGlobal33.setText(jObj.data.arrivalValue[2].toString())
-        textGlobal42.setText(jObj.data.departureValue[3].toString())
-        textGlobal43.setText(jObj.data.arrivalValue[3].toString())
-        textGlobal52.setText(jObj.data.departureValue[4].toString())
-        textGlobal53.setText(jObj.data.arrivalValue[4].toString())
-        textGlobal62.setText(jObj.data.departureValue[5].toString())
-        textGlobal63.setText(jObj.data.arrivalValue[5].toString())
-        textGlobal72.setText(jObj.data.departureValue[6].toString())
-        textGlobal73.setText(jObj.data.arrivalValue[6].toString())
+        textGlobal12.text = jObj.data.departureValue[0].toString()
+        textGlobal13.text = jObj.data.arrivalValue[0].toString()
+        textGlobal22.text = jObj.data.departureValue[1].toString()
+        textGlobal23.text = jObj.data.arrivalValue[1].toString()
+        textGlobal32.text = jObj.data.departureValue[2].toString()
+        textGlobal33.text = jObj.data.arrivalValue[2].toString()
+        textGlobal42.text = jObj.data.departureValue[3].toString()
+        textGlobal43.text = jObj.data.arrivalValue[3].toString()
+        textGlobal52.text = jObj.data.departureValue[4].toString()
+        textGlobal53.text = jObj.data.arrivalValue[4].toString()
+        textGlobal62.text = jObj.data.departureValue[5].toString()
+        textGlobal63.text = jObj.data.arrivalValue[5].toString()
+        textGlobal72.text = jObj.data.departureValue[6].toString()
+        textGlobal73.text = jObj.data.arrivalValue[6].toString()
 
     }
 

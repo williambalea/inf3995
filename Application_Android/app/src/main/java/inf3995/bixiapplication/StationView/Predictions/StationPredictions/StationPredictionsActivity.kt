@@ -21,13 +21,11 @@ import java.util.*
 
 class StationPredictionsActivity : AppCompatActivity() {
 
-    var station : Station?=null
+    var station : Station? = null
     var time: String? = null
     var year: String? = "2017"
-
     var dateStart : String? = null
     var dateEnd : String? = null
-
     private val TAG = "Station Prediction Activity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,8 +41,10 @@ class StationPredictionsActivity : AppCompatActivity() {
 
         // button click to show date picker
         startDateButton.setOnClickListener {
+
             // Initialize a new calendar instance
             val c = Calendar.getInstance()
+
             // Get the calendar current year, month and day of month
             val theYear = c.get(Calendar.YEAR)
             val theMonth = c.get(Calendar.MONTH)
@@ -52,9 +52,9 @@ class StationPredictionsActivity : AppCompatActivity() {
 
             val datePicker = DatePickerDialog(
                 this,
-                DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
+                { view, mYear, mMonth, mDay ->
                     val mmMonth = mMonth + 1
-                   startDate.setText("$mDay-$mmMonth-$mYear")
+                    startDate.text = "$mDay-$mmMonth-$mYear"
                     dateStart = "$mDay-$mmMonth-$mYear"
                     year = mYear.toString()
                 },
@@ -64,7 +64,6 @@ class StationPredictionsActivity : AppCompatActivity() {
             )
             datePicker.show()
         }
-
         endDateButton.setOnClickListener {
             // Initialize a new calendar instance
             val c = Calendar.getInstance()
@@ -72,9 +71,9 @@ class StationPredictionsActivity : AppCompatActivity() {
             val theYear = year!!.toInt()
             val theMonth = c.get(Calendar.MONTH)
             val theDay = c.get(Calendar.DAY_OF_MONTH)
-            val datepicker = DatePickerDialog(
+            val datePicker = DatePickerDialog(
                 this,
-                DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
+                { view, mYear, mMonth, mDay ->
                     val mmMonth = mMonth + 1
                     val date = "$mDay-$mmMonth-$mYear"
                     endDate.setText(date)
@@ -84,22 +83,19 @@ class StationPredictionsActivity : AppCompatActivity() {
                 theMonth,
                 theDay
             )
-            datepicker.show()
-
+            datePicker.show()
         }
 
-
-        // Dropdownmenu  to choose de GroupByor period
-
-        val period_List = listOf("", "perMonth", "perWeekDay", "perHour","perDate")
-        val period_adapter = ArrayAdapter(
+        // DropDownMenu  to choose de GroupByor period
+        val periodList = listOf("", "perMonth", "perWeekDay", "perHour","perDate")
+        val periodAdapter = ArrayAdapter(
             this,
             R.layout.support_simple_spinner_dropdown_item,
-            period_List
+            periodList
         )
-        spnPeriode.adapter = period_adapter
+        spnPeriode.adapter = periodAdapter
 
-        limitDropDownmenuHeight(spnPeriode)
+        limitDropDownMenuHeight(spnPeriode)
 
         spnPeriode.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -109,14 +105,12 @@ class StationPredictionsActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                val item:String = period_List[position]
-
+                val item:String = periodList[position]
                 time = item
             }
         }
 
         display_button.setOnClickListener{
-
             val annee = year
             val temps = time
             val dateEnd = dateEnd
@@ -203,7 +197,7 @@ class StationPredictionsActivity : AppCompatActivity() {
 
     }
 
-    fun limitDropDownmenuHeight(spnTest: Spinner){
+    private fun limitDropDownMenuHeight(spnTest: Spinner){
         val popup = Spinner::class.java.getDeclaredField("mPopup")
         popup.isAccessible =true
         val popupWindow =popup.get(spnTest) as ListPopupWindow

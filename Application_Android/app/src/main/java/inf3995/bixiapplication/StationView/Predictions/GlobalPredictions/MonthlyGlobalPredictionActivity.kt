@@ -9,7 +9,10 @@ import android.util.Base64
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -23,8 +26,10 @@ import inf3995.bixiapplication.StationViewModel.StationLiveData.DataPredictionRe
 import inf3995.bixiapplication.StationViewModel.WebBixiService
 import inf3995.test.bixiapplication.R
 import kotlinx.android.synthetic.main.activity_monthly_global_prediction.*
-import kotlinx.android.synthetic.main.activity_per_date_global_prediction.*
-import retrofit2.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 
@@ -37,7 +42,7 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
     var dateEnd : String? = null
     var table: TableLayout? = null
     lateinit var response: Response<String>
-    private val TAG = "Monthly Station Predictions values"
+    private var TAG = "Monthly Station Predictions values"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

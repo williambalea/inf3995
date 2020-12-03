@@ -52,8 +52,6 @@ class HourlyGlobalStatisticsActivity : AppCompatActivity() {
     }
 
     private fun requestToServer(ipAddress: String?) {
-
-        // get check connexion with Server Hello from Server
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
@@ -87,21 +85,17 @@ class HourlyGlobalStatisticsActivity : AppCompatActivity() {
         super.onResume()
 
         MainScreenActivity.connectivity.observe(this, Observer {
-
             if(it[1] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("Connection with Engine 2 failed")
                     builder.show().setOnDismissListener {
                         val intent = Intent(this, MainScreenActivity::class.java)
                         intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                         startActivity(intent)
                     }
-
             }
-
         })
-
     }
 
     private fun convertString64ToImage(base64String: String): Bitmap {
@@ -114,54 +108,54 @@ class HourlyGlobalStatisticsActivity : AppCompatActivity() {
         imageGlobal.setImageBitmap(convertString64ToImage(myImageString))
         Log.i(TAG, "Display the graph ")
 
-        textGlobal12.setText(jObj.data.departureValue[0].toString())
-        textGlobal13.setText(jObj.data.arrivalValue[0].toString())
-        textGlobal22.setText(jObj.data.departureValue[1].toString())
-        textGlobal23.setText(jObj.data.arrivalValue[1].toString())
-        textGlobal32.setText(jObj.data.departureValue[2].toString())
-        textGlobal33.setText(jObj.data.arrivalValue[2].toString())
-        textGlobal42.setText(jObj.data.departureValue[3].toString())
-        textGlobal43.setText(jObj.data.arrivalValue[3].toString())
-        textGlobal52.setText(jObj.data.departureValue[4].toString())
-        textGlobal53.setText(jObj.data.arrivalValue[4].toString())
-        textGlobal62.setText(jObj.data.departureValue[5].toString())
-        textGlobal63.setText(jObj.data.arrivalValue[5].toString())
-        textGlobal72.setText(jObj.data.departureValue[6].toString())
-        textGlobal73.setText(jObj.data.arrivalValue[6].toString())
-        textGlobal82.setText(jObj.data.departureValue[7].toString())
-        textGlobal83.setText(jObj.data.arrivalValue[7].toString())
-        textGlobal92.setText(jObj.data.departureValue[8].toString())
-        textGlobal93.setText(jObj.data.arrivalValue[8].toString())
-        textGlobal102.setText(jObj.data.departureValue[9].toString())
-        textGlobal103.setText(jObj.data.arrivalValue[9].toString())
-        textGlobal112.setText(jObj.data.departureValue[10].toString())
-        textGlobal113.setText(jObj.data.arrivalValue[10].toString())
-        textGlobal122.setText(jObj.data.departureValue[11].toString())
-        textGlobal123.setText(jObj.data.arrivalValue[11].toString())
-        textGlobal132.setText(jObj.data.departureValue[12].toString())
-        textGlobal133.setText(jObj.data.arrivalValue[12].toString())
-        textGlobal142.setText(jObj.data.departureValue[13].toString())
-        textGlobal143.setText(jObj.data.arrivalValue[13].toString())
-        textGlobal152.setText(jObj.data.departureValue[14].toString())
-        textGlobal153.setText(jObj.data.arrivalValue[14].toString())
-        textGlobal162.setText(jObj.data.departureValue[15].toString())
-        textGlobal163.setText(jObj.data.arrivalValue[15].toString())
-        textGlobal172.setText(jObj.data.departureValue[16].toString())
-        textGlobal173.setText(jObj.data.arrivalValue[16].toString())
-        textGlobal182.setText(jObj.data.departureValue[17].toString())
-        textGlobal183.setText(jObj.data.arrivalValue[17].toString())
-        textGlobal192.setText(jObj.data.departureValue[18].toString())
-        textGlobal193.setText(jObj.data.arrivalValue[18].toString())
-        textGlobal202.setText(jObj.data.departureValue[19].toString())
-        textGlobal203.setText(jObj.data.arrivalValue[19].toString())
-        textGlobal212.setText(jObj.data.departureValue[20].toString())
-        textGlobal213.setText(jObj.data.arrivalValue[20].toString())
-        textGlobal222.setText(jObj.data.departureValue[21].toString())
-        textGlobal223.setText(jObj.data.arrivalValue[21].toString())
-        textGlobal232.setText(jObj.data.departureValue[22].toString())
-        textGlobal233.setText(jObj.data.arrivalValue[22].toString())
-        textGlobal242.setText(jObj.data.departureValue[23].toString())
-        textGlobal243.setText(jObj.data.arrivalValue[23].toString())
+        textGlobal12.text = jObj.data.departureValue[0].toString()
+        textGlobal13.text = jObj.data.arrivalValue[0].toString()
+        textGlobal22.text = jObj.data.departureValue[1].toString()
+        textGlobal23.text = jObj.data.arrivalValue[1].toString()
+        textGlobal32.text = jObj.data.departureValue[2].toString()
+        textGlobal33.text = jObj.data.arrivalValue[2].toString()
+        textGlobal42.text = jObj.data.departureValue[3].toString()
+        textGlobal43.text = jObj.data.arrivalValue[3].toString()
+        textGlobal52.text = jObj.data.departureValue[4].toString()
+        textGlobal53.text = jObj.data.arrivalValue[4].toString()
+        textGlobal62.text = jObj.data.departureValue[5].toString()
+        textGlobal63.text = jObj.data.arrivalValue[5].toString()
+        textGlobal72.text = jObj.data.departureValue[6].toString()
+        textGlobal73.text = jObj.data.arrivalValue[6].toString()
+        textGlobal82.text = jObj.data.departureValue[7].toString()
+        textGlobal83.text = jObj.data.arrivalValue[7].toString()
+        textGlobal92.text = jObj.data.departureValue[8].toString()
+        textGlobal93.text = jObj.data.arrivalValue[8].toString()
+        textGlobal102.text = jObj.data.departureValue[9].toString()
+        textGlobal103.text = jObj.data.arrivalValue[9].toString()
+        textGlobal112.text = jObj.data.departureValue[10].toString()
+        textGlobal113.text = jObj.data.arrivalValue[10].toString()
+        textGlobal122.text = jObj.data.departureValue[11].toString()
+        textGlobal123.text = jObj.data.arrivalValue[11].toString()
+        textGlobal132.text = jObj.data.departureValue[12].toString()
+        textGlobal133.text = jObj.data.arrivalValue[12].toString()
+        textGlobal142.text = jObj.data.departureValue[13].toString()
+        textGlobal143.text = jObj.data.arrivalValue[13].toString()
+        textGlobal152.text = jObj.data.departureValue[14].toString()
+        textGlobal153.text = jObj.data.arrivalValue[14].toString()
+        textGlobal162.text = jObj.data.departureValue[15].toString()
+        textGlobal163.text = jObj.data.arrivalValue[15].toString()
+        textGlobal172.text = jObj.data.departureValue[16].toString()
+        textGlobal173.text = jObj.data.arrivalValue[16].toString()
+        textGlobal182.text = jObj.data.departureValue[17].toString()
+        textGlobal183.text = jObj.data.arrivalValue[17].toString()
+        textGlobal192.text = jObj.data.departureValue[18].toString()
+        textGlobal193.text = jObj.data.arrivalValue[18].toString()
+        textGlobal202.text = jObj.data.departureValue[19].toString()
+        textGlobal203.text = jObj.data.arrivalValue[19].toString()
+        textGlobal212.text = jObj.data.departureValue[20].toString()
+        textGlobal213.text = jObj.data.arrivalValue[20].toString()
+        textGlobal222.text = jObj.data.departureValue[21].toString()
+        textGlobal223.text = jObj.data.arrivalValue[21].toString()
+        textGlobal232.text = jObj.data.departureValue[22].toString()
+        textGlobal233.text = jObj.data.arrivalValue[22].toString()
+        textGlobal242.text = jObj.data.departureValue[23].toString()
+        textGlobal243.text = jObj.data.arrivalValue[23].toString()
 
     }
 

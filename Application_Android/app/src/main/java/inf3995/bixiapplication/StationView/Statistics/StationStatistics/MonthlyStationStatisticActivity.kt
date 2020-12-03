@@ -61,32 +61,26 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
         code =  station!!.code
         myImage = findViewById(R.id.image)
         requestToServer(IpAddressDialog.ipAddressInput)
-
     }
 
     override fun onResume() {
         super.onResume()
 
         MainScreenActivity.connectivity.observe(this, Observer {
-
             if(it[0] == "DOWN"|| it[1] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("Connection with Engine 3 failed")
                     builder.show().setOnDismissListener {
                         val intent = Intent(this, MainScreenActivity::class.java)
                         intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                         startActivity(intent)
                     }
             }
-
         })
-
     }
 
     private fun requestToServer(ipAddress: String?) {
-
-        // get check connexion with Server Hello from Server
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
@@ -118,39 +112,37 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
 
     private fun fillData(jObj: DataResponseStation) {
         val myImageString = jObj.graph
-        val image1 = findViewById(R.id.image) as ImageView
+        val image1 = findViewById<ImageView>(R.id.image)
        try{image1.setImageBitmap(convertString64ToImage(myImageString))}
         catch (e:Exception){
             Log.e(TAG,"error")
         }
 
-        Log.i(TAG, "Display the graph ")
+        text12.text = jObj.data.departureValue[0].toString()
+        text13.text = jObj.data.arrivalValue[0].toString()
+        text22.text = jObj.data.departureValue[1].toString()
+        text23.text = jObj.data.arrivalValue[1].toString()
+        text32.text = jObj.data.departureValue[2].toString()
+        text33.text = jObj.data.arrivalValue[2].toString()
+        text42.text = jObj.data.departureValue[3].toString()
+        text43.text = jObj.data.arrivalValue[3].toString()
+        text52.text = jObj.data.departureValue[4].toString()
+        text53.text = jObj.data.arrivalValue[4].toString()
+        text62.text = jObj.data.departureValue[5].toString()
+        text63.text = jObj.data.arrivalValue[5].toString()
+        text72.text = jObj.data.departureValue[6].toString()
+        text73.text = jObj.data.arrivalValue[6].toString()
+        text82.text = jObj.data.departureValue[7].toString()
+        text83.text = jObj.data.arrivalValue[7].toString()
 
-        text12.setText(jObj.data.departureValue[0].toString())
-        text13.setText(jObj.data.arrivalValue[0].toString())
-        text22.setText(jObj.data.departureValue[1].toString())
-        text23.setText(jObj.data.arrivalValue[1].toString())
-        text32.setText(jObj.data.departureValue[2].toString())
-        text33.setText(jObj.data.arrivalValue[2].toString())
-        text42.setText(jObj.data.departureValue[3].toString())
-        text43.setText(jObj.data.arrivalValue[3].toString())
-        text52.setText(jObj.data.departureValue[4].toString())
-        text53.setText(jObj.data.arrivalValue[4].toString())
-        text62.setText(jObj.data.departureValue[5].toString())
-        text63.setText(jObj.data.arrivalValue[5].toString())
-        text72.setText(jObj.data.departureValue[6].toString())
-        text73.setText(jObj.data.arrivalValue[6].toString())
-        text82.setText(jObj.data.departureValue[7].toString())
-        text83.setText(jObj.data.arrivalValue[7].toString())
-
-        text92.setText(jObj.data.departureValue[8].toString())
-        text93.setText(jObj.data.arrivalValue[8].toString())
-        text102.setText(jObj.data.departureValue[9].toString())
-        text103.setText(jObj.data.arrivalValue[9].toString())
-        text112.setText(jObj.data.departureValue[10].toString())
-        text113.setText(jObj.data.arrivalValue[10].toString())
-        text122.setText(jObj.data.departureValue[11].toString())
-        text123.setText(jObj.data.arrivalValue[11].toString())
+        text92.text = jObj.data.departureValue[8].toString()
+        text93.text = jObj.data.arrivalValue[8].toString()
+        text102.text = jObj.data.departureValue[9].toString()
+        text103.text = jObj.data.arrivalValue[9].toString()
+        text112.text = jObj.data.departureValue[10].toString()
+        text113.text = jObj.data.arrivalValue[10].toString()
+        text122.text = jObj.data.departureValue[11].toString()
+        text123.text = jObj.data.arrivalValue[11].toString()
 
     }
 
@@ -158,5 +150,4 @@ class MonthlyStationStatisticActivity : AppCompatActivity() {
         val decodedString = decode(base64String, Base64.NO_WRAP)
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
     }
-
 }

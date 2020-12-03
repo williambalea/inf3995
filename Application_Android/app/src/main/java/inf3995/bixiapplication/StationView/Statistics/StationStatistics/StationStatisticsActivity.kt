@@ -15,7 +15,6 @@ import kotlinx.android.synthetic.main.activity_coordinates_station.Station_name
 import kotlinx.android.synthetic.main.activity_station_statistics.*
 
 class StationStatisticsActivity : AppCompatActivity() {
-
     var station : Station?=null
     var time: String? = null
     var year: String? = null
@@ -27,21 +26,21 @@ class StationStatisticsActivity : AppCompatActivity() {
         Station_code.text = station!!.code.toString()
         Station_name.text = station!!.name
 
-        val years_List = listOf("","2014", "2015", "2016","2017")
-        val years_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, years_List)
-        spnTime.adapter = years_adapter
+        val yearsList = listOf("","2014", "2015", "2016","2017")
+        val yearsAdapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, yearsList)
+        spnTime.adapter = yearsAdapter
 
-        val period_List = listOf("","perMonth", "perWeekDay", "perHour")
-        val period_adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, period_List)
-        spnPeriod.adapter = period_adapter
+        val periodList = listOf("","perMonth", "perWeekDay", "perHour")
+        val periodAdapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, periodList)
+        spnPeriod.adapter = periodAdapter
 
-        limitDropDownmenuHeight(spnPeriod)
-        limitDropDownmenuHeight(spnTime)
+        limitDropDownMenuHeight(spnPeriod)
+        limitDropDownMenuHeight(spnTime)
 
         spnTime.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val item:String = years_List[position]
+                val item:String = yearsList[position]
                 year = item
             }
         }
@@ -49,16 +48,14 @@ class StationStatisticsActivity : AppCompatActivity() {
         spnPeriod.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val item:String = period_List[position]
+                val item:String = periodList[position]
                 time = item
             }
         }
 
         display_button.setOnClickListener{
-
             val annee = year
-            val temps = time
-            when (temps){
+            when (val temps = time){
                 "perMonth"-> {
                     val intent = Intent(this@StationStatisticsActivity, MonthlyStationStatisticActivity::class.java)
                     intent.putExtra("data", station)
@@ -83,13 +80,11 @@ class StationStatisticsActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
     override fun onResume() {
         super.onResume()
 
         MainScreenActivity.connectivity.observe(this, Observer {
-
             if(it[0] == "DOWN"|| it[1] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("Connection with Engine 2 failed")
@@ -99,14 +94,11 @@ class StationStatisticsActivity : AppCompatActivity() {
                             Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
                         startActivity(intent)
                     }
-
             }
-
         })
-
     }
 
-    fun limitDropDownmenuHeight(spnTest: Spinner){
+    private fun limitDropDownMenuHeight(spnTest: Spinner){
         val popup = Spinner::class.java.getDeclaredField("mPopup")
         popup.isAccessible =true
         val popupWindow =popup.get(spnTest) as ListPopupWindow

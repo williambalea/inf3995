@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -29,7 +30,6 @@ import java.util.concurrent.TimeUnit
 
 
 class ListStationActivity : AppCompatActivity(){
-
     private val TAG = "Stations List"
     var stationModalList = ArrayList<Station>()
     var stationAdapter: StationAdapter? = null
@@ -60,14 +60,10 @@ class ListStationActivity : AppCompatActivity(){
 
         val textView = station_search.findViewById<TextView>(R.id.search_src_text)
         textView.setTextColor(Color.BLACK)
-        textView.setTextSize(30F)
-
+        textView.textSize = 30F
     }
 
-
     private fun requestToServer(ipAddress: String?) {
-        // get check connexion with Server Hello from Server
-
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress")
             .addConverterFactory(ScalarsConverterFactory.create())
@@ -85,7 +81,7 @@ class ListStationActivity : AppCompatActivity(){
                 val arrayStationType = object : TypeToken<Array<Station>>() {}.type
                 val jObj: Array<Station> = Gson().fromJson(response?.body(), arrayStationType)
                 makeRecyclerView(jObj)
-                //llProgressBar.visibility = View.GONE
+                llProgressBar.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
@@ -114,22 +110,16 @@ class ListStationActivity : AppCompatActivity(){
         super.onResume()
 
         MainScreenActivity.connectivity.observe(this, Observer {
-
             if(it[0] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("Connection with Engine 1 failed")
-
                 builder.show().setOnDismissListener {
                     val intent = Intent(this, MainScreenActivity::class.java)
                     intent.flags =
                         Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
                     startActivity(intent)
                 }
-
             }
-
         })
-
     }
-
 }

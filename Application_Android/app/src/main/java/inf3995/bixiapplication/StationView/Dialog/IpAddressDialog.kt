@@ -46,10 +46,10 @@ class IpAddressDialog: AppCompatDialogFragment() {
                     "Enter a valid IP Address!"
                 )
             }
+
             submitWith(okButton) {
                 ipAddressInput = editTextIpAddress.text.toString()
                 communicationServer(ipAddressInput)
-                //connectivityCheck(ipAddressInput)
             }
         }
         cancelButton.setOnClickListener{ exitProcess(0);}

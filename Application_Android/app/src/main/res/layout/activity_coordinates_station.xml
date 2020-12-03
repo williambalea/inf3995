@@ -201,8 +201,6 @@
                 android:textSize="28sp"
                 android:textStyle="bold"
                 />
-
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

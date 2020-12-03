@@ -40,15 +40,13 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_per_date_error_predictions)
-
-        ErrorPredictionYear.text = year.toString()
+        ErrorPredictionYear.text = year
         table = findViewById(R.id.main_table)
         myImage = findViewById(R.id.image)
         requestToServer(IpAddressDialog.ipAddressInput)
     }
 
     private fun requestToServer(ipAddress: String?) {
-        // get check connexion with Server Hello from Server
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$ipAddress/")
             .addConverterFactory(ScalarsConverterFactory.create())
@@ -84,7 +82,6 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
                 }
 
             }
-
             override fun onFailure(call: Call<String>?, t: Throwable) {
                 Log.i(
                     TAG,
@@ -95,7 +92,6 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
                     .setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()
             }
-
         })
     }
     private fun convertString64ToImage(base64String: String): Bitmap {
@@ -104,8 +100,6 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
     }
 
     private fun fillData(jObj: DataErrorResponse) {
-
-        //precision = jObj.data.precision
         PrecisionPredictionValue.text = jObj.data.precision.toString()
         val myImageString = jObj.graph
         val image1 = findViewById(R.id.image) as ImageView
@@ -113,9 +107,8 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
         catch (e: Exception){
             Log.e(TAG, "error")
         }
-        Log.i(TAG, "Display the graph")
 
-        for (i in 0 until jObj.data.predErrorPerHour.size ){
+        for (i in jObj.data.predErrorPerHour.indices){
             val time = jObj.data.time[i]
             val errors = jObj.data.predErrorPerHour[i]
 
@@ -131,17 +124,18 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
 
             // Set the first column of the table row
 
-            text0.setId(i + 1)
+            text0.id = i + 1
             text0.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
-            text0.setText((i + 1).toString())
+            text0.text = (i + 1).toString()
             text0.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
-            text0.setTextSize(18F)
+            text0.textSize = 18F
             text0.setTypeface(text0.getTypeface(), Typeface.BOLD);
             text0.gravity = Gravity.CENTER_HORIZONTAL
             text0.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight,3F
+                    myheight,
+                    3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -159,24 +153,26 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
             text1.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight,3F
+                    myheight,
+                    3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
             tbrow.addView(text1)
 
             // Set the third column of the table row
-            text2.setId(i + 3)
+            text2.id = i + 3
             text2.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
-            text2.setText(errors.toString())
+            text2.text = errors.toString()
             text2.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
-            text2.setTextSize(18F)
+            text2.textSize = 18F
             text2.setTypeface(text2.getTypeface(), Typeface.BOLD);
             text2.gravity = Gravity.CENTER_HORIZONTAL
             text2.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight,3F
+                    myheight,
+                    3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
