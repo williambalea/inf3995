@@ -69,7 +69,7 @@ class StationPredictionsActivity : AppCompatActivity() {
             // Initialize a new calendar instance
             val c = Calendar.getInstance()
             // Get the calendar current year, month and day of month
-            val theYear = year!!.toInt() //c.get(Calendar.YEAR)
+            val theYear = year!!.toInt()
             val theMonth = c.get(Calendar.MONTH)
             val theDay = c.get(Calendar.DAY_OF_MONTH)
             val datepicker = DatePickerDialog(
@@ -77,7 +77,7 @@ class StationPredictionsActivity : AppCompatActivity() {
                 DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
                     val mmMonth = mMonth + 1
                     val date = "$mDay-$mmMonth-$mYear"
-                    endDate.setText(date)           //setText(""+ mDay+"-" + mMonth + "-"+mYear)
+                    endDate.setText(date)
                     dateEnd = "$mDay-$mmMonth-$mYear"
                 },
                 theYear,
@@ -189,7 +189,7 @@ class StationPredictionsActivity : AppCompatActivity() {
 
             if(it[0] == "DOWN"|| it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 3 failed")
                     builder.show().setOnDismissListener {
                         val intent = Intent(this, MainScreenActivity::class.java)
                         intent.flags =

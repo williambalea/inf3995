@@ -92,7 +92,6 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
                 startActivity(intent)
             }
         }
-
     }
     override fun onResume() {
         super.onResume()
@@ -101,18 +100,15 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
 
             if(it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
-                    builder.show().setOnDismissListener {
-                        val intent = Intent(this, MainScreenActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                        startActivity(intent)
-                    }
-
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 3 failed")
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                    startActivity(intent)
+                }
             }
-
         })
-
     }
 
 
@@ -130,12 +126,8 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse des predictions du Serveur: ${response?.body()}")
-                Log.i(TAG, "Status de reponse  des predictions du Serveur: ${response?.code()}")
-                Log.i(
-                    TAG,
-                    "Message de réponse  des predictions du Serveur: ${response?.message()}"
-                )
+                Log.i(TAG, "Response of hourly predictions from server : ${response?.body()}")
+                Log.i(TAG, "Response status of hourly predictions from server: ${response?.code()}")
 
                 val arrayStationType = object : TypeToken<DataPredictionResponseStation>() {}.type
                 val jObj: DataPredictionResponseStation = Gson().fromJson(response?.body(), arrayStationType)
@@ -192,7 +184,7 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
             text0.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight, 3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -210,7 +202,7 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
             text1.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight, 3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -227,7 +219,7 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
             text2.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight,3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }

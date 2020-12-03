@@ -96,18 +96,16 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
 
             if(it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 3 failed")
 
-                    builder.show().setOnDismissListener {
-                        val intent = Intent(this, MainScreenActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                        startActivity(intent)
-                    }
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                    startActivity(intent)
+                }
             }
-
         })
-
     }
     private fun requestToServer(ipAddress: String?) {
 
@@ -122,16 +120,12 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
         val call: Call<String> = service.getGlobalPrediction(temps, dateStart!!, dateEnd!!)
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Réponse des predictions du Serveur: ${response?.body()}")
-                Log.i(TAG, "Status de reponse  des predictions du Serveur: ${response?.code()}")
-                Log.i(
-                    TAG,
-                    "Message de reponse  des predictions du Serveur: ${response?.message()}"
-                )
+                Log.i(TAG, "Response of global hourly predictions from server : ${response?.body()}")
+                Log.i(TAG, "Response status of global hourly predictions from server: ${response?.code()}")
 
                 val arrayStationType = object : TypeToken<DataPredictionResponseStation>() {}.type
                 val jObj: DataPredictionResponseStation = Gson().fromJson(response?.body(), arrayStationType)
-                Log.i(TAG, "L'objet : $jObj")
+                Log.i(TAG, "Object : $jObj")
                 fillData(jObj)
                 lllProgressBarH.visibility = View.GONE
             }
@@ -188,7 +182,7 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
             text0.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight,3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -206,7 +200,7 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
             text1.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight,3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -223,7 +217,7 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
             text2.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight,3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }

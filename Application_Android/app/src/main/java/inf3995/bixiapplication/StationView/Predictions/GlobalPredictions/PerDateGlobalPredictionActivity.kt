@@ -100,18 +100,15 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
 
             if(it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
-                    builder.show().setOnDismissListener {
-                        val intent = Intent(this, MainScreenActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                        startActivity(intent)
-                    }
-
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 3 failed")
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                    startActivity(intent)
+                }
             }
-
         })
-
     }
     private fun requestToServer(ipAddress: String?) {
         // get check connexion with Server Hello from Server
@@ -125,12 +122,12 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
 
         call.enqueue(object : Callback<String> {
         override fun onResponse(call: Call<String>?, response: Response<String>?) {
-            Log.i(TAG, "Réponse des predictions du Serveur: ${response?.body()}")
-            Log.i(TAG, "Status de reponse  des predictions du Serveur: ${response?.code()}")
+            Log.i(TAG, "Response of per date predictions from server : ${response?.body()}")
+            Log.i(TAG, "Response status of per date predictions from server: ${response?.code()}")
 
             val arrayStationType = object : TypeToken<DataPredictionResponseStation>() {}.type
             val jObj: DataPredictionResponseStation = Gson().fromJson(response?.body(), arrayStationType)
-            Log.i(TAG, "L'objet : $jObj")
+            Log.i(TAG, "Objet: $jObj")
             fillData(jObj)
             lllProgressBarPerD.visibility = View.GONE
         }
@@ -138,10 +135,10 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
         override fun onFailure(call: Call<String>?, t: Throwable) {
             Log.i(
                 TAG,
-                "Error when receiving prediction!    cause:${t.cause}     message:${t.message}"
+                "Error when loading predictions!    cause:${t.cause}     message:${t.message}"
             )
             val builder = AlertDialog.Builder(this@PerDateGlobalPredictionActivity)
-            builder.setTitle("Error while loading prediction!")
+            builder.setTitle("Error while loading predictions!")
                 .setMessage("cause:${t.cause} \n message:${t.message}")
             builder.show()
         }
@@ -191,7 +188,7 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
             text0.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight,3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -209,7 +206,7 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
             text1.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight,3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -226,7 +223,7 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
             text2.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight,3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -235,8 +232,6 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
             // add the tablerow to the table Layout
 
             table?.addView(tbrow)
-
         }
     }
-
 }

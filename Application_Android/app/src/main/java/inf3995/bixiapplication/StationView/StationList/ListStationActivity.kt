@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -34,10 +33,6 @@ class ListStationActivity : AppCompatActivity(){
     private val TAG = "Stations List"
     var stationModalList = ArrayList<Station>()
     var stationAdapter: StationAdapter? = null
-    private lateinit var dataButton: Button
-    private lateinit var coordinatesButton: Button
-    private lateinit var statisticsButton: Button
-    private lateinit var predictionButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +79,7 @@ class ListStationActivity : AppCompatActivity(){
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
                 if(!response?.body().isNullOrBlank())
-                    Log.i(TAG, "Réponse 1 du Serveur: ${response?.body()}")
+                    Log.i(TAG, "Response 1 from Server: ${response?.body()}")
                 else
                     Log.i(TAG,"${response?.body()} --->   code:${response?.code()}    message:${response?.message()}")
                 val arrayStationType = object : TypeToken<Array<Station>>() {}.type
@@ -94,9 +89,9 @@ class ListStationActivity : AppCompatActivity(){
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable) {
-                Log.i(TAG, "Error when receiving list of stations!    cause:${t.cause}     message:${t.message}")
+                Log.i(TAG, "Error when loading list of stations!    cause:${t.cause}     message:${t.message}")
                 val builder = AlertDialog.Builder(this@ListStationActivity)
-                builder.setTitle("Error while loading station list!").setMessage("cause:${t.cause} \n message:${t.message}")
+                builder.setTitle("Error while loading list of stations !").setMessage("cause:${t.cause} \n message:${t.message}")
                 builder.show()
             }
         })
@@ -122,7 +117,7 @@ class ListStationActivity : AppCompatActivity(){
 
             if(it[0] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 1")
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 1 failed")
 
                 builder.show().setOnDismissListener {
                     val intent = Intent(this, MainScreenActivity::class.java)

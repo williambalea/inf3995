@@ -80,10 +80,7 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
 
         val yearEnd = dateEnd!!.split('-')[2]
         val yearStart = dateStart!!.split('-')[2]
-        val monthEnd = dateEnd!!.split('-')[1]
-        val monthStart = dateStart!!.split('-')[1]
-        val dayEnd = dateEnd!!.split('-')[0]
-        val dayStart = dateStart!!.split('-')[0]
+
 
         if(!(dateEnd == dateStart) && ((yearEnd == yearStart)) ){
             requestToServer(IpAddressDialog.ipAddressInput)
@@ -108,7 +105,7 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
 
             if(it[0] == "DOWN"|| it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 3 failed")
 
                     builder.show().setOnDismissListener {
                         val intent = Intent(this, MainScreenActivity::class.java)
@@ -181,8 +178,8 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
 
             // Set the heigth and width of the TextView
             val scale = resources.displayMetrics.density
-            val myheight = (30 * scale + 0.5f).toInt()
-            val mywidth = (132 *2* scale + 0.5f).toInt()
+             val myheight = (30 * scale + 0.5f).toInt()
+             val mywidth = (132 *2* scale + 0.5f).toInt()
             // Set the first column of the table row
 
             text0.setId(i + 1)
@@ -195,7 +192,7 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
             text0.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight, 3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -213,7 +210,7 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
             text1.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight, 3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -230,7 +227,7 @@ class HourlyStationPredictionActivity : AppCompatActivity() {
             text2.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight, 3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }

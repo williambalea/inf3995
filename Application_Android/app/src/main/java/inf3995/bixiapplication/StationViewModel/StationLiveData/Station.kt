@@ -37,7 +37,7 @@ data class DataResponseStation(
 data class DataError(
     var precision :Double,
     var time :Array<String>,
-    var errors: Array<Float>,
+    var predErrorPerHour: Array<Float>,
 ): Serializable {}
 
 data class DataErrorResponse(

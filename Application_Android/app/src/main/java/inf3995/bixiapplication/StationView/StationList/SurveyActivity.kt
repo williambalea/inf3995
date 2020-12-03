@@ -1,12 +1,9 @@
 package inf3995.bixiapplication.StationView.StationList
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
 import com.afollestad.vvalidator.form
 import com.google.gson.Gson
 import inf3995.bixiapplication.StationView.Dialog.IpAddressDialog
@@ -100,7 +97,7 @@ class SurveyActivity : AppCompatActivity() {
         call5.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
                 if (!response?.body().isNullOrBlank())
-                    Log.i(TAG, "Réponse 2 du Serveur: ${response?.body()}")
+                    Log.i(TAG, "Response 2 from Server: ${response?.body()}")
                 else
                     Log.i(
                         TAG,

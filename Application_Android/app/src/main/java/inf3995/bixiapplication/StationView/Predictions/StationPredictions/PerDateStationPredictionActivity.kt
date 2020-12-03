@@ -107,7 +107,7 @@ class PerDateStationPredictionActivity : AppCompatActivity() {
 
             if(it[0] == "DOWN"|| it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 3 failed")
                     builder.show().setOnDismissListener {
                         val intent = Intent(this, MainScreenActivity::class.java)
                         intent.flags =
@@ -197,7 +197,7 @@ class PerDateStationPredictionActivity : AppCompatActivity() {
             text0.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight,3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -215,7 +215,7 @@ class PerDateStationPredictionActivity : AppCompatActivity() {
             text1.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight,3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -232,7 +232,7 @@ class PerDateStationPredictionActivity : AppCompatActivity() {
             text2.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight,3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }

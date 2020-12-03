@@ -45,7 +45,6 @@ class StationMapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.O
         mapFragment.getMapAsync(this)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-
     }
 
     override fun onResume() {
@@ -55,25 +54,22 @@ class StationMapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.O
 
             if(it[0] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 2")
-                    builder.show().setOnDismissListener {
-                        val intent = Intent(this, MainScreenActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                        startActivity(intent)
-                    }
-
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 1 failed")
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                    startActivity(intent)
+                }
             }
-
         })
-
     }
     override fun onMapReady(googleMap: GoogleMap) {
 
         map = googleMap
         // Add a marker in Sydney and move the camera
         val myPlace = LatLng(latitude!!.toDouble(), longitude!!.toDouble())
-        val zoomlevel = 15.0f   //15f
+        val zoomlevel = 15.0f
         val label = station!!.name
         val stationMarker = map.addMarker(MarkerOptions().position(myPlace).title("Station :" + " " + label))
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(myPlace, zoomlevel))
@@ -94,6 +90,4 @@ class StationMapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.O
             return
         }
     }
-
-
 }

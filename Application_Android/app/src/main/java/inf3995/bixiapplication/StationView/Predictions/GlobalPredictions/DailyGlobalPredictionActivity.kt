@@ -98,7 +98,7 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
 
             if(it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 3 failed")
                     builder.show().setOnDismissListener {
                         val intent = Intent(this, MainScreenActivity::class.java)
                         intent.flags =
@@ -124,8 +124,8 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
 
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                Log.i(TAG, "Response of station predictions from Server: ${response?.body()}")
-                Log.i(TAG, "Response status of station predictions from Server: ${response?.code()}")
+                Log.i(TAG, "Response of global daily predictions from Server: ${response?.body()}")
+                Log.i(TAG, "Response status of global daily predictions from Server: ${response?.code()}")
 
                 val arrayStationType = object : TypeToken<DataPredictionResponseStation>() {}.type
                 val jObj: DataPredictionResponseStation = Gson().fromJson(response?.body(), arrayStationType)
@@ -186,7 +186,7 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
             text0.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight,3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -204,7 +204,7 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
             text1.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight, 3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -221,7 +221,7 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
             text2.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight, 3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }

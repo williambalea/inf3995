@@ -92,7 +92,7 @@ class StationStatisticsActivity : AppCompatActivity() {
 
             if(it[0] == "DOWN"|| it[1] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 2")
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 2 failed")
                     builder.show().setOnDismissListener {
                         val intent = Intent(this, MainScreenActivity::class.java)
                         intent.flags =

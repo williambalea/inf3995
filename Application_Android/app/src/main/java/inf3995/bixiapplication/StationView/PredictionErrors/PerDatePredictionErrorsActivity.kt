@@ -115,9 +115,9 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
         }
         Log.i(TAG, "Display the graph")
 
-        for (i in 0 until jObj.data.errors.size ){
+        for (i in 0 until jObj.data.predErrorPerHour.size ){
             val time = jObj.data.time[i]
-            val errors = jObj.data.errors[i]
+            val errors = jObj.data.predErrorPerHour[i]
 
             val tbrow = TableRow(this)
             val text0 = TextView(this)
@@ -141,7 +141,7 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
             text0.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight,3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -159,7 +159,7 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
             text1.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight,3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -176,7 +176,7 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
             text2.apply {
                 layoutParams = TableRow.LayoutParams(
                     mywidth,
-                    myheight
+                    myheight,3F
                 )
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
             }
@@ -194,7 +194,7 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
         MainScreenActivity.connectivity.observe(this, Observer {
             if (it[2] == "DOWN") {
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 3 failed")
                 builder.show().setOnDismissListener {
                     val intent = Intent(this, MainScreenActivity::class.java)
                     intent.flags =

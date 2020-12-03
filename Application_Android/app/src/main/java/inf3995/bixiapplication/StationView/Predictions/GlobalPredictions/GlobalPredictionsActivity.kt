@@ -174,7 +174,7 @@ class GlobalPredictionsActivity : AppCompatActivity() {
 
             if(it[2] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("There may be a problem with Engine 3")
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 3 failed")
 
                     builder.show().setOnDismissListener {
                         val intent = Intent(this, MainScreenActivity::class.java)
