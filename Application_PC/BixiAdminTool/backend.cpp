@@ -129,6 +129,15 @@ void BackEnd::serverConnFinished(QNetworkReply *reply) {
     emit serverConnChanged(code == HTTP_OK);
 }
 
+void BackEnd::checkEngines() {
+    QNetworkRequest req = makeRequest(QUrl(HTTPS + m_host + STATUS_PATH));
+    mans[ENGINE_MAN]->get(req);
+}
+
+/**
+ * PRIVATE functions
+ */
+
 void BackEnd::setupNetworkManagers() {
     createNetworkManager(SURVEY_MAN, &BackEnd::sqlFinished);
     createNetworkManager(LOGIN_MAN,  &BackEnd::loginFinished);
@@ -150,11 +159,6 @@ QNetworkRequest BackEnd::makeRequest(const QUrl &url) {
     req.setSslConfiguration(sslconf);
     req.setUrl(url);
     return req;
-}
-
-void BackEnd::checkEngines() {
-    QNetworkRequest req = makeRequest(QUrl(HTTPS + m_host + STATUS_PATH));
-    mans[ENGINE_MAN]->get(req);
 }
 
 void BackEnd::setAuthHeader(QNetworkRequest &req, QString user, QString pass) {

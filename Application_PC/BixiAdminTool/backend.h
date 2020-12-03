@@ -48,12 +48,12 @@ private slots:
     void checkEnginesFinished(QNetworkReply *reply);
     void changePwFinished(QNetworkReply *reply);
     void serverConnFinished(QNetworkReply *reply);
+    void checkEngines();
 
 private:
     void setupNetworkManagers();
     void createNetworkManager(QString manName, void (BackEnd::* slot) (QNetworkReply *));
     QNetworkRequest makeRequest(const QUrl &url);
-    void checkEngines();
     void setAuthHeader(QNetworkRequest &req, QString user, QString pass);
 
     QString m_sqlData;
