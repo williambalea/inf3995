@@ -11,7 +11,7 @@ TableView {
     itemDelegate: Item {
         Text {
             text: styleData.value
-            font.pixelSize: 16
+            font.pixelSize: 12
             verticalAlignment: Text.AlignVCenter
             rightPadding: 10
             leftPadding: 10
@@ -20,7 +20,7 @@ TableView {
     }
 
     rowDelegate:  Rectangle {
-        height: 40
+        height: 30
         property color rowColor: styleData.selected?"#ff6348":(styleData.alternate ? "#ffffff":"#EAEAEA")
         color: rowColor
     }
@@ -32,7 +32,6 @@ TableView {
             text: styleData.value
             font.pointSize: 12
             verticalAlignment: Text.AlignVCenter
-            font.weight: Font.DemiBold
             rightPadding: 10
             leftPadding: 10
             anchors.fill: parent
@@ -61,7 +60,7 @@ TableView {
     }
     TableViewColumn {
         role: 'interest'
-        title: "Interest"
+        title: "Interested ?"
         width: 90
     }
 

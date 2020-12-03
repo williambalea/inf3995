@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include "backend.h"
+#include "engine.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,6 +19,7 @@ int main(int argc, char *argv[])
 
     // Registering new QML types here
     qmlRegisterType<BackEnd>("custom.classes", 1, 0, "BackEnd");
+    qmlRegisterType<Engine>("custom.classes", 1, 0, "Engine");
 
     engine.load(url);
 

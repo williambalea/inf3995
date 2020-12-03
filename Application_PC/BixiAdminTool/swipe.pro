@@ -12,6 +12,7 @@ QML_IMPORT_MAJOR_VERSION = 1
 
 SOURCES += \
         backend.cpp \
+        engine.cpp \
         main.cpp
 
 RESOURCES += qml.qrc
@@ -35,7 +36,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    backend.h
+    backend.h \
+    engine.h
 
 DISTFILES += \
     back.svg \

@@ -4,12 +4,41 @@ import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.0
 import custom.classes 1.0
 
-
 Page {
     id: engine2Page
     width: applicationWindow.width
     height: applicationWindow.height - 86
-    
+
+    Engine {
+        idNumber: 2
+        host: backend.host
+        user: backend.user
+        pass: backend.pass
+
+        Component.onCompleted: startTimer()
+
+        onLogChanged: {
+            var t = "";
+            var i = "";
+            if(isText) {
+                t = log;
+            } else {
+                var logParts = log.split(" ");
+                for (i = 0; i < logParts.length - 1; i++) {
+                    t += logParts[i] + " ";
+                }
+
+                i = "data:image/png;base64," + logParts[logParts.length - 1];
+            }
+            if (t.length === 0) return;
+            elements.insert(0, {
+                logText: t,
+                image: i,
+                typ: isText
+            });
+        }
+    }
+
     Rectangle {
         id: listViewContenant
         x: 5
@@ -17,7 +46,7 @@ Page {
         width: parent.width - 10
         height: parent.height - 10
         radius: 5
-        
+
         ListView {
             id: listView
             anchors.fill: parent
@@ -27,28 +56,24 @@ Page {
             ScrollBar.vertical: ScrollBar {}
             model: ListModel {
                 id: elements
-                
+
             }
-            
+
             delegate: Rectangle {
                 id: rectangle
                 width: listViewContenant.width
                 height: childrenRect.height
                 clip: true
-                border.color: "#7b7b7b"
-                border.width: 2
-                radius: 5
                 Text{
                     width: parent.width
-                    padding: 5
                     text: logText
                     wrapMode: Text.WordWrap
                 }
                 Rectangle {
                     id: rectangle1
-                    visible: (typ === 1)
-                    width: (typ === 0) ? 0 : 500
-                    height: (typ === 0) ? 0 : 500
+                    visible: !typ
+                    width: typ ? 0 : 500
+                    height: typ ? 0 : 500
                     color: "transparent"
                     Image {
                         source: image
@@ -65,8 +90,14 @@ Page {
             }
         }
     }
-    
+
     background: Rectangle {
         color: "#E1E2E1"
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;formeditorZoom:0.5;height:480;width:640}
+}
+##^##*/
