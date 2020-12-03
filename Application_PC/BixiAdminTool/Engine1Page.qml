@@ -72,16 +72,16 @@ Page {
                 Rectangle {
                     id: rectangle1
                     visible: !typ
-                    width: typ ? 0 : 500
+                    width: typ ? 0 : parent.width
                     height: typ ? 0 : 500
                     color: "transparent"
                     Image {
                         source: image
-                        anchors.leftMargin: 5
-                        anchors.bottomMargin: 5
-                        anchors.topMargin: 5
+                        anchors.leftMargin: 10
+                        anchors.bottomMargin: 10
+                        anchors.topMargin: 10
                         fillMode: Image.PreserveAspectFit
-                        width: 490
+                        width: parent.width - 10
                         anchors.left: parent.left
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
