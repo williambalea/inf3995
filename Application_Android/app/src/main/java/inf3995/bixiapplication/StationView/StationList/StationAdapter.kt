@@ -51,9 +51,6 @@ class StationAdapter():RecyclerView.Adapter<StationAdapter.StationAdapterViewHol
         holder.name.text = station.name
         holder.code.text = station.code.toString()
 
-
-
-
         holder.dropDownMenu.setOnClickListener{
             val wrapper = ContextThemeWrapper(this.context, R.style.BasePopupMenu)
             val popupMenu = PopupMenu(wrapper, holder.dropDownMenu)

@@ -49,7 +49,6 @@ class IpAddressDialog: AppCompatDialogFragment() {
             submitWith(okButton) {
                 ipAddressInput = editTextIpAddress.text.toString()
                 communicationServer(ipAddressInput)
-                //connectivityCheck(ipAddressInput)
             }
         }
         cancelButton.setOnClickListener{ exitProcess(0);}
@@ -57,7 +56,6 @@ class IpAddressDialog: AppCompatDialogFragment() {
 
     private fun communicationServer(ipAddress: String){
 
-        // Get Hello World
         val retrofit4 = Retrofit.Builder()
             .baseUrl("https://$ipAddress")
             .addConverterFactory(ScalarsConverterFactory.create())

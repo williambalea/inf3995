@@ -85,7 +85,6 @@ class GlobalStatisticsActivity : AppCompatActivity() {
                 }
             }
         })
-
     }
 
     fun limitDropDownmenuHeight(spnTest: Spinner){

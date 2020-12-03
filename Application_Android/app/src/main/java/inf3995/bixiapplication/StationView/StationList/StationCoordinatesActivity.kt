@@ -48,7 +48,6 @@ class StationCoordinatesActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
             }
-
         })
 
     }

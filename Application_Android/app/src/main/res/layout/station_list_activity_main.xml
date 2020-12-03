@@ -9,6 +9,10 @@
     tools:context="inf3995.bixiapplication.StationView.StationList.ListStationActivity">
 
     <!---progress bar-->
+    <include
+        android:id="@+id/lllProgressBar"
+        android:visibility="visible"
+        layout="@layout/progress_bar"/>
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/station_search"

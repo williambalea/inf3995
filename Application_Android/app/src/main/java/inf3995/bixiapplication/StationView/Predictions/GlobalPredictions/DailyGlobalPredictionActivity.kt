@@ -69,10 +69,7 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
         predictionYearD.text = annee.toString()
         val yearEnd = dateEnd!!.split('-')[2]
         val yearStart = dateStart!!.split('-')[2]
-        val monthEnd = dateEnd!!.split('-')[1]
-        val monthStart = dateStart!!.split('-')[1]
-        val dayEnd = dateEnd!!.split('-')[0]
-        val dayStart = dateStart!!.split('-')[0]
+
 
         if(!(dateEnd == dateStart) && ((yearEnd == yearStart)) ){
             requestToServer(IpAddressDialog.ipAddressInput)

@@ -91,17 +91,14 @@ class HourlyGlobalStatisticsActivity : AppCompatActivity() {
             if(it[1] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("Connection with Engine 2 failed")
-                    builder.show().setOnDismissListener {
-                        val intent = Intent(this, MainScreenActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                        startActivity(intent)
-                    }
-
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                    startActivity(intent)
+                }
             }
-
         })
-
     }
 
     private fun convertString64ToImage(base64String: String): Bitmap {
@@ -162,7 +159,6 @@ class HourlyGlobalStatisticsActivity : AppCompatActivity() {
         textGlobal233.setText(jObj.data.arrivalValue[22].toString())
         textGlobal242.setText(jObj.data.departureValue[23].toString())
         textGlobal243.setText(jObj.data.arrivalValue[23].toString())
-
     }
 
 }

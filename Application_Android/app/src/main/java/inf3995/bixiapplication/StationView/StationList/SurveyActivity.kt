@@ -75,7 +75,6 @@ class SurveyActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-
     }
 
     private fun sendSurveyData(surveyData: SurveyData) {

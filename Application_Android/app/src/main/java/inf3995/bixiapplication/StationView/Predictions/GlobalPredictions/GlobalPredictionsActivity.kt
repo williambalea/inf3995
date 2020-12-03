@@ -81,7 +81,6 @@ class GlobalPredictionsActivity : AppCompatActivity() {
 
 
         // Dropdownmenu  to choose de GroupByor period
-
         val period_List = listOf("", "perMonth", "perWeekDay", "perHour","perDate")
         val period_adapter = ArrayAdapter(
             this,

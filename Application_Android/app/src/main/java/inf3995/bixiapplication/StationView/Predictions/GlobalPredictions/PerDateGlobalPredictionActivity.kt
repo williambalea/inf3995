@@ -157,7 +157,7 @@ class PerDateGlobalPredictionActivity: AppCompatActivity() {
         catch (e: Exception){
             Log.e(TAG, "error")
         }
-        Log.i(TAG, "affichage du graphique ")
+        Log.i(TAG, "display the graph ")
 
         for (i in 0 until jObj.data.predictions.size ){
 

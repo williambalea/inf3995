@@ -68,10 +68,7 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
 
         val yearEnd = dateEnd!!.split('-')[2]
         val yearStart = dateStart!!.split('-')[2]
-        val monthEnd = dateEnd!!.split('-')[1]
-        val monthStart = dateStart!!.split('-')[1]
-        val dayEnd = dateEnd!!.split('-')[0]
-        val dayStart = dateStart!!.split('-')[0]
+
 
         if(!(dateEnd == dateStart) && ((yearEnd == yearStart)) ){
             requestToServer(IpAddressDialog.ipAddressInput)
@@ -116,7 +113,6 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
             .client(UnsafeOkHttpClient.getUnsafeOkHttpClient().readTimeout(360, TimeUnit.SECONDS).build())
             .build()
         val service: WebBixiService = retrofit.create(WebBixiService::class.java)
-        //val call: Call<String> = service.getStationPrediction(annee, temps, code, dateStart, dateEnd)
         val call: Call<String> = service.getGlobalPrediction(temps, dateStart!!, dateEnd!!)
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
@@ -152,7 +148,7 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e(TAG, "error")
         }
-        //image1.setImageBitmap(convertString64ToImage(myImageString))
+
         Log.i(TAG, "affichage du graphique ")
 
         for (i in 0 until jObj.data.predictions.size) {
@@ -171,7 +167,6 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
             val myheight = (30 * scale + 0.5f).toInt()
             val mywidth = (132 *2* scale + 0.5f).toInt()
             // Set the first column of the table row
-
             text0.setId(i + 1)
             text0.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
             text0.setText((i + 1).toString())

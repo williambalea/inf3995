@@ -93,17 +93,14 @@ class StationStatisticsActivity : AppCompatActivity() {
             if(it[0] == "DOWN"|| it[1] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("Connection with Engine 2 failed")
-                    builder.show().setOnDismissListener {
-                        val intent = Intent(this, MainScreenActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                        startActivity(intent)
-                    }
-
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                    startActivity(intent)
+                }
             }
-
         })
-
     }
 
     fun limitDropDownmenuHeight(spnTest: Spinner){

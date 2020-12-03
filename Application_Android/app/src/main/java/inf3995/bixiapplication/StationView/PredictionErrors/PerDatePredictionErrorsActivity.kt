@@ -105,7 +105,6 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
 
     private fun fillData(jObj: DataErrorResponse) {
 
-        //precision = jObj.data.precision
         PrecisionPredictionValue.text = jObj.data.precision.toString()
         val myImageString = jObj.graph
         val image1 = findViewById(R.id.image) as ImageView

@@ -44,7 +44,6 @@ class StationMapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.O
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
     }
 
     override fun onResume() {
