@@ -200,6 +200,5 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
                 }
             }
         })
-
     }
 }

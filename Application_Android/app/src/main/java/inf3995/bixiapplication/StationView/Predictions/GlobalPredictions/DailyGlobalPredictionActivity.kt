@@ -38,6 +38,8 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
     var dateEnd : String? = null
     private var TAG = "Daily Station Prediction "
     var table: TableLayout? = null
+    var yearEnd = 2017
+    var yearStart = 2017
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,12 +69,8 @@ class DailyGlobalPredictionActivity : AppCompatActivity(){
         myImage = findViewById(R.id.image)
 
         predictionYearD.text = annee.toString()
-        val yearEnd = dateEnd!!.split('-')[2]
-        val yearStart = dateStart!!.split('-')[2]
-<<<<<<< HEAD
-=======
-
->>>>>>> 1ca15784dff0e4f08a3112c832cf7594b888c365
+        yearEnd = dateEnd!!.split('-')[2].toInt()
+        yearStart = dateStart!!.split('-')[2].toInt()
 
         if(dateEnd != dateStart && ((yearEnd == yearStart)) ){
             requestToServer(IpAddressDialog.ipAddressInput)

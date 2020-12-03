@@ -40,6 +40,8 @@ class PerDateStationPredictionActivity : AppCompatActivity() {
     var dateEnd : String? = null
     private val TAG = "Per Date Station Prediction "
     lateinit var table: TableLayout
+    var yearEnd = 2017
+    var yearStart = 2017
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,8 +75,8 @@ class PerDateStationPredictionActivity : AppCompatActivity() {
         code =  station!!.code
         myImage = findViewById(R.id.image)
 
-        val yearEnd = dateEnd!!.split('-')[2]
-        val yearStart = dateStart!!.split('-')[2]
+        yearEnd = dateEnd!!.split('-')[2].toInt()
+        yearStart = dateStart!!.split('-')[2].toInt()
 
         if(dateEnd != dateStart && ((yearEnd == yearStart)) ){
             requestToServer(IpAddressDialog.ipAddressInput)
@@ -96,15 +98,35 @@ class PerDateStationPredictionActivity : AppCompatActivity() {
         super.onResume()
 
         MainScreenActivity.connectivity.observe(this, {
-            if(it[0] == "DOWN"|| it[2] == "DOWN"){
+            if(it[0] == "DOWN" && it[2] == "UP") {
                 val builder = AlertDialog.Builder(this)
-                builder.setTitle("Engine Error!").setMessage("Connection with Engine 3 failed")
-                    builder.show().setOnDismissListener {
-                        val intent = Intent(this, MainScreenActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                        startActivity(intent)
-                    }
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 1 failed")
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                }
+            }
+            if ( it[0] == "UP" && it[2] == "DOWN") {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 2 failed")
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                }
+            }
+            if ( it[0] == "DOWN" && it[2] == "DOWN") {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 1 and Engine 2 failed")
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                }
             }
         })
     }

@@ -38,6 +38,8 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
     var dateEnd : String? = null
     private var TAG = "Hourly Station Prediction"
     var table: TableLayout? = null
+    var yearEnd = 2017
+    var yearStart = 2017
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,8 +68,8 @@ class HourlyGlobalPredictionActivity : AppCompatActivity() {
         PredictionYearH.text = annee.toString()
         myImage = findViewById(R.id.image)
 
-        val yearEnd = dateEnd!!.split('-')[2]
-        val yearStart = dateStart!!.split('-')[2]
+        yearEnd = dateEnd!!.split('-')[2].toInt()
+        yearStart = dateStart!!.split('-')[2].toInt()
 
         if(dateEnd != dateStart && ((yearEnd == yearStart)) ){
             requestToServer(IpAddressDialog.ipAddressInput)

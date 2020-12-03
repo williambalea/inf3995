@@ -43,6 +43,8 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
     var table: TableLayout? = null
     lateinit var response: Response<String>
     private var TAG = "Monthly Station Predictions values"
+    var yearEnd = 2017
+    var yearStart = 2017
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,12 +77,8 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
         myImage = findViewById(R.id.image)
         predictionYearM.text = year.toString()
 
-        val yearEnd = dateEnd!!.split('-')[2]
-        val yearStart = dateStart!!.split('-')[2]
-        val monthEnd = dateEnd!!.split('-')[1]
-        val monthStart = dateStart!!.split('-')[1]
-        val dayEnd = dateEnd!!.split('-')[0]
-        val dayStart = dateStart!!.split('-')[0]
+        yearEnd = dateEnd!!.split('-')[2].toInt()
+        yearStart = dateStart!!.split('-')[2].toInt()
 
         if(!(dateEnd == dateStart) && ((yearEnd == yearStart)) ){
             requestToServer(IpAddressDialog.ipAddressInput)

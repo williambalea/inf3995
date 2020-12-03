@@ -23,6 +23,8 @@ class GlobalPredictionsActivity : AppCompatActivity() {
     var dateStart : String? = null
     var dateEnd : String? = null
     private val TAG = "Global Prediction Activity"
+    var yearEnd = 2017
+    var yearStart = 2017
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +45,7 @@ class GlobalPredictionsActivity : AppCompatActivity() {
 
             val datePicker = DatePickerDialog(
                 this,
-                { view, mYear, mMonth, mDay ->
+                { _, mYear, mMonth, mDay ->
                     val mmMonth = mMonth + 1
                     startDate.text = "$mDay-$mmMonth-$mYear"
                     dateStart = "$mDay-$mmMonth-$mYear"
@@ -66,7 +68,7 @@ class GlobalPredictionsActivity : AppCompatActivity() {
             val theDay = c.get(Calendar.DAY_OF_MONTH)
             val datePicker = DatePickerDialog(
                 this,
-                { view, mYear, mMonth, mDay ->
+                { _, mYear, mMonth, mDay ->
                     val mmMonth = mMonth + 1
                     val date = "$mDay-$mmMonth-$mYear"
                     endDate.text = date

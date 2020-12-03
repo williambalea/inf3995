@@ -65,15 +65,35 @@ class HourlyStationStatisticActivity : AppCompatActivity() {
         super.onResume()
 
         MainScreenActivity.connectivity.observe(this, Observer {
-            if(it[0] == "DOWN"|| it[1] == "DOWN"){
+            if(it[0] == "DOWN" && it[1] == "UP") {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 1 failed")
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                }
+            }
+            if ( it[0] == "UP" && it[1] == "DOWN") {
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("Connection with Engine 2 failed")
-                    builder.show().setOnDismissListener {
-                        val intent = Intent(this, MainScreenActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                        startActivity(intent)
-                    }
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                }
+            }
+            if ( it[0] == "DOWN" && it[1] == "DOWN") {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 1 and Engine 2 failed")
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                }
             }
         })
     }
