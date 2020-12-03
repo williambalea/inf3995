@@ -158,5 +158,4 @@ class HourlyGlobalStatisticsActivity : AppCompatActivity() {
         textGlobal243.text = jObj.data.arrivalValue[23].toString()
 
     }
-
 }

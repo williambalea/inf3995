@@ -57,7 +57,6 @@ class IpAddressDialog: AppCompatDialogFragment() {
 
     private fun communicationServer(ipAddress: String){
 
-        // Get Hello World
         val retrofit4 = Retrofit.Builder()
             .baseUrl("https://$ipAddress")
             .addConverterFactory(ScalarsConverterFactory.create())

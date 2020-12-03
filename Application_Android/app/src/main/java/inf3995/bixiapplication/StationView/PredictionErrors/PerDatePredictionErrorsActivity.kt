@@ -100,9 +100,10 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
     }
 
     private fun fillData(jObj: DataErrorResponse) {
+
         PrecisionPredictionValue.text = jObj.data.precision.toString()
         val myImageString = jObj.graph
-        val image1 = findViewById(R.id.image) as ImageView
+        val image1 = findViewById<ImageView>(R.id.image)
         try{image1.setImageBitmap(convertString64ToImage(myImageString))}
         catch (e: Exception){
             Log.e(TAG, "error")
@@ -117,7 +118,7 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
             val text1= TextView(this)
             val text2= TextView(this)
 
-            // Set the heigth and width of the TextView
+            // Set the height and width of the TextView
             val scale = resources.displayMetrics.density
             val myheight = (30 * scale + 0.5f).toInt()
             val mywidth = (132 *2* scale + 0.5f).toInt()
@@ -143,12 +144,12 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
             tbrow.addView(text0)
 
             // Set the second column of the table row
-            text1.setId(i + 2)
+            text1.id = i + 2
             text1.setBackgroundColor(ContextCompat.getColor(this, R.color.colortablerow))
-            text1.setText(time)
+            text1.text = time
             text1.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
-            text1.setTextSize(18F)
-            text1.setTypeface(text1.getTypeface(), Typeface.BOLD);
+            text1.textSize = 18F
+            text1.setTypeface(text1.typeface, Typeface.BOLD);
             text1.gravity = Gravity.CENTER_HORIZONTAL
             text1.apply {
                 layoutParams = TableRow.LayoutParams(
@@ -166,7 +167,7 @@ class PerDatePredictionErrorsActivity : AppCompatActivity() {
             text2.text = errors.toString()
             text2.setTextColor(ContextCompat.getColor(this, R.color.colortextdata))
             text2.textSize = 18F
-            text2.setTypeface(text2.getTypeface(), Typeface.BOLD);
+            text2.setTypeface(text2.typeface, Typeface.BOLD);
             text2.gravity = Gravity.CENTER_HORIZONTAL
             text2.apply {
                 layoutParams = TableRow.LayoutParams(

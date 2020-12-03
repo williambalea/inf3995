@@ -44,7 +44,6 @@ class MonthlyGlobalStatisticsActivity : AppCompatActivity() {
         if (tempas != null) {
             time = tempas
         }
-
         if (annas != null) {
             year = annas
         }
@@ -58,7 +57,6 @@ class MonthlyGlobalStatisticsActivity : AppCompatActivity() {
         super.onResume()
 
         MainScreenActivity.connectivity.observe(this, Observer {
-
             if(it[1] == "DOWN"){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Engine Error!").setMessage("Connection with Engine 2 failed")
@@ -71,7 +69,6 @@ class MonthlyGlobalStatisticsActivity : AppCompatActivity() {
             }
 
         })
-
     }
 
     private fun requestToServer(ipAddress: String?) {

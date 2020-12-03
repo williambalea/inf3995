@@ -235,7 +235,6 @@ class MonthlyGlobalPredictionActivity: AppCompatActivity() {
             table?.addView(tbrow)
 
         }
-
     }
 
     private fun convertString64ToImage(base64String: String): Bitmap {

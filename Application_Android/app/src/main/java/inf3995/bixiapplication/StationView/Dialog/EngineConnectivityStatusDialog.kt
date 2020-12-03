@@ -38,7 +38,6 @@ class EngineConnectivityStatusDialog: AppCompatDialogFragment() {
     }
 
     private fun imageStatusBehaviour(animation: ImageView, connectivityStatus: TextView){
-
         if(connectivityStatus.text == "UP")
             animation.setColorFilter(Color.GREEN)
         else

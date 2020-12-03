@@ -2,8 +2,6 @@ package inf3995.bixiapplication.StationViewModel.StationLiveData
 
 import java.io.Serializable
 
-
-
 data class Station(
     var code :Int,
     var name: String,
