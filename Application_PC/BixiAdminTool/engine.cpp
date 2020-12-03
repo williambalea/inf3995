@@ -5,7 +5,7 @@
 
 #define CHECK_ENGINE_INTERVALL 5000
 #define HTTP_OK 200
-#define MAX_TEXTLOG_SIZE 200
+#define MAX_TEXTLOG_SIZE 300
 #define JSON_BYTES_NB "byte"
 #define JSON_LOGS "logs"
 
