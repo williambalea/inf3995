@@ -12,13 +12,17 @@ QML_IMPORT_MAJOR_VERSION = 1
 
 SOURCES += \
         backend.cpp \
+        engine.cpp \
         main.cpp
 
 RESOURCES += qml.qrc
 RESOURCES += logo.png
 RESOURCES += logoW.png
 RESOURCES += settings-24px.svg
+RESOURCES += back.svg
+RESOURCES += refresh.svg
 
+RC_ICONS = AppIcon.ico
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH = ./
@@ -32,9 +36,12 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    backend.h
+    backend.h \
+    engine.h
 
 DISTFILES += \
+    back.svg \
     logo.png \
     logoW.png \
-    settings-24px.svg
+    settings-24px.svg \
+    refresh.svg

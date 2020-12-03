@@ -4,15 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:background="@drawable/background_bg"
     android:orientation="vertical" android:weightSum="9"
-    tools:context="inf3995.bixiapplication.StationCoordinatesActivity"
+    tools:context="inf3995.bixiapplication.StationView.StationList.StationCoordinatesActivity"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://schemas.android.com/tools ">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="120dp"
-    android:layout_weight="1"
-    app:layout_constraintBottom_toTopOf="parent"
-    app:layout_constraintTop_toBottomOf="parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -21,164 +23,184 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginTop="0dp"
+                android:orientation="horizontal"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="0dp">
 
                 <ImageView
                     android:id="@+id/imageView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="127dp"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_place_black_48dp" />
+                    android:src="@drawable/ic_station_location" />
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="652dp"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:textAlignment="center"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
                     android:text="@string/station_coordinates_title"
+                    android:textAlignment="center"
                     android:textColor="@color/colorWhite"
-                    android:textSize="60sp"
+                    android:textSize="50sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/swipeRefresh"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="8"
-        android:background="@drawable/recyclerview_bg"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:padding="10dp">
-
+        android:layout_height="match_parent">
         <LinearLayout
+            android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="40dp"
-            android:orientation="horizontal">
+            android:background="@drawable/recyclerview_bg_2"
+            android:orientation="vertical"
+            android:paddingBottom="400dp"
+            android:fillViewport="true">
 
-            <TextView
-                android:id="@+id/Station_code_Label"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_place_black_48dp"
-                android:text="Code : "
-                android:textColor="@color/colortextdata"
-                android:textSize="50sp"
-                android:textStyle="bold" />
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="40dp"
+                android:layout_marginLeft="20dp"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/Station_code"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/Station_code_Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_place_black_48dp"
+                    android:text="@string/code_attribut"
+                    android:textColor="@color/colortextdata"
+                    android:textSize="45sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/Station_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp"
+                    android:text="@string/station_code"
+                    android:textColor="@color/colortextlabel"
+                    android:textSize="45sp"
+                    android:textStyle="bold"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
-                android:layout_marginStart="40dp"
-                android:text="Station Code"
-                android:textColor="@color/colortextlabel"
-                android:textSize="50sp"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="40dp"
+                android:layout_marginLeft="20dp"
+
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/Station_name_Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/name_attribut"
+                    android:textColor="@color/colortextdata"
+                    android:textSize="45sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/Station_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp"
+                    android:text="@string/station_name"
+                    android:textColor="@color/colortextlabel"
+                    android:textSize="45sp"
+                    android:textStyle="bold"
+                    app:fontFamily="sans-serif"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="40dp"
+                android:layout_marginLeft="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/Station_latitude_Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/latitude"
+                    android:textColor="@color/colortextdata"
+                    android:textSize="50sp"
+                    android:textStyle="bold" />
+
+                <TextView android:id="@+id/Station_latitude"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="10sp"
+                    android:text="@string/station_latitude"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/colortextlabel"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp"
+                    android:textSize="45sp"
+                    android:textStyle="bold"
+                    app:fontFamily="sans-serif" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="40dp"
+                android:layout_marginLeft="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/Station_longitude_Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Longitude : "
+                    android:textColor="@color/colortextdata"
+                    android:textSize="45sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/Station_longitude"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/station_longitude"
+                    android:textColor="@color/colortextlabel"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp"
+                    android:textSize="45sp"
+                    android:textStyle="bold"
+                    app:fontFamily="sans-serif"/>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="360dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="200dp"
+                android:layout_marginStart="250dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginEnd="100dp"
+                android:background="@drawable/global_activity_button"
+                android:text="@string/show_station_on_map"
+                android:textColor="#302828"
+                android:textSize="28sp"
                 android:textStyle="bold"
-                 />
+                />
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="40dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/Station_name_Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Name : "
-                android:textColor="@color/colortextdata"
-                android:textSize="50sp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/Station_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
-                android:layout_marginStart="40dp"
-                android:text="Station Name"
-                android:textColor="@color/colortextlabel"
-                android:textSize="50sp"
-                android:textStyle="bold"
-                app:fontFamily="sans-serif"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="40dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/Station_latitude_Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Latitude : "
-                android:textColor="@color/colortextdata"
-                android:textSize="50sp"
-                android:textStyle="bold" />
-
-            <TextView android:id="@+id/Station_latitude"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Station Latitude:"
-                android:lineSpacingExtra="10sp"
-                android:text="Station Latitude"
-                android:textAllCaps="false"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="@color/colortextlabel"
-                android:layout_marginLeft="40dp"
-                android:layout_marginStart="40dp"
-                android:textSize="50sp"
-                android:textStyle="bold"
-                app:fontFamily="sans-serif" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="40dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/Station_longitude_Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Longitude : "
-                android:textColor="@color/colortextdata"
-                android:textSize="50sp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/Station_longitude"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Station Longitude"
-                android:textColor="@color/colortextlabel"
-                android:layout_marginLeft="40dp"
-                android:layout_marginStart="40dp"
-                android:textSize="50sp"
-                android:textStyle="bold"
-                app:fontFamily="sans-serif"/>
-
-        </LinearLayout>
-
-
-
-
-
-
-
-    </LinearLayout>
-
+    </ScrollView>
 </LinearLayout>

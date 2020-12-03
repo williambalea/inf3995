@@ -1,0 +1,98 @@
+package inf3995.bixiapplication.StationView.Statistics.GlobalStatistics
+
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity
+import inf3995.bixiapplication.StationView.MainScreen.MainScreenActivity.Companion.connectivity
+import inf3995.test.bixiapplication.R
+import kotlinx.android.synthetic.main.activity_global_statistics.*
+
+class GlobalStatisticsActivity : AppCompatActivity() {
+    var time: String? = null
+    var year: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_global_statistics)
+
+        val yearsList = listOf("","2014", "2015", "2016","2017")
+        val yearsAdapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, yearsList)
+        spnTime.adapter = yearsAdapter
+
+        val periodList = listOf("","perMonth", "perWeekDay","perHour")
+        val periodAdapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, periodList)
+        spnPeriod.adapter = periodAdapter
+
+        limitDropDownMenuHeight(spnPeriod)
+        limitDropDownMenuHeight(spnTime)
+
+        spnTime.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val item:String = yearsList[position]
+                year = item
+            }
+        }
+
+        spnPeriod.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val item:String = periodList[position]
+                time = item
+            }
+        }
+
+        buttonDisplayGlobal.setOnClickListener{
+            when (time){
+                "perMonth"-> {
+                    val intent = Intent(this@GlobalStatisticsActivity, MonthlyGlobalStatisticsActivity::class.java)
+                    intent.putExtra("yearGlobal", year)
+                    intent.putExtra("timeGlobal", time)
+                    startActivity(intent)
+
+                }
+                "perWeekDay"-> {
+                    val intent = Intent(this@GlobalStatisticsActivity, DailyGlobalStatisticActivity::class.java)
+                    intent.putExtra("yearGlobal", year)
+                    intent.putExtra("timeGlobal", time)
+                    startActivity(intent)
+                }
+                "perHour"-> {
+                    val intent = Intent(this@GlobalStatisticsActivity, HourlyGlobalStatisticsActivity::class.java)
+                    intent.putExtra("yearGlobal", year)
+                    intent.putExtra("timeGlobal", time)
+                    startActivity(intent)
+                }
+            }
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+
+        connectivity.observe(this, Observer {
+            if(it[1] == "DOWN") {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Engine Error!").setMessage("Connection with Engine 2 failed")
+                builder.show().setOnDismissListener {
+                    val intent = Intent(this, MainScreenActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                    startActivity(intent)
+                }
+            }
+        })
+    }
+
+    private fun limitDropDownMenuHeight(spnTest: Spinner){
+        val popup = Spinner::class.java.getDeclaredField("mPopup")
+        popup.isAccessible =true
+        val popupWindow =popup.get(spnTest) as ListPopupWindow
+        popupWindow.height = (5*resources.displayMetrics.density).toInt()
+    }
+
+}
