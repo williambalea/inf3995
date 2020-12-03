@@ -49,7 +49,7 @@ class Engine3_Pred_Error:
 		mape = 100 * (abs(predErrorPerHour) / pred_df['test_labels'].values)
 		#Calculate and display accuracy
 		predAccuracyHour = round(100 - np.mean(mape), 2)
-		logging.info('Accuracy hour hour (sum of all stations):', predAccuracyHour, '%.')
+		logging.info('Accuracy per hour (sum of all stations):', predAccuracyHour, '%.')
 		
 		
 		xAxisDate = []

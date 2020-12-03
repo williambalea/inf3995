@@ -374,5 +374,4 @@ class Engine3:
         jsonInString["data"]["predictions"] = y.tolist()
         jsonInString["graph"] = graphString
         
-        logging.info('Label used: {}'.format(completeLabel))
         return json.dumps(jsonInString)
