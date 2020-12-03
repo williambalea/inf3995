@@ -2,15 +2,10 @@
 <resources>
     <color name="colorPrimary">#3d95d0</color>
     <color name="colorPrimaryDark">#489855</color>
-    <color name="colorAccent">#EB483C</color>
-    <color name="colorBIXI">#EB483C</color>
+    <color name="colorAccent">#D52B1E</color>
     <color name="colorWhite">#fff</color>
-    <color name="colorbutton">#AA00FF</color>
 
-    <color name="colorPrimary1">#6200EE</color>
     <color name="colorPrimaryDark1">#3700B3</color>
-    <color name="colorAccent1">#03DAC5</color>
-    <color name="colorWhite1">#03DAC5</color>
     <color name="colortextdata">#130877</color>
     <color name="colortextlabel">#B90C0C0C</color>
     <color name="colortablerow">#17D50000</color>
@@ -18,17 +13,10 @@
 
 
     <!--text color -->
-    <color name = "textColor">#273d52</color>
-    <color name = "headerColor">#6200EE</color>
 
     <!--gradient color -->
-    <color name = "startColor">#006797</color>
-    <color name = "endColor">#489855</color>
-    <color name = "centerColor">#006797</color>
-    <color name = "userRow">#403fc68b</color>
 
     <!--icon color -->
-    <color name = "iconColor">#145798</color>
 
 
 </resources>

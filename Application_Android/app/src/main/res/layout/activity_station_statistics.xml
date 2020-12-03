@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="@drawable/background_bg"
-    android:orientation="vertical" android:weightSum="9"
-    tools:context="inf3995.bixiapplication.StationStatisticsActivity"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_bg"
+    android:orientation="vertical"
+    android:weightSum="9"
+    tools:context="inf3995.bixiapplication.StationView.Statistics.StationStatistics.StationStatisticsActivity"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://schemas.android.com/tools ">
 
@@ -30,24 +34,27 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="0dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_statistic" />
+                    android:src="@drawable/ic_statistic"
+                    android:layout_marginStart="0dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:text="STATION USAGE STATISTICS"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_horizontal"
+                    android:text="@string/station_usage_statistics"
                     android:textColor="@color/colorWhite"
-                    android:textSize="60sp"
+                    android:textSize="50sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/coord_station"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/recyclerview_bg"
+        android:background="@drawable/recyclerview_bg_2"
         android:layout_gravity="center"
         android:orientation="vertical"
         android:padding="10dp">
